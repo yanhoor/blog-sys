@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  name      String     @db.VarChar(255)
+  avatar    String?    @db.VarChar(255)
+  introduce String?    @db.VarChar(255)
+  mobile    String     @unique @db.VarChar(255)
+  password  String     @db.VarChar(255)
+  birthday  DateTime?
+  deletedAt DateTime?
+  blogs     Blog[]
+  comments  Comment[]
+  blogCates  BlogCate[]
+
+  @@index([createdAt])
+}
+
+model BlogCate {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(fields: [createById], references: [id])
+  createById Int
+  name       String   @db.VarChar(255)
+
+  blogs Blog[]
+}
+
+model Blog {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  createBy   User      @relation(fields: [createById], references: [id])
+  createById Int
+  updatedAt  DateTime  @updatedAt
+  cate       BlogCate? @relation(fields: [cateId], references: [id])
+  cateId     Int
+
+  title   String @db.VarChar(255)
+  content String @db.VarChar(255)
+
+  deletedAt DateTime?
+  comments  Comment[]
+
+  @@index([createdAt])
+}
+
+model Comment {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  createBy    User     @relation(fields: [createById], references: [id])
+  createById  Int
+  commentTo   Blog     @relation(fields: [commentToId], references: [id])
+  commentToId Int
+
+  content String @db.VarChar(255)
+
+  deletedAt DateTime?
+
+  @@index([createdAt])
+}
