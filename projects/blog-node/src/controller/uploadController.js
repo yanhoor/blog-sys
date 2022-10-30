@@ -59,7 +59,7 @@ class UploadController extends BaseController{
 
       const hashName = (new Date().getTime() + Math.ceil(Math.random()*10000)).toString(16)
       const extname = path.extname(file.originalFilename)
-      const fullName = '/mall-koa2/' + hashName + extname
+      const fullName = '/blog-sys/' + hashName + extname
       const savePath = config.uploadDir + fullName // 相对项目运行的根目录路径
       try{
         // fs.renameSync(file.filepath, savePath)

@@ -19,7 +19,7 @@ model User {
   deletedAt DateTime?
   blogs     Blog[]
   comments  Comment[]
-  blogCates  BlogCate[]
+  blogCates BlogCate[]
 
   @@index([createdAt])
 }
@@ -27,11 +27,13 @@ model User {
 model BlogCate {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   createBy   User     @relation(fields: [createById], references: [id])
   createById Int
   name       String   @db.VarChar(255)
 
-  blogs Blog[]
+  deletedAt DateTime?
+  blogs     Blog[]
 }
 
 model Blog {
@@ -41,10 +43,10 @@ model Blog {
   createById Int
   updatedAt  DateTime  @updatedAt
   cate       BlogCate? @relation(fields: [cateId], references: [id])
-  cateId     Int
+  cateId     Int?
 
   title   String @db.VarChar(255)
-  content String @db.VarChar(255)
+  content String @db.Text
 
   deletedAt DateTime?
   comments  Comment[]

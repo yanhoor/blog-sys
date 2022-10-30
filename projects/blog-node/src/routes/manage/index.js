@@ -1,6 +1,10 @@
 const manageRouter = require('koa-router')()
 const jwt = require('koa-jwt')
 const config = require('config-lite')(__dirname)
+const uploadRouter = require('./upload')
+const userRouter = require('./user')
+const blogCateRouter = require('./blogCate')
+const blogRouter = require('./blog')
 
 manageRouter.prefix('/api-manage')
 
@@ -13,5 +17,10 @@ manageRouter.use(
   })
     .unless({ custom: (ctx) => /\/login$|\/register$/.test(ctx?.url) }) // 以/login或/register结尾不使用 jwt 中间件
 )
+
+manageRouter.use(uploadRouter.routes(), uploadRouter.allowedMethods())
+manageRouter.use(userRouter.routes(), userRouter.allowedMethods())
+manageRouter.use(blogCateRouter.routes(), blogCateRouter.allowedMethods())
+manageRouter.use(blogRouter.routes(), blogRouter.allowedMethods())
 
 module.exports = manageRouter
