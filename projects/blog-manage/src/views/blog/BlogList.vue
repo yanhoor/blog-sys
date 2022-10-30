@@ -11,19 +11,24 @@
 
     <template #table>
       <vxe-table border :data="pageState.tableList" height="auto" v-loading="pageState.loading">
-        <vxe-column type="seq" width="60"></vxe-column>
-        <vxe-column field="title" title="标题"></vxe-column>
-        <vxe-column title="更新时间">
+        <vxe-column key="seq" type="seq" width="60"></vxe-column>
+        <vxe-column key="title" field="title" title="标题"></vxe-column>
+        <vxe-column key="cate" title="所属分类">
+          <template #default="{ row }">
+            <div>{{ row.cate.name }}</div>
+          </template>
+        </vxe-column>
+        <vxe-column key="updateTime" title="更新时间">
           <template #default="{ row }">
             <div>{{dayjs(row.updatedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
         </vxe-column>
-        <vxe-column title="创建时间">
+        <vxe-column key="createTime" title="创建时间">
           <template #default="{ row }">
             <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
         </vxe-column>
-        <vxe-column title="操作">
+        <vxe-column key="operate" title="操作">
           <template #default="{ row }">
             <el-button @click="editItem(row.id)" text type="primary">编辑</el-button>
             <el-button @click="deleteItem(row.id)" text type="primary">删除</el-button>
@@ -52,17 +57,12 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import ListWrapper from '@/layout/listWrapper.vue'
-import { Blog } from '@/types/blog'
 import $http, { urls } from "@/http";
 import { ElMessage, ElMessageBox } from "element-plus"
 import dayjs from "dayjs"
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-let editForm = ref<Blog>({
-  title: '',
-  content: '',
-})
 const pageState = reactive({
   loading: false,
   tableList: [],
