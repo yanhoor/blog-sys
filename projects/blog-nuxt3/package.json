@@ -8,6 +8,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.12"
+    "nuxt": "3.0.0-rc.12",
+    "sass": "^1.55.0",
+    "sass-loader": "^13.1.0",
+    "unplugin-icons": "^0.14.12",
+    "unplugin-vue-components": "^0.22.9"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "element-plus": "^2.2.19"
   }
 }
