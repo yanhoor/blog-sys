@@ -23,6 +23,20 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '博客分类'
         }
+      },
+      {
+        path: '/blog',
+        component: () => import('@/views/blog/BlogList.vue'),
+        meta: {
+          title: '博客列表'
+        }
+      },
+      {
+        path: '/blogEdit',
+        component: () => import('@/views/blog/BlogEdit.vue'),
+        meta: {
+          title: '编辑博客'
+        }
       }
     ]
   },

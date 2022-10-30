@@ -34,8 +34,8 @@ const sourceMenus: Array<MenuProps> = [
       },
       {
         // group: '基础',
-        title: '店铺管理',
-        path: 'shop'
+        title: '博客列表',
+        path: 'blog'
       }
     ]
   },
