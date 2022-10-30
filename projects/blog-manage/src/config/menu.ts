@@ -24,13 +24,13 @@ const sourceMenus: Array<MenuProps> = [
     icon: HomeFilled
   },
   {
-    title: '店铺',
+    title: '博客管理',
     icon: Shop,
     children: [
       {
         // group: '基础',
-        title: '店铺分类',
-        path: 'shopCate'
+        title: '博客分类',
+        path: 'blogCate'
       },
       {
         // group: '基础',

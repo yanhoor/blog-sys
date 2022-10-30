@@ -16,6 +16,13 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '首页'
         }
+      },
+      {
+        path: '/blogCate',
+        component: () => import('@/views/blogCate/BlogCateList.vue'),
+        meta: {
+          title: '博客分类'
+        }
       }
     ]
   },
