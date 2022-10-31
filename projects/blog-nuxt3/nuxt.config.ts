@@ -16,6 +16,9 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_API_BASE // 这个好像不会自动获取 NUXT_ 开头的值
     }
   },
+  modules: [
+    '@vueuse/nuxt',
+  ],
   css: ["@/assets/styles/global.scss"],
   vite: {
     css: {

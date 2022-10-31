@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
+    "@vueuse/nuxt": "^9.4.0",
     "element-plus": "^2.2.19"
   }
 }
