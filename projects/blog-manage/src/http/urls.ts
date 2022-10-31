@@ -18,6 +18,7 @@ export const urls = {
   blog_list: '/blog/list',
   blog_delete: '/blog/delete',
   blog_info: '/blog/info',
+  blog_operate: '/blog/operate',
 
   address_child: '/address/query_children',
   address_search: '/address/search',

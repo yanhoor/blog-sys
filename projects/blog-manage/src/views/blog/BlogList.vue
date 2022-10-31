@@ -18,6 +18,17 @@
             <div>{{ row.cate.name }}</div>
           </template>
         </vxe-column>
+        <vxe-column key="launch" title="状态">
+          <template #default="{ row }">
+            <el-tag v-if="row.launch" type="success">已发布</el-tag>
+            <el-tag v-else type="info">下架</el-tag>
+          </template>
+        </vxe-column>
+        <vxe-column key="operateAt" title="发布/下架时间">
+          <template #default="{ row }">
+            <div>{{dayjs(row.operateAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
+          </template>
+        </vxe-column>
         <vxe-column key="updateTime" title="更新时间">
           <template #default="{ row }">
             <div>{{dayjs(row.updatedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
@@ -28,10 +39,16 @@
             <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
         </vxe-column>
-        <vxe-column key="operate" title="操作">
+        <vxe-column key="operate" title="操作" min-width="120">
           <template #default="{ row }">
-            <el-button @click="editItem(row.id)" text type="primary">编辑</el-button>
-            <el-button @click="deleteItem(row.id)" text type="primary">删除</el-button>
+            <div v-if="row.launch">
+              <el-button @click="operateItem(row.id, 0)" text type="warning">下架</el-button>
+            </div>
+            <div v-else>
+              <el-button @click="operateItem(row.id, 1)" text type="success">发布</el-button>
+              <el-button @click="editItem(row.id)" text type="primary">编辑</el-button>
+              <el-button @click="deleteItem(row.id)" text type="danger">删除</el-button>
+            </div>
           </template>
         </vxe-column>
       </vxe-table>
@@ -136,4 +153,31 @@ async function deleteItem(id: string) {
   }).catch(() => {})
 }
 
+async function operateItem(id: string, launch: number) {
+  ElMessageBox.confirm(
+    launch ? '确定发布？' : '确定下架？',
+    launch ? '发布' : '下架',
+    {
+      confirmButtonText: launch ? '发布' : '下架',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then( async () => {
+    try{
+      const {success, result, msg} = await $http.post(urls.blog_operate, { id, launch })
+      if(!success){
+        ElMessage.error({
+          message: msg
+        })
+      }else{
+        ElMessage.success({
+          message: '操作成功'
+        })
+        getList()
+      }
+    }catch (e) {
+
+    }
+  }).catch(() => {})
+}
 </script>
