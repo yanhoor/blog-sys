@@ -44,6 +44,8 @@ model Blog {
   updatedAt  DateTime  @updatedAt
   cate       BlogCate? @relation(fields: [cateId], references: [id])
   cateId     Int?
+  launch     Int       @default(0)
+  operateAt  DateTime? // 发布/下架时间
 
   title   String @db.VarChar(255)
   content String @db.Text

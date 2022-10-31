@@ -3,11 +3,11 @@ const prisma = require('../database/prisma')
 
 class BlogController extends BaseController{
   list = async (ctx, next) => {
-    console.log('++++++++++++++++')
-    const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const {title, launch, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
     const filter = {}
     if (title) filter.title = {contains: title}
+    if (launch) filter.launch = launch
     try {
       const [list, total] = await prisma.$transaction([
         prisma.blog.findMany({
@@ -18,7 +18,7 @@ class BlogController extends BaseController{
             id: true,
             createdAt: true,
             updatedAt: true,
-            content: true,
+            launch: true,
             cate: {
               select: {
                 id: true,
@@ -71,6 +71,12 @@ class BlogController extends BaseController{
         return ctx.body = {
           success: false,
           msg: '博客不存在'
+        }
+      }
+      if (blog.launch) {
+        return ctx.body = {
+          success: false,
+          msg: '博客已发布，不能修改'
         }
       }
       try {
@@ -137,7 +143,48 @@ class BlogController extends BaseController{
         success: true
       }
     } catch (e) {
+      console.log('=========blog.delete==========', e)
+    }
+  }
 
+  // 发布/取消发布
+  operate = async (ctx, next) => {
+    const {id, launch} = ctx.request.body
+    try {
+      if (launch === undefined) throw new Error('缺少参数 launch')
+    } catch (e) {
+      return ctx.body = {
+        success: false,
+        msg: e.message
+      }
+    }
+
+    try {
+      const blog = await prisma.blog.findUnique({
+        where: {id}
+      })
+      if (!blog) {
+        return ctx.body = {
+          success: false,
+          msg: '博客不存在'
+        }
+      }
+      const t = new Date()
+      await prisma.blog.update({
+        where: {
+          id: Number(id)
+        },
+        data: {
+          operateAt: t,
+          launch
+        }
+      })
+
+      return ctx.body = {
+        success: true
+      }
+    } catch (e) {
+      console.log('=========blog.operate==========', e)
     }
   }
 }
