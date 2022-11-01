@@ -13,11 +13,24 @@ export default defineNuxtConfig({
     apiSecret: '123', // .env 文件里 NUXT_API_SECRET 的值(即NUXT_ 开头的值)
     // Keys within public are also exposed client-side
     public: {
-      apiBase: process.env.NUXT_API_BASE // 这个好像不会自动获取 NUXT_ 开头的值
+      apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
+      imageBase: process.env.NUXT_IMAGE_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
+    }
+  },
+  app: {
+    head: {
+      script: [
+        {
+          src: './prism.js'
+        }
+      ],
+      link: [
+        {rel: 'stylesheet', href: './prism.css'}
+      ]
     }
   },
   modules: [
-    '@vueuse/nuxt',
+    '@vueuse/nuxt'
   ],
   css: ["@/assets/styles/global.scss"],
   vite: {
