@@ -37,7 +37,14 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '编辑博客'
         }
-      }
+      },
+      {
+        path: '/me',
+        component: () => import('@/views/me/Me.vue'),
+        meta: {
+          title: '个人信息'
+        }
+      },
     ]
   },
   {

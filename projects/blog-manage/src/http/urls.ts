@@ -7,6 +7,7 @@ export const urls = {
   logout: '/user/logout',
   user_register: '/user/register',
   user_info: '/user/info',
+  user_update_avatar: '/user/updateAvatar',
 
   blog_cate_edit: '/blogCate/edit',
   blog_cate_list: '/blogCate/list',

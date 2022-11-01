@@ -1,7 +1,7 @@
 <template>
   <div class="user-avatar-container">
     <el-dropdown>
-      <el-avatar :src="userStore.user?.avatar"></el-avatar>
+      <el-avatar :src="IMG_HOST + userStore.user?.avatar"></el-avatar>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item :icon="User">个人信息</el-dropdown-item>
@@ -16,7 +16,7 @@
 import { useUserStore } from '@/store/modules/userStore'
 import { User, CircleClose } from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox, FormInstance} from "element-plus"
-import $http, {urls} from "@/http"
+import $http, {urls, IMG_HOST} from "@/http"
 import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()

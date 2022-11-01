@@ -1,7 +1,7 @@
 import {
   HomeFilled,
   Shop,
-  Menu,
+  User,
   Location,
   Star,
   Setting,
@@ -22,6 +22,11 @@ const sourceMenus: Array<MenuProps> = [
     title: '首页',
     path: 'home',
     icon: HomeFilled
+  },
+  {
+    title: '个人信息',
+    path: 'me',
+    icon: User
   },
   {
     title: '博客管理',
