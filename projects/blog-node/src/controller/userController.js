@@ -37,7 +37,6 @@ class UserController extends BaseController{
   // 获取登录用户信息
   info = async (ctx, next) => {
     const id = ctx.state.user.id
-    console.log('=======user.info=========', id)
     try{
       const user = await prisma.user.findUnique({
         where: {
@@ -101,12 +100,33 @@ class UserController extends BaseController{
     }
   }
 
+  // 登出
   logout = async (ctx, next) => {
     // 设置为不同值，使登录的 token 失效
     jsonwebtoken.sign('', config.jwtSecret)
     ctx.body = {
       success: true,
       msg: '已退出登录'
+    }
+  }
+
+  updateAvatar = async (ctx, next) => {
+    const { avatar } = ctx.request.body
+    const id = ctx.state.user.id
+    try{
+      const user = await prisma.user.update({
+        where: {
+          id
+        },
+        data: {
+          avatar
+        }
+      })
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      console.log('=======user.edit=========', e)
     }
   }
 }

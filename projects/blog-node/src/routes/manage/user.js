@@ -6,6 +6,7 @@ router.prefix('/user')
 router.post('/register', controller.register)
 router.post('/login', controller.login)
 router.post('/logout', controller.logout)
+router.post('/updateAvatar', controller.updateAvatar)
 router.get('/info', controller.info)
 
 module.exports = router
