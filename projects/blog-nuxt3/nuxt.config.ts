@@ -1,12 +1,18 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
-import IconsResolver from "unplugin-icons/resolver";
-import Components from "unplugin-vue-components/vite";
 
 console.log('===============', process.env.NODE_ENV, process.env.BASE_API)
 const lifecycle = process.env.npm_lifecycle_event
 export default defineNuxtConfig({
   build: {
-    transpile: lifecycle === "build" ? ["element-plus"] : [],
+    transpile:
+      process.env.NODE_ENV === 'production'
+        ? [
+          'naive-ui',
+          'vueuc',
+          '@css-render/vue3-ssr',
+          '@juggle/resize-observer'
+        ]
+        : ['@juggle/resize-observer']
   },
   runtimeConfig: {
     // The private keys which are only available server-side
@@ -41,12 +47,12 @@ export default defineNuxtConfig({
         }
       }
     },
-    plugins: [
-      Components({
-        dts: true,
-        resolvers: [IconsResolver({})],
-      }),
-    ],
+    optimizeDeps: {
+      include:
+        process.env.NODE_ENV === 'development'
+          ? ['naive-ui', 'vueuc', 'date-fns-tz/esm/formatInTimeZone']
+          : []
+    }
   },
   // auto import components
   components: true,
