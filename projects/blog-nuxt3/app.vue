@@ -12,10 +12,8 @@ const darkMode = useDarkMode()
 onMounted(() => {
   // 还要加个setTimeout 主题才会换??
   setTimeout(() => {
-    console.log('=======app=======', darkMode.value, localStorage.getItem('vueuse-color-scheme'))
     const s = localStorage.getItem('vueuse-color-scheme')
     darkMode.value = s === 'dark'
-    console.log('=============app2222=======', darkMode.value, process.client)
 
     const userRandomKey = localStorage.getItem('random-key')
     if(!userRandomKey){
