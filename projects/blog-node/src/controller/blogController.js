@@ -1,13 +1,14 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
+const config = require('config-lite')(__dirname)
+const jsonwebtoken = require('jsonwebtoken')
 
 class BlogController extends BaseController{
   list = async (ctx, next) => {
-    const {title, launch, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = {}
+    const filter = { createById: ctx.state.user.id }
     if (title) filter.title = {contains: title}
-    if (launch) filter.launch = launch
     try {
       const [list, total] = await prisma.$transaction([
         prisma.blog.findMany({
@@ -44,12 +45,62 @@ class BlogController extends BaseController{
     }
   }
 
+  list2 = async (ctx, next) => {
+    const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const skip = pageSize * (page - 1)
+    const filter = { launch: 1 }
+    if (title) filter.title = {contains: title}
+    try {
+      const [list, total] = await prisma.$transaction([
+        prisma.blog.findMany({
+          skip,
+          take: pageSize,
+          where: filter,
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
+            updatedAt: true,
+            launch: true,
+            cate: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
+            },
+            _count: {
+              select: { likedBy: true },
+            },
+          },
+          orderBy: {updatedAt: 'desc'}
+        }),
+        prisma.blog.count({where: filter})
+      ])
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
+      }
+    } catch (e) {
+      console.log('=======blog.visitList=======', e)
+    }
+  }
+
   edit = async (ctx, next) => {
     const {title, content, cateId, id} = ctx.request.body
     try {
       if (!title) throw new Error('标题不能为空')
       if (!content) throw new Error('内容不能为空')
-      if (!cateId) throw new Error('分类名不能为空')
     } catch (e) {
       ctx.body = {
         success: false,
@@ -116,6 +167,27 @@ class BlogController extends BaseController{
         where: {
           id: Number(id)
         },
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          updatedAt: true,
+          launch: true,
+          content: true,
+          cate: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          createBy: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
+        }
       })
 
       return ctx.body = {
