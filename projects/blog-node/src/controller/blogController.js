@@ -259,6 +259,63 @@ class BlogController extends BaseController{
       console.log('=========blog.operate==========', e)
     }
   }
+
+  // 点赞博客
+  like = async (ctx, next) => {
+    const { id, isLike } = ctx.request.body
+    try{
+      if(!id) throw new Error('博客id不能为空')
+      if(isLike === undefined) throw new Error('isLike不能为空')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try{
+      // 为毛这个 undefined
+      // const userId = ctx.state.user.id2
+      const token = ctx.headers['authorization']
+      const { id2: userId } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+      if(isLike){
+        await prisma.blog.update({
+          where: { id },
+          data: {
+            likedBy: {
+              create: [
+                // 创建 UserLikeBlogs
+                {
+                  user: {
+                    // 连接到操作的 user
+                    connect: {
+                      id: userId
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        })
+      }else{
+        await prisma.userLikeBlogs.delete({
+          where: {
+            userId_blogId: {
+              userId,
+              blogId: id
+            }
+          }
+        })
+      }
+
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      console.log('=====blog.like=====', e)
+    }
+  }
 }
 
 module.exports = new BlogController()
