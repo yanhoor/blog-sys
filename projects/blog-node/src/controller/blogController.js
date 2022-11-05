@@ -276,9 +276,9 @@ class BlogController extends BaseController{
 
     try{
       // 为毛这个 undefined
-      // const userId = ctx.state.user.id2
+      // const userId = ctx.state.user.id
       const token = ctx.headers['authorization']
-      const { id2: userId } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+      const { id: userId } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
       if(isLike){
         await prisma.blog.update({
           where: { id },
@@ -299,11 +299,28 @@ class BlogController extends BaseController{
           }
         })
       }else{
-        await prisma.userLikeBlogs.delete({
-          where: {
-            userId_blogId: {
-              userId,
-              blogId: id
+        // 这样好像也可以
+        // await prisma.userLikeBlogs.delete({
+        //   where: {
+        //     userId_blogId: {
+        //       userId,
+        //       blogId: id
+        //     }
+        //   }
+        // })
+        await prisma.blog.update({
+          where: { id },
+          data: {
+            likedBy: {
+              delete: [
+                // 删除相关 UserLikeBlogs
+                {
+                  userId_blogId: {
+                    userId,
+                    blogId: id
+                  }
+                }
+              ]
             }
           }
         })

@@ -7,8 +7,9 @@ class UserController extends BaseController{
   // 注册
   register = async (ctx, next) => {
     const req = ctx.request;
-    const { password, mobile } = req.body
+    const { password, mobile, name } = req.body
     try{
+      if(!name) throw new Error('名称不能为空')
       if(!password) throw new Error('密码不能为空')
       if(!mobile) throw new Error('手机号不能为空')
 
@@ -24,7 +25,7 @@ class UserController extends BaseController{
     }
 
     try{
-      const user = await prisma.user.create({data: req.body})
+      const user = await prisma.user.create({data: { password, mobile, name }})
       return ctx.body = {
         success: true,
         result: '注册成功'
@@ -36,7 +37,10 @@ class UserController extends BaseController{
 
   // 获取登录用户信息
   info = async (ctx, next) => {
-    const id = ctx.state.user.id
+    // const id = ctx.state.user.id
+    // 或者这样获取
+    const token = ctx.headers['authorization']
+    const { id } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
     try{
       const user = await prisma.user.findUnique({
         where: {
@@ -59,13 +63,12 @@ class UserController extends BaseController{
   }
 
   // 登录
-  login = async(ctx, next) => {
+  login = async (ctx, next) => {
     const req = ctx.request;
     const { password, mobile } = req.body
     try{
       if(!password) throw new Error('密码不能为空')
       if(!mobile) throw new Error('手机号不能为空')
-
     }catch(e){
       ctx.body = {
         success: false,
@@ -86,7 +89,7 @@ class UserController extends BaseController{
       }
     }
     if(user?.password === password) {
-      const token = jsonwebtoken.sign({ id: user.id }, config.jwtSecret, { expiresIn: 60 * 60 *24 * 7 }) // expiresIn token过期秒数
+      const token = jsonwebtoken.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtTokenExpired }) // expiresIn token过期秒数
       ctx.body = {
         success: true,
         msg: '登录成功',
@@ -102,8 +105,6 @@ class UserController extends BaseController{
 
   // 登出
   logout = async (ctx, next) => {
-    // 设置为不同值，使登录的 token 失效
-    jsonwebtoken.sign('', config.jwtSecret)
     ctx.body = {
       success: true,
       msg: '已退出登录'
@@ -129,6 +130,7 @@ class UserController extends BaseController{
       console.log('=======user.edit=========', e)
     }
   }
+
 }
 
 module.exports =  new UserController()
