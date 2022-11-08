@@ -53,7 +53,9 @@ const [list, total] = await prisma.$transaction([
 对于需要登录才能调用的接口，使用 `jwt` 进行校验和拦截
 
 - 安装 `pnpm add koa-jwt jsonwebtoken -S`
+
 - 使用 `koa-router` 添加中间件
+
 ```javascript
 // jwt 校验登录，校验不通过会返回 401 状态码
 app.use((ctx, next) => {
@@ -77,18 +79,77 @@ router.use(
         })
 )
 ```
+
 - 在登录成功后，生成 `token`
+
 ```javascript
 // { id: user.id } 可以在 ctx.state.user 访问到
 const token = jsonwebtoken.sign({ id: user.id }, config.jwtSecret, { expiresIn: 60 * 60 *24 * 7 }) // expiresIn token过期秒数
 ```
+
 - 在上面第2步，由于没有使用 `cookie`，所以这个校验的 `token` 需要前端通过自定义请求头 `Authorization` 回传，值为字符串 `Bearer `（注意后面有一个空格）拼接 `token`
 ```javascript
 headers: {
     'Authorization': 'Bearer 3333333333'
 }
 ```
-- 登出时使用 `jsonwebtoken.sign()` 生成另一个 `token`，使上一个失效
+
+- 服务端获取当前用户 `id`
+
+````javascript
+// 方法一，直接获取上面的 jsonwebtoken.sign()
+const userId = ctx.state.user.id
+
+// 方法二，手动获取 headers 的字段值校验
+const token = ctx.headers['authorization']
+const { id: userId } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+````
+
+- 退出登录时前端清空 `token`，但是服务端的 `token` 无法手动清除，需要等到过期时间自动失效
+
+### 挂载前端资源
+
+前端项目需要注意以下处理：
+
+- 请求接口的 `baseUrl`
+
+- 静态资源的 `baseUrl`，需要在 `vite.config.js` 设置 `base`
+
+- 路由的 `baseUrl`，如:
+
+  ```javascript
+  const router = createRouter({
+    history: createWebHistory('/manage/'), // 因为应用部署在 /manage/ 子目录
+    routes
+  })
+  ```
+
+`node` 项目的处理：
+
+```javascript
+// 前端打包的资源放在 /public/manage 下
+
+// 处理 history 路由模式刷新404
+app.use(async (ctx, next) => {
+  const matchUrl = '/manage' // 需要判断的路径
+  await next() // 等待请求执行完毕
+  const curUrl = ctx.request.url
+  if(ctx.response.status === 404 && curUrl.includes(matchUrl)){
+    if (!curUrl.includes('.')) {
+      // 对于页面路由，返回 index.html
+      ctx.type = 'text/html; charset=utf-8' // 修改响应类型
+      ctx.body= fs.readFileSync(path.resolve(__dirname, '../public/manage/index.html')) // 修改响应体
+    }else{
+      // 对于静态资源，如 /manage/assets/index.4e3bc69a.js, 直接获取，并添加 mime 类型
+      const p = path.join(__dirname, '../public', ctx.request.url)
+      ctx.type = mime.getType(ctx.request.url) // 修改响应类型
+      ctx.body= fs.readFileSync(p) // 修改响应体
+    }
+  }
+})
+
+app.use(mount('/manage', require('koa-static')(__dirname + '../public/manage'))) // 将 /public/web 下的目录挂载到 /manage，注意：接口也有/manage前缀
+```
 
 ## 待解决
 
@@ -102,3 +163,7 @@ headers: {
 ### 软删除问题
 
 [参考](https://prisma.yoga/concepts/components/prisma-client/middleware/soft-delete-middleware), 暂时使用中间件根据操作类型和参数，设置删除时间来表示，同时拦截查询和操作软删除的数据。但是对于某些可能需要查找软删除数据或硬删除的场景，需要怎样处理？添加参数如 `includedDeleted` 来查询？这样需要给数据添加不代表真实数据的字段
+
+### 关联查询
+
+用户与博客的多对多关系中，如何在博客列表查询当前用户是否点赞

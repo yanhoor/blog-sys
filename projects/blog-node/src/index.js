@@ -1,12 +1,18 @@
 const koa = require('koa')
+const cors = require('koa2-cors')
 const { koaBody } = require('koa-body') // 在 ctx.request.body 获取请求参数
-const config = require('config-lite')(__dirname)
 const manageRouter = require('./routes/manage')
+const visitRouter = require('./routes/visit')
+const mount = require('koa-mount')
+const fs = require("fs");
+const path = require('path')
+const mime = require('mime')
+const { historyApiFallback } = require('koa2-connect-history-api-fallback');
 
 const app = new koa()
 
 // jwt 校验登录
-app.use((ctx, next) => {
+app.use(async (ctx, next) => {
   return next().catch(err => {
     if (401 == err.status) {
       ctx.status = 401;
@@ -34,6 +40,40 @@ app.use(koaBody({multipart: true}))
 //     }
 // }))
 
+app.use(cors({
+  origin(ctx){
+    const { origin, Origin, referer, Referer } = ctx.request.headers;
+    const allowOrigin = origin || Origin || referer || Referer || '*';
+    return 'http://localhost:3000';
+  },
+  credentials: true,
+  maxAge: 60 * 60 * 24,
+  allowMethods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+}))
+
+// 处理 history 路由模式刷新404
+app.use(async (ctx, next) => {
+  const matchUrl = '/manage' // 需要判断的路径
+  await next() // 等待请求执行完毕
+  const curUrl = ctx.request.url
+  if(ctx.response.status === 404 && curUrl.includes(matchUrl)){
+    if (!curUrl.includes('.')) {
+      // 对于页面路由，返回 index.html
+      ctx.type = 'text/html; charset=utf-8' // 修改响应类型
+      ctx.body= fs.readFileSync(path.resolve(__dirname, '../public/manage/index.html')) // 修改响应体
+    }else{
+      // 对于静态资源，如 /manage/assets/index.4e3bc69a.js, 直接获取，并添加 mime 类型
+      const p = path.join(__dirname, '../public', ctx.request.url)
+      ctx.type = mime.getType(ctx.request.url) // 修改响应类型
+      ctx.body= fs.readFileSync(p) // 修改响应体
+    }
+  }
+})
+
+app.use(mount('/manage', require('koa-static')(__dirname + '../public/manage'))) // 将 /public/web 下的目录挂载到 /manage，注意：接口也有/manage前缀
+
+app.use(visitRouter.routes())
 app.use(manageRouter.routes())
 
 app.listen(8000)
