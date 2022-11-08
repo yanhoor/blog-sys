@@ -3,12 +3,12 @@ import router from '@/routes'
 import {ElMessage} from "element-plus"
 
 const DEFAULT_CONFIG: AxiosRequestConfig = {
-  baseURL: '/api/api-manage',
+  baseURL: import.meta.env.PROD ? '/api-manage' : '/api/api-manage',
   timeout: 45000,
   withCredentials: true,
   method: 'post',
   headers: {
-    'Authorization': ''
+    'authorization': ''
   }
 }
 
@@ -26,7 +26,7 @@ class Http{
     this.api.interceptors.request.use(config => {
       // console.log(`请求拦截配置-->`, config);
       const sit = localStorage.getItem('sit')
-      if(config.headers) config.headers['Authorization'] = 'Bearer ' + sit // jwt校验
+      if(config.headers) config.headers['authorization'] = 'Bearer ' + sit // jwt校验
       return config; // 需要返回
     }, error => {
       console.log(`请求拦截出错--> `, error);

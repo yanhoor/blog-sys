@@ -8,6 +8,10 @@ import { createStyleImportPlugin, VxeTableResolve, ElementPlusResolve } from 'vi
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/manage/', // 所有静态资源都会以这个路径重写
+  build: {
+    outDir: 'dist/blog-manage' // 预览也是这个目录
+  },
   plugins: [
     vue(),
     AutoImport({

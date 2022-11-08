@@ -58,7 +58,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(), // 因为应用部署在 /manage/ 子目录
+  history: createWebHistory('/manage/'), // 因为应用部署在 /manage/ 子目录
   routes
 })
 
