@@ -78,15 +78,14 @@ function handlePost (e: MouseEvent) {
     const { message } = createDiscreteApi(["message"])
     if (!errors) {
       try{
-        const { data, error } = await useFetchPost('/user/login', postForm.value)
-        const source = unref(data)
-        if(source.success){
+        const { result, success, msg } = await useFetchPost('/user/login', postForm.value)
+        if(success){
           message.success('登录成功')
 
-          token.value = source.result
+          token.value = result
           await navigateTo('/home', { replace: true })
         } else{
-          message.error(source.msg)
+          message.error(msg)
         }
       }catch (e) {
 

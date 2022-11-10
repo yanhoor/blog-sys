@@ -140,9 +140,8 @@ function handleRegister (e: MouseEvent) {
     const { message } = createDiscreteApi(["message"])
     if (!errors) {
       try{
-        const { data, error } = await useFetchPost('/user/register', registerForm.value)
-        const source = unref(data)
-        if(source.success){
+        const { result, success } = await useFetchPost('/user/register', registerForm.value)
+        if(success){
           message.success('注册成功')
           toLogin()
         }

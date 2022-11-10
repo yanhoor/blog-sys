@@ -1,19 +1,24 @@
 <template>
   <NuxtLayout>
     <template #left>
-      <n-space vertical>
+      <n-space vertical align="center">
         <slot name="left">
-          <n-icon size="18">
+          <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike">
+            <n-icon :size="28">
+              <ThumbLike16Regular />
+            </n-icon>
+          </n-icon-wrapper>
+          <n-icon :size="28" v-else>
             <ThumbLike16Regular />
           </n-icon>
-          <n-icon size="18">
+          <n-icon :size="28">
             <CommentMultiple16Regular />
           </n-icon>
         </slot>
       </n-space>
     </template>
 
-    <div class="blog-page">
+    <div class="blog-page" v-if="blogInfo">
       <div class="blog-title">{{ blogInfo.title }}</div>
       <div class="blog-info-container">
         <div class="user-info info-item">
@@ -33,6 +38,7 @@ import { ThumbLike16Regular, CommentMultiple16Regular } from '@vicons/fluent'
 import {
   NButton,
   NSpace,
+  NIconWrapper,
   NIcon,
   NAvatar
 } from "naive-ui"
@@ -50,10 +56,9 @@ onMounted(() => {
 })
 
 try{
-  const { data, error } = await useFetchPost('/blog/info', { id: route.query.id })
-  const source = unref(data)
-  if(source.success){
-    blogInfo.value = source.result
+  const { result, success } = await useFetchPost('/blog/info', { id: route.query.id })
+  if(success){
+    blogInfo.value = result
   }
 }catch (e) {
   console.log('=====/blog/info=======', e)

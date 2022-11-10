@@ -14,11 +14,11 @@
               <div>{{ blog.createBy?.name }}</div>
             </div>
             <span class="info-item">{{$dayjs(blog.updatedAt).format('YYYY-MM-DD')}}</span>
-            <div class="action-container info-item">
+            <div class="action-container info-item" @click="likeBlog(blog)">
               <n-icon size="18">
                 <ThumbLike16Regular />
               </n-icon>
-              <span>赞</span>
+              <span>{{ blog._count.likedBy ? blog._count.likedBy : '赞' }}</span>
             </div>
             <div class="action-container info-item">
               <n-icon size="18">
@@ -52,15 +52,30 @@ const config = useRuntimeConfig()
 // 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
 // definePageMeta({  layout: false})
 const blogList = ref([])
-// const { data } = await useBaseFetch('/blog/list')
-try{
-  const { data, error } = await useFetchPost('/blog/list2', {})
-  const source = unref(data)
-  if(source.success){
-    blogList.value = source.result.list
-  }
-}catch (e) {
 
+getBlogList()
+
+async function getBlogList() {
+  try{
+    const { result, success } = await useFetchPost('/blog/list2', {})
+    console.log('============', result)
+    if(success){
+      blogList.value = result.list
+    }
+  }catch (e) {
+
+  }
+}
+
+async function likeBlog(blog) {
+  try{
+    const { result, success } = await useFetchPost('/blog/like', { id: blog.id, isLike: 1 })
+    if(success){
+      blog._count.likedBy ++
+    }
+  }catch (e) {
+
+  }
 }
 
 async function toBlogDetail(id){

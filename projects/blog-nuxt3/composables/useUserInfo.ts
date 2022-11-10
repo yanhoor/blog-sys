@@ -7,10 +7,9 @@ export const useRefreshUserInfo = async () => {
   const token = useCookie("token")
   if(token.value && !userInfo.value) {
     try{
-      const { data, error } = await useFetchGet('/user/info', { })
-      const res = unref(data)
-      if(res.success){
-        userInfo.value = res.result
+      const { result, success } = await useFetchGet('/user/info', { })
+      if(success){
+        userInfo.value = result
       }
     }catch (e) {
 
