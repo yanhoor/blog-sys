@@ -10,7 +10,7 @@
   "scripts": {
     "dev1": "nodemon src/index.js",
     "dev": "pm2 start ecosystem.config.js --env development --watch && pm2 logs --raw",
-    "prod": "pm2 start ecosystem.config.js --env production"
+    "prod": "pm2 start ecosystem.config.js --env production && pm2 logs --raw"
   },
   "keywords": [],
   "author": "",
