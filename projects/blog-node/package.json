@@ -8,15 +8,17 @@
     ]
   },
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev1": "nodemon src/index.js",
+    "dev": "pm2 start ecosystem.config.js --env development --watch && pm2 logs --raw",
+    "prod": "pm2 start ecosystem.config.js --env production"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@prisma/client": "^4.5.0",
+    "@prisma/client": "^4.6.1",
     "nodemon": "^2.0.20",
-    "prisma": "^4.5.0",
+    "prisma": "^4.6.1",
     "typescript": "^4.8.4"
   },
   "dependencies": {

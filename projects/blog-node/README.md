@@ -5,14 +5,24 @@
 [终端所有命令](https://prisma.yoga/reference/api-reference/command-reference/)
 
 - 安装依赖 `pnpm add prisma -D`
+
 - 初始化文件 `npx prisma init`，然后按给出的提示操作，配置数据库
+
 - 检查数据库 `npx prisma db pull`，一旦建立了连接，它就会对数据库进行内省(即读取数据库模式)。然后将数据库模式从 `SQL` 转换为 `Prisma` 数据模型。检查完成后，`Prisma` 模式文件被更新
+
 - 安装客户端 `pnpm add @prisma/client`
+
+- 自动格式化 `.prisma` 文件: `npx prisma format`
+
 - 执行 `npx prisma generate`，每次修改 `schema` 都需要手动执行
+
 - 将 `schema` 的修改推送到数据库：`npx prisma db push`
+
 - `npx Prisma studio` 查看数据库
 
-自动格式化 `.prisma` 文件: `npx prisma format`
+### 注意
+
+- 默认读取根目录下 `.env` 配置的数据库，[说明](https://prisma.yoga/guides/development-environment/environment-variables/managing-env-files-and-setting-variables)
 
 ### 一系列坑
 
