@@ -18,7 +18,9 @@
       </n-space>
     </template>
 
-    <div class="blog-page" v-if="blogInfo">
+    <SkeletonBlog v-if="!blogInfo"></SkeletonBlog>
+
+    <div class="blog-page" v-else>
       <div class="blog-title">{{ blogInfo.title }}</div>
       <div class="blog-info-container">
         <div class="user-info info-item">

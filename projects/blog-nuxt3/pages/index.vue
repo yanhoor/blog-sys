@@ -4,9 +4,11 @@
       <h3>dedwefwf</h3>
     </template>
     <div class="home-page">
-      <n-button type="primary">test</n-button>
-      <template v-for="blog of blogList">
-        <div class="blog-container">
+
+      <SkeletonIndex v-if="pageLoading"></SkeletonIndex>
+
+      <template v-else>
+        <div class="blog-container" v-for="blog of blogList">
           <span class="blog-title" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
           <div class="blog-info-container">
             <div class="user-info info-item">
@@ -52,18 +54,21 @@ const config = useRuntimeConfig()
 // 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
 // definePageMeta({  layout: false})
 const blogList = ref([])
+const pageLoading = ref(false)
 
 getBlogList()
 
 async function getBlogList() {
+  pageLoading.value = true
   try{
     const { result, success } = await useFetchPost('/blog/list2', {})
     console.log('============', result)
     if(success){
       blogList.value = result.list
     }
+    pageLoading.value = false
   }catch (e) {
-
+    pageLoading.value = false
   }
 }
 
@@ -87,7 +92,7 @@ async function toBlogDetail(id){
 <style lang="scss" scoped>
 .blog-container{
   padding: 20px 0;
-  border-bottom: 1px solid var(--el-border-color-light);
+  border-bottom: 1px solid var(--border-color);
   .blog-title{
     font-size: 20px;
     cursor: pointer;

@@ -1,14 +1,11 @@
-
-$font-color: purple;
-
-$page-background-color: #e9ecef;
-
 :root{
   --block-background-color-light: #fff;
   --page-background-color: #e9ecef;
-  --header-height: 60px
+  --header-height: 60px;
+  --border-color: #e4e7ed;
 }
 html.dark{
   --block-background-color-light: #303030;
   --page-background-color: #1c1b22;
+  --border-color: #d4d7de;
 }

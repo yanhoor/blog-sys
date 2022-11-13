@@ -83,9 +83,9 @@ function handlePost (e: MouseEvent) {
           message.success('登录成功')
 
           token.value = result
-          await navigateTo('/home', { replace: true })
+          await navigateTo('/', { replace: true })
         } else{
-          message.error(msg)
+          message.error(msg as string)
         }
       }catch (e) {
 
