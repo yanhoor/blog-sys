@@ -3,13 +3,16 @@ const cors = require('koa2-cors')
 const { koaBody } = require('koa-body') // 在 ctx.request.body 获取请求参数
 const manageRouter = require('./routes/manage')
 const visitRouter = require('./routes/visit')
+const socketRouter = require('./routes/socket')
 const mount = require('koa-mount')
 const fs = require("fs");
 const path = require('path')
 const mime = require('mime')
-const { historyApiFallback } = require('koa2-connect-history-api-fallback');
+const websockify = require('koa-websocket')
+const { defaultLogger, errorLogger } = require('./log')
 
-const app = new koa()
+const app = websockify(new koa())
+app.ws.use(socketRouter.routes())
 
 // jwt 校验登录
 app.use(async (ctx, next) => {
