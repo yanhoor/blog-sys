@@ -41,16 +41,16 @@ class BlogController extends BaseController{
         }
       }
     } catch (e) {
-      console.log('=======blog.list=======', e)
+      this.errorLogger.error('blog.list--------->', e)
     }
   }
 
   list2 = async (ctx, next) => {
-    const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
-    const skip = pageSize * (page - 1)
-    const filter = { launch: 1 }
-    if (title) filter.title = {contains: title}
     try {
+      const { title, page = 1, pageSize = this.pageSize } = ctx.request.body
+      const skip = pageSize * (page - 1)
+      const filter = { launch: 1 }
+      if (title) filter.title = { contains: title }
       const [list, total] = await prisma.$transaction([
         prisma.blog.findMany({
           skip,
@@ -79,9 +79,9 @@ class BlogController extends BaseController{
               select: { likedBy: true },
             },
           },
-          orderBy: {updatedAt: 'desc'}
+          orderBy: { updatedAt: 'desc' }
         }),
-        prisma.blog.count({where: filter})
+        prisma.blog.count({ where: filter })
       ])
 
       return ctx.body = {
@@ -91,8 +91,9 @@ class BlogController extends BaseController{
           total
         }
       }
+
     } catch (e) {
-      console.log('=======blog.visitList=======', e)
+      this.errorLogger.error('blog.list2--------->', e)
     }
   }
 
@@ -140,7 +141,7 @@ class BlogController extends BaseController{
           result: res
         }
       } catch (e) {
-        console.log('=======blog.update=========', e)
+        this.errorLogger.error('blog.update--------->', e)
       }
     } else {
       try {
@@ -154,7 +155,7 @@ class BlogController extends BaseController{
           result: res
         }
       } catch (e) {
-        console.log('=======blog.create=========', e)
+        this.errorLogger.error('blog.create--------->', e)
       }
     }
   }
@@ -162,40 +163,59 @@ class BlogController extends BaseController{
 
   info = async (ctx, next) => {
     const {id} = ctx.request.body
+    // const userId = ctx.state.user.id
+    const token = ctx.headers['authorization']
+    let userId = undefined
+    if(token) {
+      const user = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+      userId = user.id
+    }
     try {
-      const result = await prisma.blog.findUnique({
-        where: {
-          id: Number(id)
-        },
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          updatedAt: true,
-          launch: true,
-          content: true,
-          cate: {
-            select: {
-              id: true,
-              name: true
-            }
+      const [result, isLike] = await prisma.$transaction([
+        prisma.blog.findUnique({
+          where: {
+            id: Number(id)
           },
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
+            updatedAt: true,
+            launch: true,
+            content: true,
+            cate: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
             }
           }
-        }
-      })
+        }),
+
+        prisma.userLikeBlogs.count({
+          where: {
+            userId,
+            blogId: Number(id),
+            noDelete: true
+          }
+        })
+      ])
+
+      result.isLike = !!isLike
 
       return ctx.body = {
         success: true,
         result
       }
     } catch (e) {
-      console.log('=======blog.info=========', e)
+      this.errorLogger.error('blog.info--------->', e)
     }
   }
 
@@ -215,7 +235,7 @@ class BlogController extends BaseController{
         success: true
       }
     } catch (e) {
-      console.log('=========blog.delete==========', e)
+      this.errorLogger.error('blog.delete--------->', e)
     }
   }
 
@@ -256,7 +276,7 @@ class BlogController extends BaseController{
         success: true
       }
     } catch (e) {
-      console.log('=========blog.operate==========', e)
+      this.errorLogger.error('blog.operate--------->', e)
     }
   }
 
@@ -330,7 +350,7 @@ class BlogController extends BaseController{
         success: true
       }
     }catch (e) {
-      console.log('=====blog.like=====', e)
+      this.errorLogger.error('blog.like--------->', e)
     }
   }
 }

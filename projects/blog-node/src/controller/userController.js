@@ -16,7 +16,6 @@ class UserController extends BaseController{
       const u = await prisma.user.findFirst({where: {mobile}})
       if(u) throw new Error('该手机号已注册')
     }catch(e){
-      console.log('=======user.register  11=========', e)
       ctx.body = {
         success: false,
         msg: e.message
@@ -31,7 +30,7 @@ class UserController extends BaseController{
         result: '注册成功'
       }
     }catch (e) {
-      console.log('=======user.register=========', e)
+      this.errorLogger.error('user.register--------->', e)
     }
   }
 
@@ -58,7 +57,7 @@ class UserController extends BaseController{
         result: user
       }
     }catch (e) {
-      console.log('=======user.info=========', e)
+      this.errorLogger.error('user.info--------->', e)
     }
   }
 
@@ -127,7 +126,7 @@ class UserController extends BaseController{
         success: true
       }
     }catch (e) {
-      console.log('=======user.edit=========', e)
+      this.errorLogger.error('user.edit--------->', e)
     }
   }
 

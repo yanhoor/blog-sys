@@ -8,9 +8,8 @@
     ]
   },
   "scripts": {
-    "dev1": "nodemon src/index.js",
-    "dev": "pm2 start ecosystem.config.js --env development --watch && pm2 logs --raw",
-    "prod": "pm2 start ecosystem.config.js --env production && pm2 logs --raw"
+    "dev": "nodemon src/index.js",
+    "prod": "pm2 start ecosystem.config.js --env production"
   },
   "keywords": [],
   "author": "",
@@ -30,7 +29,9 @@
     "koa-mount": "^4.0.0",
     "koa-router": "^12.0.0",
     "koa-static": "^5.0.0",
+    "koa-websocket": "^7.0.0",
     "koa2-cors": "^2.0.6",
+    "log4js": "^6.7.0",
     "mime": "^3.0.0"
   }
 }

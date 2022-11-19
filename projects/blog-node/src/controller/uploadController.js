@@ -29,7 +29,7 @@ class UploadController extends BaseController{
     try{
       res = await this.saveLocalFile(req.files.file)
     }catch(e){
-      console.log('======upload========', e)
+      this.errorLogger.error('upload--------->', e)
       return ctx.body = {
         success: false,
         msg: '上传失败'
@@ -67,7 +67,7 @@ class UploadController extends BaseController{
         // return resolve(savePath)
         return resolve(fullName)
       }catch(e){
-        console.log('保存图片失败--------------', e.message)
+        this.errorLogger.error('saveLocalFile--------->', e)
         return reject('保存图片失败')
       }
     })
@@ -77,9 +77,8 @@ class UploadController extends BaseController{
     try {
       // 填写Object完整路径。Object完整路径中不能包含Bucket名称。
       let result = await this.AliOssClient.delete(path);
-      console.log('---------', result, path)
-    } catch (err) {
-      console.log('================deleteAliFile===========', err)
+    } catch (e) {
+      this.errorLogger.error('deleteAliFile--------->', e)
     }
   }
 

@@ -15,9 +15,11 @@ const app = new koa()
 app.use(async (ctx, next) => {
   return next().catch(err => {
     if (401 == err.status) {
+      defaultLogger.warn('jwt 鉴权失败')
       ctx.status = 401;
       ctx.body = '401 Unauthorized - Protected resource, use Authorization header to get access\n';
     } else {
+      defaultLogger.error('jwt 鉴权失败', err.message)
       throw err;
     }
   });

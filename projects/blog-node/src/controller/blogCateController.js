@@ -38,7 +38,7 @@ class BlogCateController extends BaseController {
           result: nCate
         }
       } catch (e) {
-
+        this.errorLogger.error('blogCate.update--------->', e)
       }
     } else {
       try {
@@ -54,7 +54,7 @@ class BlogCateController extends BaseController {
           result: nCate
         }
       } catch (e) {
-        console.log('=======blogCate.create=========', e)
+        this.errorLogger.error('blogCate.create--------->', e)
       }
     }
   }
@@ -89,7 +89,7 @@ class BlogCateController extends BaseController {
         }
       }
     } catch (e) {
-      console.log('=======blogCate.list=======', e)
+      this.errorLogger.error('blogCate.list--------->', e)
     }
   }
 
@@ -108,7 +108,7 @@ class BlogCateController extends BaseController {
         result
       }
     } catch (e) {
-      console.log('=========blogCate.all======', e)
+      this.errorLogger.error('blogCate.all--------->', e)
     }
   }
 
@@ -126,7 +126,7 @@ class BlogCateController extends BaseController {
         result
       }
     } catch (e) {
-
+      this.errorLogger.error('blogCate.info--------->', e)
     }
   }
 
@@ -146,7 +146,7 @@ class BlogCateController extends BaseController {
         success: true
       }
     } catch (e) {
-
+      this.errorLogger.error('blogCate.delete--------->', e)
     }
   }
 }
