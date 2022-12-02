@@ -1,7 +1,8 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 
 console.log('===============', process.env.NODE_ENV, process.env.BASE_API)
-const lifecycle = process.env.npm_lifecycle_event
+const isProd = process.env.NODE_ENV === 'production'
+// const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
   build: {
     transpile:
@@ -15,16 +16,18 @@ export default defineNuxtConfig({
         : ['@juggle/resize-observer']
   },
   runtimeConfig: {
-    // The private keys which are only available server-side
+    // 私有key，仅服务端可用
     apiSecret: '123', // .env 文件里 NUXT_API_SECRET 的值(即NUXT_ 开头的值)
-    // Keys within public are also exposed client-side
+    // 在 public 里面的 key 可以在客户端使用
     public: {
       apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       imageBase: process.env.NUXT_IMAGE_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
     }
   },
   app: {
+    baseURL: '/blog/',
     head: {
+      // 也可以在 server.plugins 目录添加
       script: [
         {
           src: './prism.js'
@@ -34,6 +37,10 @@ export default defineNuxtConfig({
         {rel: 'stylesheet', href: './prism.css'}
       ]
     }
+  },
+  // https://v3.nuxtjs.org/getting-started/deployment
+  nitro: {
+    preset: 'node-server'
   },
   modules: [
     '@vueuse/nuxt'
