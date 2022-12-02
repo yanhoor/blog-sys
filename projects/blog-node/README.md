@@ -24,7 +24,7 @@
 
 - 默认读取根目录下 `.env` 配置的数据库，[说明](https://prisma.yoga/guides/development-environment/environment-variables/managing-env-files-and-setting-variables)
 
-### 一系列坑
+### 未解决
 
 - [Github issues](https://github.com/prisma/prisma/discussions/3087), 列表查询时，不能计算返回相同查询条件得到的数据条数。[hack方法](https://prisma.yoga/concepts/components/prisma-client/transactions)
 
@@ -44,6 +44,55 @@ const [list, total] = await prisma.$transaction([
   }),
   prisma.shopCategory.count({where: filter}) // 与上面一样的条件
 ])
+
+// 或者用以下方法
+
+// v4.7.0 可以使用预览功能，在返回的结果增加自定义字段
+const xprisma = prisma.$extends({
+  result: {
+    blog: {
+      // 在返回的结果新增自定义字段
+      isLike: {
+        // 计算这个新字段值需要依赖的真实字段
+        needs: { title: true},
+        compute(blog) {
+          // 计算获取这个新字段值的逻辑，即从何处来
+          return blog.likedBy.some(item => item.userId == userId)
+        },
+      },
+    },
+  },
+})
+
+// 注意这里使用上面的 xprisma
+const result = await xprisma.blog.findUnique({
+  where: {
+    id: Number(id)
+  },
+  select: {
+    id: true,
+    title: true,
+    createdAt: true,
+    updatedAt: true,
+    launch: true,
+    content: true,
+    likedBy: true, // 这里需要为 true，因为返回的自定义字段值依赖这个字段，不然计算自定义字段值会获取不到。但是这个字段又不应该返回到前端的，有冲突...
+    isLike: true,
+    cate: {
+      select: {
+        id: true,
+        name: true
+      }
+    },
+    createBy: {
+      select: {
+        id: true,
+        name: true,
+        avatar: true
+      }
+    }
+  }
+})
 ```
 
 - [Github issues](https://github.com/prisma/prisma/issues/5051), 取出来的时间是 `UTC +0.00` 的时间

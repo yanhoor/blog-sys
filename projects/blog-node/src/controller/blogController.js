@@ -171,44 +171,53 @@ class BlogController extends BaseController{
       userId = user.id
     }
     try {
-      const [result, isLike] = await prisma.$transaction([
-        prisma.blog.findUnique({
-          where: {
-            id: Number(id)
-          },
-          select: {
-            id: true,
-            title: true,
-            createdAt: true,
-            updatedAt: true,
-            launch: true,
-            content: true,
-            cate: {
-              select: {
-                id: true,
-                name: true
-              }
+      const xprisma = prisma.$extends({
+        result: {
+          blog: {
+            // 在返回的结果新增自定义字段
+            isLike: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { title: true},
+              compute(blog) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                return blog.likedBy.some(item => item.userId == userId)
+              },
             },
-            createBy: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true
-              }
+          },
+        },
+      })
+      const result = await xprisma.blog.findUnique({
+        where: {
+          id: Number(id)
+        },
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          updatedAt: true,
+          launch: true,
+          content: true,
+          likedBy: {
+            select: {
+              userId: true
+            }
+          },
+          isLike: true,
+          cate: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          createBy: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
             }
           }
-        }),
-
-        prisma.userLikeBlogs.count({
-          where: {
-            userId,
-            blogId: Number(id),
-            noDelete: true
-          }
-        })
-      ])
-
-      result.isLike = !!isLike
+        }
+      })
 
       return ctx.body = {
         success: true,
@@ -283,8 +292,15 @@ class BlogController extends BaseController{
   // 点赞博客
   like = async (ctx, next) => {
     const { id, isLike } = ctx.request.body
+    let userId
     try{
+      // 为毛这个 undefined
+      // const userId = ctx.state.user.id
+      const token = ctx.headers['authorization']
+      const userInfo = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+      userId = userInfo.id
       if(!id) throw new Error('博客id不能为空')
+      if(!userId) throw new Error('用户未登录')
       if(isLike === undefined) throw new Error('isLike不能为空')
     }catch(e){
       ctx.body = {
@@ -295,10 +311,6 @@ class BlogController extends BaseController{
     }
 
     try{
-      // 为毛这个 undefined
-      // const userId = ctx.state.user.id
-      const token = ctx.headers['authorization']
-      const { id: userId } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
       if(isLike){
         await prisma.blog.update({
           where: { id },
