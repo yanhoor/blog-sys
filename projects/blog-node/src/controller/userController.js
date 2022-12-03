@@ -1,7 +1,6 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
 const jsonwebtoken = require('jsonwebtoken')
-const config = require('config-lite')(__dirname)
 
 class UserController extends BaseController{
   // 注册
@@ -36,10 +35,7 @@ class UserController extends BaseController{
 
   // 获取登录用户信息
   info = async (ctx, next) => {
-    // const id = ctx.state.user.id
-    // 或者这样获取
-    const token = ctx.headers['authorization']
-    const { id } = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
+    let id = await this.getAuthUserId(ctx, next)
     try{
       const user = await prisma.user.findUnique({
         where: {
@@ -88,7 +84,7 @@ class UserController extends BaseController{
       }
     }
     if(user?.password === password) {
-      const token = jsonwebtoken.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtTokenExpired }) // expiresIn token过期秒数
+      const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
       ctx.body = {
         success: true,
         msg: '登录成功',

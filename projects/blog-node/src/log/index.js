@@ -9,8 +9,10 @@ log4js.configure({
   },
   // 日志分类
   categories: {
+    // level 指最低的级别，低于这个级别的都不会显示
+    // 所有级别：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF
     default: { appenders: ["console"], level: "debug" },
-    error: { appenders: ["error"], level: "error" },
+    error: { appenders: ["error", "console"], level: "error" }, // 这样使用 error 分类时，错误也会在 console 输出
     http: { appenders: ["access"], level: "debug" },
   },
   pm2: process.env.NODE_ENV === 'production'

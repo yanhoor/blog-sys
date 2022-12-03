@@ -22,6 +22,12 @@ prisma.$use(async (params, next) => {
 
 // 拦截软删除数据的查询
 prisma.$use(async (params, next) => {
+  // 有 noDelete 说明不需要添加 deletedAt 参数，比如硬删除的不会有这个参数
+  if(params.args.where?.noDelete) {
+    delete params.args.where.noDelete
+    return next(params)
+  }
+
   if (params.action == 'findUnique') {
     // 更改为 findFirst - 无法过滤
     // 除 ID / unique 和 findUnique 之外的任何内容
