@@ -1,3 +1,3 @@
-export default async (to, from) => {
-  await useRefreshUserInfo()
+export default async (to: string, from: string) => {
+  useRefreshUserInfo()
 }

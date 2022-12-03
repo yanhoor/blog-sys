@@ -1,11 +1,11 @@
 <template>
-  <NConfigProvider :theme="darkMode ? darkTheme : null">
+  <NConfigProvider :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN">
     <NuxtPage/>
   </NConfigProvider>
 </template>
 
 <script setup>
-import { NConfigProvider, darkTheme } from 'naive-ui'
+import { NConfigProvider, darkTheme, zhCN, dateZhCN } from 'naive-ui'
 
 // const colorModel = useColorMode()
 const darkMode = useDarkMode()

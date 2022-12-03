@@ -6,12 +6,12 @@ interface HttpResponseType {
   msg?: string
 }
 
-export const useFetchPost = (url, data) => {
+export const useFetchPost = (url: string, data: any): Promise<HttpResponseType> => {
   const runTimeConfig = useRuntimeConfig()
   const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
-  Authorization = 'Bearer ' + token.value
+  if(token.value) Authorization = 'Bearer ' + token.value
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
     baseURL: runTimeConfig.apiBase,
@@ -30,12 +30,12 @@ export const useFetchPost = (url, data) => {
   })
 }
 
-export const useFetchGet = (url, data) => {
+export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> => {
   const runTimeConfig = useRuntimeConfig()
   const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
-  Authorization = 'Bearer ' + token.value
+  if(token.value) Authorization = 'Bearer ' + token.value
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
     baseURL: runTimeConfig.apiBase,

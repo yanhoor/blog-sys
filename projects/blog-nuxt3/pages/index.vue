@@ -3,7 +3,7 @@
     <template #left>
       <h3>dedwefwf</h3>
     </template>
-    <div class="home-page">
+    <n-card class="home-page">
 
       <SkeletonIndex v-if="pageLoading"></SkeletonIndex>
 
@@ -32,7 +32,7 @@
         </div>
         <!--<div v-html="blog.content"></div>-->
       </template>
-    </div>
+    </n-card>
   </NuxtLayout>
 </template>
 
@@ -42,6 +42,7 @@ import {useFetchPost} from "@/composables/useBaseFetch"
 import {
   NButton,
   NIcon,
+  NCard,
   NAvatar
 } from "naive-ui"
 
@@ -50,6 +51,7 @@ definePageMeta({
 })
 
 const router = useRouter()
+const userInfo = useUserInfo()
 const config = useRuntimeConfig()
 // 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
 // definePageMeta({  layout: false})
@@ -62,7 +64,6 @@ async function getBlogList() {
   pageLoading.value = true
   try{
     const { result, success } = await useFetchPost('/blog/list2', {})
-    console.log('============', result)
     if(success){
       blogList.value = result.list
     }
@@ -72,7 +73,11 @@ async function getBlogList() {
   }
 }
 
-async function likeBlog(blog) {
+async function likeBlog(blog: any) {
+  if(!userInfo.value) {
+    return navigateTo({  path: '/login' })
+  }
+
   try{
     const { result, success } = await useFetchPost('/blog/like', { id: blog.id, isLike: 1 })
     if(success){
@@ -83,8 +88,8 @@ async function likeBlog(blog) {
   }
 }
 
-async function toBlogDetail(id){
-  await navigateTo({  path: '/blog',  query: {    id  }})
+async function toBlogDetail(id: number){
+  await navigateTo({  path: '/blog',  query: { id }})
   // router.push({ path: "/blog", query: { id } })
 }
 </script>

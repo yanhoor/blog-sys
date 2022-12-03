@@ -1,11 +1,13 @@
 :root{
-  --block-background-color-light: #fff;
+  --block-background-color: #fff;
+  --content-block-background-color: #F7F8FAB2;
   --page-background-color: #e9ecef;
   --header-height: 60px;
   --border-color: #e4e7ed;
 }
 html.dark{
-  --block-background-color-light: #303030;
+  --block-background-color: #303030;
+  --content-block-background-color: #343434;
   --page-background-color: #1c1b22;
-  --border-color: #d4d7de;
+  --border-color: #58585B;
 }
