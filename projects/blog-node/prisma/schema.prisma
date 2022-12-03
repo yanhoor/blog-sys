@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["clientExtensions"] // 开启预览功能，https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions
+  previewFeatures = ["clientExtensions"]
 }
 
 datasource db {
@@ -26,9 +26,10 @@ model User {
   // 与博客likeBy隐式多对多
   likeBlogs UserLikeBlogs[]
 
-  comments Comment[]
+  createComments Comment[] @relation("CreateComment")
 
-  blogCates BlogCate[]
+  blogCates     BlogCate[]
+  replyComments Comment[]  @relation("ReplyComment")
 
   @@index([createdAt])
 }
@@ -77,14 +78,21 @@ model Blog {
 }
 
 model Comment {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  createBy    User     @relation(fields: [createById], references: [id])
-  createById  Int
-  commentTo   Blog     @relation(fields: [commentToId], references: [id])
-  commentToId Int
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now())
+  createBy       User      @relation(name: "CreateComment", fields: [createById], references: [id])
+  createById     Int
+  replyTo        User?     @relation(name: "ReplyComment", fields: [replyToId], references: [id])
+  replyToId      Int?
+  blog           Blog      @relation(fields: [blogId], references: [id])
+  blogId         Int
+  // 回复哪个评论
+  replyCommentId Int?
+  replyComment   Comment?  @relation(name: "Reply", fields: [replyCommentId], references: [id])
+  // 回复
+  replyItems     Comment[] @relation("Reply")
 
-  content String @db.VarChar(255)
+  content String @db.Text
 
   deletedAt DateTime?
 
