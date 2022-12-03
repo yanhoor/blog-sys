@@ -4,6 +4,10 @@
 
 需要先 `nuxt build`，然后执行 `pm2 start ecosystem.config.js`
 
+## 使用依赖
+
+在引入全局依赖时，可以在 `plugins` 里面通过 `defineNuxtPlugin()` 定义，如 `dayjs`
+
 ## 填坑记录
 
 ### build
@@ -46,4 +50,4 @@ onMounted(() => {
 
 在 `home` 使用了 `default layout`，在 `login` 没有使用，这样从 `login` 返回到 `home` 时报错：激活的节点与虚拟节点不一致
 
-不知为啥，部署了好像没问题
+不知为啥，偶尔有问题，部署了好像也没问题
