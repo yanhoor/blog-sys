@@ -119,6 +119,9 @@ async function getComments() {
   display: flex;
   align-items: flex-start;
   padding-top: 20px;
+  &+&{
+    border-top: 1px solid var(--border-color);
+  }
   .comment-right-container{
     flex: 1;
     margin-left: 12px;

@@ -2,19 +2,19 @@
   <NuxtLayout>
     <template #left>
       <n-space vertical align="center">
-        <slot name="left">
-          <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike">
+        <div class="like-container">
+          <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike" @click="likeBlog(0)">
             <n-icon :size="28">
               <ThumbLike16Regular />
             </n-icon>
           </n-icon-wrapper>
-          <n-icon :size="28" v-else>
+          <n-icon :size="28" v-else @click="likeBlog(1)">
             <ThumbLike16Regular />
           </n-icon>
-          <n-icon :size="28">
-            <CommentMultiple16Regular />
-          </n-icon>
-        </slot>
+        </div>
+        <n-icon :size="28">
+          <CommentMultiple16Regular />
+        </n-icon>
       </n-space>
     </template>
 
@@ -59,6 +59,8 @@ import {
   NTime,
   NAvatar
 } from "naive-ui"
+import {Blog} from "~/types";
+import {useFetchPost} from "~/composables/useBaseFetch";
 
 definePageMeta({
   pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
@@ -74,6 +76,7 @@ const blogId = route.query.id
 const commentRefs = ref([])
 
 const onScroll = debounce()
+handlePageInit()
 
 onMounted(() => {
   window.Prism.highlightAll()
@@ -83,6 +86,11 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
+
+async function handlePageInit() {
+  await getBlogInfo()
+  getComments()
+}
 
 function debounce() {
   let timer: NodeJS.Timeout
@@ -98,14 +106,30 @@ function debounce() {
   }
 }
 
-try{
-  const { result, success } = await useFetchPost('/blog/info', { id: blogId })
-  if(success){
-    blogInfo.value = result
-    getComments()
+async function getBlogInfo(){
+  try{
+    const { result, success } = await useFetchPost('/blog/info', { id: blogId })
+    if(success){
+      blogInfo.value = result
+    }
+  }catch (e) {
+    console.log('=====/blog/info=======', e)
   }
-}catch (e) {
-  console.log('=====/blog/info=======', e)
+}
+
+async function likeBlog(val: number) {
+  if(!userInfo.value) {
+    return navigateTo({  path: '/login' })
+  }
+
+  try{
+    const { result, success } = await useFetchPost('/blog/like', { id: blogInfo.value.id, isLike: val })
+    if(success){
+      getBlogInfo()
+    }
+  }catch (e) {
+
+  }
 }
 
 async function getComments() {
@@ -122,6 +146,9 @@ async function getComments() {
 </script>
 
 <style lang="scss" scoped>
+.like-container{
+  cursor: pointer;
+}
 .blog-page{
   .blog-title{
     font-size: 26px;

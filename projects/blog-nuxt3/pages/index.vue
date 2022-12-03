@@ -15,18 +15,18 @@
               <n-avatar round :src="config.imageBase + blog.createBy?.avatar" size="small" />
               <div>{{ blog.createBy?.name }}</div>
             </div>
-            <span class="info-item">{{$dayjs(blog.updatedAt).format('YYYY-MM-DD')}}</span>
+            <n-time class="info-item" type="relative" :time="new Date(blog.updatedAt)"></n-time>
             <div class="action-container info-item" @click="likeBlog(blog)">
-              <n-icon size="18">
+              <n-icon size="18" :color="blog.isLike ? 'var(--primary-color)' : null">
                 <ThumbLike16Regular />
               </n-icon>
-              <span>{{ blog._count.likedBy ? blog._count.likedBy : '赞' }}</span>
+              <span>{{ blog.likedByCount ||  '赞' }}</span>
             </div>
             <div class="action-container info-item">
               <n-icon size="18">
                 <CommentMultiple16Regular />
               </n-icon>
-              <span>评论</span>
+              <span>{{ blog.commentsCount || '评论' }}</span>
             </div>
           </div>
         </div>
@@ -41,10 +41,12 @@ import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
 import {useFetchPost} from "@/composables/useBaseFetch"
 import {
   NButton,
+  NTime,
   NIcon,
   NCard,
   NAvatar
 } from "naive-ui"
+import { Blog } from '@/types'
 
 definePageMeta({
   pageTransition: false,
@@ -73,15 +75,16 @@ async function getBlogList() {
   }
 }
 
-async function likeBlog(blog: any) {
+async function likeBlog(blog: Blog) {
   if(!userInfo.value) {
     return navigateTo({  path: '/login' })
   }
 
   try{
-    const { result, success } = await useFetchPost('/blog/like', { id: blog.id, isLike: 1 })
+    const { result, success } = await useFetchPost('/blog/like', { id: blog.id, isLike: blog.isLike ? 0 : 1 })
     if(success){
-      blog._count.likedBy ++
+      blog.isLike = !blog.isLike
+      blog.isLike ? blog.likedByCount ++ : blog.likedByCount --
     }
   }catch (e) {
 
@@ -97,7 +100,9 @@ async function toBlogDetail(id: number){
 <style lang="scss" scoped>
 .blog-container{
   padding: 20px 0;
-  border-bottom: 1px solid var(--border-color);
+  &+&{
+    border-top: 1px solid var(--border-color);
+  }
   .blog-title{
     font-size: 20px;
     cursor: pointer;

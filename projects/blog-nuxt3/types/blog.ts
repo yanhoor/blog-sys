@@ -3,4 +3,6 @@ export interface Blog{
   title: string
   content: string
   cateId?: string | number
+  isLike: boolean
+  likedByCount: number
 }
