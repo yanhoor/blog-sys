@@ -62,6 +62,9 @@ const handleUpload = async (options: UploadRequestOptions) => {
   :deep(.el-upload):hover{
     border-color: var(--el-color-primary);
   }
+  .avatar{
+    object-fit: contain;
+  }
 }
 .el-icon.avatar-uploader-icon,.avatar {
   font-size: 28px;

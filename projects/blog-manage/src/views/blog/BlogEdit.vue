@@ -28,7 +28,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Editor from '@tinymce/tinymce-vue'
 
 const editorInit = {
-  plugins: 'lists link image table code help wordcount',
+  plugins: 'lists link image table code help wordcount codesample',
   // images_upload_base_path: IMG_HOST,
   images_upload_url: '/upload', // 有这个才会显示上传图片
   images_upload_handler(blobInfo: any, progress: number) {

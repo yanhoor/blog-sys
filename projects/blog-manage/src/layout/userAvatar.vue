@@ -40,6 +40,7 @@ async function logout() {
         })
       }else{
         localStorage.removeItem('sit')
+        userStore.$reset()
         await router.replace('/login')
       }
     }catch (e) {
