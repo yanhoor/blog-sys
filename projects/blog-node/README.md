@@ -76,8 +76,7 @@ const result = await xprisma.blog.findUnique({
     updatedAt: true,
     launch: true,
     content: true,
-    likedBy: true, // 这里需要为 true，因为返回的自定义字段值依赖这个字段，不然计算自定义字段值会获取不到。但是这个字段又不应该返回到前端的，有冲突...
-    isLike: true,
+    isLike: true, // 注意自定义返回的字段要选择显示
     cate: {
       select: {
         id: true,

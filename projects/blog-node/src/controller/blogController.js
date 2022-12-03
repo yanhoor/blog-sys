@@ -1,13 +1,12 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
-const config = require('config-lite')(__dirname)
-const jsonwebtoken = require('jsonwebtoken')
 
 class BlogController extends BaseController{
   list = async (ctx, next) => {
     const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = { createById: ctx.state.user.id }
+    let userId = await this.getAuthUserId(ctx, next)
+    const filter = { createById: userId }
     if (title) filter.title = {contains: title}
     try {
       const [list, total] = await prisma.$transaction([
@@ -51,8 +50,37 @@ class BlogController extends BaseController{
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
       if (title) filter.title = { contains: title }
+      let userId = await this.getAuthUserId(ctx, next)
+      const xprisma = prisma.$extends({
+        result: {
+          blog: {
+            // 在返回的结果新增自定义字段
+            commentsCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { comments: true },
+              compute(blog) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                const list = blog.comments.filter(item => !item.replyCommentId)
+                return list.length
+              },
+            },
+            likedByCount: {
+              needs: { likedBy: true },
+              compute(blog) {
+                return blog.likedBy.length
+              },
+            },
+            isLike: {
+              needs: { likedBy: true },
+              compute(blog) {
+                return blog.likedBy.some(item => item.userId == userId)
+              },
+            }
+          },
+        },
+      })
       const [list, total] = await prisma.$transaction([
-        prisma.blog.findMany({
+        xprisma.blog.findMany({
           skip,
           take: pageSize,
           where: filter,
@@ -62,6 +90,9 @@ class BlogController extends BaseController{
             createdAt: true,
             updatedAt: true,
             launch: true,
+            likedByCount: true,
+            commentsCount: true,
+            isLike: true,
             cate: {
               select: {
                 id: true,
@@ -74,9 +105,6 @@ class BlogController extends BaseController{
                 name: true,
                 avatar: true
               }
-            },
-            _count: {
-              select: { likedBy: true },
             },
           },
           orderBy: { updatedAt: 'desc' }
@@ -163,13 +191,7 @@ class BlogController extends BaseController{
 
   info = async (ctx, next) => {
     const {id} = ctx.request.body
-    // const userId = ctx.state.user.id
-    const token = ctx.headers['authorization']
-    let userId = undefined
-    if(token) {
-      const user = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
-      userId = user.id
-    }
+    let userId = await this.getAuthUserId(ctx, next)
     try {
       const xprisma = prisma.$extends({
         result: {
@@ -177,7 +199,7 @@ class BlogController extends BaseController{
             // 在返回的结果新增自定义字段
             isLike: {
               // 计算这个新字段值需要依赖的真实字段
-              needs: { title: true},
+              needs: { title: true, likedBy: true},
               compute(blog) {
                 // 计算获取这个新字段值的逻辑，即从何处来
                 return blog.likedBy.some(item => item.userId == userId)
@@ -197,11 +219,6 @@ class BlogController extends BaseController{
           updatedAt: true,
           launch: true,
           content: true,
-          likedBy: {
-            select: {
-              userId: true
-            }
-          },
           isLike: true,
           cate: {
             select: {
@@ -292,13 +309,8 @@ class BlogController extends BaseController{
   // 点赞博客
   like = async (ctx, next) => {
     const { id, isLike } = ctx.request.body
-    let userId
+    let userId = await this.getAuthUserId(ctx, next)
     try{
-      // 为毛这个 undefined
-      // const userId = ctx.state.user.id
-      const token = ctx.headers['authorization']
-      const userInfo = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), config.jwtSecret)
-      userId = userInfo.id
       if(!id) throw new Error('博客id不能为空')
       if(!userId) throw new Error('用户未登录')
       if(isLike === undefined) throw new Error('isLike不能为空')
