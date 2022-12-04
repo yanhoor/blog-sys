@@ -6,18 +6,27 @@ interface HttpResponseType {
   msg?: string
 }
 
-export const useFetchPost = (url: string, data: any): Promise<HttpResponseType> => {
+export const useFetchPost = (url: string, data: any, formData: boolean = false): Promise<HttpResponseType> => {
   const runTimeConfig = useRuntimeConfig()
   const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
   if(token.value) Authorization = 'Bearer ' + token.value
+  const headers = {
+    'Authorization': Authorization
+  }
+  if(formData){
+    const fd = new FormData()
+    Object.keys(data).forEach(k => {
+      fd.append(k, data[k])
+    })
+    // headers['Content-Type'] = 'multipart/form-data'
+    data = fd
+  }
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
     baseURL: runTimeConfig.apiBase,
-    headers: {
-      'Authorization': Authorization
-    },
+    headers,
     method: 'POST',
     body: data,
     // key: url + json, // 相同的 key 不会再请求

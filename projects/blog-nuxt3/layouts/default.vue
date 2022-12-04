@@ -3,9 +3,12 @@
     <n-layout-header class="header">
       <div class="header-left">
         <div class="user-container" v-if="userInfo">
-          <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-            <n-avatar round :src="config.imageBase + userInfo.avatar"></n-avatar>
-          </n-dropdown>
+          <n-space>
+            <n-dropdown :options="userOptions" @select="handleDropdownSelect">
+              <n-avatar round :src="config.imageBase + userInfo.avatar"></n-avatar>
+            </n-dropdown>
+            <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
+          </n-space>
         </div>
         <n-button type="primary" v-else @click="toLogin">登录</n-button>
       </div>
@@ -49,6 +52,7 @@ import {
   NButton,
   NInput,
   NSwitch,
+  NSpace,
   NAvatar,
   NCard,
   NIcon,
@@ -58,7 +62,7 @@ import {
   NLayoutHeader,
   createDiscreteApi
 } from "naive-ui"
-import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular } from '@vicons/fluent'
+import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular, TextBulletListSquareEdit20Regular } from '@vicons/fluent'
 import { useColorMode } from '@vueuse/core'
 import type { Component } from 'vue'
 import {useFetchPost} from "~/composables/useBaseFetch";
@@ -166,8 +170,11 @@ async function handleLogout(){
   align-items: center;
   box-shadow: 0 1px 1px var(--n-border-color);
   background-color: var(--block-background-color);
-  .user-container{
-    cursor: pointer;
+  .header-left{
+    display: flex;
+    .user-container{
+      cursor: pointer;
+    }
   }
   .header-right{
     display: flex;

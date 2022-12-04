@@ -2,7 +2,7 @@
   <n-card class="form-container">
     <n-form ref="formRef" :model="postForm" :rules="rules">
       <n-form-item path="mobile" label="手机号">
-        <n-input v-model:value="postForm.mobile" @keydown.enter.prevent maxlength="11"/>
+        <n-input v-model:value="postForm.mobile" @keydown.enter.prevent maxlength="11" show-count clearable/>
       </n-form-item>
       <n-form-item path="password" label="密码">
         <n-input

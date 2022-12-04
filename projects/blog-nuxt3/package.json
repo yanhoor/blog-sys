@@ -17,6 +17,8 @@
   "dependencies": {
     "@css-render/vue3-ssr": "^0.15.11",
     "@vueuse/nuxt": "^9.6.0",
-    "naive-ui": "^2.34.2"
+    "minimce": "^0.7.0",
+    "naive-ui": "^2.34.2",
+    "tinymce": "^6.3.0"
   }
 }
