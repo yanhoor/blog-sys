@@ -126,7 +126,8 @@ class BlogController extends BaseController{
   }
 
   edit = async (ctx, next) => {
-    const {title, content, cateId, id} = ctx.request.body
+    const {title, content, cateId, id, isPost = 0} = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
     try {
       if (!title) throw new Error('标题不能为空')
       if (!content) throw new Error('内容不能为空')
@@ -173,8 +174,8 @@ class BlogController extends BaseController{
       }
     } else {
       try {
-        const userId = ctx.state.user.id
         newItem.createById = userId
+        if(isPost) newItem.launch = 1
         const res = await prisma.blog.create({
           data: newItem
         })
