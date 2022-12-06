@@ -1,5 +1,7 @@
+import { User } from '@/types/user'
+import websocket from '@/websocket'
 export const useUserInfo = () => {
-  return useState('userInfo', () => null)
+  return useState<User | null>('userInfo', () => null)
 }
 
 export const useRefreshUserInfo = async () => {
@@ -10,6 +12,7 @@ export const useRefreshUserInfo = async () => {
       const { result, success } = await useFetchGet('/user/info', { })
       if(success){
         userInfo.value = result
+        websocket.init()
       }
     }catch (e) {
 
