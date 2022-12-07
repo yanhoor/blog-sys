@@ -72,11 +72,10 @@ import {
   NPagination,
   NAvatar
 } from "naive-ui"
-import {Blog} from "~/types";
-import {useFetchPost} from "~/composables/useBaseFetch";
 
 definePageMeta({
   pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
+  key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效
 })
 
 const config = useRuntimeConfig()
