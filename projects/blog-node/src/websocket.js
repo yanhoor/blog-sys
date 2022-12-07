@@ -41,10 +41,14 @@ class WS{
     this.wss.on('connection', (ws, req) => {
       const sp = new URLSearchParams(req.url.slice(1))
       const uid = sp.get('token')
-      const info = this.wsList.find(w => w.uid == uid)
-
-      // 前端刷新页面就会重连，所以需要除重
-      if(!info){
+      const i = this.wsList.findIndex(item => item.uid == uid)
+      if(i > -1){
+        // 前端刷新页面就会重连，所以需要替换原来的ws
+        this.wsList.splice(i, 1, {
+          uid,
+          ws
+        })
+      }else{
         this.wsList.push({
           uid,
           ws
@@ -75,6 +79,10 @@ class WS{
 
       ws.on('close', function(data) {
         console.log('ws close--->', data);
+      });
+
+      ws.on('open', function(data) {
+        console.log('ws open--->', data);
       });
     });
   }
