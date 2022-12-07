@@ -2,22 +2,24 @@
   <n-layout class="default-layout">
     <n-layout-header class="header">
       <div class="header-left">
-        <div class="user-container" v-if="userInfo">
-          <n-space>
-            <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-              <n-avatar round :src="config.imageBase + userInfo.avatar"></n-avatar>
-            </n-dropdown>
-            <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
-          </n-space>
-        </div>
-        <n-button type="primary" v-else @click="toLogin">登录</n-button>
+        <n-button circle type="primary" @click="navigateTo('/')">
+          <template #icon>
+            <n-icon-wrapper :size="36" :border-radius="36">
+              <n-icon :size="28" :component="Home24Regular">
+              </n-icon>
+            </n-icon-wrapper>
+          </template>
+        </n-button>
       </div>
-      <div class="header-right">
+      <n-space class="header-right">
         <n-input placeholder="搜索关键字" v-model="searchWord">
           <template #prefix>
             <n-icon :component="Search12Regular" />
           </template>
         </n-input>
+
+        <LayoutUser/>
+
         <n-switch class="dark-switch" v-model:value="colorModel" @update:value="handleChange" size="large" checked-value="dark" unchecked-value="light">
           <template #checked-icon>
             <n-icon :component="WeatherMoon16Regular" />
@@ -26,19 +28,19 @@
             <n-icon :component="WeatherSunny20Regular" />
           </template>
         </n-switch>
-      </div>
+      </n-space>
     </n-layout-header>
     <n-layout-content class="main-content">
-      <n-card class="main-left">
+      <div class="main-left">
         <slot name="left"></slot>
-      </n-card>
+      </div>
       <div class="main-right">
         <div class="main-content-container">
           <slot></slot>
         </div>
-        <n-card class="main-right-aside">
+        <div class="main-right-aside">
           <slot name="right">dwdwed</slot>
-        </n-card>
+        </div>
       </div>
       <div class="main-bottom">
         <n-card>bottom</n-card>
@@ -60,93 +62,23 @@ import {
   NLayout,
   NLayoutContent,
   NLayoutHeader,
+  NIconWrapper,
   createDiscreteApi
 } from "naive-ui"
-import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular, TextBulletListSquareEdit20Regular } from '@vicons/fluent'
+import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, Home24Regular } from '@vicons/fluent'
 import { useColorMode } from '@vueuse/core'
-import type { Component } from 'vue'
-import {useFetchPost} from "~/composables/useBaseFetch";
-
-const renderIcon = (icon: Component) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    })
-  }
-}
 
 const config = useRuntimeConfig()
 const searchWord = ref()
 const colorModel = useColorMode()
 const darkMode = useDarkMode()
 const userInfo = useUserInfo()
-const token = useCookie('token')
-const userOptions = ref([
-  {
-    label: '个人中心',
-    key: 'profile',
-    icon: renderIcon(PersonCircle12Regular)
-  },
-  {
-    label: '个人主页',
-    key: 'userHome',
-    icon: renderIcon(CalendarPerson20Regular)
-  },
-  {
-    label: '退出登录',
-    key: 'logout',
-    icon: renderIcon(ArrowCircleRight20Regular)
-  }
-])
-
-onMounted(() => {
-  const s = localStorage.getItem('vueuse-color-scheme')
-  colorModel.value = s === 'dark' ? 'dark' : 'light'
-})
 
 function handleChange(val: string) {
   // console.log('=======handleChange======', val)
   darkMode.value = val === 'dark'
 }
 
-function toLogin(){
-  navigateTo('/login')
-}
-
-function handleDropdownSelect(key: string | number){
-  switch (key) {
-    case 'logout':
-      handleLogout()
-      break
-  }
-}
-
-async function handleLogout(){
-  const { message, dialog } = createDiscreteApi(["message", "dialog"])
-  dialog.error({
-    title: '退出登录',
-    content: '确定退出？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
-      try{
-        const {success, result, msg} = await useFetchPost('/user/logout', {})
-        if(!success){
-          message.error(msg as string)
-        }else{
-          token.value = ''
-          userInfo.value = null
-          await navigateTo('/login', { replace: true })
-        }
-      }catch (e) {
-
-      }
-    },
-    onNegativeClick: () => {
-
-    }
-  })
-}
 </script>
 
 <style lang="scss" scoped>
@@ -172,12 +104,8 @@ async function handleLogout(){
   background-color: var(--block-background-color);
   .header-left{
     display: flex;
-    .user-container{
-      cursor: pointer;
-    }
   }
   .header-right{
-    display: flex;
     align-items: center;
     .dark-switch{
       margin-left: 12px;
