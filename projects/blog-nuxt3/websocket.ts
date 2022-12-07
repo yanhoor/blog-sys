@@ -2,10 +2,15 @@
 import { createDiscreteApi } from "naive-ui"
 import {useFetchNotification} from "~/composables/useNotification";
 
+const WEBSOCKET_MESSAGE_TYPE = {
+  notification: 'notification',
+  heart_beat: 'heart_beat'
+}
 class WS {
   heartBeatTime = 10000 // 心跳检测间隔
   reconnectCount = 0 // 重连次数
   reconnectTime = 3000 // 多少时间后尝试重连
+  heartBeatTimer: number = 0
   ws: WebSocket | null = null
   isClosed = false
   init = () => {
@@ -30,9 +35,9 @@ class WS {
       // 服务端接收到心跳消息后也会发消息返回，能接收到任何消息即未断开，需要重置
       this.initHeartBeat()
       switch (res.type) {
-        case 'HEART_BEAT':
+        case WEBSOCKET_MESSAGE_TYPE.heart_beat:
           break
-        case 'NOTIFICATION':
+        case WEBSOCKET_MESSAGE_TYPE.notification:
           useFetchNotification()
           break
       }
@@ -54,6 +59,7 @@ class WS {
 
   close = () => {
     this.isClosed = true
+    clearTimeout(this.heartBeatTimer)
     this.ws?.close()
   }
 
@@ -73,7 +79,7 @@ class WS {
   initHeartBeat = () => {
     if(this.isClosed) return
 
-    window.setTimeout(() => {
+    this.heartBeatTimer = window.setTimeout(() => {
       this.ws?.send('1')
     }, this.heartBeatTime)
   }

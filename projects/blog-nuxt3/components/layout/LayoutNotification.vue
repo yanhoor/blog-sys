@@ -1,9 +1,7 @@
 <template>
-  <div class="notification-container">
-    <n-badge :value="notificationCount" :max="99">
-      <n-icon :size="28" :component="Chat24Regular" />
-    </n-badge>
-  </div>
+  <n-badge :value="notificationUnreadCount" :max="99">
+    <n-icon :size="28" :component="Chat24Regular" />
+  </n-badge>
 </template>
 
 <script setup lang="ts">
@@ -12,7 +10,8 @@ import {
   NBadge
 } from "naive-ui"
 import { Chat24Regular } from '@vicons/fluent'
+import {useNotificationUnreadCount} from "~/composables/useNotification";
 
-const notificationCount = useNotificationCount()
+const notificationUnreadCount = useNotificationUnreadCount()
 
 </script>
