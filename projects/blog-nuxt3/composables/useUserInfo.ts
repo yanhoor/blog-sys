@@ -1,6 +1,5 @@
 import { User } from '@/types/user'
 import websocket from '@/websocket'
-import {useFetchNotification} from "~/composables/useNotification";
 export const useUserInfo = () => {
   return useState<User | null>('userInfo', () => null)
 }
@@ -13,7 +12,7 @@ export const useRefreshUserInfo = async () => {
       const { result, success } = await useFetchGet('/user/info', { })
       if(success){
         userInfo.value = result
-        useFetchNotification()
+        useFetchNotificationList()
         websocket.init()
       }
     }catch (e) {

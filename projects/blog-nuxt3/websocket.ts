@@ -1,6 +1,5 @@
 
 import { createDiscreteApi } from "naive-ui"
-import {useFetchNotification} from "~/composables/useNotification";
 
 const WEBSOCKET_MESSAGE_TYPE = {
   notification: 'notification',
@@ -31,14 +30,15 @@ class WS {
       // 这是服务端返回的数据
       const res = JSON.parse(evt.data)
       // message.success(res)
-      console.log('==========websocket 接收的服务器数据==============', res.type, res)
+      // console.log('==========websocket 接收的服务器数据==============', res.type, res)
       // 服务端接收到心跳消息后也会发消息返回，能接收到任何消息即未断开，需要重置
       this.initHeartBeat()
       switch (res.type) {
         case WEBSOCKET_MESSAGE_TYPE.heart_beat:
           break
         case WEBSOCKET_MESSAGE_TYPE.notification:
-          useFetchNotification()
+          useFetchNotificationList()
+          useShowNotificationDetail(res.id)
           break
       }
     }

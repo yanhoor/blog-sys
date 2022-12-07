@@ -10,7 +10,6 @@ import {
   NBadge
 } from "naive-ui"
 import { Chat24Regular } from '@vicons/fluent'
-import {useNotificationUnreadCount} from "~/composables/useNotification";
 
 const notificationUnreadCount = useNotificationUnreadCount()
 
