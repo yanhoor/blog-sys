@@ -11,7 +11,7 @@
         maxRows: 5
       }"
     />
-    <n-button class="commit-btn" type="primary" @click="commitComment">{{ btnText }}</n-button>
+    <n-button class="commit-btn" type="primary" @click="commitComment" :loading="commentCommitting">{{ btnText }}</n-button>
   </div>
 </template>
 
@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['success'])
 
 const commentContent = ref('')
+const commentCommitting = ref(false)
 
 async function commitComment() {
   const { message } = createDiscreteApi(["message"])
@@ -51,7 +52,9 @@ async function commitComment() {
   }
 
   try{
+    commentCommitting.value = true
     const { result, success, msg } = await useFetchPost('/comment/commit', { blogId: props.blogId, content, replyCommentId: props.replyCommentId, replyToId: props.replyTo?.id })
+    commentCommitting.value = false
     if(success){
       emit('success')
       commentContent.value=''
@@ -60,6 +63,7 @@ async function commitComment() {
       message.error(msg)
     }
   }catch (e) {
+    commentCommitting.value = false
     console.log('=====/comment/commit=======', e)
   }
 }

@@ -44,6 +44,7 @@ import {
   NTime,
   NIcon,
   NCard,
+  useMessage,
   NAvatar
 } from "naive-ui"
 import { Blog } from '@/types'
@@ -54,6 +55,7 @@ definePageMeta({
 
 const router = useRouter()
 const userInfo = useUserInfo()
+const message = useMessage()
 const config = useRuntimeConfig()
 // 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
 // definePageMeta({  layout: false})
@@ -77,7 +79,7 @@ async function getBlogList() {
 
 async function likeBlog(blog: Blog) {
   if(!userInfo.value) {
-    return navigateTo({  path: '/login' })
+    return message.info('请先登录')
   }
 
   try{
@@ -93,7 +95,6 @@ async function likeBlog(blog: Blog) {
 
 async function toBlogDetail(id: number){
   await navigateTo({  path: '/blog',  query: { id }})
-  // router.push({ path: "/blog", query: { id } })
 }
 </script>
 

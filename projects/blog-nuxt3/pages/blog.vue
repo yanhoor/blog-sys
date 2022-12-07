@@ -12,38 +12,49 @@
             <ThumbLike16Regular />
           </n-icon>
         </div>
-        <n-icon :size="28">
-          <CommentMultiple16Regular />
-        </n-icon>
+        <a href="#commentSection">
+          <n-icon :size="28">
+            <CommentMultiple16Regular />
+          </n-icon>
+        </a>
       </n-space>
     </template>
 
-    <SkeletonBlog v-if="!blogInfo"></SkeletonBlog>
+    <n-card shadow="never" v-if="!blogInfo">
+      <SkeletonBlog></SkeletonBlog>
+    </n-card>
 
-    <n-card shadow="never" class="blog-page" v-else>
-      <div class="blog-title">{{ blogInfo.title }}</div>
-      <div class="blog-info-container">
-        <div class="user-info info-item">
-          <n-avatar :src="config.imageBase + blogInfo.createBy?.avatar" size="small"></n-avatar>
-          <div>{{ blogInfo.createBy?.name }}</div>
-        </div>
-        <span class="info-item">发布于
+    <template v-else>
+      <n-card shadow="never" class="blog-page">
+        <div class="blog-title">{{ blogInfo.title }}</div>
+        <div class="blog-info-container">
+          <div class="user-info info-item">
+            <n-avatar :src="config.imageBase + blogInfo.createBy?.avatar" size="small"></n-avatar>
+            <div>{{ blogInfo.createBy?.name }}</div>
+          </div>
+          <span class="info-item">发布于
         <n-time class="info-item" type="relative" :time="new Date(blogInfo.updatedAt)"></n-time>
         </span>
-      </div>
-      <div class="blog-content" v-html="blogInfo.content"></div>
-    </n-card>
+        </div>
+        <div class="blog-content" v-html="blogInfo.content"></div>
+      </n-card>
 
-    <n-card shadow="never" class="blog-comment-container">
-      <div class="comment-section">
-        <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small" v-if="userInfo"></n-avatar>
-        <CommentForm class="comment-form" :blogId="blogId" @success="getComments"/>
-      </div>
-      <p>{{ commentTotal ? `${commentTotal} 条评论` : '评论' }}</p>
-      <template v-for="comment of commentList" :key="comment.id">
-        <BlogCommentItem :comment="comment" ref="commentRefs"/>
-      </template>
-    </n-card>
+      <n-card shadow="never" class="blog-comment-container">
+        <div class="comment-section" v-if="userInfo">
+          <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small"></n-avatar>
+          <CommentForm class="comment-form" :blogId="blogId" @success="getComments"/>
+        </div>
+        <p id="commentSection">{{ commentTotal ? `${commentTotal} 条评论` : '评论' }}</p>
+        <template v-for="comment of commentList" :key="comment.id">
+          <BlogCommentItem :comment="comment" ref="commentRefs"/>
+        </template>
+        <div class="comment-pagination-container">
+          <n-pagination v-model:page="currentPage" :item-count="commentTotal" :on-update:page="handlePageChange"/>
+        </div>
+      </n-card>
+    </template>
+
+    <n-back-top :right="100" />
   </NuxtLayout>
 </template>
 
@@ -57,6 +68,8 @@ import {
   NIcon,
   NCard,
   NTime,
+  NBackTop,
+  NPagination,
   NAvatar
 } from "naive-ui"
 import {Blog} from "~/types";
@@ -72,6 +85,7 @@ const blogInfo = ref()
 const userInfo = useUserInfo()
 const commentList = ref<Comment[]>([])
 const commentTotal = ref(0)
+const currentPage = ref(1)
 const blogId = route.query.id
 const commentRefs = ref([])
 
@@ -132,9 +146,13 @@ async function likeBlog(val: number) {
   }
 }
 
+function handlePageChange(page: number) {
+  currentPage.value = page
+  getComments()
+}
 async function getComments() {
   try{
-    const { result, success } = await useFetchPost('/comment/list', { blogId })
+    const { result, success } = await useFetchPost('/comment/list', { blogId, page: currentPage.value, pageSize: 10 })
     if(success){
       commentList.value = result.list
       commentTotal.value = result.total
@@ -184,6 +202,11 @@ async function getComments() {
     .comment-form{
       flex: 1;
     }
+  }
+  .comment-pagination-container{
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

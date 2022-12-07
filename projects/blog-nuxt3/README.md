@@ -30,9 +30,8 @@ definePageMeta({
 })
 ```
 
-### naive-ui 的主题刷新后不生效
-
-设置为 `dark` 后，刷新页面，数据虽然已经更新，但是还是浅色主题
+### naive-ui
+- 设置为 `dark` 后，刷新页面，数据虽然已经更新，但是还是浅色主题
 
 暂时解决：在 `onMounted()` 内，还要在 `setTimeout` 内部设置更新数据，而且时间需要设置为足够长。
 
@@ -45,6 +44,12 @@ onMounted(() => {
   }, 300)
 })
 ```
+
+另外，如果不在 `NConfigProvider` 设置 `inline-theme-disabled`，在深色模式下刷新页面后，模式指示 `switch` 会显示 `light`
+
+- 使用 `tailwindcss` 后，样式被覆盖
+
+[潜在的样式冲突](https://www.naiveui.com/zh-CN/light/docs/style-conflict), [injectposition](https://tailwindcss.nuxt.dev/getting-started/options/#injectposition), [Conflict with tailwindcss normalize.css](https://github.com/tusen-ai/naive-ui/issues/2782)
 
 ### 布局不同的页面间跳转报错
 

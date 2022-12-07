@@ -31,21 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
-import {useFetchPost} from "@/composables/useBaseFetch"
 import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NForm, NFormItem, NInput, FormInst, FormRules, FormItemRule, FormItemInst, createDiscreteApi } from "naive-ui"
-import {useColorMode} from "@vueuse/core"
 
-
-const colorModel = useColorMode()
 const token = useCookie('token', {
   maxAge: 60 * 60 * 24 * 7
 })
 
-onMounted(() => {
-  const s = localStorage.getItem('vueuse-color-scheme')
-  colorModel.value = s === 'dark' ? 'dark' : 'light'
-})
 definePageMeta({  layout: false})
 
 interface ModelType {

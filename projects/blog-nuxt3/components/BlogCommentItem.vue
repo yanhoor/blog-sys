@@ -9,7 +9,7 @@
       </span>
       <div class="action-container">
         <n-time class="comment-time" type="relative" :time="new Date(comment.createdAt)"></n-time>
-        <n-button text @click="triggerReply" v-if="userInfo.id != comment.createBy.id">
+        <n-button text @click="triggerReply">
           <template #icon>
             <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
           </template>
@@ -119,6 +119,7 @@ async function getComments() {
   display: flex;
   align-items: flex-start;
   padding-top: 20px;
+  margin-bottom: 12px;
   &+&{
     border-top: 1px solid var(--border-color);
   }
@@ -151,7 +152,7 @@ async function getComments() {
       border-radius: 5px;
       margin-top: 12px;
       :deep(.comment-container){
-        padding: 12px;
+        padding: 12px 12px 0;
         //background-color: #F7F8FAB2;
       }
     }

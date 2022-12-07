@@ -3,7 +3,7 @@
     <div class="write-blog-container">
       <n-form ref="formRef" :model="postForm" :rules="rules">
         <n-form-item path="title" label="标题">
-          <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="30" show-count clearable/>
+          <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
         </n-form-item>
         <n-form-item path="cateId" label="分类">
           <n-select
@@ -18,9 +18,7 @@
           />
         </n-form-item>
         <n-form-item path="content" label="内容">
-          <client-only>
-            <MiniMCE v-model="postForm.content" />
-          </client-only>
+          <MiniMCE v-model="postForm.content" />
         </n-form-item>
       </n-form>
       <div class="action-container">

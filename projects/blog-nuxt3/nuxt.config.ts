@@ -27,6 +27,9 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/blog/',
     head: {
+      // meta: [
+      //   { name: 'naive-ui-style' },
+      // ],
       // 也可以在 server.plugins 目录添加
       script: [
         {
