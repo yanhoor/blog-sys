@@ -22,11 +22,12 @@ model User {
   birthday  DateTime?
   deletedAt DateTime?
 
-  blogs     Blog[]          @relation("CreateBlog")
+  blogs                Blog[]          @relation("CreateBlog")
   // 与博客likeBy隐式多对多
-  likeBlogs UserLikeBlogs[]
-
-  createComments Comment[] @relation("CreateComment")
+  likeBlogs            UserLikeBlogs[]
+  createNotifications  Notification[]  @relation("CreateNotification")
+  receiveNotifications Notification[]  @relation("ReceiveNotifications")
+  createComments       Comment[]       @relation("CreateComment")
 
   blogCates     BlogCate[]
   replyComments Comment[]  @relation("ReplyComment")
@@ -73,6 +74,21 @@ model Blog {
 
   deletedAt DateTime?
   comments  Comment[]
+
+  @@index([createdAt])
+}
+
+model Notification {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  createBy      User     @relation(name: "CreateNotification", fields: [createById], references: [id])
+  createById    Int
+  receiveUser   User?    @relation(name: "ReceiveNotifications", fields: [receiveUserId], references: [id])
+  receiveUserId Int?
+  content       String   @db.Text
+  isRead        Int?     @default(0)
+
+  deletedAt DateTime?
 
   @@index([createdAt])
 }

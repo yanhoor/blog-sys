@@ -7,7 +7,7 @@ const mount = require('koa-mount')
 const fs = require("fs");
 const path = require('path')
 const mime = require('mime')
-const { initSocketServer } = require('./websocket')
+const ws = require('./websocket')
 const { defaultLogger, errorLogger } = require('./log')
 
 const app = new koa()
@@ -80,4 +80,4 @@ app.use(visitRouter.routes())
 app.use(manageRouter.routes())
 
 const server = app.listen(8000)
-initSocketServer(server)
+ws.init(server)

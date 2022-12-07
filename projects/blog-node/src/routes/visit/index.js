@@ -4,6 +4,7 @@ const userRouter = require('../manage/user')
 const blogCateRouter = require('../manage/blogCate')
 const blogRouter = require('../manage/blog')
 const commentRouter = require('./comment')
+const notificationRouter = require('./notification')
 
 router.prefix('/api')
 
@@ -12,6 +13,7 @@ router.use(userRouter.routes(), userRouter.allowedMethods())
 router.use(blogCateRouter.routes(), blogCateRouter.allowedMethods())
 router.use(blogRouter.routes(), blogRouter.allowedMethods())
 router.use(commentRouter.routes(), commentRouter.allowedMethods())
+router.use(notificationRouter.routes(), notificationRouter.allowedMethods())
 
 // 测试 jsonp
 router.get('/jsonp', async (ctx, next) => {
