@@ -1,12 +1,15 @@
 const config = require('config-lite')(__dirname)
 const { defaultLogger, errorLogger } = require('../log')
 const jsonwebtoken = require('jsonwebtoken')
+const { websocket, WEBSOCKET_MESSAGE_TYPE } = require('../websocket')
 
 class BaseController{
   pageSize = config.pageSize
   globalConfig = config
   defaultLogger = defaultLogger
   errorLogger = errorLogger
+  websocket = websocket
+  WEBSOCKET_MESSAGE_TYPE = WEBSOCKET_MESSAGE_TYPE
 
   getAuthUserId = async (ctx, next) => {
     const token = ctx.headers['authorization']

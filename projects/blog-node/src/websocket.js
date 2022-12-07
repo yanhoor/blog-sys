@@ -1,6 +1,10 @@
 const { Server } = require('ws')
 const { defaultLogger, errorLogger } = require('./log')
 
+const WEBSOCKET_MESSAGE_TYPE = {
+  notification: 'notification',
+  heart_beat: 'heart_beat'
+}
 class WS{
   websocket = null
   wss = null
@@ -63,7 +67,7 @@ class WS{
         // 心跳检测
         if(msg === '1'){
           ws.send(JSON.stringify({
-            type: 'HEART_BEAT'
+            type: WEBSOCKET_MESSAGE_TYPE.heart_beat
           }))
         }
       })
@@ -102,4 +106,5 @@ class WS{
   }
 }
 
-module.exports = new WS()
+const websocket = new WS()
+module.exports = { websocket, WEBSOCKET_MESSAGE_TYPE }

@@ -1,6 +1,5 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
-const ws = require('../websocket')
 
 class CommentController extends BaseController{
   commit = async (ctx, next) => {
@@ -54,22 +53,24 @@ class CommentController extends BaseController{
         })
       }
       if(replyToId){
-        // 通知评论回复的用户
-        nd.receiveUserId = Number(replyToId)
-        const notification = await prisma.notification.create({
-          data: nd
-        })
-        ws.sendWsMessage(replyToId, JSON.stringify({
-          type: 'NOTIFICATION',
-          id: notification.id
-        }))
-      } else{
+        if(replyToId != userId) {
+          // 通知评论回复的用户
+          nd.receiveUserId = Number(replyToId)
+          const notification = await prisma.notification.create({
+            data: nd
+          })
+          this.websocket.sendWsMessage(replyToId, JSON.stringify({
+            type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+            id: notification.id
+          }))
+        }
+      } else if(blog.createById != userId){
         // 通知博客作者
         const notification = await prisma.notification.create({
           data: nd
         })
-        ws.sendWsMessage(blog.createById, JSON.stringify({
-          type: 'NOTIFICATION',
+        this.websocket.sendWsMessage(blog.createById, JSON.stringify({
+          type: this.WEBSOCKET_MESSAGE_TYPE.notification,
           id: notification.id
         }))
       }

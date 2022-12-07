@@ -325,6 +325,9 @@ class BlogController extends BaseController{
 
     try{
       if(isLike){
+        const blog = await prisma.blog.findUnique({
+          where: { id }
+        })
         await prisma.blog.update({
           where: { id },
           data: {
@@ -343,6 +346,20 @@ class BlogController extends BaseController{
             }
           }
         })
+        const notification = await prisma.notification.create({
+          data: {
+            createById: Number(userId),
+            receiveUserId: blog.createById,
+            content: JSON.stringify({
+              type: 'like_blog',
+              blogId: Number(id),
+            })
+          }
+        })
+        this.websocket.sendWsMessage(blog.createById, JSON.stringify({
+          type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+          id: notification.id
+        }))
       }else{
         // 这样好像也可以
         // await prisma.userLikeBlogs.delete({

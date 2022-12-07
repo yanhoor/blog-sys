@@ -7,7 +7,7 @@ class NotificationController extends BaseController{
     let userId = await this.getAuthUserId(ctx, next)
     const filter = { receiveUserId: userId }
     try {
-      const [list, total] = await prisma.$transaction([
+      const [list, total, unreadTotal] = await prisma.$transaction([
         prisma.notification.findMany({
           skip,
           take: pageSize,
@@ -27,14 +27,16 @@ class NotificationController extends BaseController{
           },
           orderBy: {createdAt: 'desc'}
         }),
-        prisma.notification.count({where: filter})
+        prisma.notification.count({where: filter}),
+        prisma.notification.count({where: { ...filter, isRead: 0 }})
       ])
 
       return ctx.body = {
         success: true,
         result: {
           list,
-          total
+          total,
+          unreadTotal
         }
       }
     } catch (e) {
