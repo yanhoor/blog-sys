@@ -1,7 +1,16 @@
 <template>
   <ListWrapper>
     <template #filter>
-      <el-input placeholder="标题" v-model="filterForm.title"></el-input>
+      <el-row :gutter="24">
+        <el-col :span="8">
+          <el-input placeholder="标题" v-model="filterForm.title" clearable @keyup.enter="getList" @clear="getList"></el-input>
+        </el-col>
+        <el-col :span="8">
+          <el-select placeholder="创建用户" v-model="filterForm.createById" clearable @change="getList">
+            <el-option :key="item.id" :value="item.id" :label="item.name" v-for="item of pageState.userList"></el-option>
+          </el-select>
+        </el-col>
+      </el-row>
     </template>
 
     <template #actions>
@@ -15,7 +24,7 @@
         <vxe-column key="title" field="title" title="标题"></vxe-column>
         <vxe-column key="cate" title="所属分类">
           <template #default="{ row }">
-            <div>{{ row.cate.name }}</div>
+            <div>{{ row.cate?.name }}</div>
           </template>
         </vxe-column>
         <vxe-column key="launch" title="状态">
@@ -27,6 +36,11 @@
         <vxe-column key="operateAt" title="发布/下架时间">
           <template #default="{ row }">
             <div>{{dayjs(row.operateAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
+          </template>
+        </vxe-column>
+        <vxe-column key="createBy" title="创建用户">
+          <template #default="{ row }">
+            <div>{{ row.createBy?.name }}</div>
           </template>
         </vxe-column>
         <vxe-column key="updateTime" title="更新时间">
@@ -41,14 +55,10 @@
         </vxe-column>
         <vxe-column key="operate" title="操作" min-width="120">
           <template #default="{ row }">
-            <div v-if="row.launch">
-              <el-button @click="operateItem(row.id, 0)" text type="warning">下架</el-button>
-            </div>
-            <div v-else>
-              <el-button @click="operateItem(row.id, 1)" text type="success">发布</el-button>
-              <el-button @click="editItem(row.id)" text type="primary">编辑</el-button>
-              <el-button @click="deleteItem(row.id)" text type="danger">删除</el-button>
-            </div>
+            <el-button @click="operateItem(row.id, 0)" link type="warning" v-if="row.launch">下架</el-button>
+            <el-button @click="operateItem(row.id, 1)" link type="success" v-else>发布</el-button>
+            <el-button @click="viewItem(row.id)" link type="primary">查看</el-button>
+            <el-button @click="deleteItem(row.id)" link type="danger">删除</el-button>
           </template>
         </vxe-column>
       </vxe-table>
@@ -83,16 +93,19 @@ const router = useRouter()
 const pageState = reactive({
   loading: false,
   tableList: [],
+  userList: [],
   pageSizeList: [20, 50, 100, 200],
   tableTotal: 0,
 })
 const filterForm = reactive({
   title: '',
+  createById: '',
   page: 1,
   pageSize: 20
 })
 
 getList()
+getAllUser()
 
 function handleAdd() {
   router.push('/blogEdit')
@@ -116,13 +129,29 @@ async function getList(){
   }
 }
 
-async function editItem(id: string) {
-  router.push({
-    path: '/blogEdit',
-    query: {
-      id
+async function getAllUser(){
+  try{
+    const {success, result, msg} = await $http.post(urls.user_all, {})
+    if(!success){
+      ElMessage.error({
+        message: msg
+      })
+    }else{
+      pageState.userList = result
     }
-  })
+  }catch (e) {
+
+  }
+}
+
+async function viewItem(id: string) {
+  window.open(import.meta.env.VITE_BLOG_BASE + '/blog?id=' + id)
+  // router.push({
+  //   path: '/blogEdit',
+  //   query: {
+  //     id
+  //   }
+  // })
 }
 
 async function deleteItem(id: string) {

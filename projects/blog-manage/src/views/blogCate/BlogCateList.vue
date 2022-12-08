@@ -1,7 +1,7 @@
 <template>
   <ListWrapper>
     <template #filter>
-      <el-input placeholder="分类名" v-model="filterForm.name"></el-input>
+      <el-input placeholder="分类名" v-model="filterForm.name" clearable @clear="getList" @keyup.enter="getList"></el-input>
     </template>
 
     <template #actions>

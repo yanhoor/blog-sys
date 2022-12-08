@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="postForm" :rules="formRules" ref="formRef" label-width="120px">
+  <el-form :model="postForm" :rules="formRules" ref="formRef" label-width="120px" disabled>
     <el-form-item prop="title" label="标题">
       <el-input v-model="postForm.title"></el-input>
     </el-form-item>
@@ -11,11 +11,12 @@
     <el-form-item prop="content" label="内容" class="content-editor">
       <Editor
         :init="editorInit"
+        disabled
         v-model="postForm.content"
       />
     </el-form-item>
   </el-form>
-  <el-button type="primary" @click="handleSave(formRef)">保存</el-button>
+  <!--<el-button type="primary" @click="handleSave(formRef)">保存</el-button>-->
 </template>
 
 <script setup lang="ts">
