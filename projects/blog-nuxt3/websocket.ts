@@ -15,7 +15,8 @@ class WS {
   init = () => {
     this.isClosed = false
     const userInfo = useUserInfo()
-    this.ws = new WebSocket('ws://127.0.0.1:8000?token=' + userInfo.value?.id)
+    const config = useRuntimeConfig()
+    this.ws = new WebSocket(config.wsHost + '?token=' + userInfo.value?.id)
 
     // 监听连接开启
     this.ws.onopen = (evt) => {
@@ -71,6 +72,8 @@ class WS {
         message.error('网络连接异常，请检查网络连接，刷新页面')
         this.reconnectTime = 5000
       }
+      if(this.reconnectCount === 20) return
+
       this.reconnectCount ++
       this.init()
     }, this.reconnectTime)

@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       imageBase: process.env.NUXT_IMAGE_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
+      wsHost: process.env.NUXT_WS_HOST
     }
   },
   app: {
