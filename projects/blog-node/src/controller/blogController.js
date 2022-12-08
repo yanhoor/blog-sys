@@ -2,12 +2,15 @@ const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
 
 class BlogController extends BaseController{
+  // 管理端列表
   list = async (ctx, next) => {
-    const {title, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const {title, createById, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
-    let userId = await this.getAuthUserId(ctx, next)
-    const filter = { createById: userId }
+    const filter = {
+
+    }
     if (title) filter.title = {contains: title}
+    if (createById) filter.createById = createById
     try {
       const [list, total] = await prisma.$transaction([
         prisma.blog.findMany({
@@ -19,6 +22,12 @@ class BlogController extends BaseController{
             createdAt: true,
             updatedAt: true,
             launch: true,
+            createBy: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
             cate: {
               select: {
                 id: true,
@@ -236,6 +245,14 @@ class BlogController extends BaseController{
           }
         }
       })
+
+      if(!result || result.launch === 0){
+        return ctx.body = {
+          success: false,
+          code: 1,
+          msg: '博客不存在'
+        }
+      }
 
       return ctx.body = {
         success: true,

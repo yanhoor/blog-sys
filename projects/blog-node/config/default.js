@@ -17,5 +17,11 @@ module.exports = {
         accessKeySecret: 'kKGSBlGPzDv7JBqspDGdB8dpqCdLkE',
         bucket: 'static-buck',
         endpoint: 'oss-cn-shenzhen.aliyuncs.com'
+    },
+    adminUser: {
+        name: '超级管理员',
+        mobile: '12345678900',
+        type: 1,
+        password: '1q2w3e'
     }
 };

@@ -5,6 +5,21 @@ const prisma = new PrismaClient({
   log: ['info', 'warn', 'error'],
 })
 
+createAdmin()
+
+// 创建超级管理员
+async function createAdmin(){
+  const admin = await prisma.user.findUnique({
+    where: { type: 1 }
+  })
+
+  if(!admin){
+    await prisma.user.create({
+      data: config.adminUser
+    })
+  }
+}
+
 // 日志中间件
 prisma.$use(async (params, next) => {
   const before = Date.now()

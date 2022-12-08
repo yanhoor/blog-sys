@@ -17,8 +17,9 @@ model User {
   name      String    @db.VarChar(255)
   avatar    String?   @db.VarChar(255)
   introduce String?   @db.VarChar(255)
-  mobile    String    @unique @db.VarChar(255)
+  mobile    String    @unique @db.VarChar(255) // @unique 唯一值
   password  String    @db.VarChar(255)
+  type      Int       @default(2) // 1--超级管理员，2--普通用户
   birthday  DateTime?
   deletedAt DateTime?
 
@@ -28,7 +29,6 @@ model User {
   createNotifications  Notification[]  @relation("CreateNotification")
   receiveNotifications Notification[]  @relation("ReceiveNotifications")
   createComments       Comment[]       @relation("CreateComment")
-
   blogCates     BlogCate[]
   replyComments Comment[]  @relation("ReplyComment")
 
