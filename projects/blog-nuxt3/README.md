@@ -8,11 +8,31 @@
 
 在引入全局依赖时，可以在 `plugins` 里面通过 `defineNuxtPlugin()` 定义，如 `dayjs`
 
-## 填坑记录
+## 问题记录
 
 ### build
 
 使用 `pnpm i` 时 需要加 `--shamefully-hoist`，这样打包才不会提示缺少 `vue`
+
+### `Error: nuxt instance unavailable`
+
+原因：`useXXX` 的 `api` 只能在 `setup` 或者生命周期钩子内使用，否则会出现这个错误
+
+```vue
+<script setup>
+const cookie = useCookie('token') // 正确
+
+init()
+
+function init() {
+  getInfo()
+}
+
+function getInfo() {
+  const cookie = useCookie('token') // 错误，实际在 init() 作用域内
+}
+</script>
+```
 
 ### 重新进入页面没有请求
 

@@ -42,7 +42,7 @@
       <n-card shadow="never" class="blog-comment-container">
         <div class="comment-section" v-if="userInfo">
           <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small"></n-avatar>
-          <CommentForm class="comment-form" :blogId="blogId" @success="getComments"/>
+          <CommentForm class="comment-form" :blogId="$route.query.id" @success="getComments"/>
         </div>
         <p id="commentSection">{{ commentTotal ? `${commentTotal} 条评论` : '评论' }}</p>
         <template v-for="comment of commentList" :key="comment.id">
@@ -74,8 +74,8 @@ import {
 } from "naive-ui"
 
 definePageMeta({
-  pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
-  key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效
+  // pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
+  // key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效，在 app.vue 的 page-key
 })
 
 const config = useRuntimeConfig()
@@ -89,7 +89,9 @@ const blogId = route.query.id
 const commentRefs = ref([])
 
 const onScroll = debounce()
-handlePageInit()
+
+getBlogInfo()
+getComments()
 
 onMounted(() => {
   window.Prism.highlightAll()
@@ -99,11 +101,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
-
-async function handlePageInit() {
-  await getBlogInfo()
-  getComments()
-}
 
 function debounce() {
   let timer: NodeJS.Timeout
@@ -149,6 +146,7 @@ function handlePageChange(page: number) {
   currentPage.value = page
   getComments()
 }
+
 async function getComments() {
   try{
     const { result, success } = await useFetchPost('/comment/list', { blogId, page: currentPage.value, pageSize: 10 })

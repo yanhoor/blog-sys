@@ -12,9 +12,9 @@ export const useRefreshUserInfo = async () => {
       const { result, success } = await useFetchGet('/user/info', { })
       if(success){
         userInfo.value = result
-        useFetchNotificationList()
         websocket.init()
       }
+      useFetchNotificationList()
     }catch (e) {
 
     }
