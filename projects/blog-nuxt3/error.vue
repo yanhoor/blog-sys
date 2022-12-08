@@ -9,7 +9,7 @@
     <n-result
       status="500"
       title="500 服务器错误"
-      description="服务器出错可能说明该雇更多程序员了"
+      description="人生总难免会犯点错误"
       v-else
     >
       <template #footer>
@@ -25,7 +25,7 @@ import {
   NResult
 } from "naive-ui"
 
-const props = defineProps({  error: Object})
+const props = defineProps({  error: Object })
 </script>
 
 <style lang="scss" scoped>

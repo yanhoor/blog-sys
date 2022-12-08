@@ -70,6 +70,7 @@ import {
   NTime,
   NBackTop,
   NPagination,
+  useMessage,
   NAvatar
 } from "naive-ui"
 
@@ -82,6 +83,7 @@ const config = useRuntimeConfig()
 const route = useRoute()
 const blogInfo = ref()
 const userInfo = useUserInfo()
+const naiveMessage = useMessage()
 const commentList = ref<Comment[]>([])
 const commentTotal = ref(0)
 const currentPage = ref(1)
@@ -118,9 +120,12 @@ function debounce() {
 
 async function getBlogInfo(){
   try{
-    const { result, success } = await useFetchPost('/blog/info', { id: blogId })
+    const { result, success, msg, code } = await useFetchPost('/blog/info', { id: blogId })
     if(success){
       blogInfo.value = result
+    } else if(code === 1) {
+      naiveMessage.error(msg as string)
+      return navigateTo({  path: '/', replace: true })
     }
   }catch (e) {
     console.log('=====/blog/info=======', e)

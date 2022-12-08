@@ -60,7 +60,7 @@ async function commitComment() {
       commentContent.value=''
       message.success('发表成功')
     }else{
-      message.error(msg)
+      message.error(msg as string)
     }
   }catch (e) {
     commentCommitting.value = false

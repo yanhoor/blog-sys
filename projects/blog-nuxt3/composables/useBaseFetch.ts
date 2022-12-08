@@ -3,6 +3,7 @@ import {useFetch, useRuntimeConfig} from "#app"
 interface HttpResponseType {
   success: boolean
   result?: any
+  code?: number
   msg?: string
 }
 

@@ -14,7 +14,7 @@ export const useRefreshUserInfo = async () => {
         userInfo.value = result
         websocket.init()
       }
-      useFetchNotificationList()
+      useFetchNotificationList() // todo: 为什么放在 if(success) 里面就报错
     }catch (e) {
 
     }

@@ -67,7 +67,7 @@ getBlogList()
 async function getBlogList() {
   pageLoading.value = true
   try{
-    const { result, success } = await useFetchPost('/blog/list2', {})
+    const { result, success } = await useFetchPost('/blog/list', {})
     if(success){
       blogList.value = result.list
     }

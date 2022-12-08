@@ -31,16 +31,16 @@
       </n-space>
     </n-layout-header>
     <n-layout-content class="main-content">
-      <div class="main-left">
+      <!--<div class="main-left">
         <slot name="left"></slot>
-      </div>
+      </div>-->
       <div class="main-right">
         <div class="main-content-container">
           <slot></slot>
         </div>
-        <div class="main-right-aside">
+        <!--<div class="main-right-aside">
           <slot name="right">dwdwed</slot>
-        </div>
+        </div>-->
       </div>
       <div class="main-bottom">
         <n-card>bottom</n-card>

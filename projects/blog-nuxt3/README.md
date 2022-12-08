@@ -16,7 +16,9 @@
 
 ### `Error: nuxt instance unavailable`
 
-原因：`useXXX` 的 `api` 只能在 `setup` 或者生命周期钩子内使用，否则会出现这个错误
+- `useCookie()/useState()/useFetch()/useLazyFetch()/useAsyncData()/useLazyAsyncData()` 只能在 `setup` 或者生命周期钩子使用
+
+- `useRoute()` 可以在 `setup`、`plugin` 或者路由中间件使用
 
 ```vue
 <script setup>
