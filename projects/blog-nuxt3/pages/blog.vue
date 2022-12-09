@@ -86,7 +86,7 @@ const userInfo = useUserInfo()
 const naiveMessage = useMessage()
 const blogId = route.query.id
 const commentRefs = ref([])
-const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch('/comment/list', { blogId })
+const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
 
 const onScroll = debounce()
 

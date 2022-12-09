@@ -60,7 +60,7 @@ const router = useRouter()
 const userInfo = useUserInfo()
 const message = useMessage()
 const config = useRuntimeConfig()
-const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch('/blog/list')
+const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Blog>('/blog/list')
 
 async function likeBlog(blog: Blog) {
   if(!userInfo.value) {
