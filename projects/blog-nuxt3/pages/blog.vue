@@ -44,12 +44,12 @@
           <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small"></n-avatar>
           <CommentForm class="comment-form" :blogId="$route.query.id" @success="getComments"/>
         </div>
-        <p id="commentSection">{{ commentTotal ? `${commentTotal} 条评论` : '评论' }}</p>
-        <template v-for="comment of commentList" :key="comment.id">
+        <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
+        <template v-for="comment of pageList" :key="comment.id">
           <BlogCommentItem :comment="comment" ref="commentRefs"/>
         </template>
         <div class="comment-pagination-container">
-          <n-pagination v-model:page="currentPage" :item-count="commentTotal" :on-update:page="handlePageChange"/>
+          <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
         </div>
       </n-card>
     </template>
@@ -84,16 +84,13 @@ const route = useRoute()
 const blogInfo = ref()
 const userInfo = useUserInfo()
 const naiveMessage = useMessage()
-const commentList = ref<Comment[]>([])
-const commentTotal = ref(0)
-const currentPage = ref(1)
 const blogId = route.query.id
 const commentRefs = ref([])
+const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch('/comment/list', { blogId })
 
 const onScroll = debounce()
 
 getBlogInfo()
-getComments()
 
 onMounted(() => {
   window.Prism.highlightAll()
@@ -144,23 +141,6 @@ async function likeBlog(val: number) {
     }
   }catch (e) {
 
-  }
-}
-
-function handlePageChange(page: number) {
-  currentPage.value = page
-  getComments()
-}
-
-async function getComments() {
-  try{
-    const { result, success } = await useFetchPost('/comment/list', { blogId, page: currentPage.value, pageSize: 10 })
-    if(success){
-      commentList.value = result.list
-      commentTotal.value = result.total
-    }
-  }catch (e) {
-    console.log('=====/comment/list=======', e)
   }
 }
 </script>

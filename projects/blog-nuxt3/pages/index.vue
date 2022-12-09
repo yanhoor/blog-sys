@@ -60,33 +60,7 @@ const router = useRouter()
 const userInfo = useUserInfo()
 const message = useMessage()
 const config = useRuntimeConfig()
-const currentPage = ref(1)
-const pageList = ref<Blog[]>([])
-const pageTotal = ref(0)
-// 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
-// definePageMeta({  layout: false})
-const pageLoading = ref(false)
-
-getBlogList()
-
-function handlePageChange(page: number) {
-  currentPage.value = page
-  getBlogList()
-}
-
-async function getBlogList() {
-  pageLoading.value = true
-  try{
-    const { result, success } = await useFetchPost('/blog/list', { page: currentPage.value, pageSize: 20 })
-    if(success){
-      pageList.value = result.list
-      pageTotal.value = result.total
-    }
-    pageLoading.value = false
-  }catch (e) {
-    pageLoading.value = false
-  }
-}
+const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch('/blog/list')
 
 async function likeBlog(blog: Blog) {
   if(!userInfo.value) {
