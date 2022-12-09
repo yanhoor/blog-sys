@@ -1,9 +1,9 @@
 
-export const usePageListFetch = async (url: string, params: Object = {}) => {
+export const usePageListFetch = async <T>(url: string, params: Object = {}) => {
   const currentPage = ref(1)
   const pageSize = ref(20)
   const pageTotal = ref(0)
-  const pageList = ref([])
+  const pageList = ref<T[]>([])
   const pageLoading = ref(false)
   fetchPage()
 
