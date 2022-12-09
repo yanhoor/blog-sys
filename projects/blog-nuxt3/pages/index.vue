@@ -8,7 +8,7 @@
       <SkeletonIndex v-if="pageLoading"></SkeletonIndex>
 
       <template v-else>
-        <div class="blog-container" v-for="blog of blogList">
+        <div class="blog-container" v-for="blog of pageList">
           <span class="blog-title" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
           <div class="blog-info-container">
             <div class="user-info info-item">
@@ -30,7 +30,9 @@
             </div>
           </div>
         </div>
-        <!--<div v-html="blog.content"></div>-->
+        <div class="index-pagination-container">
+          <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
+        </div>
       </template>
     </n-card>
   </NuxtLayout>
@@ -41,6 +43,7 @@ import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
 import {useFetchPost} from "@/composables/useBaseFetch"
 import {
   NButton,
+  NPagination,
   NTime,
   NIcon,
   NCard,
@@ -57,19 +60,27 @@ const router = useRouter()
 const userInfo = useUserInfo()
 const message = useMessage()
 const config = useRuntimeConfig()
+const currentPage = ref(1)
+const pageList = ref<Blog[]>([])
+const pageTotal = ref(0)
 // 这样就不会使用 app.vue 里定义的 layout，而是在本页面定义的 another layout
 // definePageMeta({  layout: false})
-const blogList = ref([])
 const pageLoading = ref(false)
 
 getBlogList()
 
+function handlePageChange(page: number) {
+  currentPage.value = page
+  getBlogList()
+}
+
 async function getBlogList() {
   pageLoading.value = true
   try{
-    const { result, success } = await useFetchPost('/blog/list', {})
+    const { result, success } = await useFetchPost('/blog/list', { page: currentPage.value, pageSize: 20 })
     if(success){
-      blogList.value = result.list
+      pageList.value = result.list
+      pageTotal.value = result.total
     }
     pageLoading.value = false
   }catch (e) {
@@ -136,5 +147,9 @@ async function toBlogDetail(id: number){
       }
     }
   }
+}
+.index-pagination-container{
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
