@@ -3,6 +3,7 @@ const { defaultLogger, errorLogger } = require('./log')
 
 const WEBSOCKET_MESSAGE_TYPE = {
   notification: 'notification',
+  like_blog: 'like_blog',
   heart_beat: 'heart_beat'
 }
 class WS{
@@ -47,6 +48,7 @@ class WS{
       const uid = sp.get('token')
       const i = this.wsList.findIndex(item => item.uid == uid)
       if(i > -1){
+        defaultLogger.log('替换ws, index----->', i)
         // 前端刷新页面就会重连，所以需要替换原来的ws
         this.wsList.splice(i, 1, {
           uid,

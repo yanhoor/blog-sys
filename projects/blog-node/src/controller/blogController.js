@@ -3,12 +3,10 @@ const prisma = require('../database/prisma')
 
 class BlogController extends BaseController{
   // 管理端列表
-  list = async (ctx, next) => {
+  manageList = async (ctx, next) => {
     const {title, createById, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = {
-
-    }
+    const filter = {}
     if (title) filter.title = {contains: title}
     if (createById) filter.createById = createById
     try {
@@ -53,7 +51,7 @@ class BlogController extends BaseController{
     }
   }
 
-  list2 = async (ctx, next) => {
+  list = async (ctx, next) => {
     try {
       const { title, page = 1, pageSize = this.pageSize } = ctx.request.body
       const skip = pageSize * (page - 1)
@@ -198,8 +196,11 @@ class BlogController extends BaseController{
     }
   }
 
+  manageInfo = async (ctx, next) => {
+    return this.info(ctx, next, true)
+  }
 
-  info = async (ctx, next) => {
+  info = async (ctx, next, isManage = false) => {
     const {id} = ctx.request.body
     let userId = await this.getAuthUserId(ctx, next)
     try {
@@ -246,7 +247,7 @@ class BlogController extends BaseController{
         }
       })
 
-      if(!result || result.launch === 0){
+      if(!result || (!isManage && result.launch === 0)){
         return ctx.body = {
           success: false,
           code: 1,
@@ -374,7 +375,7 @@ class BlogController extends BaseController{
           }
         })
         this.websocket.sendWsMessage(blog.createById, JSON.stringify({
-          type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+          type: this.WEBSOCKET_MESSAGE_TYPE.like_blog,
           id: notification.id
         }))
       }else{
