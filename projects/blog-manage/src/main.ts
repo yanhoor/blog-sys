@@ -6,7 +6,7 @@ import $http from '@/http'
 import { createPinia } from 'pinia'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'element-plus/theme-chalk/dark/css-vars.css'
-import './style.scss'
+import './style.css'
 
 const app = createApp(AppVue)
 

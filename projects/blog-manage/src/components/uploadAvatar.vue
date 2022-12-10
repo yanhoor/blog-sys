@@ -7,7 +7,7 @@
   >
     <img v-if="props.url" :src="IMG_HOST + props.url" class="avatar" />
     <el-icon v-else class="avatar-uploader-icon">
-      <i-ep-plus />
+      <Plus />
     </el-icon>
   </el-upload>
 </template>
@@ -17,6 +17,7 @@ import $http, { IMG_HOST, urls } from '@/http'
 import { reactive, ref } from 'vue'
 import type { UploadInstance, UploadRequestOptions } from 'element-plus'
 import { ElMessage } from "element-plus"
+import { Plus } from '@element-plus/icons-vue'
 
 interface Props {
   url?: string

@@ -4,7 +4,7 @@
       <el-avatar :src="IMG_HOST + userStore.user?.avatar"></el-avatar>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item :icon="User">个人信息</el-dropdown-item>
+          <el-dropdown-item :icon="User" @click="router.push('/me')">个人信息</el-dropdown-item>
           <el-dropdown-item :icon="CircleClose" @click="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </template>

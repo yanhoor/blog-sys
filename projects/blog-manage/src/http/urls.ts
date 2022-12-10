@@ -17,11 +17,14 @@ export const urls = {
   blog_cate_info: '/blogCate/info',
 
   blog_edit: '/blog/edit',
-  blog_list: '/blog/list',
+  blog_list: '/blog/manageList',
   blog_delete: '/blog/delete',
-  blog_info: '/blog/info',
+  blog_info: '/blog/manageInfo',
   blog_operate: '/blog/operate',
 
   address_child: '/address/query_children',
   address_search: '/address/search',
+
+  statis_week_detail: '/statis/weekDetail',
+  statis_total_count: '/statis/totalCount',
 }
