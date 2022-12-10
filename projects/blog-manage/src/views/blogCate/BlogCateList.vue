@@ -10,26 +10,26 @@
     </template>
 
     <template #table>
-      <vxe-table border :data="pageState.tableList" height="auto" v-loading="pageState.loading">
-        <vxe-column type="seq" width="60"></vxe-column>
-        <vxe-column field="name" title="名称"></vxe-column>
-        <vxe-column title="更新时间">
+      <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="name" label="名称"></el-table-column>
+        <el-table-column label="更新时间">
           <template #default="{ row }">
             <div>{{dayjs(row.updatedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </vxe-column>
-        <vxe-column title="创建时间">
+        </el-table-column>
+        <el-table-column label="创建时间">
           <template #default="{ row }">
             <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </vxe-column>
-        <vxe-column title="操作">
+        </el-table-column>
+        <el-table-column label="操作">
           <template #default="{ row }">
             <el-button @click="editItem(row.id)" text type="primary">编辑</el-button>
             <el-button @click="deleteItem(row.id)" text type="primary">删除</el-button>
           </template>
-        </vxe-column>
-      </vxe-table>
+        </el-table-column>
+      </el-table>
     </template>
 
     <template #tablePagination>

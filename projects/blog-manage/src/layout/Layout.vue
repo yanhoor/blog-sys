@@ -3,10 +3,13 @@
     <el-aside width="280px">
       <Menu class="menu"/>
     </el-aside>
-    <el-container>
+    <el-container class="bg-white dark:bg-black">
       <el-header>
         <RouteNav />
-        <UserAvatar class="user-avatar"/>
+        <div class="flex items-center">
+          <ThemeSwitcher />
+          <UserAvatar class="user-avatar"/>
+        </div>
       </el-header>
       <el-main>
         <router-view />
@@ -18,8 +21,9 @@
 import Menu from './menu.vue'
 import UserAvatar from './userAvatar.vue'
 import RouteNav from './routeNav.vue'
+import ThemeSwitcher from "@/layout/themeSwitcher.vue"
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .app-container {
   width: 100%;
   height: 100%;
@@ -31,7 +35,6 @@ import RouteNav from './routeNav.vue'
     background-color: var(--el-color-primary-light-9);
   }
   .el-main{
-    background-color: #fff;
     display: flex;
     flex-direction: column;
   }

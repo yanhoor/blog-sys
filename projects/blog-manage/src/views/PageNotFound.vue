@@ -17,7 +17,7 @@ const backToHome = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .el-result{
   height: 100%;
 }

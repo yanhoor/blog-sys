@@ -1,22 +1,12 @@
 import { createApp, App } from 'vue'
-import './style.css'
 import AppVue from './App.vue'
 import ElementPlus from 'element-plus'
 import router from './routes'
 import $http from '@/http'
 import { createPinia } from 'pinia'
-import 'xe-utils'
-import { VXETable, Table, Column } from 'vxe-table'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-
-VXETable.setup({
-  table: {
-    stripe: true
-  }
-})
-function useTable(app: App){
-  app.use(VXETable).use(Table).use(Column)
-}
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import './style.scss'
 
 const app = createApp(AppVue)
 
@@ -26,7 +16,6 @@ app.use(ElementPlus, {
   locale: zhCn
 })
 app.use(router)
-app.use(useTable)
 app.use(createPinia())
 
 app.mount('#app')

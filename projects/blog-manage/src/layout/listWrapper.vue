@@ -10,7 +10,7 @@
       <div class="vxe-table-container">
         <slot name="table"></slot>
       </div>
-      <div class="list-pagination-container">
+      <div class="flex justify-end mt-12">
         <slot name="tablePagination"></slot>
       </div>
     </div>
@@ -22,7 +22,7 @@
 
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .list-page-wrapper{
   display: flex;
   flex-direction: column;
@@ -36,11 +36,6 @@
     flex: 1 1 auto;
     .vxe-table-container{
       flex: 1;
-    }
-    .list-pagination-container{
-      display: flex;
-      justify-content: end;
-      margin-top: var(--module-spacing);
     }
   }
 }

@@ -128,7 +128,7 @@ async function getAllCate(){
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .content-editor{
   :deep(.tox-tinymce){
     width: 100%;

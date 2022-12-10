@@ -56,8 +56,8 @@ const formRef = ref<FormInstance>()
 const router = useRouter()
 
 const postForm = reactive({
-  mobile: '',
-  password: ''
+  mobile: '12345678900',
+  password: '1q2w3e'
 })
 
 const registerForm = reactive({
@@ -109,7 +109,7 @@ const handleRegister = async (formEl: FormInstance | undefined) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .login-container{
   width: 100%;
   height: 100%;

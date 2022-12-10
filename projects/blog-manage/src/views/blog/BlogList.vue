@@ -19,49 +19,49 @@
     </template>
 
     <template #table>
-      <vxe-table border :data="pageState.tableList" height="auto" v-loading="pageState.loading">
-        <vxe-column key="seq" type="seq" width="60"></vxe-column>
-        <vxe-column key="title" field="title" title="标题"></vxe-column>
-        <vxe-column key="cate" title="所属分类">
+      <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
+        <el-table-column key="seq" type="index" width="60"></el-table-column>
+        <el-table-column key="title" prop="title" label="标题"></el-table-column>
+        <el-table-column key="cate" label="所属分类">
           <template #default="{ row }">
             <div>{{ row.cate?.name }}</div>
           </template>
-        </vxe-column>
-        <vxe-column key="launch" title="状态">
+        </el-table-column>
+        <el-table-column key="launch" label="状态">
           <template #default="{ row }">
             <el-tag v-if="row.launch" type="success">已发布</el-tag>
             <el-tag v-else type="info">下架</el-tag>
           </template>
-        </vxe-column>
-        <vxe-column key="operateAt" title="发布/下架时间">
+        </el-table-column>
+        <el-table-column key="operateAt" label="发布/下架时间">
           <template #default="{ row }">
             <div>{{dayjs(row.operateAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </vxe-column>
-        <vxe-column key="createBy" title="创建用户">
+        </el-table-column>
+        <el-table-column key="createBy" label="创建用户">
           <template #default="{ row }">
             <div>{{ row.createBy?.name }}</div>
           </template>
-        </vxe-column>
-        <vxe-column key="updateTime" title="更新时间">
+        </el-table-column>
+        <el-table-column key="updateTime" label="更新时间">
           <template #default="{ row }">
             <div>{{dayjs(row.updatedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </vxe-column>
-        <vxe-column key="createTime" title="创建时间">
+        </el-table-column>
+        <el-table-column key="createTime" label="创建时间">
           <template #default="{ row }">
             <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </vxe-column>
-        <vxe-column key="operate" title="操作" min-width="120">
+        </el-table-column>
+        <el-table-column key="operate" label="操作" min-width="120">
           <template #default="{ row }">
             <el-button @click="operateItem(row.id, 0)" link type="warning" v-if="row.launch">下架</el-button>
             <el-button @click="operateItem(row.id, 1)" link type="success" v-else>发布</el-button>
             <el-button @click="viewItem(row.id)" link type="primary">查看</el-button>
             <el-button @click="deleteItem(row.id)" link type="danger">删除</el-button>
           </template>
-        </vxe-column>
-      </vxe-table>
+        </el-table-column>
+      </el-table>
     </template>
 
     <template #tablePagination>
@@ -145,13 +145,13 @@ async function getAllUser(){
 }
 
 async function viewItem(id: string) {
-  window.open(import.meta.env.VITE_BLOG_BASE + '/blog?id=' + id)
-  // router.push({
-  //   path: '/blogEdit',
-  //   query: {
-  //     id
-  //   }
-  // })
+  // window.open(import.meta.env.VITE_BLOG_BASE + '/blog?id=' + id)
+  router.push({
+    path: '/blogEdit',
+    query: {
+      id
+    }
+  })
 }
 
 async function deleteItem(id: string) {

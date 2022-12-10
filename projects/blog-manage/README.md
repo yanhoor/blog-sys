@@ -38,6 +38,41 @@ f2 = Object.assign(f2, res)
 f2 = Object.assign(f2, {name: ''}) // 这样后端传回来的其他字段没有被重置
 ```
 
+### 监听 pina 的变化
+
+需要 `watch` 一个 `state` 时，不能直接使用 `watch(xxxxStore.xx, () => {})`，需要这样：
+
+````javascript
+// useDarkStore.js
+import { defineStore } from 'pinia'
+import StoreTypes from '../storeTypes'
+
+export const useDarkStore = defineStore(StoreTypes.DARK, {
+  state: () => ({
+    isDark: false
+  }),
+  actions: {
+    updateIsDark(val: boolean){
+      this.isDark = val
+    }
+  }
+})
+
+````
+
+```vue
+<script setup>
+import { storeToRefs } from 'pinia'
+
+const darkStore = useDarkStore()
+const { isDark } = storeToRefs(darkStore)
+
+watch(isDark, (val) => {
+  console.log('++++++++++++++', val)
+})
+</script>
+```
+
 ## 环境变量
 
 [环境变量和模式](https://cn.vitejs.dev/guide/env-and-mode.html#modes)
