@@ -38,7 +38,7 @@ prisma.$use(async (params, next) => {
 // 拦截软删除数据的查询
 prisma.$use(async (params, next) => {
   // 有 noDelete 说明不需要添加 deletedAt 参数，比如硬删除的不会有这个参数
-  if(params.args.where?.noDelete) {
+  if(params.args?.where?.noDelete) {
     delete params.args.where.noDelete
     return next(params)
   }
@@ -53,12 +53,13 @@ prisma.$use(async (params, next) => {
   }
   if (['findMany', 'count'].includes(params.action)) {
     // 查找许多查询
-    if (params.args.where != undefined) {
+    if (params.args?.where != undefined) {
       if (!params.args.where.deletedAt) {
         // 如果未明确要求删除记录，则将其排除在外
         params.args.where['deletedAt'] = null
       }
     } else {
+      params.args = {...params.args}
       params.args['where'] = { deletedAt: null }
     }
   }

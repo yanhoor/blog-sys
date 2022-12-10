@@ -5,6 +5,7 @@ const uploadRouter = require('./upload')
 const userRouter = require('./user')
 const blogCateRouter = require('./blogCate')
 const blogRouter = require('./blog')
+const statisRouter = require('./statis')
 
 manageRouter.prefix('/api-manage')
 
@@ -22,5 +23,6 @@ manageRouter.use(uploadRouter.routes(), uploadRouter.allowedMethods())
 manageRouter.use(userRouter.routes(), userRouter.allowedMethods())
 manageRouter.use(blogCateRouter.routes(), blogCateRouter.allowedMethods())
 manageRouter.use(blogRouter.routes(), blogRouter.allowedMethods())
+manageRouter.use(statisRouter.routes(), statisRouter.allowedMethods())
 
 module.exports = manageRouter

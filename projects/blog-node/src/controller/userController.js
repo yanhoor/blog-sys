@@ -48,6 +48,12 @@ class UserController extends BaseController{
           mobile: true,
         }
       })
+      await prisma.user.update({
+        where: { id },
+        data: {
+          lastActiveAt: new Date()
+        }
+      })
       return ctx.body = {
         success: true,
         result: user
