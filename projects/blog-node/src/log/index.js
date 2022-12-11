@@ -18,6 +18,7 @@ log4js.configure({
   pm2: process.env.NODE_ENV === 'production'
 });
 
+console.log('==========process.env.NODE_ENV===========', process.env.NODE_ENV)
 const defaultLogger = log4js.getLogger('default')
 const errorLogger = log4js.getLogger('error')
 const httpLogger = log4js.getLogger('http')
