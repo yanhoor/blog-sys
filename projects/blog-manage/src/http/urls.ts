@@ -3,11 +3,14 @@ export const IMG_HOST = 'http://static-buck.oss-cn-shenzhen.aliyuncs.com/'
 export const urls = {
   upload: '/upload',
 
-  login: '/user/login',
+  login: '/user/adminLogin',
   logout: '/user/logout',
   user_register: '/user/register',
   user_info: '/user/info',
   user_all: '/user/all',
+  user_list: '/user/list',
+  user_lock: '/user/lock',
+  user_unlock: '/user/unlock',
   user_update_avatar: '/user/updateAvatar',
 
   blog_cate_edit: '/blogCate/edit',
