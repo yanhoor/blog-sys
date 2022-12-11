@@ -1,7 +1,9 @@
 <template>
   <n-message-provider>
     <NConfigProvider :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
-      <NuxtPage :page-key="getPathKey"/>
+      <!--导航会报错-->
+      <!--<NuxtPage :page-key="getPathKey"/>-->
+      <NuxtPage/>
     </NConfigProvider>
   </n-message-provider>
 </template>

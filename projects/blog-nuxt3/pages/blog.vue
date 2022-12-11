@@ -42,7 +42,7 @@
       <n-card shadow="never" class="blog-comment-container">
         <div class="comment-section" v-if="userInfo">
           <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small"></n-avatar>
-          <CommentForm class="comment-form" :blogId="$route.query.id" @success="getComments"/>
+          <CommentForm class="comment-form" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
         <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
         <template v-for="comment of pageList" :key="comment.id">
@@ -76,7 +76,7 @@ import {
 
 definePageMeta({
   // pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
-  // key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效，在 app.vue 的 page-key
+  key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效，在 app.vue 的 page-key
 })
 
 const config = useRuntimeConfig()
