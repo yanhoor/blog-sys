@@ -16,7 +16,9 @@ manageRouter.use(
     // cookie: 'token', // 从 cookie 中获取token
     debug: true // 开启debug可以看到准确的错误信息
   })
-    .unless({ custom: (ctx) => /\/login$|\/register$/.test(ctx?.url) }) // 以/login或/register结尾不使用 jwt 中间件
+    .unless({
+      custom: (ctx) => ['/login', '/adminLogin', '/register'].some(item => ctx?.url.includes(item))
+    }) // 以/login或/register结尾不使用 jwt 中间件
 )
 
 manageRouter.use(uploadRouter.routes(), uploadRouter.allowedMethods())
