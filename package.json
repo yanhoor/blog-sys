@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "blog-sys",
   "version": "1.0.0",
   "description": "",
