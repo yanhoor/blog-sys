@@ -24,9 +24,9 @@
         <el-button type="primary" style="width: 100%" @click="handleRegister(formRef)" v-if="isRegister">注册</el-button>
         <el-button type="primary" style="width: 100%" @click="handleLogin(formRef)" v-else>登录</el-button>
       </el-row>
-      <el-row style="margin-top: 10px">
+      <!--<el-row style="margin-top: 10px">
         <el-button style="width: 100%" @click="switchRegister">{{ isRegister ? '已账号，去登录' : '没有账号，去注册' }}</el-button>
-      </el-row>
+      </el-row>-->
     </el-card>
   </div>
 </template>

@@ -5,6 +5,7 @@ import {
   Location,
   Star,
   Setting,
+  Avatar,
 } from '@element-plus/icons-vue'
 import { Component } from 'vue'
 
@@ -26,6 +27,11 @@ const sourceMenus: Array<MenuProps> = [
   {
     title: '个人信息',
     path: 'me',
+    icon: Avatar
+  },
+  {
+    title: '用户列表',
+    path: 'user',
     icon: User
   },
   {

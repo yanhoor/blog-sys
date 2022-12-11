@@ -40,9 +40,16 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: '/me',
-        component: () => import('@/views/me/Me.vue'),
+        component: () => import('@/views/user/Me.vue'),
         meta: {
           title: '个人信息'
+        }
+      },
+      {
+        path: '/user',
+        component: () => import('@/views/user/List.vue'),
+        meta: {
+          title: '用户列表'
         }
       },
     ]

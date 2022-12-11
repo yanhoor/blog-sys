@@ -2,8 +2,8 @@
   <div v-if="loading" v-loading="loading"></div>
   <div v-else class="h-full w-full flex flex-col gap-12 home-container">
     <div class="w-full flex gap-6">
-      <NumberBoard class="flex-1" title="博客总量" :count="totalCount.blogCount"/>
-      <NumberBoard class="flex-1" title="用户总量" :count="totalCount.userRegisterCount"/>
+      <NumberBoard class="flex-1" title="博客总数" :count="totalCount.blogCount"/>
+      <NumberBoard class="flex-1" title="用户总数" :count="totalCount.userRegisterCount"/>
       <NumberBoard class="flex-1" title="今日新增用户数" :count="totalCount.userRegisterTodayCount"/>
       <NumberBoard class="flex-1" title="今日活跃用户数" :count="totalCount.userActiveCount"/>
     </div>

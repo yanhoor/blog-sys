@@ -104,3 +104,7 @@ watch(isDark, (val) => {
 #### 部署在子路径
 
 在 `vite.config.js` 设置 `base: '/manage/'`，同时在路由设置 `history: createWebHistory('/manage/')`
+
+### Element ui 的弹窗被遮盖
+
+使用 `ElMessageBox` 时，弹窗被列表遮盖，原因是样式没有加载。[参考](https://element-plus.gitee.io/zh-CN/guide/quickstart.html#%E6%89%8B%E5%8A%A8%E5%AF%BC%E5%85%A5)，需要手动引入样式 `import 'element-plus/es/components/message-box/style/css'`

@@ -11,7 +11,7 @@
 
     <template #table>
       <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
-        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column type="index" width="60" label="#"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column label="更新时间">
           <template #default="{ row }">

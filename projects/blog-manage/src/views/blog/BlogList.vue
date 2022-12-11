@@ -20,7 +20,7 @@
 
     <template #table>
       <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
-        <el-table-column key="seq" type="index" width="60"></el-table-column>
+        <el-table-column key="seq" type="index" width="60" label="#"></el-table-column>
         <el-table-column key="title" prop="title" label="标题"></el-table-column>
         <el-table-column key="cate" label="所属分类">
           <template #default="{ row }">
