@@ -9,8 +9,7 @@
       </el-select>
     </el-form-item>
     <el-form-item prop="content" label="内容" class="content-editor">
-      <Editor
-        :init="editorInit"
+      <MiniMCE
         disabled
         v-model="postForm.content"
       />
@@ -26,31 +25,8 @@ import type { FormRules, FormInstance } from 'element-plus'
 import $http, { urls, IMG_HOST } from "@/http"
 import {ElMessage} from "element-plus"
 import { useRoute, useRouter } from 'vue-router'
-import Editor from '@tinymce/tinymce-vue'
+import MiniMCE from "@/components/miniMCE.vue"
 
-const editorInit = {
-  plugins: 'lists link image table code help wordcount codesample',
-  // images_upload_base_path: IMG_HOST,
-  images_upload_url: '/upload', // 有这个才会显示上传图片
-  images_upload_handler(blobInfo: any, progress: number) {
-    return new Promise(async (resolve, reject) => {
-      try{
-        const formData = new FormData()
-        formData.append('file', blobInfo.blob(), blobInfo.filename())
-        const {success, result, msg} = await $http.post(urls.upload, {file: blobInfo.blob()}, true)
-        if(!success){
-          ElMessage.error({
-            message: msg
-          })
-        }else{
-          resolve(IMG_HOST + result.path)
-        }
-      }catch (e) {
-        reject('上传照片失败')
-      }
-    })
-  }
-}
 const route = useRoute()
 const router = useRouter()
 const pageState = reactive({
