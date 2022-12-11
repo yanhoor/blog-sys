@@ -2,7 +2,7 @@
   <n-card class="form-container">
     <n-form ref="formRef" :model="registerForm" :rules="rules">
       <n-form-item path="name" label="名称">
-        <n-input v-model:value="registerForm.name" @keydown.enter.prevent/>
+        <n-input v-model:value="registerForm.name" @keydown.enter.prevent maxlength="8" show-count/>
       </n-form-item>
       <n-form-item path="mobile" label="手机号">
         <n-input v-model:value="registerForm.mobile" @keydown.enter.prevent maxlength="11"/>

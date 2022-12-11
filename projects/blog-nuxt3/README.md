@@ -78,3 +78,13 @@ onMounted(() => {
 在 `home` 使用了 `default layout`，在 `login` 没有使用，这样从 `login` 返回到 `home` 时报错：激活的节点与虚拟节点不一致
 
 不知为啥，偶尔有问题，部署了好像也没问题
+
+### 页面间导航报错
+
+```text
+Cannot read properties of null (reading 'parentNode')
+
+Vue warn]: Unhandled error during execution of scheduler flush. This is likely a Vue internals bug. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core 
+```
+
+暂时确定是因为 `<NuxtPage>` 添加了 `page-key`，[参考](https://github.com/nuxt/framework/issues/2985)，在外面加 `<div>` 也无效

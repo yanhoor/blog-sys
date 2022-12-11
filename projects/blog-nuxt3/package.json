@@ -11,7 +11,7 @@
   "devDependencies": {
     "@vicons/fluent": "^0.12.0",
     "nuxt": "3.0.0",
-    "sass": "^1.56.1",
+    "sass": "^1.56.2",
     "sass-loader": "^13.2.0"
   },
   "dependencies": {
@@ -19,6 +19,6 @@
     "@vueuse/nuxt": "^9.6.0",
     "minimce": "^0.7.0",
     "naive-ui": "^2.34.2",
-    "tinymce": "^6.3.0"
+    "tinymce": "^6.3.1"
   }
 }
