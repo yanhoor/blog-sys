@@ -15,6 +15,8 @@ model User {
   id           Int       @id @default(autoincrement())
   createdAt    DateTime  @default(now())
   lastActiveAt DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
+  lock         Int       @default(2) // 1--锁定， 2--正常
   name         String    @db.VarChar(255)
   avatar       String?   @db.VarChar(255)
   introduce    String?   @db.VarChar(255)

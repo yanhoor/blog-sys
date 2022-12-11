@@ -46,6 +46,7 @@ class UserController extends BaseController{
           name: true,
           avatar: true,
           mobile: true,
+          lock: true,
         }
       })
       await prisma.user.update({
@@ -54,6 +55,13 @@ class UserController extends BaseController{
           lastActiveAt: new Date()
         }
       })
+      if(user.lock === 1){
+        return ctx.body = {
+          success: false,
+          code: 111,
+          msg: '您的账号已经被锁定，请联系管理员解锁'
+        }
+      }
       return ctx.body = {
         success: true,
         result: user
@@ -110,7 +118,7 @@ class UserController extends BaseController{
     }
   }
 
-  // 登录
+  // 博客端登录
   login = async (ctx, next) => {
     const req = ctx.request;
     const { password, mobile } = req.body
@@ -136,6 +144,13 @@ class UserController extends BaseController{
         msg: '该手机号未注册'
       }
     }
+    if(user.lock === 1){
+      return ctx.body = {
+        success: false,
+        code: 111,
+        msg: '您的账号已经被锁定，请联系管理员解锁'
+      }
+    }
     if(user?.password === password) {
       const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
       ctx.body = {
@@ -159,6 +174,7 @@ class UserController extends BaseController{
     }
   }
 
+  // 所有普通用户
   all = async (ctx, next) => {
     try {
       const result = await prisma.user.findMany({
@@ -178,6 +194,100 @@ class UserController extends BaseController{
       }
     }catch (e) {
       this.errorLogger.error('user.all--------->', e)
+    }
+  }
+
+  // 普通用户列表
+  list = async (ctx, next) => {
+    const {name, mobile, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const skip = pageSize * (page - 1)
+    const filter = { type: 2 }
+    if (name) filter.name = {contains: name}
+    if (mobile) filter.mobile = mobile
+    try {
+      const xprisma = prisma.$extends({
+        result: {
+          user: {
+            // 在返回的结果新增自定义字段
+            blogCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { blogs: true },
+              compute(user) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                return user.blogs.length
+              },
+            },
+            likeBlogCount: {
+              needs: { likeBlogs: true },
+              compute(blog) {
+                return blog.likeBlogs.length
+              },
+            }
+          },
+        },
+      })
+
+      const [list, total] = await prisma.$transaction([
+        xprisma.user.findMany({
+          skip,
+          take: pageSize,
+          where: filter,
+          select: {
+            id: true,
+            createdAt: true,
+            lastActiveAt: true,
+            name: true,
+            avatar: true,
+            introduce: true,
+            mobile: true,
+            birthday: true,
+            blogCount: true,
+            lock: true,
+            likeBlogCount: true,
+          },
+          orderBy: {createdAt: 'desc'}
+        }),
+        prisma.user.count({where: filter})
+      ])
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
+      }
+    } catch (e) {
+      this.errorLogger.error('user.list--------->', e)
+    }
+  }
+
+  operateLock = async (ctx, next) => {
+    const { type, id } = ctx.request.body
+    try{
+      if(!type) throw new Error('缺少参数 type')
+      if(!id) throw new Error('缺少参数 id')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+    try{
+      const user = await prisma.user.update({
+        where: {
+          id
+        },
+        data: {
+          lock: type
+        }
+      })
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('user.operateLock--------->', e)
     }
   }
 
