@@ -47,7 +47,8 @@ export default defineNuxtConfig({
     preset: 'node-server'
   },
   modules: [
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxtjs/tailwindcss'
   ],
   css: ["@/assets/styles/global.scss"],
   vite: {
