@@ -36,7 +36,7 @@
         <n-time type="relative" :time="new Date(blogInfo.updatedAt)"></n-time>
         </span>
         </div>
-        <div v-html="blogInfo.content"></div>
+        <div class="blog-content" v-html="blogInfo.content"></div>
       </n-card>
 
       <n-card shadow="never" class="mt-[20px]">
@@ -54,7 +54,7 @@
       </n-card>
     </template>
 
-    <n-back-top :right="100" />
+    <n-back-top :right="50"/>
   </NuxtLayout>
 </template>
 
@@ -154,6 +154,12 @@ async function likeBlog(val: number) {
 </script>
 
 <style lang="scss" scoped>
+.blog-content{
+  :deep(img){
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
 .comment-section{
   border-bottom: 1px solid var(--border-color);
 }
