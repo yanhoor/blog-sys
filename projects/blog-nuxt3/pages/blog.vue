@@ -42,7 +42,7 @@
       <n-card shadow="never" class="mt-[20px]">
         <div class="comment-section flex items-start pb-[20px]" v-if="userInfo">
           <UserAvatar class="mr-[12px]" :src="userInfo?.avatar" size="small"></UserAvatar>
-          <CommentForm class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
+          <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
         <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
         <template v-for="comment of pageList" :key="comment.id">
@@ -70,8 +70,7 @@ import {
   NTime,
   NBackTop,
   NPagination,
-  useMessage,
-  NAvatar
+  createDiscreteApi
 } from "naive-ui"
 
 definePageMeta({
@@ -82,7 +81,6 @@ definePageMeta({
 const route = useRoute()
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
-const naiveMessage = useMessage()
 const blogId = route.query.id
 const commentRefs = ref([])
 const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
@@ -127,10 +125,11 @@ function debounce() {
 async function getBlogInfo(){
   try{
     const { result, success, msg, code } = await useFetchPost('/blog/info', { id: blogId })
+    const { message } = createDiscreteApi(["message"])
     if(success){
       blogInfo.value = result
     } else if(code === 1) {
-      naiveMessage.error(msg as string)
+      message.error(msg as string)
       return navigateTo({  path: '/', replace: true })
     }
   }catch (e) {

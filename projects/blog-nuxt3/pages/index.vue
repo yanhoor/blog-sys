@@ -47,7 +47,7 @@ import {
   NTime,
   NIcon,
   NCard,
-  useMessage,
+  createDiscreteApi,
   NAvatar
 } from "naive-ui"
 import { Blog } from '@/types'
@@ -65,11 +65,11 @@ definePageMeta({
 
 const router = useRouter()
 const userInfo = useUserInfo()
-const message = useMessage()
 // const config = useRuntimeConfig()
 const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Blog>('/blog/list')
 
 async function likeBlog(blog: Blog) {
+  const { message } = createDiscreteApi(["message"])
   if(!userInfo.value) {
     return message.info('请先登录')
   }
