@@ -28,6 +28,9 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/blog/',
     head: {
+      titleTemplate: "%s - Nuxt3 | 博客",
+      title: "Ray",
+      charset: "utf-8",
       // meta: [
       //   { name: 'naive-ui-style' },
       // ],
@@ -38,7 +41,11 @@ export default defineNuxtConfig({
         }
       ],
       link: [
-        {rel: 'stylesheet', href: './prism.css'}
+        { rel: 'stylesheet', href: './prism.css' },
+        {
+          rel: "icon",
+          href: "https://nuxt.com/icon.png",
+        },
       ]
     }
   },

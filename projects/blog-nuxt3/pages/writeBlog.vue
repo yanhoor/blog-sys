@@ -33,6 +33,10 @@ import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NSelect, NForm, NFormI
 import { Blog, BlogCate } from '@/types'
 import {useFetchPost} from "~/composables/useBaseFetch";
 
+definePageMeta({
+  title: '写文章'
+})
+
 getAllCate()
 
 interface BlogForm extends Blog{

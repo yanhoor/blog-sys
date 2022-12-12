@@ -37,7 +37,10 @@ const token = useCookie('token', {
   maxAge: 60 * 60 * 24 * 7
 })
 
-definePageMeta({  layout: false})
+definePageMeta({
+  layout: false,
+  title: 'Login'
+})
 
 interface ModelType {
   mobile: string | null

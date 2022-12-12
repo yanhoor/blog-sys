@@ -60,7 +60,10 @@ onMounted(() => {
   const s = localStorage.getItem('vueuse-color-scheme')
   colorModel.value = s === 'dark' ? 'dark' : 'light'
 })
-definePageMeta({  layout: false})
+definePageMeta({
+  layout: false,
+  title: 'Register'
+})
 
 interface ModelType {
   mobile: string | null

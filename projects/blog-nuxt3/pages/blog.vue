@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment } from '@/types/comment'
+import { Comment, Blog } from '@/types'
 import { ThumbLike16Regular, CommentMultiple16Regular } from '@vicons/fluent'
 import {
   NButton,
@@ -81,7 +81,7 @@ definePageMeta({
 
 const config = useRuntimeConfig()
 const route = useRoute()
-const blogInfo = ref()
+const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
 const naiveMessage = useMessage()
 const blogId = route.query.id
@@ -90,7 +90,17 @@ const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = awa
 
 const onScroll = debounce()
 
-getBlogInfo()
+useHead(() => {
+  return {
+    title: blogInfo.value?.title || '加载中...'
+  }
+})
+
+initPage()
+
+async function initPage() {
+  await getBlogInfo()
+}
 
 onMounted(() => {
   window.Prism.highlightAll()
