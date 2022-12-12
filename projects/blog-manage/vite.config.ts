@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import { createStyleImportPlugin, VxeTableResolve, ElementPlusResolve } from 'vite-plugin-style-import'
+import viteCompression from "vite-plugin-compression"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,6 +14,14 @@ export default defineConfig({
     outDir: 'dist/blog-manage' // 预览也是这个目录
   },
   plugins: [
+    viteCompression({
+      verbose: true,
+      disable: false,
+      ext: '.gz',
+      algorithm: 'gzip', // 压缩格式：gzip、brotliCompress,
+      threshold: 10240,// 只处理比这个值大的资源，按字节算
+      deleteOriginFile: false // 是否删除原文件，最好不删除，服务器会自动优先返回同名的.gzip资源，如果找不到还可以拿原始文件
+    }),
     vue(),
     AutoImport({
       // Auto import functions from Vue, e.g. ref, reactive, toRef...
