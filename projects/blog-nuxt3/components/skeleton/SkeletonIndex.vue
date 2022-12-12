@@ -1,6 +1,6 @@
 <template>
   <div class="index-skeleton">
-    <div v-for="i in 20" :index="i" class="item-container">
+    <div v-for="i in 20" :key="i" class="py-[20px] px-0">
       <n-skeleton text size="medium"></n-skeleton>
       <n-space aling="center">
         <n-skeleton circle size="medium"></n-skeleton>
@@ -23,7 +23,6 @@ import {
 
 <style lang="scss" scoped>
 .item-container{
-  padding: 20px 0;
   border-bottom: 1px solid var(--border-color);
 }
 </style>

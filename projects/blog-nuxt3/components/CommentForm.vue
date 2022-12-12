@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-form-container">
+  <div class="flex flex-col items-end">
     <n-input
       :placeholder="placeholder"
       type="textarea"
@@ -11,7 +11,7 @@
         maxRows: 5
       }"
     />
-    <n-button class="commit-btn" type="primary" @click="commitComment" :loading="commentCommitting">{{ btnText }}</n-button>
+    <n-button class="mt-[12px]" type="primary" @click="commitComment" :loading="commentCommitting">{{ btnText }}</n-button>
   </div>
 </template>
 
@@ -68,14 +68,3 @@ async function commitComment() {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.comment-form-container{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  .commit-btn{
-    margin-top: 12px;
-  }
-}
-</style>

@@ -3,26 +3,26 @@
     <template #left>
       <h3>dedwefwf</h3>
     </template>
-    <n-card class="home-page">
+    <n-card>
 
       <SkeletonIndex v-if="pageLoading"></SkeletonIndex>
 
       <template v-else>
-        <div class="blog-container" v-for="blog of pageList">
-          <span class="blog-title" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
-          <div class="blog-info-container">
-            <div class="user-info info-item">
+        <div class="blog-container px-0 py-[20px]" v-for="blog of pageList">
+          <span class="cursor-pointer text-[20px]" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
+          <div class="flex items-center mt-[20px] gap-[12px]">
+            <div class="flex items-center cursor-pointer gap-[6px]">
               <UserAvatar :src="blog.createBy?.avatar" size="small" />
               <div>{{ blog.createBy?.name }}</div>
             </div>
-            <n-time class="info-item" type="relative" :time="new Date(blog.updatedAt)"></n-time>
-            <div class="action-container info-item" @click="likeBlog(blog)">
+            <n-time  type="relative" :time="new Date(blog.updatedAt)"></n-time>
+            <div class="flex items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
               <n-icon size="18" :color="blog.isLike ? 'var(--primary-color)' : null">
                 <ThumbLike16Regular />
               </n-icon>
               <span>{{ blog.likedByCount ||  '赞' }}</span>
             </div>
-            <div class="action-container info-item">
+            <div class="flex items-center cursor-pointer gap-[6px]">
               <n-icon size="18">
                 <CommentMultiple16Regular />
               </n-icon>
@@ -30,7 +30,7 @@
             </div>
           </div>
         </div>
-        <div class="index-pagination-container">
+        <div class="flex justify-end">
           <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
         </div>
       </template>
@@ -92,45 +92,8 @@ async function toBlogDetail(id: number){
 
 <style lang="scss" scoped>
 .blog-container{
-  padding: 20px 0;
   &+&{
     border-top: 1px solid var(--border-color);
   }
-  .blog-title{
-    font-size: 20px;
-    cursor: pointer;
-  }
-  .blog-info-container{
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-    .info-item{
-      margin-right: 12px;
-      &.user-info{
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        .n-avatar{
-          margin-right: 12px;
-        }
-      }
-      &.action-container{
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        color: var(--el-text-color-regular);
-        .n-icon{
-          margin-right: 3px;
-        }
-        >span{
-          font-size: 14px;
-        }
-      }
-    }
-  }
-}
-.index-pagination-container{
-  display: flex;
-  justify-content: flex-end;
 }
 </style>

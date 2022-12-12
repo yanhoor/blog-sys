@@ -1,5 +1,5 @@
 <template>
-  <n-space class="user-container" v-if="userInfo">
+  <n-space class="cursor-pointer" v-if="userInfo">
     <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
       <UserAvatar :src="userInfo.avatar"/>
@@ -87,8 +87,3 @@ async function handleLogout(){
 }
 </script>
 
-<style lang="scss" scoped>
-.user-container{
-  cursor: pointer;
-}
-</style>

@@ -2,7 +2,7 @@
   <NuxtLayout>
     <template #left>
       <n-space vertical align="center">
-        <div class="like-container">
+        <div class="cursor-pointer">
           <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike" @click="likeBlog(0)">
             <n-icon :size="28">
               <ThumbLike16Regular />
@@ -26,29 +26,29 @@
 
     <template v-else>
       <n-card shadow="never" class="blog-page">
-        <div class="blog-title">{{ blogInfo.title }}</div>
-        <div class="blog-info-container">
-          <div class="user-info info-item">
+        <div class="text-[26px] font-semibold">{{ blogInfo.title }}</div>
+        <div class="mt-[12px] flex items-center gap-[12px]">
+          <div class="flex cursor-pointer items-center gap-[6px]">
             <UserAvatar :src="blogInfo.createBy?.avatar" size="small"></UserAvatar>
             <div>{{ blogInfo.createBy?.name }}</div>
           </div>
-          <span class="info-item">发布于
-        <n-time class="info-item" type="relative" :time="new Date(blogInfo.updatedAt)"></n-time>
+          <span>发布于
+        <n-time type="relative" :time="new Date(blogInfo.updatedAt)"></n-time>
         </span>
         </div>
-        <div class="blog-content" v-html="blogInfo.content"></div>
+        <div v-html="blogInfo.content"></div>
       </n-card>
 
-      <n-card shadow="never" class="blog-comment-container">
-        <div class="comment-section" v-if="userInfo">
-          <UserAvatar class="comment-user" :src="userInfo?.avatar" size="small"></UserAvatar>
-          <CommentForm class="comment-form" :blogId="$route.query.id" @success="handlePageChange"/>
+      <n-card shadow="never" class="mt-[20px]">
+        <div class="comment-section flex items-start pb-[20px]" v-if="userInfo">
+          <UserAvatar class="mr-[12px]" :src="userInfo?.avatar" size="small"></UserAvatar>
+          <CommentForm class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
         <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
         <template v-for="comment of pageList" :key="comment.id">
           <BlogCommentItem :comment="comment" ref="commentRefs"/>
         </template>
-        <div class="comment-pagination-container">
+        <div class="mt-[12px] flex justify-end">
           <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
         </div>
       </n-card>
@@ -155,49 +155,7 @@ async function likeBlog(val: number) {
 </script>
 
 <style lang="scss" scoped>
-.like-container{
-  cursor: pointer;
-}
-.blog-page{
-  .blog-title{
-    font-size: 26px;
-    font-weight: 600;
-  }
-  .blog-info-container{
-    display: flex;
-    align-items: center;
-    margin-top: 12px;
-    .info-item{
-      margin-right: 12px;
-      &.user-info{
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        .n-avatar{
-          margin-right: 12px;
-        }
-      }
-    }
-  }
-}
-.blog-comment-container{
-  margin-top: 20px;
-  .comment-section{
-    display: flex;
-    align-items: flex-start;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    .comment-user{
-      margin-right: 12px;
-    }
-    .comment-form{
-      flex: 1;
-    }
-  }
-  .comment-pagination-container{
-    margin-top: 12px;
-    display: flex;
-    justify-content: flex-end;
-  }
+.comment-section{
+  border-bottom: 1px solid var(--border-color);
 }
 </style>

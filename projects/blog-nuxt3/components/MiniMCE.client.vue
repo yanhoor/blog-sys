@@ -1,7 +1,7 @@
 // 使用https://www.npmjs.com/package/minimce?activeTab=readme
 
 <template>
-  <div class="editor-container">
+  <div class="editor-container w-full">
     <MiniMCE v-bind="attrs" :options="editorOptions"/>
   </div>
 </template>
@@ -40,7 +40,6 @@ const editorOptions = ref({
 
 <style lang="scss" scoped>
 .editor-container{
-  width: 100%;
   :deep(.tox-tinymce){
     width: 100%;
     height: 900px !important;

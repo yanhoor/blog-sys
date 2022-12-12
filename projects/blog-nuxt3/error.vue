@@ -1,6 +1,6 @@
 <template>
   <!--出现错误时会自动进入这个页面-->
-  <div class="page-container">
+  <div class="w-full h-full flex items-center justify-center">
     <n-result status="404" title="404 页面不存在" description="生活总归带点荒谬" v-if="error.statusCode === 404">
       <template #footer>
         <n-button @click="() => clearError({ redirect: '/' })" type="primary">返回首页</n-button>
@@ -27,13 +27,3 @@ import {
 
 const props = defineProps({  error: Object })
 </script>
-
-<style lang="scss" scoped>
-.page-container{
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>

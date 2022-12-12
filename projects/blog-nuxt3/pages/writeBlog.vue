@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="empty">
-    <div class="write-blog-container">
+    <div class="mx-[150px] my-[20px]">
       <n-form ref="formRef" :model="postForm" :rules="rules">
         <n-form-item path="title" label="标题">
           <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
@@ -21,8 +21,8 @@
           <MiniMCE v-model="postForm.content" />
         </n-form-item>
       </n-form>
-      <div class="action-container">
-        <n-button type="primary" @click="handlePost">发布</n-button>
+      <div class="text-center">
+        <n-button class="w-[200px]" type="primary" @click="handlePost">发布</n-button>
       </div>
     </div>
   </NuxtLayout>
@@ -103,13 +103,5 @@ async function handlePost(){
 </script>
 
 <style lang="scss" scoped>
-.write-blog-container{
-  margin: 20px 150px;
-  .action-container{
-    text-align: center;
-    .n-button{
-      width: 200px;
-    }
-  }
-}
+
 </style>

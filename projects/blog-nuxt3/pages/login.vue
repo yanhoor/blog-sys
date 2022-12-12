@@ -13,14 +13,14 @@
       </n-form-item>
       <n-space vertical>
         <n-button
-          style="width: 100%"
+          class="w-full"
           type="primary"
           @click="handlePost"
         >
           登录
         </n-button>
         <n-button
-          style="width: 100%"
+          class="w-full"
           @click="toRegister"
         >
           没有账号，去注册

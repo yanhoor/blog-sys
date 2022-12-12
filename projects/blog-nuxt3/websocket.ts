@@ -54,11 +54,12 @@ class WS {
 
     this.ws.onerror = (e) => {
       console.log('======onerror=====', e)
+      this.ws?.close()
       this.reconnect()
     }
   }
 
-  close = () => {
+  closeWs = () => {
     this.isClosed = true
     clearTimeout(this.heartBeatTimer)
     this.ws?.close()

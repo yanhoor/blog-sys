@@ -1,14 +1,14 @@
 <template>
-  <div class="comment-container" ref="commentRef">
+  <div class="comment-container flex items-start pt-[20px] mb-[12px]" ref="commentRef">
     <UserAvatar :src="comment.createBy.avatar"></UserAvatar>
-    <div class="comment-right-container">
-      <span class="user-name">{{ comment.createBy.name }}</span>
-      <span class="content">
-        <span v-if="comment.replyTo" class="at-user">@{{ comment.replyTo.name }}</span>
+    <div class="comment-right-container flex-1 ml-[12px] flex flex-col">
+      <span class="text-[20px] font-semibold">{{ comment.createBy.name }}</span>
+      <span class="my-[12px] mx-0">
+        <span v-if="comment.replyTo" class="cursor-pointer mr-[5px] text-green-600">@{{ comment.replyTo.name }}</span>
         <span>{{ comment.content }}</span>
       </span>
-      <div class="action-container">
-        <n-time class="comment-time" type="relative" :time="new Date(comment.createdAt)"></n-time>
+      <div class="flex items-center">
+        <n-time class="mr-[12px]" type="relative" :time="new Date(comment.createdAt)"></n-time>
         <n-button text @click="triggerReply">
           <template #icon>
             <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
@@ -27,7 +27,7 @@
         />
       </n-collapse-transition>
 
-      <div class="reply-container">
+      <div class="reply-container rounded-[5px] mt-[12px]">
         <template v-for="reply of replyList" :key="reply.id">
           <BlogCommentItem :comment="reply" @refresh="handleRefresh"/>
         </template>
@@ -116,45 +116,14 @@ async function getComments() {
 
 <style lang="scss" scoped>
 .comment-container{
-  display: flex;
-  align-items: flex-start;
-  padding-top: 20px;
-  margin-bottom: 12px;
   &+&{
     border-top: 1px solid var(--border-color);
   }
-  .comment-right-container{
-    flex: 1;
-    margin-left: 12px;
-    display: flex;
-    flex-direction: column;
-    .user-name{
-      font-weight: 600;
-      font-size: 20px;
-    }
-    .content{
-      margin: 12px 0;
-      .at-user{
-        cursor: pointer;
-        color: #00dc82;
-        margin-right: 5px;
-      }
-    }
-    .action-container{
-      display: flex;
-      align-items: center;
-      .comment-time{
-        margin-right: 12px;
-      }
-    }
-    .reply-container{
-      background-color: var(--content-block-background-color);
-      border-radius: 5px;
-      margin-top: 12px;
-      :deep(.comment-container){
-        padding: 12px 12px 0;
-        //background-color: #F7F8FAB2;
-      }
+  .reply-container{
+    background-color: var(--content-block-background-color);
+    :deep(.comment-container){
+      padding: 12px 12px 0;
+      //background-color: #F7F8FAB2;
     }
   }
 }

@@ -1,11 +1,11 @@
 <template>
-  <n-card class="form-container">
+  <n-card class="w-[350px] relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
     <n-form ref="formRef" :model="registerForm" :rules="rules">
       <n-form-item path="name" label="名称">
         <n-input v-model:value="registerForm.name" @keydown.enter.prevent maxlength="8" show-count/>
       </n-form-item>
       <n-form-item path="mobile" label="手机号">
-        <n-input v-model:value="registerForm.mobile" @keydown.enter.prevent maxlength="11"/>
+        <n-input v-model:value="registerForm.mobile" @keydown.enter.prevent maxlength="11" show-count/>
       </n-form-item>
       <n-form-item path="password" label="密码">
         <n-input
@@ -30,14 +30,14 @@
       </n-form-item>
       <n-space vertical>
         <n-button
-          style="width: 100%"
+          class="w-full"
           type="primary"
           @click="handleRegister"
         >
           注册
         </n-button>
         <n-button
-          style="width: 100%"
+          class="w-full"
           @click="toLogin"
         >
           已有账号，去登录
