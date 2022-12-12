@@ -1,6 +1,6 @@
 <template>
   <div class="comment-container" ref="commentRef">
-    <n-avatar round :src="config.imageBase + comment.createBy.avatar"></n-avatar>
+    <UserAvatar :src="comment.createBy.avatar"></UserAvatar>
     <div class="comment-right-container">
       <span class="user-name">{{ comment.createBy.name }}</span>
       <span class="content">

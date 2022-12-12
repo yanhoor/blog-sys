@@ -2,7 +2,7 @@
   <n-space class="user-container" v-if="userInfo">
     <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-      <n-avatar round :src="config.imageBase + userInfo.avatar"></n-avatar>
+      <UserAvatar :src="userInfo.avatar"/>
     </n-dropdown>
     <layout-notification />
   </n-space>
@@ -74,7 +74,7 @@ async function handleLogout(){
         }else{
           token.value = ''
           userInfo.value = null
-          websocket.ws?.close()
+          websocket.closeWs()
         }
       }catch (e) {
 

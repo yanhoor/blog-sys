@@ -12,7 +12,7 @@
           <span class="blog-title" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
           <div class="blog-info-container">
             <div class="user-info info-item">
-              <n-avatar round :src="config.imageBase + blog.createBy?.avatar" size="small" />
+              <UserAvatar :src="blog.createBy?.avatar" size="small" />
               <div>{{ blog.createBy?.name }}</div>
             </div>
             <n-time class="info-item" type="relative" :time="new Date(blog.updatedAt)"></n-time>
@@ -66,7 +66,7 @@ definePageMeta({
 const router = useRouter()
 const userInfo = useUserInfo()
 const message = useMessage()
-const config = useRuntimeConfig()
+// const config = useRuntimeConfig()
 const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Blog>('/blog/list')
 
 async function likeBlog(blog: Blog) {

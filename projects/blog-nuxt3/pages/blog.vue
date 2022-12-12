@@ -29,7 +29,7 @@
         <div class="blog-title">{{ blogInfo.title }}</div>
         <div class="blog-info-container">
           <div class="user-info info-item">
-            <n-avatar :src="config.imageBase + blogInfo.createBy?.avatar" size="small"></n-avatar>
+            <UserAvatar :src="blogInfo.createBy?.avatar" size="small"></UserAvatar>
             <div>{{ blogInfo.createBy?.name }}</div>
           </div>
           <span class="info-item">发布于
@@ -41,7 +41,7 @@
 
       <n-card shadow="never" class="blog-comment-container">
         <div class="comment-section" v-if="userInfo">
-          <n-avatar class="comment-user" :src="config.imageBase + userInfo?.avatar" size="small"></n-avatar>
+          <UserAvatar class="comment-user" :src="userInfo?.avatar" size="small"></UserAvatar>
           <CommentForm class="comment-form" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
         <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
@@ -79,7 +79,6 @@ definePageMeta({
   key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效，在 app.vue 的 page-key
 })
 
-const config = useRuntimeConfig()
 const route = useRoute()
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
