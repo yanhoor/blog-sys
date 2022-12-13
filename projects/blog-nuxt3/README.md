@@ -71,7 +71,34 @@ onMounted(() => {
 
 - 使用 `tailwindcss` 后，样式被覆盖
 
-[潜在的样式冲突](https://www.naiveui.com/zh-CN/light/docs/style-conflict), [injectposition](https://tailwindcss.nuxt.dev/getting-started/options/#injectposition), [Conflict with tailwindcss normalize.css](https://github.com/tusen-ai/naive-ui/issues/2782)
+[潜在的样式冲突](https://www.naiveui.com/zh-CN/light/docs/style-conflict), [injectposition](https://tailwindcss.nuxt.dev/getting-started/options/#injectposition), [临时解决方案1](https://github.com/tailwindlabs/tailwindcss/issues/6602#issuecomment-1029161314), [临时解决方案2](https://www.whidy.net/vite-use-elementplus-and-tailwindcss-best-practice-1st/)
+
+  - [下载 `preflight` 文件](https://unpkg.com/tailwindcss@3.2.4/src/css/preflight.css)，并注释 `button` 相关代码
+
+  ```css
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    -webkit-appearance: button; /* 1 */
+    /*注释这两行*/
+    /*background-color: transparent; /* 2 */
+    /*background-image: none; /* 2 */
+  }
+  ```
+
+  - 修改 `tailwind.css` 文件，删除 `@tailwind base;`，引入上面下载的样式文件来替换
+
+    ```css
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    /*替换后*/
+    @import "preflight.css";
+    @tailwind components;
+    @tailwind utilities;
+    ```
 
 ### 布局不同的页面间跳转报错
 
@@ -84,7 +111,7 @@ onMounted(() => {
 ```text
 Cannot read properties of null (reading 'parentNode')
 
-Vue warn]: Unhandled error during execution of scheduler flush. This is likely a Vue internals bug. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core 
+Vue warn]: Unhandled error during execution of scheduler flush. This is likely a Vue internals bug. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core
 ```
 
 暂时确定是因为 `<NuxtPage>` 添加了 `page-key`，[参考](https://github.com/nuxt/framework/issues/2985)，在外面加 `<div>` 也无效
