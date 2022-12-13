@@ -1,5 +1,5 @@
 <template>
-  <div class="index-skeleton">
+  <div class="index-skeleton divide-y divide-border-light dark:divide-border-dark">
     <div v-for="i in 20" :key="i" class="py-[20px] px-0">
       <n-skeleton text size="medium"></n-skeleton>
       <n-space aling="center">
@@ -21,8 +21,3 @@ import {
 
 </script>
 
-<style lang="scss" scoped>
-.item-container{
-  border-bottom: 1px solid var(--border-color);
-}
-</style>

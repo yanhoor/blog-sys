@@ -40,15 +40,17 @@
       </n-card>
 
       <n-card shadow="never" class="mt-[20px]">
-        <div class="comment-section flex items-start pb-[20px]" v-if="userInfo">
+        <div class="border-solid border-b border-t-0 border-l-0 border-r-0 border-border-light dark:border-border-dark flex items-start pb-[20px]" v-if="userInfo">
           <UserAvatar class="mr-[12px]" :src="userInfo?.avatar" size="small"></UserAvatar>
           <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
-        <p id="commentSection">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
-        <template v-for="comment of pageList" :key="comment.id">
-          <BlogCommentItem :comment="comment" ref="commentRefs"/>
-        </template>
-        <div class="mt-[12px] flex justify-end">
+        <p id="commentSection" class="mt-[12px]">{{ pageTotal ? `${pageTotal} 条评论` : '评论' }}</p>
+        <div class="divide-y divide-border-light dark:divide-border-dark">
+          <template v-for="comment of pageList" :key="comment.id">
+            <BlogCommentItem :comment="comment" ref="commentRefs"/>
+          </template>
+        </div>
+        <div class="mt-[12px] flex justify-end border-solid border-t pt-[20px] border-border-light dark:border-border-dark">
           <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
         </div>
       </n-card>
@@ -159,8 +161,5 @@ async function likeBlog(val: number) {
     max-width: 100%;
     object-fit: contain;
   }
-}
-.comment-section{
-  border-bottom: 1px solid var(--border-color);
 }
 </style>

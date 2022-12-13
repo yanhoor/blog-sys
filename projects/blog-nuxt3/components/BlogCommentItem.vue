@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-container flex items-start pt-[20px] mb-[12px]" ref="commentRef">
+  <div class="flex items-start pt-[20px] mb-[12px]" ref="commentRef">
     <UserAvatar :src="comment.createBy.avatar"></UserAvatar>
     <div class="comment-right-container flex-1 ml-[12px] flex flex-col">
       <span class="text-[20px] font-semibold">{{ comment.createBy.name }}</span>
@@ -27,9 +27,9 @@
         />
       </n-collapse-transition>
 
-      <div class="reply-container rounded-[5px] mt-[12px]">
+      <div class="reply-container bg-content-light dark:bg-content-dark rounded-[5px] mt-[12px]">
         <template v-for="reply of replyList" :key="reply.id">
-          <BlogCommentItem :comment="reply" @refresh="handleRefresh"/>
+          <BlogCommentItem class="p-[12px] pb-0" :comment="reply" @refresh="handleRefresh"/>
         </template>
       </div>
     </div>
@@ -113,18 +113,3 @@ async function getComments() {
 }
 
 </script>
-
-<style lang="scss" scoped>
-.comment-container{
-  &+&{
-    border-top: 1px solid var(--border-color);
-  }
-  .reply-container{
-    background-color: var(--content-block-background-color);
-    :deep(.comment-container){
-      padding: 12px 12px 0;
-      //background-color: #F7F8FAB2;
-    }
-  }
-}
-</style>

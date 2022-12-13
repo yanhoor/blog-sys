@@ -1,5 +1,5 @@
 <template>
-  <n-layout class="default-layout bg-page-light dark:bg-page-dark">
+  <n-layout class="default-layout pb-[20px] bg-page-light dark:bg-page-dark">
     <n-layout-header class="sticky h-[60px] z-50 left-0 right-0 top-0 flex py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark">
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
@@ -30,7 +30,7 @@
         </n-switch>
       </n-space>
     </n-layout-header>
-    <n-layout-content class="my-[20px] mx-auto overflow-visible w-[960px] bg-page-light dark:bg-page-dark lg:w-auto xl:w-[1140px]">
+    <n-layout-content class="mt-[20px] mx-auto overflow-visible w-[960px] bg-page-light dark:bg-page-dark lg:w-auto xl:w-[1140px]">
       <!--<div class="main-left">
         <slot name="left"></slot>
       </div>-->

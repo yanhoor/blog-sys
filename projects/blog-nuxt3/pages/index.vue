@@ -8,29 +8,31 @@
       <SkeletonIndex v-if="pageLoading"></SkeletonIndex>
 
       <template v-else>
-        <div class="blog-container px-0 py-[20px]" v-for="blog of pageList">
-          <span class="cursor-pointer text-[20px]" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
-          <div class="flex items-center mt-[20px] gap-[12px]">
-            <div class="flex items-center cursor-pointer gap-[6px]">
-              <UserAvatar :src="blog.createBy?.avatar" size="small" />
-              <div>{{ blog.createBy?.name }}</div>
-            </div>
-            <n-time  type="relative" :time="new Date(blog.updatedAt)"></n-time>
-            <div class="flex items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
-              <n-icon size="18" :color="blog.isLike ? 'var(--primary-color)' : null">
-                <ThumbLike16Regular />
-              </n-icon>
-              <span>{{ blog.likedByCount ||  '赞' }}</span>
-            </div>
-            <div class="flex items-center cursor-pointer gap-[6px]">
-              <n-icon size="18">
-                <CommentMultiple16Regular />
-              </n-icon>
-              <span>{{ blog.commentsCount || '评论' }}</span>
+        <div class="divide-y divide-border-light dark:divide-border-dark">
+          <div class="blog-container px-0 py-[20px]" v-for="blog of pageList">
+            <span class="cursor-pointer text-[20px]" @click="toBlogDetail(blog.id)">{{ blog.title }}</span>
+            <div class="flex items-center mt-[20px] gap-[12px]">
+              <div class="flex items-center cursor-pointer gap-[6px]">
+                <UserAvatar :src="blog.createBy?.avatar" size="small" />
+                <div>{{ blog.createBy?.name }}</div>
+              </div>
+              <n-time  type="relative" :time="new Date(blog.updatedAt)"></n-time>
+              <div class="flex items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
+                <n-icon size="18" :color="blog.isLike ? 'var(--primary-color)' : null">
+                  <ThumbLike16Regular />
+                </n-icon>
+                <span>{{ blog.likedByCount ||  '赞' }}</span>
+              </div>
+              <div class="flex items-center cursor-pointer gap-[6px]">
+                <n-icon size="18">
+                  <CommentMultiple16Regular />
+                </n-icon>
+                <span>{{ blog.commentsCount || '评论' }}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-end">
+        <div class="flex justify-end border-solid border-t pt-[20px] border-border-light dark:border-border-dark">
           <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
         </div>
       </template>
@@ -90,10 +92,3 @@ async function toBlogDetail(id: number){
 }
 </script>
 
-<style lang="scss" scoped>
-.blog-container{
-  &+&{
-    border-top: 1px solid var(--border-color);
-  }
-}
-</style>
