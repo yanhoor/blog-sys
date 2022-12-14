@@ -10,6 +10,13 @@ class BaseController{
   errorLogger = errorLogger
   websocket = websocket
   WEBSOCKET_MESSAGE_TYPE = WEBSOCKET_MESSAGE_TYPE
+  // 返回的 code
+  CODE = {
+    NOT_LOGIN: 999, // 未登录/登录异常
+    USER_LOCK: 111, // 用户被锁定
+  }
+  // redis 储存用户 token 的 key 的前缀，token_[userId]
+  TOKEN_PREFIX = 'token_'
 
   getAuthUserId = async (ctx, next) => {
     const token = ctx.headers['authorization']

@@ -1,6 +1,7 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
 const jsonwebtoken = require('jsonwebtoken')
+const redisClient = require('../database/redis')
 
 class UserController extends BaseController{
   // 注册
@@ -37,6 +38,15 @@ class UserController extends BaseController{
   info = async (ctx, next) => {
     let id = await this.getAuthUserId(ctx, next)
     try{
+      const t = await redisClient.get(this.TOKEN_PREFIX + id)
+      if(!t){
+        return ctx.body = {
+          success: false,
+          code: this.CODE.NOT_LOGIN,
+          msg: '登录信息已过期'
+        }
+      }
+
       const user = await prisma.user.findUnique({
         where: {
           id
@@ -58,7 +68,7 @@ class UserController extends BaseController{
       if(user.lock === 1){
         return ctx.body = {
           success: false,
-          code: 111,
+          code: this.CODE.USER_LOCK,
           msg: '您的账号已经被锁定，请联系管理员解锁'
         }
       }
@@ -86,35 +96,40 @@ class UserController extends BaseController{
       return false
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        mobile
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          mobile
+        }
+      })
+      if(!user){
+        return ctx.body = {
+          success: false,
+          msg: '该手机号未注册'
+        }
       }
-    })
-    if(!user){
-      return ctx.body = {
-        success: false,
-        msg: '该手机号未注册'
+      if(user.type !== 1){
+        return ctx.body = {
+          success: false,
+          msg: '用户不存在'
+        }
       }
-    }
-    if(user.type !== 1){
-      return ctx.body = {
-        success: false,
-        msg: '用户不存在'
+      if(user?.password === password) {
+        const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
+        await redisClient.set(this.TOKEN_PREFIX + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
+        ctx.body = {
+          success: true,
+          msg: '登录成功',
+          result: token
+        }
+      }else{
+        ctx.body = {
+          success: false,
+          msg: '密码错误'
+        }
       }
-    }
-    if(user?.password === password) {
-      const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
-      ctx.body = {
-        success: true,
-        msg: '登录成功',
-        result: token
-      }
-    }else{
-      ctx.body = {
-        success: false,
-        msg: '密码错误'
-      }
+    }catch (e) {
+      this.errorLogger.error('user.adminLogin--------->', e)
     }
   }
 
@@ -133,44 +148,55 @@ class UserController extends BaseController{
       return false
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        mobile
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          mobile
+        }
+      })
+      if(!user){
+        return ctx.body = {
+          success: false,
+          msg: '该手机号未注册'
+        }
       }
-    })
-    if(!user){
-      return ctx.body = {
-        success: false,
-        msg: '该手机号未注册'
+      if(user.lock === 1){
+        return ctx.body = {
+          success: false,
+          code: 111,
+          msg: '您的账号已经被锁定，请联系管理员解锁'
+        }
       }
-    }
-    if(user.lock === 1){
-      return ctx.body = {
-        success: false,
-        code: 111,
-        msg: '您的账号已经被锁定，请联系管理员解锁'
+      if(user?.password === password) {
+        const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
+        await redisClient.set(this.TOKEN_PREFIX + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
+        ctx.body = {
+          success: true,
+          msg: '登录成功',
+          result: token
+        }
+      }else{
+        ctx.body = {
+          success: false,
+          msg: '密码错误'
+        }
       }
-    }
-    if(user?.password === password) {
-      const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
-      ctx.body = {
-        success: true,
-        msg: '登录成功',
-        result: token
-      }
-    }else{
-      ctx.body = {
-        success: false,
-        msg: '密码错误'
-      }
+    }catch (e) {
+      this.errorLogger.error('user.login--------->', e)
     }
   }
 
   // 登出
   logout = async (ctx, next) => {
-    ctx.body = {
-      success: true,
-      msg: '已退出登录'
+    try {
+      let id = await this.getAuthUserId(ctx, next)
+      await redisClient.delete(this.TOKEN_PREFIX + id)
+      ctx.body = {
+        success: true,
+        msg: '已退出登录'
+      }
+    }catch (e) {
+      this.errorLogger.error('user.logout--------->', e)
     }
   }
 

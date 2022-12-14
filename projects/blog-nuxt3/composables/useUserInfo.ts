@@ -16,7 +16,7 @@ export const useRefreshUserInfo = async () => {
         userInfo.value = result
         websocket.init()
       }
-      if(code === 111){
+      if(code === 111 || code === 999){
         token.value = null
         notification.error({
           content: msg

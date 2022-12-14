@@ -36,14 +36,18 @@ class Http{
     // 响应拦截配置
     this.api.interceptors.response.use(response => {
       // console.table(`响应拦截-->`, response);
-      // if(response.data.code == 900 && router.currentRoute.value.path != '/login'){
-      //   router.push({
-      //     path: '/login',
-      //     query: {
-      //       from: router.currentRoute.value.fullPath
-      //     }
-      //   })
-      // }
+      if(response.data.code == 999 && router.currentRoute.value.path != '/login'){
+        ElMessage.error({
+          message: response.data.msg
+        })
+        router.push({
+          path: '/login',
+          query: {
+            from: router.currentRoute.value.fullPath
+          }
+        })
+        return Promise.reject(error);
+      }
       return response;
     }, error => {
       console.log(`响应拦截出错-->`, error);
