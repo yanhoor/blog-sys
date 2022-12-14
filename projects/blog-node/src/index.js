@@ -3,10 +3,6 @@ const cors = require('koa2-cors')
 const { koaBody } = require('koa-body') // 在 ctx.request.body 获取请求参数
 const manageRouter = require('./routes/manage')
 const visitRouter = require('./routes/visit')
-const mount = require('koa-mount')
-const fs = require("fs");
-const path = require('path')
-const mime = require('mime')
 const { websocket } = require('./websocket')
 const { defaultLogger, errorLogger } = require('./log')
 
