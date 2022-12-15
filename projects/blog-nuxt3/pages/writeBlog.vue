@@ -33,6 +33,9 @@ import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NSelect, NForm, NFormI
 import { Blog, BlogCate } from '@/types'
 import {useFetchPost} from "~/composables/useBaseFetch";
 
+useHead({
+  title: '写文章'
+})
 definePageMeta({
   title: '写文章'
 })

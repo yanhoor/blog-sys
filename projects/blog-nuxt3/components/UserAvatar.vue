@@ -1,6 +1,6 @@
 <template>
   <n-avatar
-    class="flex justify-center items-center"
+    class="flex justify-center items-center cursor-pointer"
     round
     :size="props.size"
     :src="config.imageBase + props.src"

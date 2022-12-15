@@ -26,21 +26,22 @@
 
     <template v-else>
       <n-card shadow="never" class="blog-page">
-        <div class="text-[26px] font-semibold">{{ blogInfo.title }}</div>
-        <div class="mt-[12px] flex items-center gap-[12px]">
-          <div class="flex cursor-pointer items-center gap-[6px]">
-            <UserAvatar :src="blogInfo.createBy?.avatar" size="small"></UserAvatar>
-            <div>{{ blogInfo.createBy?.name }}</div>
+        <div class="text-[30px] font-semibold">{{ blogInfo.title }}</div>
+        <div class="my-[12px] flex items-center gap-[12px]">
+          <UserAvatar :src="blogInfo.createBy?.avatar" size="large"></UserAvatar>
+          <div class="flex-col gap-[6px]">
+            <div class="cursor-pointer text-[20px] font-semibold">{{ blogInfo.createBy?.name }}</div>
+            <div class="text-gray-400 flex items-center gap-[12px]">
+              <n-time format="yyyy-MM-dd hh:mm:ss" :time="new Date(blogInfo.updatedAt)"></n-time>
+              <span>阅读 {{ blogInfo.readCount }}</span>
+            </div>
           </div>
-          <span>发布于
-        <n-time type="relative" :time="new Date(blogInfo.updatedAt)"></n-time>
-        </span>
         </div>
         <div class="blog-content" v-html="blogInfo.content"></div>
       </n-card>
 
       <n-card shadow="never" class="mt-[20px]">
-        <div class="border-solid border-b border-t-0 border-l-0 border-r-0 border-border-light dark:border-border-dark flex items-start pb-[20px]" v-if="userInfo">
+        <div class="border-solid border-b border-border-light dark:border-border-dark flex items-start pb-[20px]" v-if="userInfo">
           <UserAvatar class="mr-[12px]" :src="userInfo?.avatar" size="small"></UserAvatar>
           <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
