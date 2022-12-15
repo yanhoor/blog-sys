@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end border-solid border-t pt-[20px] border-border-light dark:border-border-dark">
+    <div class="flex justify-end custom-border border-t pt-[20px]">
       <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
     </div>
   </template>
