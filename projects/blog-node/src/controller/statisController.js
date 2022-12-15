@@ -7,13 +7,8 @@ class StatisController extends BaseController{
     let rangeList = []
     for(let i = 6; i >= 0; i--){
       const date = dayjs().subtract(i, 'day')
-      const gte = new Date(date.startOf('date'))
-      const lte = new Date(date.endOf('date'))
       rangeList.push({
-        createdAt: {
-          gte,
-          lte
-        },
+        createdAt: this.createTimeRange(i, i),
         date: dayjs(date).format('YYYY-MM-DD')
       })
     }

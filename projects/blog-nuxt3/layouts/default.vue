@@ -1,26 +1,20 @@
 <template>
-  <n-layout class="default-layout pb-[20px] bg-page-light dark:bg-page-dark">
+  <n-layout class="default-layout min-h-full pb-[20px] bg-page-light dark:bg-page-dark">
     <n-layout-header class="sticky h-[60px] z-50 left-0 right-0 top-0 flex py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark">
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
-            <n-icon-wrapper :size="36" :border-radius="36">
-              <n-icon :size="28" :component="Home24Regular">
-              </n-icon>
-            </n-icon-wrapper>
+            <n-icon :size="28" :component="Home24Regular">
+            </n-icon>
           </template>
         </n-button>
       </div>
       <n-space class="items-center">
-        <n-input placeholder="搜索关键字" v-model="searchWord">
-          <template #prefix>
-            <n-icon :component="Search12Regular" />
-          </template>
-        </n-input>
+        <LayoutSearch />
 
         <LayoutUser/>
 
-        <n-switch class="ml-[20px]" v-model:value="colorModel" @update:value="handleChange" size="large" checked-value="dark" unchecked-value="light">
+        <n-switch v-model:value="colorModel" @update:value="handleChange" size="large" checked-value="dark" unchecked-value="light">
           <template #checked-icon>
             <n-icon :component="WeatherMoon16Regular" />
           </template>
@@ -69,7 +63,6 @@ import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, Home24Reg
 import { useColorMode } from '@vueuse/core'
 
 const config = useRuntimeConfig()
-const searchWord = ref()
 const colorModel = useColorMode()
 const darkMode = useDarkMode()
 const userInfo = useUserInfo()

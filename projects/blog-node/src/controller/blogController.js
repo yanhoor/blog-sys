@@ -53,10 +53,56 @@ class BlogController extends BaseController{
 
   list = async (ctx, next) => {
     try {
-      const { title, page = 1, pageSize = this.pageSize } = ctx.request.body
+      const { keyword, time, sort, page = 1, pageSize = this.pageSize } = ctx.request.body
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
-      if (title) filter.title = { contains: title }
+      if (keyword) filter.OR = [
+        {
+          title: {
+            contains: keyword
+          }
+        },
+        {
+          content: {
+            contains: keyword
+          }
+        }
+      ]
+      if(time){
+        let timeRange
+        switch (time) {
+          case '0':
+            timeRange = undefined
+            break
+          case '1':
+            timeRange = this.createTimeRange(1, 0)
+            break
+          case '2':
+            timeRange = this.createTimeRange(7, 0)
+            break
+          case '3':
+            timeRange = this.createTimeRange(90, 0)
+            break
+        }
+        filter.createdAt = timeRange
+      }
+      let orderBy = []
+      if(sort){
+        switch (sort) {
+          // 综合排序
+          case '1':
+            orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
+            break
+          // 最新优先
+          case '2':
+            orderBy.push({ updatedAt: 'desc' })
+            break
+          // 最热优先
+          case '3':
+            orderBy.push({ comments: { _count: 'desc' } })
+            break
+        }
+      }
       let userId = await this.getAuthUserId(ctx, next)
       const xprisma = prisma.$extends({
         result: {
@@ -114,7 +160,7 @@ class BlogController extends BaseController{
               }
             },
           },
-          orderBy: { updatedAt: 'desc' }
+          orderBy
         }),
         prisma.blog.count({ where: filter })
       ])
