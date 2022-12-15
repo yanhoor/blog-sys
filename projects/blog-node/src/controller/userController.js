@@ -36,14 +36,15 @@ class UserController extends BaseController{
 
   // 获取登录用户信息
   info = async (ctx, next) => {
-    let id = await this.getAuthUserId(ctx, next)
+    let id
     try{
-      const t = await redisClient.get(this.TOKEN_PREFIX + id)
+      id = await this.getAuthUserId(ctx, next)
+      const t = await redisClient.get(this.REDIS_KEY_PREFIX.TOKEN + id)
       if(!t){
         return ctx.body = {
           success: false,
           code: this.CODE.NOT_LOGIN,
-          msg: '登录信息已过期'
+          msg: '登录信息已过期，请重新登录'
         }
       }
 
@@ -116,7 +117,7 @@ class UserController extends BaseController{
       }
       if(user?.password === password) {
         const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
-        await redisClient.set(this.TOKEN_PREFIX + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
+        await redisClient.set(this.REDIS_KEY_PREFIX.TOKEN + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
         ctx.body = {
           success: true,
           msg: '登录成功',
@@ -169,7 +170,7 @@ class UserController extends BaseController{
       }
       if(user?.password === password) {
         const token = jsonwebtoken.sign({ id: user.id }, this.globalConfig.jwtSecret, { expiresIn: this.globalConfig.jwtTokenExpired }) // expiresIn token过期秒数
-        await redisClient.set(this.TOKEN_PREFIX + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
+        await redisClient.set(this.REDIS_KEY_PREFIX.TOKEN + user.id, token, { EX: this.globalConfig.jwtTokenExpired })
         ctx.body = {
           success: true,
           msg: '登录成功',
@@ -190,7 +191,7 @@ class UserController extends BaseController{
   logout = async (ctx, next) => {
     try {
       let id = await this.getAuthUserId(ctx, next)
-      await redisClient.delete(this.TOKEN_PREFIX + id)
+      await redisClient.del(this.REDIS_KEY_PREFIX.TOKEN + id)
       ctx.body = {
         success: true,
         msg: '已退出登录'
