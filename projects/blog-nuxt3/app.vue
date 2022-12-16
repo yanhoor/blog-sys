@@ -14,6 +14,7 @@ import { NConfigProvider, NMessageProvider, darkTheme, zhCN, dateZhCN } from 'na
 const colorModel = useColorMode()
 const darkMode = useDarkMode()
 const route = useRoute()
+const userInfo = useUserInfo()
 onMounted(() => {
   // 还要加个setTimeout 主题才会换??
   setTimeout(() => {
@@ -28,6 +29,10 @@ onMounted(() => {
       localStorage.setItem('random-key', t + '' + r)
     }
   }, 300)
+
+  if(userInfo.value){
+    useFetchNotificationList()
+  }
 })
 
 function getPathKey() {

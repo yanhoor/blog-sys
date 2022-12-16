@@ -9,22 +9,23 @@ export const useRefreshUserInfo = async () => {
   const userInfo = useUserInfo()
   const token = useCookie("token")
   const { notification } = createDiscreteApi(["notification"])
+  // console.log('-----------------', userInfo.value, websocket.ws)
   if(token.value && !userInfo.value) {
     try{
       const { result, success, code, msg } = await useFetchGet('/user/info', { })
       if(success){
         userInfo.value = result
-        websocket.init()
       }
       if(code === 111 || code === 999){
         token.value = null
-        notification.error({
+        return notification.error({
           content: msg
         })
       }
-      useFetchNotificationList() // todo: 为什么放在 if(success) 里面就报错
     }catch (e) {
 
     }
+  } else if(userInfo.value && !websocket.ws){
+    websocket.init()
   }
 }
