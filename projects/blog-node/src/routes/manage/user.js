@@ -13,5 +13,7 @@ router.post('/lock', controller.operateLock)
 router.post('/unlock', controller.operateLock)
 router.post('/updateAvatar', controller.updateAvatar)
 router.get('/info', controller.info)
+router.post('/update', controller.update)
+router.post('/:id', controller.userInfo)
 
 module.exports = router

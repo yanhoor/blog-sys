@@ -58,6 +58,10 @@ class UserController extends BaseController{
           avatar: true,
           mobile: true,
           lock: true,
+          introduce: true,
+          sign: true,
+          gender: true,
+          birthday: true,
         }
       })
       await prisma.user.update({
@@ -79,6 +83,78 @@ class UserController extends BaseController{
       }
     }catch (e) {
       this.errorLogger.error('user.info--------->', e)
+    }
+  }
+
+  userInfo = async (ctx, next) => {
+    const { id } = ctx.request.params
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: Number(id)
+        },
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+          // mobile: true,
+          createdAt: true,
+          lock: true,
+          introduce: true,
+          sign: true,
+          gender: true,
+          birthday: true,
+          // blogs: {
+          //   select: {
+          //     id: true,
+          //     updatedAt: true,
+          //     title: true,
+          //     content: true,
+          //     cate: {
+          //       select: {
+          //         id: true,
+          //         name: true
+          //       }
+          //     }
+          //   }
+          // }
+        }
+      })
+
+      return ctx.body = {
+        success: true,
+        result: user
+      }
+    }catch (e) {
+      this.errorLogger.error('user.userInfo--------->', e)
+    }
+  }
+
+  // 更新用户信息
+  update = async (ctx, next) => {
+    const req = ctx.request
+    const { name, avatar, introduce, sign, gender, birthday } = req.body
+    try{
+      if(!name) throw new Error('名称不能为空')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+    const form = { name, avatar, introduce, sign, gender, birthday: new Date(birthday) }
+    try {
+      let id = await this.getAuthUserId(ctx, next)
+      const result = await prisma.user.update({
+        where: { id },
+        data: form
+      })
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('user.update--------->', e)
     }
   }
 
