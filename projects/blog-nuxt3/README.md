@@ -8,6 +8,10 @@
 
 在引入全局依赖时，可以在 `plugins` 里面通过 `defineNuxtPlugin()` 定义，如 `dayjs`
 
+## 待完成功能
+
+- 数量记录：博主的所有文章累计被阅读数
+
 ## 问题记录
 
 ### build
@@ -67,7 +71,9 @@ onMounted(() => {
 })
 ```
 
-另外，如果不在 `NConfigProvider` 设置 `inline-theme-disabled`，在深色模式下刷新页面后，模式指示 `switch` 会显示 `light`
+  -另外，如果不在 `NConfigProvider` 设置 `inline-theme-disabled`，在深色模式下刷新页面后，模式指示 `switch` 会显示 `light`
+
+  - 在用户主页，深色模式下刷新页面，显示浅色
 
 - 使用 `tailwindcss` 后，样式被覆盖
 

@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="empty">
-    <div class="mx-[150px] my-[20px]">
+    <div class="mx-[150px] p-12 min-h-full">
       <n-form ref="formRef" :model="postForm" :rules="rules">
         <n-form-item path="title" label="标题">
           <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
@@ -22,7 +22,8 @@
         </n-form-item>
       </n-form>
       <div class="text-center">
-        <n-button class="w-[200px]" type="primary" @click="handlePost">发布</n-button>
+        <n-button class="w-[200px]" type="primary" @click="handlePost" :loading="
+        isProcessing">发布</n-button>
       </div>
     </div>
   </NuxtLayout>
@@ -54,6 +55,7 @@ const postForm = ref<BlogForm>({
   isPost: 1,
   cateId: undefined, // 空字符不会显示 placeholder
 })
+const isProcessing = ref(false)
 const formRef = ref<FormInst | null>(null)
 const rules: FormRules = {
   title: [
@@ -87,7 +89,9 @@ async function handlePost(){
     const { message } = createDiscreteApi(["message"])
     if (!errors) {
       try{
+        isProcessing.value = true
         const { result, success, msg } = await useFetchPost('/blog/edit', postForm.value)
+        isProcessing.value = false
         if(success){
           message.success('发布成功')
           await navigateTo('/', { replace: true })
@@ -95,7 +99,7 @@ async function handlePost(){
           message.error(msg as string)
         }
       }catch (e) {
-
+        isProcessing.value = false
       }
     } else {
       console.log(errors)
@@ -105,6 +109,3 @@ async function handlePost(){
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>

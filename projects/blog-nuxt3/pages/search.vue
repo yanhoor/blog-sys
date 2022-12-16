@@ -1,16 +1,14 @@
 <template>
   <NuxtLayout>
     <n-card>
-      <div class="py-[20px] sticky top-[60px] bg-block-light z-10">
-        <n-tabs type="line" v-model:value="searchParams.sort" @update:value="handleSearch">
-          <n-tab name="1">综合排序</n-tab>
-          <n-tab name="2">最新优先</n-tab>
-          <n-tab name="3">最热优先</n-tab>
-          <template #suffix>
-            <n-select class="w-[200px]" v-model:value="searchParams.time" :options="timeOptions" @update:value="handleSearch"></n-select>
-          </template>
-        </n-tabs>
-      </div>
+      <n-tabs class="py-[20px] sticky top-[60px] z-10" type="line" v-model:value="searchParams.sort" @update:value="handleSearch">
+        <n-tab name="1">综合排序</n-tab>
+        <n-tab name="2">最新优先</n-tab>
+        <n-tab name="3">最热优先</n-tab>
+        <template #suffix>
+          <n-select class="w-[200px]" v-model:value="searchParams.time" :options="timeOptions" @update:value="handleSearch"></n-select>
+        </template>
+      </n-tabs>
       <BlogList :searchParams="searchParams"/>
     </n-card>
   </NuxtLayout>

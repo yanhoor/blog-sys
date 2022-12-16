@@ -24,7 +24,7 @@
         </n-switch>
       </n-space>
     </n-layout-header>
-    <n-layout-content class="mt-[20px] mx-auto overflow-visible w-[960px] bg-page-light dark:bg-page-dark lg:w-auto xl:w-[1140px]">
+    <n-layout-content class="mt-[20px] mx-auto overflow-visible w-auto lg:w-[1024px] bg-page-light dark:bg-page-dark">
       <!--<div class="main-left">
         <slot name="left"></slot>
       </div>-->
@@ -36,9 +36,9 @@
           <slot name="right">dwdwed</slot>
         </div>-->
       </div>
-      <div class="mt-[20px]">
+      <!--<div class="mt-[20px]">
         <n-card>bottom</n-card>
-      </div>
+      </div>-->
     </n-layout-content>
   </n-layout>
 </template>
