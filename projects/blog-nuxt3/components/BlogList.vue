@@ -6,8 +6,8 @@
         <div class="cursor-pointer text-[20px] truncate" @click="toBlogDetail(blog.id)">{{ blog.title }}</div>
         <div class="flex items-center mt-[20px] gap-[12px]">
           <div class="flex items-center cursor-pointer gap-[6px]">
-            <UserAvatar :src="blog.createBy?.avatar" size="small" />
-            <div>{{ blog.createBy?.name }}</div>
+            <UserAvatar :user="blog.createBy" size="small"/>
+            <div @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
           </div>
           <n-time  type="relative" :time="new Date(blog.updatedAt)"></n-time>
           <div class="flex items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
@@ -45,6 +45,9 @@ import { Blog } from '@/types'
 interface Props {
   searchParams?: {
     keyword?: string
+    time?: string
+    sort?: string
+    uid?: string
   }
 }
 

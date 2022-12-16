@@ -1,10 +1,12 @@
 <template>
   <n-avatar
-    class="flex justify-center items-center cursor-pointer"
+    class="flex justify-center items-center"
+    :class="{'cursor-pointer': !disabled}"
     round
     :size="props.size"
-    :src="config.imageBase + props.src"
+    :src="config.imageBase + props.user?.avatar"
     :render-fallback="renderErrorAvatar"
+    @click="handleUserHome"
   ></n-avatar>
 </template>
 
@@ -15,9 +17,21 @@ import {
 } from "naive-ui"
 import { h } from 'vue'
 import {Person24Regular} from "@vicons/fluent"
+import { User } from '@/types'
 
-const props = defineProps(['src', 'size'])
+interface Props{
+  user: User
+  disabled?: boolean
+  size?: number | "small" | "medium" | "large"
+}
+const props = defineProps<Props>()
 const config = useRuntimeConfig()
+
+async function handleUserHome(){
+  if(props.disabled) return
+
+  await navigateTo({ path: '/user/' + props.user.id })
+}
 
 function renderErrorAvatar() {
   return h(

@@ -2,7 +2,7 @@
   <n-space class="cursor-pointer" v-if="userInfo">
     <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-      <UserAvatar :src="userInfo.avatar"/>
+      <UserAvatar :user="userInfo" disabled/>
     </n-dropdown>
     <layout-notification />
   </n-space>
@@ -32,10 +32,11 @@ const renderIcon = (icon: Component) => {
 
 const config = useRuntimeConfig()
 const userInfo = useUserInfo()
+const route = useRoute()
 const token = useCookie('token')
 const userOptions = ref([
   {
-    label: '个人中心',
+    label: '个人资料',
     key: 'profile',
     icon: renderIcon(PersonCircle12Regular)
   },
@@ -53,10 +54,20 @@ const userOptions = ref([
 
 function handleDropdownSelect(key: string | number){
   switch (key) {
+    case 'userHome':
+      handleUserHome()
+      break
+    case 'profile':
+      navigateTo({ name: 'user-profile' })
+      break
     case 'logout':
       handleLogout()
       break
   }
+}
+
+async function handleUserHome(){
+  await navigateTo({ path: '/user/' + userInfo.value?.id })
 }
 
 async function handleLogout(){
@@ -75,6 +86,7 @@ async function handleLogout(){
           token.value = ''
           userInfo.value = null
           websocket.closeWs()
+          checkCurrentPath()
         }
       }catch (e) {
 
@@ -84,6 +96,13 @@ async function handleLogout(){
 
     }
   })
+}
+
+// 假如当前在需要登录的页面
+async function checkCurrentPath() {
+  if(['/user/profile'].includes(route.path)){
+    await navigateTo({ path: '/', replace: true })
+  }
 }
 </script>
 

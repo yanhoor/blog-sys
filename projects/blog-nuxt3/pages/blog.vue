@@ -28,9 +28,9 @@
       <n-card shadow="never" class="blog-page">
         <div class="text-[30px] font-semibold">{{ blogInfo.title }}</div>
         <div class="my-[12px] flex items-center gap-[12px]">
-          <UserAvatar :src="blogInfo.createBy?.avatar" size="large"></UserAvatar>
+          <UserAvatar :user="blogInfo.createBy" size="large"></UserAvatar>
           <div class="flex-col gap-[6px]">
-            <div class="cursor-pointer text-[20px] font-semibold">{{ blogInfo.createBy?.name }}</div>
+            <div class="cursor-pointer text-[20px] font-semibold" @click="navigateTo({ path: '/user/' + blogInfo.createBy.id })">{{ blogInfo.createBy?.name }}</div>
             <div class="text-gray-400 flex items-center gap-[12px]">
               <n-time format="yyyy-MM-dd hh:mm:ss" :time="new Date(blogInfo.updatedAt)"></n-time>
               <span>阅读 {{ blogInfo.readCount }}</span>
@@ -42,7 +42,7 @@
 
       <n-card shadow="never" class="mt-[20px]">
         <div class="flex items-start pb-[20px]" v-if="userInfo">
-          <UserAvatar class="mr-[12px]" :src="userInfo?.avatar" size="small"></UserAvatar>
+          <UserAvatar class="mr-[12px]" :user="userInfo" size="small"></UserAvatar>
           <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
         </div>
         <template v-if="pageTotal">
@@ -105,7 +105,7 @@ async function initPage() {
 }
 
 onMounted(() => {
-  window.Prism.highlightAll()
+  window.Prism?.highlightAll()
   window.addEventListener('scroll', onScroll)
 })
 

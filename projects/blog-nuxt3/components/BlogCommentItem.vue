@@ -1,8 +1,16 @@
 <template>
   <div class="flex items-start pt-[20px] mb-[12px]" ref="commentRef">
-    <UserAvatar :src="comment.createBy.avatar"></UserAvatar>
+    <UserAvatar :user="comment.createBy"></UserAvatar>
     <div class="comment-right-container flex-1 ml-[12px] flex flex-col">
-      <span class="text-[20px] font-semibold">{{ comment.createBy.name }}</span>
+      <div class="cursor-pointer flex items-center gap-[12px]" @click="navigateTo({ path: '/user/' + comment.createBy.id })">
+        <span class="text-[20px] font-semibold">{{ comment.createBy.name }}</span>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <span class="text-gray-400 max-w-[180px] truncate">{{ comment.createBy.sign }}</span>
+          </template>
+          {{ comment.createBy.sign }}
+        </n-tooltip>
+      </div>
       <span class="my-[12px] mx-0">
         <span v-if="comment.replyTo" class="cursor-pointer mr-[5px] text-green-600">@{{ comment.replyTo.name }}</span>
         <span>{{ comment.content }}</span>
@@ -39,7 +47,7 @@
 <script setup lang="ts">
 import { Comment } from '@/types'
 import {
-  NAvatar,
+  NTooltip,
   NButton,
   NTime,
   NCollapseTransition,
