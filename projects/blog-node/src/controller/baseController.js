@@ -20,10 +20,20 @@ class BaseController{
   // redis 储存 的 key 的前缀
   REDIS_KEY_PREFIX = {
     TOKEN: 'token_', // 用户登录 token_[userId]
-    READ_BLOG_USER: 'read_blog_id_', // 博客的已读用户id集合
-    BLOG_CREATE_RANKING: 'blog_create_ranking', // 博客创建数排名有序集合
+
+    // 博客数据记录
+    READ_BLOG_USER: 'read_blog_id_', // 单个博客的已读用户id集合
+    LIKE_BLOG_USER: 'like_blog_id_', // 单个博客的点赞用户id集合
+    COLLECT_BLOG_USER: 'collect_blog_id_', // 单个博客的收藏用户id集合
     BLOG_READ_RANKING: 'blog_read_ranking', // 博客阅读数排名有序集合
-    // BLOG_LIKE_RANKING: 'blog_like_ranking', // 博客点赞数排名有序集合
+    BLOG_LIKE_RANKING: 'blog_like_ranking', // 博客点赞数排名有序集合
+    BLOG_COLLECT_RANKING: 'blog_collect_ranking', // 博客收藏数排名有序集合
+
+    // 用户数据记录
+    BLOG_CREATE_RANKING: 'blog_create_ranking', // 博客创建数排名有序集合
+    EVERY_BLOG_LIKE_USER: 'every_blog_like_user_', // 所有博客分别被点赞数量 hash
+    EVERY_BLOG_READ_USER: 'every_blog_read_user_', // 所有博客分别被阅读数量 hash
+    EVERY_BLOG_COLLECT_USER: 'every_blog_collect_user_', // 所有博客分别被收藏数量 hash
   }
 
   getAuthUserId = async (ctx, next) => {
@@ -44,7 +54,8 @@ class BaseController{
   createTimeRange = (preDiff, endDiff) => {
     const start = dayjs().subtract(preDiff, 'day')
     const end = dayjs().subtract(endDiff, 'day')
-    const gte = new Date(start.startOf('date'))
+    // 注意都是 endOf()
+    const gte = new Date(start.endOf('date'))
     const lte = new Date(end.endOf('date'))
 
     return {

@@ -1,5 +1,7 @@
 const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
+const redisClient = require('../database/redis')
+const dayjs = require("dayjs")
 
 class BlogController extends BaseController{
   // 管理端列表
@@ -53,9 +55,11 @@ class BlogController extends BaseController{
 
   list = async (ctx, next) => {
     try {
-      const { keyword, time, sort, page = 1, pageSize = this.pageSize } = ctx.request.body
+      let { keyword, time, sort, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
+      sort = sort?.toString()
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
+      if(uid) filter.createById = Number(uid)
       if (keyword) filter.OR = [
         {
           title: {
@@ -75,7 +79,12 @@ class BlogController extends BaseController{
             timeRange = undefined
             break
           case '1':
-            timeRange = this.createTimeRange(1, 0)
+            const start = dayjs().subtract(24, 'h')
+            const lte = new Date()
+            timeRange = {
+              gte: new Date(start),
+              lte
+            }
             break
           case '2':
             timeRange = this.createTimeRange(7, 0)
@@ -102,6 +111,8 @@ class BlogController extends BaseController{
             orderBy.push({ comments: { _count: 'desc' } })
             break
         }
+      }else{
+        orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
       }
       let userId = await this.getAuthUserId(ctx, next)
       const xprisma = prisma.$extends({
@@ -246,6 +257,8 @@ class BlogController extends BaseController{
         const res = await prisma.blog.create({
           data: newItem
         })
+        // 创建博客数递增
+        await redisClient.zIncrBy(this.REDIS_KEY_PREFIX.BLOG_CREATE_RANKING, 1, userId.toString())
         return ctx.body = {
           success: true,
           result: res
@@ -318,6 +331,7 @@ class BlogController extends BaseController{
               name: true
             }
           },
+          createById: true,
           createBy: {
             select: {
               id: true,
@@ -335,6 +349,20 @@ class BlogController extends BaseController{
           msg: '博客不存在'
         }
       }
+
+      const num = await redisClient.sCard(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id)
+      result.readCount = num
+
+      if(userId) {
+        const isRead = await redisClient.sIsMember(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id, userId.toString())
+        if(!isRead){
+          // 当前用户未读，记录阅读数
+          await redisClient.zIncrBy(this.REDIS_KEY_PREFIX.BLOG_READ_RANKING, 1, id.toString())
+        }
+        // 记录已读用户
+        await redisClient.sAdd(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id, userId.toString())
+      }
+      await redisClient.hSet(this.REDIS_KEY_PREFIX.EVERY_BLOG_READ_USER + result.createById, id, num)
 
       return ctx.body = {
         success: true,
@@ -445,6 +473,9 @@ class BlogController extends BaseController{
             }
           }
         })
+
+        await redisClient.sAdd(this.REDIS_KEY_PREFIX.LIKE_BLOG_USER + id, userId.toString())
+
         const notification = await prisma.notification.create({
           data: {
             createById: Number(userId),
@@ -485,8 +516,14 @@ class BlogController extends BaseController{
             }
           }
         })
+
+        await redisClient.sRem(this.REDIS_KEY_PREFIX.LIKE_BLOG_USER + id, userId.toString())
       }
 
+      // 更新被点赞数
+      const num = await redisClient.sCard(this.REDIS_KEY_PREFIX.LIKE_BLOG_USER + id)
+      await redisClient.zAdd(this.REDIS_KEY_PREFIX.BLOG_LIKE_RANKING, { score: num, value: id.toString() })
+      await redisClient.hSet(this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + userId, id, num)
       return ctx.body = {
         success: true
       }
@@ -534,6 +571,9 @@ class BlogController extends BaseController{
             }
           }
         })
+
+        await redisClient.sAdd(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id, userId.toString())
+
         const notification = await prisma.notification.create({
           data: {
             createById: Number(userId),
@@ -570,7 +610,14 @@ class BlogController extends BaseController{
             }
           }
         })
+
+        await redisClient.sRem(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id, userId.toString())
       }
+
+      // 更新被收藏数
+      const num = await redisClient.sCard(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id)
+      await redisClient.zAdd(this.REDIS_KEY_PREFIX.BLOG_COLLECT_RANKING, { score: num, value: id.toString() })
+      await redisClient.hSet(this.REDIS_KEY_PREFIX.EVERY_BLOG_COLLECT_USER + userId, id, num)
 
       return ctx.body = {
         success: true
