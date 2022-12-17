@@ -5,15 +5,14 @@
       <div class="px-0 py-[20px]" v-for="blog of pageList">
         <div class="cursor-pointer text-[20px] truncate" @click="toBlogDetail(blog.id)">{{ blog.title }}</div>
         <div class="flex items-center mt-[20px] gap-[12px]">
-          <div class="flex items-center cursor-pointer gap-[6px]">
+          <div class="flex items-center cursor-pointer gap-[6px]" v-if="props.showAvatar">
             <UserAvatar :user="blog.createBy" size="small"/>
-            <div @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
+            <div class="text-green-700" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
           </div>
-          <n-time  type="relative" :time="new Date(blog.updatedAt)"></n-time>
+          <n-time  type="date" :time="new Date(blog.updatedAt)"></n-time>
           <div class="flex items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
-            <n-icon size="18" :color="blog.isLike ? 'var(--primary-color)' : null">
-              <ThumbLike16Regular />
-            </n-icon>
+            <n-icon class="text-green-700" size="18" :component="ThumbLike16Filled" v-if="blog.isLike"></n-icon>
+            <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
             <span>{{ blog.likedByCount ||  '赞' }}</span>
           </div>
           <div class="flex items-center cursor-pointer gap-[6px]">
@@ -21,6 +20,11 @@
               <CommentMultiple16Regular />
             </n-icon>
             <span>{{ blog.commentsCount || '评论' }}</span>
+          </div>
+          <div class="flex items-center cursor-pointer gap-[6px]" @click="collectBlog(blog)">
+            <n-icon class="text-green-700" size="18" :component="Star48Filled" v-if="blog.isCollect"></n-icon>
+            <n-icon size="18" :component="Star48Regular" v-else></n-icon>
+            <span>{{ blog.collectedByCount || '收藏' }}</span>
           </div>
         </div>
       </div>
@@ -32,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
+import { CommentMultiple16Regular, ThumbLike16Regular, ThumbLike16Filled, Star48Regular, Star48Filled } from '@vicons/fluent'
 import {useFetchPost} from "@/composables/useBaseFetch"
 import {
   NPagination,
@@ -43,6 +47,7 @@ import {
 import { Blog } from '@/types'
 
 interface Props {
+  showAvatar?: boolean
   searchParams?: {
     keyword?: string
     time?: string
@@ -51,7 +56,9 @@ interface Props {
   }
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  showAvatar: true
+})
 
 const router = useRouter()
 const userInfo = useUserInfo()
@@ -68,6 +75,23 @@ async function likeBlog(blog: Blog) {
     if(success){
       blog.isLike = !blog.isLike
       blog.isLike ? blog.likedByCount ++ : blog.likedByCount --
+    }
+  }catch (e) {
+
+  }
+}
+
+async function collectBlog(blog: Blog) {
+  const { message } = createDiscreteApi(["message"])
+  if(!userInfo.value) {
+    return message.info('请先登录')
+  }
+
+  try{
+    const { result, success } = await useFetchPost('/blog/collect', { id: blog.id, isCollect: blog.isCollect ? 0 : 1 })
+    if(success){
+      blog.isCollect = !blog.isCollect
+      blog.isCollect ? blog.collectedByCount ++ : blog.collectedByCount --
     }
   }catch (e) {
 

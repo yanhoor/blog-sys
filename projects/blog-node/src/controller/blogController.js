@@ -128,6 +128,18 @@ class BlogController extends BaseController{
               compute(blog) {
                 return blog.likedBy.some(item => item.userId == userId)
               },
+            },
+            collectedByCount: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.length
+              },
+            },
+            isCollect: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.some(item => item.userId == userId)
+              },
             }
           },
         },
@@ -144,8 +156,10 @@ class BlogController extends BaseController{
             updatedAt: true,
             launch: true,
             likedByCount: true,
+            collectedByCount: true,
             commentsCount: true,
             isLike: true,
+            isCollect: true,
             cate: {
               select: {
                 id: true,
@@ -457,6 +471,91 @@ class BlogController extends BaseController{
       }
     }catch (e) {
       this.errorLogger.error('blog.like--------->', e)
+    }
+  }
+
+  // 收藏
+  collect = async (ctx, next) => {
+    const { id, isCollect } = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
+    try{
+      if(!id) throw new Error('博客id不能为空')
+      if(!userId) throw new Error('用户未登录')
+      if(isCollect === undefined) throw new Error('isCollect不能为空')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try{
+      if(isCollect){
+        const blog = await prisma.blog.findUnique({
+          where: { id }
+        })
+        await prisma.blog.update({
+          where: { id },
+          data: {
+            collectedBy: {
+              create: [
+                // 创建 UserLikeBlogs
+                {
+                  user: {
+                    // 连接到操作的 user
+                    connect: {
+                      id: userId
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        })
+        const notification = await prisma.notification.create({
+          data: {
+            createById: Number(userId),
+            receiveUserId: blog.createById,
+            content: JSON.stringify({
+              type: 'collect_blog',
+              blogId: Number(id),
+            })
+          }
+        })
+      }else{
+        // 这样好像也可以
+        // await prisma.userLikeBlogs.delete({
+        //   where: {
+        //     userId_blogId: {
+        //       userId,
+        //       blogId: id
+        //     }
+        //   }
+        // })
+        await prisma.blog.update({
+          where: { id },
+          data: {
+            collectedBy: {
+              delete: [
+                // 删除相关 UserLikeBlogs
+                {
+                  userId_blogId: {
+                    userId,
+                    blogId: id
+                  }
+                }
+              ]
+            }
+          }
+        })
+      }
+
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('blog.collect--------->', e)
     }
   }
 }

@@ -28,14 +28,15 @@ model User {
   birthday     DateTime?
   deletedAt    DateTime?
 
-  blogs                Blog[]          @relation("CreateBlog")
+  blogs                Blog[]             @relation("CreateBlog")
   // 与博客likeBy隐式多对多
   likeBlogs            UserLikeBlogs[]
-  createNotifications  Notification[]  @relation("CreateNotification")
-  receiveNotifications Notification[]  @relation("ReceiveNotifications")
-  createComments       Comment[]       @relation("CreateComment")
+  collectBlogs         UserCollectBlogs[]
+  createNotifications  Notification[]     @relation("CreateNotification")
+  receiveNotifications Notification[]     @relation("ReceiveNotifications")
+  createComments       Comment[]          @relation("CreateComment")
   blogCates            BlogCate[]
-  replyComments        Comment[]       @relation("ReplyComment")
+  replyComments        Comment[]          @relation("ReplyComment")
 
   @@index([createdAt])
 }
@@ -62,17 +63,28 @@ model UserLikeBlogs {
   @@id([userId, blogId])
 }
 
+model UserCollectBlogs {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, blogId])
+}
+
 model Blog {
-  id         Int             @id @default(autoincrement())
-  createdAt  DateTime        @default(now())
-  createBy   User            @relation(name: "CreateBlog", fields: [createById], references: [id])
-  createById Int
-  likedBy    UserLikeBlogs[]
-  updatedAt  DateTime        @updatedAt
-  cate       BlogCate?       @relation(fields: [cateId], references: [id])
-  cateId     Int?
-  launch     Int             @default(0)
-  operateAt  DateTime? // 发布/下架时间
+  id          Int                @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  createBy    User               @relation(name: "CreateBlog", fields: [createById], references: [id])
+  createById  Int
+  likedBy     UserLikeBlogs[]
+  collectedBy UserCollectBlogs[]
+  updatedAt   DateTime           @updatedAt
+  cate        BlogCate?          @relation(fields: [cateId], references: [id])
+  cateId      Int?
+  launch      Int                @default(0)
+  operateAt   DateTime? // 发布/下架时间
 
   title   String @db.VarChar(255)
   content String @db.Text

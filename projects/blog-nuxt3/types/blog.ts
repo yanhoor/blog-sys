@@ -5,5 +5,7 @@ export interface Blog{
   cateId?: string | number
   launch?: string | number
   isLike?: boolean
+  isCollect?: boolean
   likedByCount?: number
+  collectedByCount?: number
 }
