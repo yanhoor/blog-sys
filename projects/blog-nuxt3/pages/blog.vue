@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout>
-    <template #left>
+    <!--<template #left>
       <n-space vertical align="center">
         <div class="cursor-pointer">
           <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike" @click="likeBlog(0)">
@@ -18,46 +18,74 @@
           </n-icon>
         </a>
       </n-space>
-    </template>
+    </template>-->
 
     <n-card shadow="never" v-if="!blogInfo">
       <SkeletonBlog></SkeletonBlog>
     </n-card>
 
-    <template v-else>
-      <n-card shadow="never" class="blog-page">
-        <div class="text-[30px] font-semibold">{{ blogInfo.title }}</div>
-        <div class="my-[12px] flex items-center gap-[12px]">
-          <UserAvatar :user="blogInfo.createBy" size="large"></UserAvatar>
-          <div class="flex-col gap-[6px]">
-            <div class="cursor-pointer text-[20px] font-semibold" @click="navigateTo({ path: '/user/' + blogInfo.createBy.id })">{{ blogInfo.createBy?.name }}</div>
-            <div class="text-gray-400 flex items-center gap-[12px]">
-              <n-time format="yyyy-MM-dd hh:mm:ss" :time="new Date(blogInfo.updatedAt)"></n-time>
-              <span>阅读 {{ blogInfo.readCount }}</span>
+    <div class="flex items-start gap-8" v-else>
+      <div class="sticky top-[120px] flex flex-col items-center gap-8">
+        <n-badge :value="blogInfo.likedByCount">
+          <n-button circle size="large" class="w-[48px] h-[48px]" @click="likeBlog">
+            <template #icon>
+              <n-icon class="text-green-700" size="30" :component="ThumbLike16Filled" v-if="blogInfo.isLike"></n-icon>
+              <n-icon size="30" :component="ThumbLike16Regular" v-else></n-icon>
+            </template>
+          </n-button>
+        </n-badge>
+        <n-badge :value="blogInfo.collectedByCount">
+          <n-button circle size="large" class="w-[48px] h-[48px]" @click="collectBlog">
+            <template #icon>
+              <n-icon class="text-green-700" size="30" :component="Star48Filled" v-if="blogInfo.isCollect"></n-icon>
+              <n-icon size="30" :component="Star48Regular" v-else></n-icon>
+            </template>
+          </n-button>
+        </n-badge>
+        <n-badge :value="pageTotal">
+          <n-button circle size="large" class="w-[48px] h-[48px]" @click="toCommentSection">
+            <template #icon>
+              <n-icon class="text-green-700" size="30" :component="CommentMultiple28Filled" v-if="pageTotal"></n-icon>
+              <n-icon class="text-green-700" size="30" :component="CommentMultiple16Regular" v-else></n-icon>
+            </template>
+          </n-button>
+        </n-badge>
+      </div>
+      <div class="flex-1">
+        <n-card shadow="never" class="blog-page">
+          <div class="text-[30px] font-semibold">{{ blogInfo.title }}</div>
+          <div class="my-[12px] flex items-center gap-[12px]">
+            <UserAvatar :user="blogInfo.createBy" size="large"></UserAvatar>
+            <div class="flex-col gap-[6px]">
+              <div class="cursor-pointer text-[20px] font-semibold" @click="navigateTo({ path: '/user/' + blogInfo.createBy.id })">{{ blogInfo.createBy?.name }}</div>
+              <div class="text-gray-400 flex items-center gap-[12px]">
+                <n-time type="datetime" format="yyyy-MM-dd hh:mm:ss" :time="new Date(blogInfo.updatedAt)"></n-time>
+                <span>阅读 {{ blogInfo.readCount }}</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="blog-content" v-html="blogInfo.content"></div>
-      </n-card>
+          <div class="blog-content" v-html="blogInfo.content"></div>
+        </n-card>
 
-      <n-card shadow="never" class="mt-[20px]">
-        <div class="flex items-start pb-[20px]" v-if="userInfo">
-          <UserAvatar class="mr-[12px]" :user="userInfo" size="small"></UserAvatar>
-          <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
-        </div>
-        <template v-if="pageTotal">
-          <div id="commentSection" class="custom-border border-t pt-[12px]">{{ pageTotal }} 条评论</div>
-          <div class="divide-y divide-border-light dark:divide-border-dark">
-            <template v-for="comment of pageList" :key="comment.id">
-              <BlogCommentItem :comment="comment" ref="commentRefs"/>
-            </template>
+        <n-card shadow="never" class="mt-[20px]" id="commentSection">
+          <div class="flex items-start pb-[20px]" v-if="userInfo">
+            <UserAvatar class="mr-[12px]" :user="userInfo" size="small"></UserAvatar>
+            <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
           </div>
-          <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
-            <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
-          </div>
-        </template>
-      </n-card>
-    </template>
+          <template v-if="pageTotal">
+            <div class="custom-border border-t pt-[12px]">{{ pageTotal }} 条评论</div>
+            <div class="divide-y divide-border-light dark:divide-border-dark">
+              <template v-for="comment of pageList" :key="comment.id">
+                <BlogCommentItem :comment="comment" ref="commentRefs"/>
+              </template>
+            </div>
+            <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
+              <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
+            </div>
+          </template>
+        </n-card>
+      </div>
+    </div>
 
     <n-back-top :right="50"/>
   </NuxtLayout>
@@ -65,9 +93,10 @@
 
 <script setup lang="ts">
 import { Comment, Blog } from '@/types'
-import { ThumbLike16Regular, CommentMultiple16Regular } from '@vicons/fluent'
+import { ThumbLike16Regular, CommentMultiple16Regular, ThumbLike16Filled, Star48Regular, Star48Filled, CommentMultiple28Filled } from '@vicons/fluent'
 import {
   NButton,
+  NBadge,
   NSpace,
   NIconWrapper,
   NIcon,
@@ -77,10 +106,11 @@ import {
   NPagination,
   createDiscreteApi
 } from "naive-ui"
+import {useFetchPost} from "~/composables/useBaseFetch";
 
 definePageMeta({
   // pageTransition: false, // 不然 window.Prism.highlightAll() 没效果
-  key: (route) => route.query.id as string || 'blog' // 不然不同博客间跳转无效，在 app.vue 的 page-key
+  key: (route) => route.fullPath // 不然不同博客间跳转无效，在 app.vue 的 page-key
 })
 
 const route = useRoute()
@@ -142,19 +172,44 @@ async function getBlogInfo(){
   }
 }
 
-async function likeBlog(val: number) {
+async function likeBlog() {
+  const { message } = createDiscreteApi(["message"])
   if(!userInfo.value) {
-    return navigateTo({  path: '/login' })
+    return message.info('请先登录')
   }
 
   try{
-    const { result, success } = await useFetchPost('/blog/like', { id: blogInfo.value.id, isLike: val })
+    const { result, success } = await useFetchPost('/blog/like', { id: blogInfo.value.id, isLike: blogInfo.value.isLike ? 0 : 1 })
     if(success){
       getBlogInfo()
+    }else{
+      message.error('点赞失败')
     }
   }catch (e) {
 
   }
+}
+
+async function collectBlog() {
+  const { message } = createDiscreteApi(["message"])
+  if(!userInfo.value) {
+    return message.info('请先登录')
+  }
+
+  try{
+    const { result, success } = await useFetchPost('/blog/collect', { id: blogInfo.value.id, isCollect: blogInfo.value.isCollect ? 0 : 1 })
+    if(success){
+      getBlogInfo()
+    }else{
+      message.error('收藏失败')
+    }
+  }catch (e) {
+
+  }
+}
+
+function toCommentSection() {
+  location.href = '#commentSection'
 }
 </script>
 

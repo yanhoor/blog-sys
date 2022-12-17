@@ -16,9 +16,8 @@
             <span>{{ blog.likedByCount ||  '赞' }}</span>
           </div>
           <div class="flex items-center cursor-pointer gap-[6px]">
-            <n-icon size="18">
-              <CommentMultiple16Regular />
-            </n-icon>
+            <n-icon class="text-green-700" size="18" :component="CommentMultiple28Filled" v-if="blog.commentsCount"></n-icon>
+            <n-icon size="18" :component="CommentMultiple16Regular" v-else></n-icon>
             <span>{{ blog.commentsCount || '评论' }}</span>
           </div>
           <div class="flex items-center cursor-pointer gap-[6px]" @click="collectBlog(blog)">
@@ -36,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { CommentMultiple16Regular, ThumbLike16Regular, ThumbLike16Filled, Star48Regular, Star48Filled } from '@vicons/fluent'
+import { CommentMultiple16Regular, CommentMultiple28Filled, ThumbLike16Regular, ThumbLike16Filled, Star48Regular, Star48Filled } from '@vicons/fluent'
 import {useFetchPost} from "@/composables/useBaseFetch"
 import {
   NPagination,

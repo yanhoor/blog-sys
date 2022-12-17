@@ -276,6 +276,24 @@ class BlogController extends BaseController{
                 return blog.likedBy.some(item => item.userId == userId)
               },
             },
+            likedByCount: {
+              needs: { likedBy: true },
+              compute(blog) {
+                return blog.likedBy.length
+              },
+            },
+            collectedByCount: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.length
+              },
+            },
+            isCollect: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.some(item => item.userId == userId)
+              },
+            }
           },
         },
       })
@@ -291,6 +309,9 @@ class BlogController extends BaseController{
           launch: true,
           content: true,
           isLike: true,
+          likedByCount: true,
+          collectedByCount: true,
+          isCollect: true,
           cate: {
             select: {
               id: true,
