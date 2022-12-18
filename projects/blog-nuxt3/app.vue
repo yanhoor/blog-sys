@@ -1,6 +1,7 @@
 <template>
   <n-message-provider>
     <NConfigProvider :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
+      <NuxtLoadingIndicator />
       <!--导航会报错-->
       <!--<NuxtPage :page-key="getPathKey"/>-->
       <NuxtPage/>
@@ -10,6 +11,7 @@
 
 <script setup>
 import { NConfigProvider, NMessageProvider, darkTheme, zhCN, dateZhCN } from 'naive-ui'
+import websocket from "~/websocket"
 
 const colorModel = useColorMode()
 const darkMode = useDarkMode()
@@ -32,6 +34,10 @@ onMounted(() => {
 
   if(userInfo.value){
     useFetchNotificationList()
+  }
+
+  if(userInfo.value && !websocket.ws){
+    websocket.init()
   }
 })
 
