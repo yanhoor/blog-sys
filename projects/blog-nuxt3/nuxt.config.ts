@@ -35,18 +35,27 @@ export default defineNuxtConfig({
       //   { name: 'naive-ui-style' },
       // ],
       // 也可以在 server.plugins 目录添加
-      script: [
-        {
-          src: './prism.js'
-        }
-      ],
-      link: [
-        { rel: 'stylesheet', href: './prism.css' },
-        {
-          rel: "icon",
-          href: "https://nuxt.com/icon.png",
-        },
-      ]
+      // script: [
+      //   {
+      //     src: './prism.js'
+      //   }
+      // ],
+      // link: [
+      //   { rel: 'stylesheet', href: './prism.css' },
+      //   {
+      //     rel: "icon",
+      //     href: "https://nuxt.com/icon.png",
+      //   },
+      // ]
+    },
+    // https://nuxt.com/docs/getting-started/transitions
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in' // default
+    },
+    layoutTransition: {
+      name: 'slide',
+      mode: 'out-in' // default
     }
   },
   // https://v3.nuxtjs.org/getting-started/deployment
