@@ -50,7 +50,7 @@ class WS{
       const uid = sp.get('token')
       // 前端刷新页面就会重连，所以需要替换原来的ws
       this.wsMap.set(uid.toString(), ws)
-      console.log('ws connection uid----->', uid, this.wsMap.get(uid))
+      // console.log('ws connection uid----->', uid, this.wsMap.get(uid))
 
       this.websocket = ws
 

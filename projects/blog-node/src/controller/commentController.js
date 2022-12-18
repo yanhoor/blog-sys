@@ -104,6 +104,7 @@ class CommentController extends BaseController{
                 id: true,
                 name: true,
                 avatar: true,
+                sign: true,
               }
             },
             replyTo: {

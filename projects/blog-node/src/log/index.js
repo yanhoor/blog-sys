@@ -11,7 +11,7 @@ log4js.configure({
   categories: {
     // level 指最低的级别，低于这个级别的都不会显示
     // 所有级别：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF
-    default: { appenders: ["console"], level: "debug" },
+    default: { appenders: ["console"], level: "debug" }, // 只输出到 console
     error: { appenders: ["error", "console"], level: "error" }, // 这样使用 error 分类时，错误也会在 console 输出
     http: { appenders: ["access"], level: "debug" },
   },
