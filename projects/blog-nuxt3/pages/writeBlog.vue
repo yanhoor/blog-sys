@@ -1,32 +1,30 @@
 <template>
-  <NuxtLayout name="empty">
-    <div class="mx-[150px] p-12 min-h-full">
-      <n-form ref="formRef" :model="postForm" :rules="rules">
-        <n-form-item path="title" label="标题">
-          <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
-        </n-form-item>
-        <n-form-item path="cateId" label="分类">
-          <n-select
-            v-model:value="postForm.cateId"
-            size="large"
-            :options="cateList"
-            label-field="name"
-            value-field="id"
-            placeholder="请选择文章分类"
-            filterable
-            clearable
-          />
-        </n-form-item>
-        <n-form-item path="content" label="内容">
-          <MiniMCE v-model="postForm.content" />
-        </n-form-item>
-      </n-form>
-      <div class="text-center">
-        <n-button class="w-[200px]" type="primary" @click="handlePost" :loading="
+  <div class="mx-[150px] p-12 min-h-full">
+    <n-form ref="formRef" :model="postForm" :rules="rules">
+      <n-form-item path="title" label="标题">
+        <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
+      </n-form-item>
+      <n-form-item path="cateId" label="分类">
+        <n-select
+          v-model:value="postForm.cateId"
+          size="large"
+          :options="cateList"
+          label-field="name"
+          value-field="id"
+          placeholder="请选择文章分类"
+          filterable
+          clearable
+        />
+      </n-form-item>
+      <n-form-item path="content" label="内容">
+        <MiniMCE v-model="postForm.content" />
+      </n-form-item>
+    </n-form>
+    <div class="text-center">
+      <n-button class="w-[200px]" type="primary" @click="handlePost" :loading="
         isProcessing">发布</n-button>
-      </div>
     </div>
-  </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -38,7 +36,7 @@ useHead({
   title: '写文章'
 })
 definePageMeta({
-  title: '写文章'
+  layout: "empty",
 })
 
 getAllCate()

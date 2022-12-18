@@ -1,28 +1,10 @@
 <template>
-  <NuxtLayout>
-    <!--<template #left>
-      <n-space vertical align="center">
-        <div class="cursor-pointer">
-          <n-icon-wrapper :size="36" :border-radius="36" v-if="blogInfo?.isLike" @click="likeBlog(0)">
-            <n-icon :size="28">
-              <ThumbLike16Regular />
-            </n-icon>
-          </n-icon-wrapper>
-          <n-icon :size="28" v-else @click="likeBlog(1)">
-            <ThumbLike16Regular />
-          </n-icon>
-        </div>
-        <a href="#commentSection">
-          <n-icon :size="28">
-            <CommentMultiple16Regular />
-          </n-icon>
-        </a>
-      </n-space>
-    </template>-->
-
-    <n-card shadow="never" v-if="!blogInfo">
-      <SkeletonBlog></SkeletonBlog>
-    </n-card>
+  <div>
+    <div v-if="loading">
+      <n-card shadow="never">
+        <SkeletonBlog></SkeletonBlog>
+      </n-card>
+    </div>
 
     <div class="flex items-start gap-8" v-else>
       <div class="sticky top-[120px] flex flex-col items-center gap-8">
@@ -52,7 +34,7 @@
         </n-badge>
       </div>
       <div class="flex-1">
-        <n-card shadow="never" class="blog-page">
+        <n-card shadow="never">
           <div class="text-[30px] font-semibold">{{ blogInfo.title }}</div>
           <div class="my-[12px] flex items-center gap-[12px]">
             <UserAvatar :user="blogInfo.createBy" size="large"></UserAvatar>
@@ -88,7 +70,7 @@
     </div>
 
     <n-back-top :right="50"/>
-  </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -114,6 +96,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const loading = ref(false)
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
 const blogId = route.query.id
@@ -131,17 +114,19 @@ useHead(() => {
 initPage()
 
 async function initPage() {
+  loading.value = true
   await getBlogInfo()
+  loading.value = false
 }
 
-onMounted(() => {
-  window.Prism?.highlightAll()
-  window.addEventListener('scroll', onScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-})
+// onMounted(() => {
+//   window.Prism?.highlightAll()
+//   window.addEventListener('scroll', onScroll)
+// })
+//
+// onUnmounted(() => {
+//   window.removeEventListener('scroll', onScroll)
+// })
 
 function debounce() {
   let timer: NodeJS.Timeout
