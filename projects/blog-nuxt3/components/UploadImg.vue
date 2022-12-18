@@ -6,7 +6,7 @@
     @preview="handlePreview"
   >
     <div class="group relative upload-action" v-if="props.modelValue">
-      <img class="w-full h-full object-contain" :src="config.imageBase + props.modelValue">
+      <img alt="头像" class="w-full h-full object-contain" :src="config.imageBase + props.modelValue">
       <div class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex">
         <n-icon class="cursor-pointer hover:text-green-600" :component="ZoomIn24Regular" size="32" @click.stop="showModal = true"></n-icon>
         <!--<n-icon :component="Edit20Filled" size="32"></n-icon>-->
@@ -20,7 +20,7 @@
     class="w-[600px]"
     title="预览"
   >
-    <img :src="config.imageBase + props.modelValue" class="w-full">
+    <img alt="预览" :src="config.imageBase + props.modelValue" class="w-full">
   </n-modal>
 </template>
 

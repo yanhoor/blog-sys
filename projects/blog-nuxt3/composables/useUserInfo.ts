@@ -9,12 +9,14 @@ export const useRefreshUserInfo = async () => {
   const userInfo = useUserInfo()
   const token = useCookie("token")
   const { notification } = createDiscreteApi(["notification"])
-  // console.log('-----------------', userInfo.value, websocket.ws)
+  // console.log('-----------------', token.value, userInfo.value)
+  // console.log('==================', websocket.ws)
   if(token.value && !userInfo.value) {
     try{
       const { result, success, code, msg } = await useFetchGet('/user/info', { })
       if(success){
         userInfo.value = result
+        websocket.init()
       }
       if(code === 111 || code === 999){
         token.value = null

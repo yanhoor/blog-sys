@@ -9,6 +9,7 @@ class WS {
   heartBeatTime = 10000 // 心跳检测间隔
   reconnectCount = 0 // 重连次数
   reconnectTime = 3000 // 多少时间后尝试重连
+  reconnectTimer: number = 0
   heartBeatTimer: number = 0
   ws: WebSocket | null = null
   isClosed = false
@@ -16,7 +17,7 @@ class WS {
     this.isClosed = false
     const userInfo = useUserInfo()
     const config = useRuntimeConfig()
-    this.ws = new WebSocket(config.wsHost + '?token=' + userInfo.value?.id)
+    this.ws = new WebSocket(config.wsHost + '/?token=' + userInfo.value?.id)
 
     // 监听连接开启
     this.ws.onopen = (evt) => {
@@ -68,7 +69,8 @@ class WS {
   // 失败重连
   reconnect = () => {
     const { message } = createDiscreteApi(["message"])
-    setTimeout(() => {
+    clearTimeout(this.reconnectTimer)
+    this.reconnectTimer = window.setTimeout(() => {
       if(this.reconnectCount === 5){
         message.error('网络连接异常，请检查网络连接，刷新页面')
         this.reconnectTime = 5000

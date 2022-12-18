@@ -2,9 +2,11 @@
   <n-message-provider>
     <NConfigProvider :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
       <NuxtLoadingIndicator />
-      <!--导航会报错-->
-      <!--<NuxtPage :page-key="getPathKey"/>-->
-      <NuxtPage/>
+      <NuxtLayout>
+        <!--导航会报错-->
+        <!--<NuxtPage :page-key="getPathKey"/>-->
+        <NuxtPage/>
+      </NuxtLayout>
     </NConfigProvider>
   </n-message-provider>
 </template>
@@ -45,3 +47,19 @@ function getPathKey() {
   return route.fullPath
 }
 </script>
+
+<style>
+.page-enter-active,.page-leave-active {
+  transition: all 0.4s;
+}
+.page-enter-from,.page-leave-to {
+  opacity: 0;  filter: blur(1rem);
+}
+
+.layout-enter-active,.layout-leave-active {
+  transition: all 0.4s;
+}
+.layout-enter-from,.layout-leave-to {
+  filter: grayscale(1);
+}
+</style>
