@@ -10,11 +10,12 @@ class WS{
   websocket = null
   wss = null
   koaServer = null
-  wsList = []
+  wsMap = new Map()
   init = (server) => {
     this.koaServer = server
     this.wss = new Server({
       server,
+      path: '/websocket/'
       // port: 9000,
       // clientTracking: true
     }, (c) => {
@@ -40,26 +41,16 @@ class WS{
     })
 
     this.wss.on('close', () => {
-      defaultLogger.error('++++++++this.wss close++++++++')
+      errorLogger.error('++++++++this.wss close++++++++')
     })
 
     this.wss.on('connection', (ws, req) => {
-      const sp = new URLSearchParams(req.url.slice(1))
+      const index = req.url.lastIndexOf('?')
+      const sp = new URLSearchParams(req.url.slice(index))
       const uid = sp.get('token')
-      const i = this.wsList.findIndex(item => item.uid == uid)
-      if(i > -1){
-        defaultLogger.log('替换ws, index----->', i)
-        // 前端刷新页面就会重连，所以需要替换原来的ws
-        this.wsList.splice(i, 1, {
-          uid,
-          ws
-        })
-      }else{
-        this.wsList.push({
-          uid,
-          ws
-        })
-      }
+      // 前端刷新页面就会重连，所以需要替换原来的ws
+      this.wsMap.set(uid.toString(), ws)
+      console.log('ws connection uid----->', uid, this.wsMap.get(uid))
 
       this.websocket = ws
 
@@ -96,8 +87,7 @@ class WS{
   sendWsMessage = (uid, msg) => {
     console.log('sendWsMessage--->', uid)
     // 通过客户端发送的特定 uuid 记录其对应的 ws，后面再通过 uuid 找到 ws，给客户端发送消息
-    const info = this.wsList.find(w => w.uid == uid)
-    const ws = info?.ws
+    const ws = this.wsMap.get(uid.toString())
     try {
       if(ws){
         ws.send(msg)
