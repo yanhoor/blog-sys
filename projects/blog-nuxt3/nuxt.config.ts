@@ -40,13 +40,13 @@ export default defineNuxtConfig({
       //     src: './prism.js'
       //   }
       // ],
-      // link: [
-      //   { rel: 'stylesheet', href: './prism.css' },
-      //   {
-      //     rel: "icon",
-      //     href: "https://nuxt.com/icon.png",
-      //   },
-      // ]
+      link: [
+        // { rel: 'stylesheet', href: './prism.css' },
+        {
+          rel: "icon",
+          href: "https://nuxt.com/icon.png",
+        },
+      ]
     },
     // https://nuxt.com/docs/getting-started/transitions
     pageTransition: {
