@@ -2,7 +2,7 @@
 
 ## 项目运行
 
-- 确保已安装 `Mysql`、`Redis`
+- 确保已安装 `Mysql`、`Redis`、`Node v16`
 
 - `pnpm i`
 
@@ -106,6 +106,7 @@
 
 ## 目录结构
 
+```
 blog-sys
 ├── README.md
 ├── docker-compose.yml
@@ -163,5 +164,6 @@ blog-sys
         ├── tsconfig.json
         ├── types
         └── websocket.ts
+```
 
 21 directories, 36 files
