@@ -1,5 +1,23 @@
 # blog-sys
 
+## 项目运行
+
+- 确保已安装 `Mysql`、`Redis`
+
+- `pnpm i`
+
+- 在 `blog-node` 目录下执行：
+
+  - `npx prisma generate`
+
+  - `npx prisma db push`
+
+- `pnpm run dev:node`
+
+- `pnpm run dev:manage`
+
+- `pnpm run dev:nuxt`
+
 ## 目标功能
 
 ### 总体目标
