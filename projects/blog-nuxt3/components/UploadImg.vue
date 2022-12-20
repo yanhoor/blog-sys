@@ -1,14 +1,14 @@
 <template>
   <n-upload
+    accept="image/*"
     list-type="image"
     :show-file-list="false"
     :custom-request="customRequest"
-    @preview="handlePreview"
   >
     <div class="group relative upload-action" v-if="props.modelValue">
       <img alt="头像" class="w-full h-full object-contain" :src="config.imageBase + props.modelValue">
       <div class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex">
-        <n-icon class="cursor-pointer hover:text-green-600" :component="ZoomIn24Regular" size="32" @click.stop="showModal = true"></n-icon>
+        <n-icon class="cursor-pointer hover:text-green-600" :component="ZoomIn24Regular" size="48" @click.stop="showModal = true"></n-icon>
         <!--<n-icon :component="Edit20Filled" size="32"></n-icon>-->
       </div>
     </div>
@@ -51,13 +51,20 @@ const customRequest = async ({
   onError,
   onProgress
 }: UploadCustomRequestOptions) => {
+  const { message } = createDiscreteApi(["message"])
+  // console.log('==============', file, data)
   try{
-    console.log('==============', file, data)
+    if(file.file?.size && file.file?.size > 1024 * 1024 * 5){
+      message.error('文件不能大于 5M')
+      onError()
+      return
+    }
     const {success, result, msg} = await useFetchPost('/upload', { file: file.file }, true)
     if(success){
       onFinish()
       emits('update:modelValue', result.path)
     }else{
+      message.error(msg as string)
       onError()
     }
   }catch (e) {
@@ -65,9 +72,6 @@ const customRequest = async ({
   }
 }
 
-function handlePreview() {
-
-}
 </script>
 
 <style lang="scss" scoped>

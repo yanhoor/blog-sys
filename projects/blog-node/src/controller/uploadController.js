@@ -32,7 +32,7 @@ class UploadController extends BaseController{
       this.errorLogger.error('upload--------->', e)
       return ctx.body = {
         success: false,
-        msg: '上传失败'
+        msg: e || '上传失败'
       }
     }
 
@@ -51,14 +51,17 @@ class UploadController extends BaseController{
   // 保存文件到本地目录
   async saveLocalFile(file) {
     return new Promise(async (resolve, reject) => {
-      const ext = path.extname(file.originalFilename)
-      // console.log('======file========', file)
-      // if(!config.imgTypeList.includes(ext)){
-      //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
-      // }
+      const extname = path.extname(file.originalFilename)
+      console.log('======file========', file)
+      if(!config.imgTypeList.includes(extname.toLowerCase())){
+        return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
+      }
+
+      if(file.size > config.uploadMaxSize * 1024 * 1024){
+        return reject(`文件最大不能超过${config.uploadMaxSize}M`)
+      }
 
       const hashName = (new Date().getTime() + Math.ceil(Math.random()*10000)).toString(16)
-      const extname = path.extname(file.originalFilename)
       const fullName = '/blog-sys/' + hashName + extname
       const savePath = config.uploadDir + fullName // 相对项目运行的根目录路径
       try{

@@ -2,6 +2,7 @@
 
 module.exports = {
     imgTypeList: ['.jpg', '.jpeg', '.png', '.gif', '.bmp'], // 图片上传允许类型
+    uploadMaxSize: 5, // 上传文件最大体积, M
     uploadDir: './src/assets/upload/', // 上传目录
     jwtSecret: 'jwt-sec',
     jwtTokenExpired: 60 * 60 * 24 * 7, // 秒
