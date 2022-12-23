@@ -1,4 +1,4 @@
-// config-lite配置文件，默认加载
+// config-lite配置文件，默认加载，其他配置会进行深合并
 
 module.exports = {
     imgTypeList: ['.jpg', '.jpeg', '.png', '.gif', '.bmp'], // 图片上传允许类型
