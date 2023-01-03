@@ -121,6 +121,14 @@ class UserController extends BaseController{
         }
       })
 
+      if(!user){
+        return ctx.body = {
+          success: false,
+          code: this.CODE.USER_NOT_FOUND,
+          msg: '用户不存在'
+        }
+      }
+
       return ctx.body = {
         success: true,
         result: user

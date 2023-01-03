@@ -1,7 +1,7 @@
 <template>
   <div>
     <SkeletonUser v-if="loading"/>
-    <div class="flex items-start gap-8" v-else>
+    <div class="flex items-start gap-8" v-else-if="userInfo">
       <div class="flex-1">
         <n-card>
           <div class="flex gap-12">
@@ -108,6 +108,9 @@ async function getUserInfo() {
       searchParams.uid = result.id
     }else{
       message.error(msg as string)
+      if(code == 222){
+        await navigateTo('/', { replace: true })
+      }
     }
   }catch (e) {
 

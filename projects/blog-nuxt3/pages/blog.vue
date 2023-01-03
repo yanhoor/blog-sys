@@ -88,7 +88,6 @@ import {
   NPagination,
   createDiscreteApi
 } from "naive-ui"
-import {useFetchPost} from "~/composables/useBaseFetch";
 
 definePageMeta({
   // pageTransition: false, // 不然 window.Prism.highlightAll() 没效果

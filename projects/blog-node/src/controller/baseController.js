@@ -16,6 +16,7 @@ class BaseController{
   CODE = {
     NOT_LOGIN: 999, // 未登录/登录异常
     USER_LOCK: 111, // 用户被锁定
+    USER_NOT_FOUND: 222, // 用户不存在
   }
   // redis 储存 的 key 的前缀
   REDIS_KEY_PREFIX = {
