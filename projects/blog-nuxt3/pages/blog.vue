@@ -58,7 +58,7 @@
             <div class="custom-border border-t pt-[12px]">{{ pageTotal }} 条评论</div>
             <div class="divide-y divide-border-light dark:divide-border-dark">
               <template v-for="comment of pageList" :key="comment.id">
-                <BlogCommentItem :comment="comment" ref="commentRefs"/>
+                <BlogCommentItem :comment="comment"/>
               </template>
             </div>
             <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
@@ -99,10 +99,7 @@ const loading = ref(false)
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
 const blogId = route.query.id
-const commentRefs = ref([])
 const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
-
-const onScroll = debounce()
 
 useHead(() => {
   return {
@@ -120,26 +117,7 @@ async function initPage() {
 
 // onMounted(() => {
 //   window.Prism?.highlightAll()
-//   window.addEventListener('scroll', onScroll)
 // })
-//
-// onUnmounted(() => {
-//   window.removeEventListener('scroll', onScroll)
-// })
-
-function debounce() {
-  let timer: NodeJS.Timeout
-  return function(){
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      commentRefs.value?.forEach((node: any) => {
-        const top = node.$el.getBoundingClientRect().top
-        const ch = document.documentElement.clientHeight // 浏览器可见区域高度。
-        node.triggerIfView(top < ch && top > 0)
-      })
-    }, 300)
-  }
-}
 
 async function getBlogInfo(){
   try{

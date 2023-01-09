@@ -67,18 +67,14 @@ const showReply = ref(false)
 const commentRef = ref<HTMLElement>()
 const replyList = ref<Comment[]>([])
 const totalReply = ref(0)
-const isInView = ref(false) // 是否出现在可视区域
 const hasFetchReply = ref(false) // 是否已加载回复
 
-watch(isInView, (val) => {
-  if(val){
+onMounted(() => {
+  if(!props.comment.replyCommentId){
     getComments()
   }
 })
 
-defineExpose({
-  triggerIfView
-})
 const emit = defineEmits(['refresh'])
 
 function triggerReply() {
@@ -98,11 +94,6 @@ function handleReplySuccess(){
 function handleRefresh() {
   hasFetchReply.value = false
   getComments()
-}
-
-// 由父组件调用
-function triggerIfView(val: boolean) {
-  isInView.value = val
 }
 
 async function getComments() {
