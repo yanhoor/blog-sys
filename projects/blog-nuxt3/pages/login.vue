@@ -80,6 +80,7 @@ function handlePost (e: MouseEvent) {
 
           token.value = result
           await navigateTo('/', { replace: true })
+          useFetchNotificationList()
         } else{
           message.error(msg as string)
         }
