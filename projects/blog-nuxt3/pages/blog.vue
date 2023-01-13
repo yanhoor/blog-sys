@@ -55,14 +55,20 @@
             <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" :level="1" @success="fetchPage"/>
           </div>
           <template v-if="pageTotal">
-            <div class="custom-border border-t pt-[12px]">{{ pageTotal }} 条评论</div>
+            <div class="custom-border border-t pt-[12px] flex justify-between items-center">
+              <div class="font-semibold">{{ pageTotal }} 条评论</div>
+              <n-radio-group v-model:value="pageFetchParams.sort" @update:value="handlePageChange(1)" name="commentSort">
+                <n-radio-button :value="1" label="最新"></n-radio-button>
+                <n-radio-button :value="2" label="最热"></n-radio-button>
+              </n-radio-group>
+            </div>
             <div class="divide-y divide-border-light dark:divide-border-dark">
               <template v-for="comment of pageList" :key="comment.id">
                 <BlogCommentItem :comment="comment" :level="1" :blog="blogInfo"/>
               </template>
             </div>
             <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
-              <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
+              <n-pagination v-model:page="pageFetchParams.page" :item-count="pageTotal" :page-size="20" @update:page="handlePageChange"/>
             </div>
           </template>
         </n-card>
@@ -86,6 +92,8 @@ import {
   NTime,
   NBackTop,
   NPagination,
+  NRadioGroup,
+  NRadioButton,
   createDiscreteApi
 } from "naive-ui"
 
@@ -99,7 +107,7 @@ const loading = ref(false)
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
 const blogId = route.query.id
-const { currentPage, pageList, pageTotal, pageLoading, fetchPage, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
+const { pageList, pageTotal, pageLoading, pageFetchParams, fetchPage, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId, sort: 1 })
 
 useHead(() => {
   return {

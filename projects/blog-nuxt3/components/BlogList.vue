@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="flex justify-end custom-border border-t pt-[20px]">
-      <n-pagination v-model:page="currentPage" :item-count="pageTotal" :page-size="20" :on-update:page="handlePageChange"/>
+      <n-pagination v-model:page="pageFetchParams.page" :item-count="pageTotal" :page-size="20" @update:page="handlePageChange"/>
     </div>
   </template>
 </template>
@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const router = useRouter()
 const userInfo = useUserInfo()
-const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Blog>('/blog/list', props.searchParams)
+const { pageList, pageTotal, pageLoading, pageFetchParams, handlePageChange  } = await usePageListFetch<Blog>('/blog/list', props.searchParams)
 
 async function likeBlog(blog: Blog) {
   const { message } = createDiscreteApi(["message"])

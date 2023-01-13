@@ -140,9 +140,18 @@ class CommentController extends BaseController{
 
   // 评论列表
   list = async (ctx, next) => {
-    const {page = 1, pageSize = this.pageSize, blogId} = ctx.request.body
+    const {page = 1, pageSize = this.pageSize, blogId, sort = 1} = ctx.request.body
     const skip = pageSize * (page - 1)
     const filter = { blogId: Number(blogId), topCommentId: null }
+    let orderBy = { createdAt: 'desc' }
+    switch (sort) {
+      case 1:
+        orderBy = { createdAt: 'desc' }
+        break
+      case 2:
+        orderBy = { childComments: { _count: 'desc' } }
+        break
+    }
     try {
       const xprisma = prisma.$extends({
         result: {
@@ -243,7 +252,7 @@ class CommentController extends BaseController{
               }
             }
           },
-          orderBy: { createdAt: 'desc' }
+          orderBy
         }),
         prisma.comment.count({where: filter})
       ])

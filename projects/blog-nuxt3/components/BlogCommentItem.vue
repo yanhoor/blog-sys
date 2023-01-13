@@ -28,7 +28,7 @@
 
       <div>{{ comment.content }}</div>
 
-      <div class="bg-gray-200 text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full" v-if="comment.replyComment?.topCommentId && comment.replyComment?.content">{{ comment.replyComment?.content }}</div>
+      <div class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300" v-if="comment.replyComment?.topCommentId && comment.replyComment?.content">{{ comment.replyComment?.content }}</div>
 
       <div class="flex items-center">
         <n-time class="mr-[12px]" type="relative" :time="new Date(comment.createdAt)"></n-time>

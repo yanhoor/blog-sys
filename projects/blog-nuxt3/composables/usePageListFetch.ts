@@ -1,16 +1,24 @@
 
-export const usePageListFetch = async <T>(url: string, params: Object = {}) => {
-  const currentPage = ref(1)
-  const pageSize = ref(20)
+interface PageFetchParams {
+  page: number
+  pageSize: number
+  [x: string]: any
+}
+export const usePageListFetch = async <T>(url: string, params: any = {}) => {
   const pageTotal = ref(0)
   const pageList = ref<T[]>([])
   const pageLoading = ref(false)
+  const pageFetchParams = reactive<PageFetchParams>({
+    page: 1,
+    pageSize: 20,
+    ...params
+  })
   fetchPage()
 
   async function fetchPage() {
     try{
       pageLoading.value = true
-      const { result, success } = await useFetchPost(url, { page: currentPage.value, pageSize: pageSize.value, ...params })
+      const { result, success } = await useFetchPost(url, pageFetchParams)
       if(success){
         pageList.value = result.list
         pageTotal.value = result.total
@@ -22,15 +30,16 @@ export const usePageListFetch = async <T>(url: string, params: Object = {}) => {
   }
 
   function handlePageChange(page: number) {
-    currentPage.value = page
+    pageFetchParams.page = page
+    console.log('-----------', pageFetchParams)
     fetchPage()
   }
 
   return {
-    currentPage,
     pageTotal,
     pageList,
     pageLoading,
+    pageFetchParams,
     fetchPage,
     handlePageChange,
   }
