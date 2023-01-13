@@ -11,4 +11,8 @@ export interface Comment {
   blog: Blog
   blogId: string | number
   replyCommentId: string | number
+  replyItems?: Comment[]
+  _count?: {
+    replyItems: number
+  }
 }

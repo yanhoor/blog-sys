@@ -35,7 +35,29 @@ class CommentController extends BaseController{
         data.replyCommentId = Number(replyCommentId)
       }
       const res = await prisma.comment.create({
-        data
+        data,
+        select: {
+          id: true,
+          createdAt: true,
+          content: true,
+          blogId: true,
+          replyCommentId: true,
+          createBy: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+              sign: true,
+            }
+          },
+          replyTo: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            }
+          }
+        }
       })
       const blog = await prisma.blog.findUnique({
         where: {
@@ -83,12 +105,28 @@ class CommentController extends BaseController{
     }
   }
 
+  // 评论列表
   list = async (ctx, next) => {
-    const {page = 1, pageSize = this.pageSize, blogId, replyCommentId} = ctx.request.body
+    const {page = 1, pageSize = this.pageSize, blogId} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = { blogId: Number(blogId), replyCommentId: replyCommentId ? Number(replyCommentId) : null }
+    const filter = { blogId: Number(blogId), replyCommentId: null }
     try {
+      const xprisma = prisma.$extends({
+        result: {
+          comment: {
+            replyCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { replyItems: true },
+              compute(comment) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                return comment.replyItems.length
+              },
+            }
+          }
+        }
+      })
       const [list, total] = await prisma.$transaction([
+        // 为毛用了 xprisma 下面的 replyItems select 就无效
         prisma.comment.findMany({
           skip,
           take: pageSize,
@@ -99,6 +137,35 @@ class CommentController extends BaseController{
             content: true,
             blogId: true,
             replyCommentId: true,
+            // replyCount: true,
+            _count: {
+              select: { replyItems: true },
+            },
+            replyItems: {
+              take: 2,
+              select: {
+                id: true,
+                createdAt: true,
+                content: true,
+                blogId: true,
+                replyCommentId: true,
+                createBy: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatar: true,
+                    sign: true,
+                  }
+                },
+                replyTo: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatar: true,
+                  }
+                }
+              }
+            },
             createBy: {
               select: {
                 id: true,
@@ -115,7 +182,7 @@ class CommentController extends BaseController{
               }
             }
           },
-          orderBy: {createdAt: 'desc'}
+          orderBy: { createdAt: 'desc' }
         }),
         prisma.comment.count({where: filter})
       ])
@@ -129,6 +196,74 @@ class CommentController extends BaseController{
       }
     } catch (e) {
       this.errorLogger.error('blog.list--------->', e)
+    }
+  }
+
+  // 评论的回复列表
+  replyList = async (ctx, next) => {
+    const {page = 1, pageSize = this.pageSize, blogId, replyCommentId} = ctx.request.body
+    const skip = pageSize * (page - 1) + 2 // 已经显示2条
+    const filter = { blogId: Number(blogId), replyCommentId: Number(replyCommentId) }
+    try {
+      const [list, total] = await prisma.$transaction([
+        prisma.comment.findMany({
+          skip,
+          take: pageSize,
+          where: filter,
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            blogId: true,
+            replyCommentId: true,
+            replyComment: {
+              select: {
+                id: true,
+                createdAt: true,
+                content: true,
+                blogId: true,
+                replyCommentId: true,
+                createBy: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatar: true,
+                    sign: true,
+                  }
+                },
+              }
+            },
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                sign: true,
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+              }
+            }
+          },
+          // 评论的回复是升序，旧的在前面
+          orderBy: { createdAt: 'asc' }
+        }),
+        prisma.comment.count({where: filter})
+      ])
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
+      }
+    } catch (e) {
+      this.errorLogger.error('blog.replyList--------->', e)
     }
   }
 }

@@ -56,7 +56,7 @@ async function commitComment() {
     const { result, success, msg } = await useFetchPost('/comment/commit', { blogId: props.blogId, content, replyCommentId: props.replyCommentId, replyToId: props.replyTo?.id })
     commentCommitting.value = false
     if(success){
-      emit('success')
+      emit('success', result)
       commentContent.value=''
       message.success('发表成功')
     }else{
