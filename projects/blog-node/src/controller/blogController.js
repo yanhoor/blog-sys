@@ -124,7 +124,7 @@ class BlogController extends BaseController{
               needs: { comments: true },
               compute(blog) {
                 // 计算获取这个新字段值的逻辑，即从何处来
-                const list = blog.comments.filter(item => !item.replyCommentId)
+                const list = blog.comments.filter(item => !item.topCommentId)
                 return list.length
               },
             },

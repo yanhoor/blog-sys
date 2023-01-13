@@ -31,6 +31,7 @@ export const usePageListFetch = async <T>(url: string, params: Object = {}) => {
     pageTotal,
     pageList,
     pageLoading,
+    fetchPage,
     handlePageChange,
   }
 }

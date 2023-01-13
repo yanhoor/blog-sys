@@ -3,18 +3,24 @@ const prisma = require('../database/prisma')
 
 class CommentController extends BaseController{
   commit = async (ctx, next) => {
-    const { content, blogId, replyToId, replyCommentId } = ctx.request.body
+    const { content, blogId, replyToId, topCommentId, replyCommentId } = ctx.request.body
     let userId = await this.getAuthUserId(ctx, next)
 
     try{
       if(!content) throw new Error('评论不能为空')
       if(!userId) throw new Error('用户未登录')
       if(!blogId) throw new Error('博客id不能为空')
+      if(replyToId){
+        const user = await prisma.user.findUnique({ where: { id: Number(replyToId) } })
+        if(!user) throw new Error('用户不存在')
+      }
+      if(topCommentId){
+        const comment = await prisma.comment.findUnique({ where: { id: Number(topCommentId) } })
+        if(!comment) throw new Error('评论不存在')
+      }
       if(replyCommentId){
         const comment = await prisma.comment.findUnique({ where: { id: Number(replyCommentId) } })
-        const user = await prisma.user.findUnique({ where: { id: Number(replyToId) } })
         if(!comment) throw new Error('评论不存在')
-        if(!user) throw new Error('用户不存在')
       }
     }catch(e){
       ctx.body = {
@@ -32,6 +38,7 @@ class CommentController extends BaseController{
       }
       if(replyToId){
         data.replyToId = Number(replyToId)
+        data.topCommentId = Number(topCommentId)
         data.replyCommentId = Number(replyCommentId)
       }
       const res = await prisma.comment.create({
@@ -41,7 +48,9 @@ class CommentController extends BaseController{
           createdAt: true,
           content: true,
           blogId: true,
+          topCommentId: true,
           replyCommentId: true,
+          createById: true,
           createBy: {
             select: {
               id: true,
@@ -55,6 +64,30 @@ class CommentController extends BaseController{
               id: true,
               name: true,
               avatar: true,
+            }
+          },
+          replyComment: {
+            select: {
+              id: true,
+              createdAt: true,
+              content: true,
+              blogId: true,
+              topCommentId: true,
+              createBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  avatar: true,
+                  sign: true,
+                }
+              },
+              replyTo: {
+                select: {
+                  id: true,
+                  name: true,
+                  avatar: true,
+                }
+              },
             }
           }
         }
@@ -109,7 +142,7 @@ class CommentController extends BaseController{
   list = async (ctx, next) => {
     const {page = 1, pageSize = this.pageSize, blogId} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = { blogId: Number(blogId), replyCommentId: null }
+    const filter = { blogId: Number(blogId), topCommentId: null }
     try {
       const xprisma = prisma.$extends({
         result: {
@@ -126,7 +159,7 @@ class CommentController extends BaseController{
         }
       })
       const [list, total] = await prisma.$transaction([
-        // 为毛用了 xprisma 下面的 replyItems select 就无效
+        // todo: 为毛用了 xprisma 下面的 replyItems select 就无效
         prisma.comment.findMany({
           skip,
           take: pageSize,
@@ -136,19 +169,22 @@ class CommentController extends BaseController{
             createdAt: true,
             content: true,
             blogId: true,
-            replyCommentId: true,
+            topCommentId: true,
+            createById: true,
             // replyCount: true,
             _count: {
-              select: { replyItems: true },
+              select: { childComments: true },
             },
-            replyItems: {
+            childComments: {
               take: 2,
               select: {
                 id: true,
                 createdAt: true,
                 content: true,
                 blogId: true,
+                topCommentId: true,
                 replyCommentId: true,
+                createById: true,
                 createBy: {
                   select: {
                     id: true,
@@ -162,6 +198,31 @@ class CommentController extends BaseController{
                     id: true,
                     name: true,
                     avatar: true,
+                  }
+                },
+                replyComment: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    content: true,
+                    blogId: true,
+                    topCommentId: true,
+                    createById: true,
+                    createBy: {
+                      select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        sign: true,
+                      }
+                    },
+                    replyTo: {
+                      select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                      }
+                    },
                   }
                 }
               }
@@ -201,9 +262,9 @@ class CommentController extends BaseController{
 
   // 评论的回复列表
   replyList = async (ctx, next) => {
-    const {page = 1, pageSize = this.pageSize, blogId, replyCommentId} = ctx.request.body
+    const {page = 1, pageSize = this.pageSize, blogId, topCommentId} = ctx.request.body
     const skip = pageSize * (page - 1) + 2 // 已经显示2条
-    const filter = { blogId: Number(blogId), replyCommentId: Number(replyCommentId) }
+    const filter = { blogId: Number(blogId), topCommentId: Number(topCommentId) }
     try {
       const [list, total] = await prisma.$transaction([
         prisma.comment.findMany({
@@ -215,14 +276,17 @@ class CommentController extends BaseController{
             createdAt: true,
             content: true,
             blogId: true,
+            topCommentId: true,
             replyCommentId: true,
+            createById: true,
             replyComment: {
               select: {
                 id: true,
                 createdAt: true,
                 content: true,
                 blogId: true,
-                replyCommentId: true,
+                topCommentId: true,
+                createById: true,
                 createBy: {
                   select: {
                     id: true,

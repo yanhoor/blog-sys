@@ -119,10 +119,15 @@ model Comment {
   replyToId      Int?
   blog           Blog      @relation(fields: [blogId], references: [id])
   blogId         Int
-  // 回复哪个评论
+  // 作为评论回复时，所属的一级评论id
+  topCommentId   Int?
+  topComment     Comment?  @relation(name: "ChildComment", fields: [topCommentId], references: [id])
+  // 作为一级评论时，下面的所有回复
+  childComments  Comment[] @relation("ChildComment")
+  // 作为评论回复时，回复哪个评论回复（不是一级）
   replyCommentId Int?
   replyComment   Comment?  @relation(name: "Reply", fields: [replyCommentId], references: [id])
-  // 回复
+  // 作为评论回复时，所有的回复
   replyItems     Comment[] @relation("Reply")
 
   content String @db.Text

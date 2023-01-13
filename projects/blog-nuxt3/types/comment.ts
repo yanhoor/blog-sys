@@ -10,9 +10,11 @@ export interface Comment {
   replyToId: string | number
   blog: Blog
   blogId: string | number
+  topCommentId: string | number
   replyCommentId: string | number
   replyItems?: Comment[]
+  childComments?: Comment[]
   _count?: {
-    replyItems: number
+    childComments: number
   }
 }

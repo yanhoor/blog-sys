@@ -52,13 +52,13 @@
         <n-card shadow="never" class="mt-[20px]" id="commentSection">
           <div class="flex items-start pb-[20px]" v-if="userInfo">
             <UserAvatar class="mr-[12px]" :user="userInfo" size="small"></UserAvatar>
-            <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" @success="handlePageChange"/>
+            <CommentForm v-if="$route.query.id" class="flex-1" :blogId="$route.query.id" :level="1" @success="fetchPage"/>
           </div>
           <template v-if="pageTotal">
             <div class="custom-border border-t pt-[12px]">{{ pageTotal }} 条评论</div>
             <div class="divide-y divide-border-light dark:divide-border-dark">
               <template v-for="comment of pageList" :key="comment.id">
-                <BlogCommentItem :comment="comment"/>
+                <BlogCommentItem :comment="comment" :level="1" :blog="blogInfo"/>
               </template>
             </div>
             <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
@@ -99,7 +99,7 @@ const loading = ref(false)
 const blogInfo = ref<Blog>()
 const userInfo = useUserInfo()
 const blogId = route.query.id
-const { currentPage, pageList, pageTotal, pageLoading, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
+const { currentPage, pageList, pageTotal, pageLoading, fetchPage, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId })
 
 useHead(() => {
   return {
@@ -141,7 +141,7 @@ async function likeBlog() {
   }
 
   try{
-    const { result, success } = await useFetchPost('/blog/like', { id: blogInfo.value.id, isLike: blogInfo.value.isLike ? 0 : 1 })
+    const { result, success } = await useFetchPost('/blog/like', { id: blogInfo.value?.id, isLike: blogInfo.value?.isLike ? 0 : 1 })
     if(success){
       getBlogInfo()
     }else{
@@ -159,7 +159,7 @@ async function collectBlog() {
   }
 
   try{
-    const { result, success } = await useFetchPost('/blog/collect', { id: blogInfo.value.id, isCollect: blogInfo.value.isCollect ? 0 : 1 })
+    const { result, success } = await useFetchPost('/blog/collect', { id: blogInfo.value?.id, isCollect: blogInfo.value?.isCollect ? 0 : 1 })
     if(success){
       getBlogInfo()
     }else{

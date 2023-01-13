@@ -23,14 +23,14 @@ import {
   NButton,
   NInput
 } from "naive-ui"
-import { User } from '@/types'
+import { Comment } from '@/types'
 
 interface Props{
   placeholder?: string
   btnText?: string
   blogId: string | number
-  replyCommentId?: string | number
-  replyTo?: User
+  level: number // 发表第几级评论
+  comment?: Comment
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -53,7 +53,13 @@ async function commitComment() {
 
   try{
     commentCommitting.value = true
-    const { result, success, msg } = await useFetchPost('/comment/commit', { blogId: props.blogId, content, replyCommentId: props.replyCommentId, replyToId: props.replyTo?.id })
+    const { result, success, msg } = await useFetchPost('/comment/commit', {
+      blogId: props.blogId,
+      content,
+      topCommentId: props.comment?.topCommentId || props.comment?.id,
+      replyCommentId: props.level !== 1 ? props.comment?.id : null,
+      replyToId: props.comment?.createBy?.id
+    })
     commentCommitting.value = false
     if(success){
       emit('success', result)
