@@ -64,7 +64,7 @@
             </div>
             <div class="divide-y divide-border-light dark:divide-border-dark">
               <template v-for="comment of pageList" :key="comment.id">
-                <BlogCommentItem :comment="comment" :level="1" :blog="blogInfo"/>
+                <BlogCommentItem :comment="comment" :level="1" :blog="blogInfo" @commentDelete="handleCommentDelete"/>
               </template>
             </div>
             <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
@@ -180,6 +180,11 @@ async function collectBlog() {
 
 function toCommentSection() {
   location.href = '#commentSection'
+}
+
+function handleCommentDelete(comment: Comment) {
+  const index = pageList.value.findIndex(c => c.id === comment.id)
+  if(index > -1) pageList.value.splice(index, 1)
 }
 </script>
 

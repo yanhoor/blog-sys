@@ -186,6 +186,9 @@ class CommentController extends BaseController{
             },
             childComments: {
               take: 2,
+              where: {
+                deletedAt: null
+              },
               select: {
                 id: true,
                 createdAt: true,
@@ -337,6 +340,38 @@ class CommentController extends BaseController{
       }
     } catch (e) {
       this.errorLogger.error('blog.replyList--------->', e)
+    }
+  }
+
+  delete = async (ctx, next) => {
+    const { id } = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
+
+    try{
+      if(!id) throw new Error('缺少参数: id')
+      const comment = await prisma.comment.findUnique({
+        where: { id: Number(id), createById: userId }
+      })
+      if(!comment) throw new Error('评论不存在')
+    }catch (e) {
+      return ctx.body = {
+        success: false,
+        msg: e.message
+      }
+    }
+
+    try{
+      const res = await prisma.comment.update({
+        where: { id: Number(id) },
+        data: {
+          deletedAt: new Date()
+        }
+      })
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('comment.delete--------->', e)
     }
   }
 }
