@@ -65,7 +65,7 @@
           type="primary"
           icon-placement="right"
           v-if="!props.comment.topCommentId && props.comment._count.childComments > 2 && !pageLoadedFinish"
-          @click="handlePageChange(currentPage + 1)"
+          @click="handlePageChange(pageFetchParams.page + 1)"
           :loading="pageLoading"
         >
           查看更多回复
@@ -101,7 +101,7 @@ const props = defineProps<Props>()
 const userInfo = useUserInfo()
 const showReply = ref(false)
 const commentDeleting = ref(false)
-const { currentPage, pageList, pageLoading, pageLoadedFinish, handlePageChange } = useListAppendFetch<Comment>('/comment/replyList', { blogId: props.comment.blogId, topCommentId: props.comment.id }, { initList: props.comment.childComments, pageSize: 10, uniqueKey: 'id' })
+const { pageFetchParams, pageList, pageLoading, pageLoadedFinish, handlePageChange } = useListAppendFetch<Comment>('/comment/replyList', { blogId: props.comment.blogId, topCommentId: props.comment.id }, { initList: props.comment.childComments, pageSize: 10, uniqueKey: 'id' })
 
 const emit = defineEmits(['replyCommit', 'commentDelete'])
 

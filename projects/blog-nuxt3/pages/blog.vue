@@ -179,7 +179,7 @@ async function collectBlog() {
 }
 
 function toCommentSection() {
-  location.href = '#commentSection'
+  location.hash = '#commentSection'
 }
 
 function handleCommentDelete(comment: Comment) {
