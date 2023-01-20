@@ -16,14 +16,35 @@ export const useNotificationUnreadCount = () => {
   return useState<number>('notificationUnreadCount', () => 0)
 }
 
+// 未读评论通知数
+export const useNotificationUnreadCommentCount = () => {
+  return useState<number>('notificationUnreadCommentCount', () => 0)
+}
+
+// 未读点赞通知数
+export const useNotificationUnreadLikeCount = () => {
+  return useState<number>('notificationUnreadLikeCount', () => 0)
+}
+
+// 未读收藏通知数
+export const useNotificationUnreadCollectCount = () => {
+  return useState<number>('notificationUnreadCollectCount', () => 0)
+}
+
 export const useFetchNotificationCount = async (params = {}) => {
   const notificationTotalCount = useNotificationTotalCount()
   const notificationUnreadCount = useNotificationUnreadCount()
+  const unreadCommentCount = useNotificationUnreadCommentCount()
+  const unreadLikeCount = useNotificationUnreadLikeCount()
+  const unreadCollectCount = useNotificationUnreadCollectCount()
   try{
     const { result, success } = await useFetchPost('/notification/count', params)
     if(success){
       notificationTotalCount.value = result.total
       notificationUnreadCount.value = result.unreadTotal
+      unreadCommentCount.value = result.unreadComment
+      unreadLikeCount.value = result.unreadLike
+      unreadCollectCount.value = result.unreadCollect
     }
   }catch (e) {
 

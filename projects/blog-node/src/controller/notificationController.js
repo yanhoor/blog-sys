@@ -89,16 +89,22 @@ class NotificationController extends BaseController{
     let userId = await this.getAuthUserId(ctx, next)
     const filter = { receiveUserId: userId }
     try {
-      const [total, unreadTotal] = await prisma.$transaction([
+      const [total, unreadTotal, unreadComment, unreadLike, unreadCollect] = await prisma.$transaction([
         prisma.notification.count({where: filter}),
-        prisma.notification.count({where: { ...filter, isRead: 0 }})
+        prisma.notification.count({where: { ...filter, isRead: 0 }}),
+        prisma.notification.count({where: { ...filter, isRead: 0, OR: [{ type: 'comment' }, { type: 'comment_reply' }] }}),
+        prisma.notification.count({where: { ...filter, isRead: 0, type: 'like_blog' }}),
+        prisma.notification.count({where: { ...filter, isRead: 0, type: 'collect_blog' }}),
       ])
 
       return ctx.body = {
         success: true,
         result: {
           total,
-          unreadTotal
+          unreadTotal,
+          unreadComment,
+          unreadLike,
+          unreadCollect,
         }
       }
     }catch (e) {
@@ -154,7 +160,7 @@ class NotificationController extends BaseController{
   }
 
   read = async (ctx, next) => {
-    const { id, isAll = 0 } = ctx.request.body
+    const { id, isAll = 0, type } = ctx.request.body
     let where = {}
     if(id){
       where.id = {
@@ -163,6 +169,15 @@ class NotificationController extends BaseController{
     }
     if(isAll){
       where.isRead = 0
+    }
+    if(type) {
+      const typeList = type.split(',')
+      where.OR = []
+      for(let t of typeList){
+        where.OR.push({
+          type: this.NOTIFICATION_TYPE[t]
+        })
+      }
     }
     try {
       await prisma.notification.updateMany({

@@ -1,7 +1,7 @@
 <template>
   <n-card>
     <!--todo: 深色下刷新，颜色变化有过渡-->
-    <n-tabs class="pt-[20px] sticky top-[60px] z-10 bg-card-light dark:bg-card-dark" style="transition: none" type="line" v-model:value="searchParams.sort" @update:value="handleSearch">
+    <n-tabs class="pt-[20px] sticky top-[60px] z-10 bg-card-light dark:bg-card-dark" type="line" v-model:value="searchParams.sort" @update:value="handleSearch">
       <n-tab name="1">综合排序</n-tab>
       <n-tab name="2">最新优先</n-tab>
       <n-tab name="3">最热优先</n-tab>

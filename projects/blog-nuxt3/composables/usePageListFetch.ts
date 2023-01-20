@@ -33,7 +33,6 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
 
   function handlePageChange(page?: number) {
     pageFetchParams.page = page || pageFetchParams.page
-    console.log('-----------', pageFetchParams)
     fetchPage()
   }
 
