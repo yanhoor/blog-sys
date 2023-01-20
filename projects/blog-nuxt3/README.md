@@ -121,3 +121,23 @@ Vue warn]: Unhandled error during execution of scheduler flush. This is likely a
 ```
 
 暂时确定是因为 `<NuxtPage>` 添加了 `page-key`，[参考](https://github.com/nuxt/framework/issues/2985)，在外面加 `<div>` 也无效
+
+### 页面过渡
+
+页面过渡效果无效，需要确保页面组件为单一元素作为根节点，注意注释也会作为一个节点。[参考](https://nuxt.com/docs/guide/directory-structure/pages#usage)
+
+```HTML
+<!--正确-->
+<template>
+  <div>
+    <!-- This page correctly has only one single root element -->
+    Page content
+  </div>
+</template>
+
+<!--错误-->
+<template>
+  <!-- This page will not render when route changes during client side navigation, because of this comment -->
+  <div>Page content</div>
+</template>
+```

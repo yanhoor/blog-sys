@@ -16,14 +16,12 @@ export const useNotificationUnreadCount = () => {
   return useState<number>('notificationUnreadCount', () => 0)
 }
 
-export const useFetchNotificationList = async (params = {}) => {
-  const notification = useNotification()
+export const useFetchNotificationCount = async (params = {}) => {
   const notificationTotalCount = useNotificationTotalCount()
   const notificationUnreadCount = useNotificationUnreadCount()
   try{
-    const { result, success } = await useFetchPost('/notification/list', params)
+    const { result, success } = await useFetchPost('/notification/count', params)
     if(success){
-      notification.value = result.list
       notificationTotalCount.value = result.total
       notificationUnreadCount.value = result.unreadTotal
     }
@@ -32,12 +30,24 @@ export const useFetchNotificationList = async (params = {}) => {
   }
 }
 
+export const useFetchNotificationList = async (params = {}) => {
+  const notification = useNotification()
+  try{
+    const { result, success } = await useFetchPost('/notification/list', params)
+    if(success){
+      notification.value = result.list
+    }
+  }catch (e) {
+
+  }
+}
+
+// 评论通知弹窗详情显示
 export const useShowNotificationDetail = async (id: string) => {
   const { notification } = createDiscreteApi(["notification"])
   try{
-    const { result: info, success } = await useFetchPost('/notification/info', { id })
+    const { result, success } = await useFetchPost('/notification/info', { id })
     if(success){
-      const content = JSON.parse(info.content)
       const n = notification.create({
         title: '通知',
         // @ts-ignore
@@ -53,9 +63,9 @@ export const useShowNotificationDetail = async (id: string) => {
                   text: true,
                   type: 'primary',
                   onClick: () => {
-                    setRead(info.id)
+                    setRead(result.blogId)
                     n.destroy()
-                    navigateTo({  path: '/blog',  query: { id: content.blogId }})
+                    navigateTo({  path: '/blog',  query: { id: result.blogId }})
                   }
                 },
                 {
@@ -70,7 +80,7 @@ export const useShowNotificationDetail = async (id: string) => {
             NTime,
             {
               type: 'datetime',
-              time: new Date(info.createdAt)
+              time: new Date(result.createdAt)
             }
           ),
         // @ts-ignore
@@ -81,7 +91,7 @@ export const useShowNotificationDetail = async (id: string) => {
               text: true,
               type: 'primary',
               onClick: async () => {
-                setRead(info.id)
+                setRead(result.id)
                 n.destroy()
               }
             },
@@ -102,7 +112,7 @@ export const useShowNotificationDetail = async (id: string) => {
     try{
       const { result, success } = await useFetchPost('/notification/read', { id })
       if(success){
-        useFetchNotificationList()
+        useFetchNotificationCount()
       }
     }catch (e) {
 

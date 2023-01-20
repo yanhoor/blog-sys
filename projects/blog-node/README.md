@@ -224,4 +224,34 @@ app.use(mount('/manage', require('koa-static')(__dirname + '../public/manage')))
 
 ### 关联查询
 
-用户与博客的多对多关系中，如何在博客列表查询当前用户是否点赞
+用户与博客的多对多关系中，如何在博客列表查询当前用户是否点赞。可以[使用 `prisma.$extends()`](https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions/result)
+
+### prisma.$extends() 查询关系不能选择字段
+
+使用 `prisma.$extends()` 增加自定义字段，如果在 `findMany()` 等查询方法的 `select` 选择 `childCommentsCount: true`，则 `childComments` 的 `select` 就无效
+```javascript
+const xprisma = prisma.$extends({
+        result: {
+          comment: {
+            childCommentsCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { childComments: true },
+              compute(comment) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                const list = comment.childComments.filter(c => !c.deletedAt)
+                return list.length
+              },
+            }
+          }
+        }
+      })
+
+const list = xprisma.comment.findMany({
+  select: {
+    childCommentsCount: true,
+    childComments: {
+      id: true // 无效，仍然会返回所有字段
+    }
+  }
+})
+```

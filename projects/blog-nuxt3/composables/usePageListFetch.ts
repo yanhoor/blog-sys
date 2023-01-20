@@ -8,6 +8,7 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
   const pageTotal = ref(0)
   const pageList = ref<T[]>([])
   const pageLoading = ref(false)
+  const fetchResult = ref(null)
   const pageFetchParams = reactive<PageFetchParams>({
     page: 1,
     pageSize: 20,
@@ -20,6 +21,7 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
       pageLoading.value = true
       const { result, success } = await useFetchPost(url, pageFetchParams)
       if(success){
+        fetchResult.value = result
         pageList.value = result.list
         pageTotal.value = result.total
       }
@@ -29,8 +31,8 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
     }
   }
 
-  function handlePageChange(page: number) {
-    pageFetchParams.page = page
+  function handlePageChange(page?: number) {
+    pageFetchParams.page = page || pageFetchParams.page
     console.log('-----------', pageFetchParams)
     fetchPage()
   }
@@ -40,6 +42,7 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
     pageList,
     pageLoading,
     pageFetchParams,
+    fetchResult,
     fetchPage,
     handlePageChange,
   }

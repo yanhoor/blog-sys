@@ -35,7 +35,7 @@ onMounted(() => {
   }, 300)
 
   if(userInfo.value){
-    useFetchNotificationList()
+    useFetchNotificationCount()
   }
 
   if(userInfo.value && !websocket.ws){

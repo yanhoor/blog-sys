@@ -39,7 +39,7 @@ class WS {
         case WEBSOCKET_MESSAGE_TYPE.heart_beat:
           break
         case WEBSOCKET_MESSAGE_TYPE.notification:
-          useFetchNotificationList()
+          useFetchNotificationCount()
           useShowNotificationDetail(res.id)
           break
       }

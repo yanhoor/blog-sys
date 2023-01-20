@@ -100,17 +100,15 @@ class CommentController extends BaseController{
       const nd = {
         createById: Number(userId),
         receiveUserId: blog.createById,
-        content: JSON.stringify({
-          type: 'comment',
-          blogId: Number(blogId),
-          commentId: res.id,
-          content
-        })
+        type: this.NOTIFICATION_TYPE.comment,
+        blogId: Number(blogId),
+        commentId: res.id
       }
       if(replyToId){
         if(replyToId != userId) {
           // 通知评论回复的用户
           nd.receiveUserId = Number(replyToId)
+          nd.type = this.NOTIFICATION_TYPE.comment_reply
           const notification = await prisma.notification.create({
             data: nd
           })
@@ -156,19 +154,20 @@ class CommentController extends BaseController{
       const xprisma = prisma.$extends({
         result: {
           comment: {
-            replyCount: {
+            childCommentsCount: {
               // 计算这个新字段值需要依赖的真实字段
-              needs: { replyItems: true },
+              needs: { childComments: true },
               compute(comment) {
                 // 计算获取这个新字段值的逻辑，即从何处来
-                return comment.replyItems.length
+                const list = comment.childComments.filter(c => !c.deletedAt)
+                return list.length
               },
             }
           }
         }
       })
       const [list, total] = await prisma.$transaction([
-        // todo: 为毛用了 xprisma 下面的 replyItems select 就无效
+        // todo: 为毛用了 xprisma 下面的 childComments select 就无效
         prisma.comment.findMany({
           skip,
           take: pageSize,
@@ -180,15 +179,16 @@ class CommentController extends BaseController{
             blogId: true,
             topCommentId: true,
             createById: true,
-            // replyCount: true,
+            // childCommentsCount: true, // 会使 childComments select 无效
             _count: {
-              select: { childComments: true },
+              select: { childComments: true }, // 这个数量错误，包含了已删除的
             },
             childComments: {
               take: 2,
               where: {
                 deletedAt: null
               },
+              // 可以用include
               select: {
                 id: true,
                 createdAt: true,

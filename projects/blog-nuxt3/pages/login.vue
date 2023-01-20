@@ -80,7 +80,7 @@ function handlePost (e: MouseEvent) {
 
           token.value = result
           await navigateTo('/', { replace: true })
-          useFetchNotificationList()
+          useFetchNotificationCount()
         } else{
           message.error(msg as string)
         }

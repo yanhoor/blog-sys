@@ -4,6 +4,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const { websocket, WEBSOCKET_MESSAGE_TYPE } = require('../websocket')
 const redisClient = require('../database/redis')
 const dayjs = require('dayjs')
+const { NotificationType } = require('@prisma/client')
 
 class BaseController{
   pageSize = config.pageSize
@@ -36,6 +37,7 @@ class BaseController{
     EVERY_BLOG_READ_USER: 'every_blog_read_user_', // 所有博客分别被阅读数量 hash
     EVERY_BLOG_COLLECT_USER: 'every_blog_collect_user_', // 所有博客分别被收藏数量 hash
   }
+  NOTIFICATION_TYPE = NotificationType
 
   getAuthUserId = async (ctx, next) => {
     const token = ctx.headers['authorization']

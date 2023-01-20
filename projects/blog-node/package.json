@@ -15,9 +15,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@prisma/client": "^4.8.1",
+    "@prisma/client": "^4.9.0",
     "nodemon": "^2.0.20",
-    "prisma": "^4.8.1",
+    "prisma": "^4.9.0",
     "redis": "^4.5.1"
   },
   "dependencies": {

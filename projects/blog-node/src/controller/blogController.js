@@ -477,20 +477,20 @@ class BlogController extends BaseController{
 
         await redisClient.sAdd(this.REDIS_KEY_PREFIX.LIKE_BLOG_USER + id, userId.toString())
 
-        const notification = await prisma.notification.create({
-          data: {
-            createById: Number(userId),
-            receiveUserId: currentBlog.createById,
-            content: JSON.stringify({
-              type: 'like_blog',
+        if(Number(userId) !== currentBlog.createById){
+          const notification = await prisma.notification.create({
+            data: {
+              createById: Number(userId),
+              receiveUserId: currentBlog.createById,
+              type: this.NOTIFICATION_TYPE.like_blog,
               blogId: Number(id),
-            })
-          }
-        })
-        this.websocket.sendWsMessage(currentBlog.createById, JSON.stringify({
-          type: this.WEBSOCKET_MESSAGE_TYPE.like_blog,
-          id: notification.id
-        }))
+            }
+          })
+          this.websocket.sendWsMessage(currentBlog.createById, JSON.stringify({
+            type: this.WEBSOCKET_MESSAGE_TYPE.like_blog,
+            id: notification.id
+          }))
+        }
       }else{
         // 这样好像也可以
         // await prisma.userLikeBlogs.delete({
@@ -576,16 +576,16 @@ class BlogController extends BaseController{
 
         await redisClient.sAdd(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id, userId.toString())
 
-        const notification = await prisma.notification.create({
-          data: {
-            createById: Number(userId),
-            receiveUserId: currentBlog.createById,
-            content: JSON.stringify({
-              type: 'collect_blog',
+        if(Number(userId) !== currentBlog.createById){
+          const notification = await prisma.notification.create({
+            data: {
+              createById: Number(userId),
+              receiveUserId: currentBlog.createById,
+              type: this.NOTIFICATION_TYPE.collect_blog,
               blogId: Number(id),
-            })
-          }
-        })
+            }
+          })
+        }
       }else{
         // 这样好像也可以
         // await prisma.userLikeBlogs.delete({
