@@ -51,18 +51,6 @@ export const useFetchNotificationCount = async (params = {}) => {
   }
 }
 
-export const useFetchNotificationList = async (params = {}) => {
-  const notification = useNotification()
-  try{
-    const { result, success } = await useFetchPost('/notification/list', params)
-    if(success){
-      notification.value = result.list
-    }
-  }catch (e) {
-
-  }
-}
-
 // 评论通知弹窗详情显示
 export const useShowNotificationDetail = async (id: string) => {
   const { notification } = createDiscreteApi(["notification"])

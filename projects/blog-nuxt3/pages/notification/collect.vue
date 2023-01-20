@@ -8,7 +8,15 @@
 
     <div class="cursor-pointer w-full pt-[12px]" @click="navigateTo({ path: '/blog', query: { id: notification.blogId } })">
       <span class="font-semibold text-[18px]">{{ notification.blog.title }}</span>
-      <div class="mt-[12px]" v-html="notification.blog.content"></div>
+      <div class="mt-[12px] truncate">{{ getText(notification.blog.content) }}</div>
     </div>
   </NotificationList>
 </template>
+
+<script setup lang="ts">
+function getText(str: string) {
+  return str
+    .replace(/<[^<>]+>/g, "")
+    .replace(/&nbsp;/gi, "");
+}
+</script>

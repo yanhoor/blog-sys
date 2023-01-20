@@ -19,6 +19,7 @@ definePageMeta({
   redirect: '/notification/comment'
 })
 
+useFetchNotificationCount()
 const route = useRoute()
 const unreadCommentCount = useNotificationUnreadCommentCount()
 const unreadLikeCount = useNotificationUnreadLikeCount()
