@@ -5,7 +5,7 @@
       <n-tab name="/notification/like">点赞({{ unreadLikeCount }})</n-tab>
       <n-tab name="/notification/collect">收藏({{ unreadCollectCount }})</n-tab>
     </n-tabs>
-    <NuxtPage :foobar="123" />
+    <NuxtPage/>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ const route = useRoute()
 const unreadCommentCount = useNotificationUnreadCommentCount()
 const unreadLikeCount = useNotificationUnreadLikeCount()
 const unreadCollectCount = useNotificationUnreadCollectCount()
-const currentTab = ref('/notification/comment')
+const currentTab = ref(route.path)
 
 watch(() => route.path, (val) => {
   currentTab.value = val
