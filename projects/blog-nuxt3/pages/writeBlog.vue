@@ -39,11 +39,10 @@ definePageMeta({
   layout: "empty",
 })
 
-getAllCate()
-
 interface BlogForm extends Blog{
   isPost?: number
 }
+const route = useRoute()
 const config = useRuntimeConfig()
 const cateList = ref<BlogCate[]>([])
 const postForm = ref<BlogForm>({
@@ -69,6 +68,9 @@ const rules: FormRules = {
     }
   ]
 }
+
+getAllCate()
+getBlogInfo()
 
 async function getAllCate(){
   try{
@@ -104,6 +106,23 @@ async function handlePost(){
       message.error('请将信息填写完整')
     }
   })
+}
+
+async function getBlogInfo(){
+  if(!route.query.id) return
+
+  try{
+    const { result, success, msg, code } = await useFetchPost('/blog/info', { id: route.query.id })
+    const { message } = createDiscreteApi(["message"])
+    if(success){
+      postForm.value = result
+    } else if(code === 1) {
+      message.error(msg as string)
+      return navigateTo({  path: '/', replace: true })
+    }
+  }catch (e) {
+    console.log('=====/blog/info=======', e)
+  }
 }
 </script>
 

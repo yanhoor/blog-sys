@@ -165,6 +165,7 @@ class BlogController extends BaseController{
             title: true,
             createdAt: true,
             updatedAt: true,
+            createById: true,
             launch: true,
             likedByCount: true,
             collectedByCount: true,
@@ -232,12 +233,12 @@ class BlogController extends BaseController{
           msg: '博客不存在'
         }
       }
-      if (blog.launch) {
-        return ctx.body = {
-          success: false,
-          msg: '博客已发布，不能修改'
-        }
-      }
+      // if (blog.launch) {
+      //   return ctx.body = {
+      //     success: false,
+      //     msg: '博客已发布，不能修改'
+      //   }
+      // }
       try {
         const res = await prisma.blog.update({
           where: {id},
