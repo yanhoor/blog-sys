@@ -2,7 +2,7 @@ const BaseController = require('./baseController')
 const prisma = require('../database/prisma')
 class NotificationController extends BaseController{
   list = async (ctx, next) => {
-    const {page = 1, pageSize = this.pageSize, type} = ctx.request.body
+    const {page = 1, pageSize = this.pageSize, type, isRead} = ctx.request.body
     const skip = pageSize * (page - 1)
     let userId = await this.getAuthUserId(ctx, next)
     const filter = { receiveUserId: userId }
@@ -14,6 +14,11 @@ class NotificationController extends BaseController{
           type: this.NOTIFICATION_TYPE[t]
         })
       }
+    }
+    if(Number(isRead) === 0) {
+      filter.isRead = isRead
+    }else{
+      filter.isRead = undefined
     }
     try {
       const [list, total, unreadTotal] = await prisma.$transaction([
