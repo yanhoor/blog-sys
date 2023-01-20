@@ -2,7 +2,7 @@
   <div>
     <SkeletonUser v-if="loading"/>
     <div class="flex items-start gap-8" v-else-if="userInfo">
-      <div class="flex-1">
+      <div class="flex-1 overflow-hidden">
         <n-card>
           <div class="flex gap-12">
             <UserAvatar :size="120" :user="userInfo" disabled/>
