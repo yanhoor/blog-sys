@@ -53,12 +53,12 @@ class UploadController extends BaseController{
     return new Promise(async (resolve, reject) => {
       const extname = path.extname(file.originalFilename)
       console.log('======file========', file)
-      if(!config.imgTypeList.includes(extname.toLowerCase())){
-        return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
-      }
+      // if(!config.imgTypeList.includes(extname.toLowerCase())){
+      //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
+      // }
 
-      if(file.size > config.uploadMaxSize * 1024 * 1024){
-        return reject(`文件最大不能超过${config.uploadMaxSize}M`)
+      if(config.imgTypeList.includes(extname.toLowerCase()) && file.size > config.uploadMaxSize * 1024 * 1024){
+        return reject(`图片最大不能超过${config.uploadMaxSize}M`)
       }
 
       const hashName = (new Date().getTime() + Math.ceil(Math.random()*10000)).toString(16)

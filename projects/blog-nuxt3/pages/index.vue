@@ -1,8 +1,6 @@
 <template>
   <div>
-    <n-card>
-      <BlogList />
-    </n-card>
+    <BlogList />
 
     <div class="mt-20 text-center text-gray-400">
       <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>

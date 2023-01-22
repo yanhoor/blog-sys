@@ -1,19 +1,29 @@
 <template>
   <n-space class="cursor-pointer" v-if="userInfo">
-    <n-button type="primary" @click="navigateTo('/writeBlog')">写文章</n-button>
+    <n-button type="primary" @click="showWritePost = true">写文章</n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
       <UserAvatar :user="userInfo" disabled/>
     </n-dropdown>
     <layout-notification />
   </n-space>
   <n-button type="primary" v-else @click="navigateTo('/login')">登录</n-button>
+  <n-modal
+    :close-on-esc="false"
+    v-model:show="showWritePost"
+    preset="card"
+    size="huge"
+    title="快捷发布"
+    class="w-1/2"
+  >
+    <WritePost @complete="showWritePost = false"/>
+  </n-modal>
 </template>
 
 <script lang="ts" setup>
 import {
   NButton,
   NSpace,
-  NAvatar,
+  NModal,
   NIcon,
   NDropdown,
   createDiscreteApi
@@ -33,6 +43,7 @@ const renderIcon = (icon: Component) => {
 const config = useRuntimeConfig()
 const userInfo = useUserInfo()
 const route = useRoute()
+const showWritePost = ref(false)
 const token = useCookie('token')
 const userOptions = ref([
   {

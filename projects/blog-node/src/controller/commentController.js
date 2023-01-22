@@ -219,6 +219,7 @@ class CommentController extends BaseController{
                     content: true,
                     blogId: true,
                     topCommentId: true,
+                    deletedAt: true,
                     createById: true,
                     createBy: {
                       select: {

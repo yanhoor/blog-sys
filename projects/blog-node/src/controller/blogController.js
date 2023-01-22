@@ -34,7 +34,12 @@ class BlogController extends BaseController{
                 name: true
               }
             },
-            title: true
+            medias: {
+              select: {
+                id: true,
+                url: true
+              }
+            }
           },
           orderBy: {updatedAt: 'desc'}
         }),
@@ -162,7 +167,6 @@ class BlogController extends BaseController{
           where: filter,
           select: {
             id: true,
-            title: true,
             createdAt: true,
             updatedAt: true,
             createById: true,
@@ -172,6 +176,7 @@ class BlogController extends BaseController{
             commentsCount: true,
             isLike: true,
             isCollect: true,
+            content: true,
             cate: {
               select: {
                 id: true,
@@ -185,6 +190,15 @@ class BlogController extends BaseController{
                 avatar: true
               }
             },
+            medias: {
+              where: {
+                deletedAt: null
+              },
+              select: {
+                id: true,
+                url: true
+              }
+            }
           },
           orderBy
         }),
@@ -205,10 +219,9 @@ class BlogController extends BaseController{
   }
 
   edit = async (ctx, next) => {
-    const {title, content, cateId, id, isPost = 0} = ctx.request.body
+    const {medias = [], content, cateId, id, isPost = 0} = ctx.request.body
     let userId = await this.getAuthUserId(ctx, next)
     try {
-      if (!title) throw new Error('标题不能为空')
       if (!content) throw new Error('内容不能为空')
     } catch (e) {
       ctx.body = {
@@ -219,7 +232,6 @@ class BlogController extends BaseController{
     }
 
     const newItem = {
-      title,
       content,
       cateId
     }
@@ -240,9 +252,45 @@ class BlogController extends BaseController{
       //   }
       // }
       try {
+        const oldList = await prisma.media.findMany({
+          where: {
+            blogId: id
+          }
+        })
+        const editList = []
+        const addList = []
+        medias.forEach(item => {
+          item.id ? editList.push(item) : addList.push(item)
+        })
+        const notList = editList.filter(item => oldList.every(old => old.id !== item.id))
+        if(notList.length){
+          const notIdList = notList.map(item => item.id)
+          return ctx.body = {
+            success: false,
+            msg: `以下媒体id不存在：${notIdList.toString()}`
+          }
+        }
+        addList.forEach(item => {
+          item.createById = userId
+        })
+        const deleteList = oldList.filter(old => editList.every(item => item.id !== old.id))
         const res = await prisma.blog.update({
           where: {id},
-          data: newItem
+          data: {
+            ...newItem,
+            medias: {
+              updateMany: {
+                where: {
+                  id: {
+                    in: deleteList.map(item => item.id)
+                  }
+                },
+                data: {
+                  deletedAt: new Date()
+                }
+              }
+            }
+          }
         })
         return ctx.body = {
           success: true,
@@ -253,10 +301,48 @@ class BlogController extends BaseController{
       }
     } else {
       try {
+        medias.forEach(item => {
+          item.createById = userId
+        })
         newItem.createById = userId
         if(isPost) newItem.launch = 1
         const res = await prisma.blog.create({
-          data: newItem
+          data: {
+            ...newItem,
+            medias: {
+              create: medias
+            }
+          },
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            createById: true,
+            launch: true,
+            content: true,
+            cate: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
+            },
+            medias: {
+              where: {
+                deletedAt: null
+              },
+              select: {
+                id: true,
+                url: true
+              }
+            }
+          }
         })
         // 创建博客数递增
         await redisClient.zIncrBy(this.REDIS_KEY_PREFIX.BLOG_CREATE_RANKING, 1, userId.toString())
@@ -317,7 +403,6 @@ class BlogController extends BaseController{
         },
         select: {
           id: true,
-          title: true,
           createdAt: true,
           updatedAt: true,
           launch: true,
@@ -338,6 +423,15 @@ class BlogController extends BaseController{
               id: true,
               name: true,
               avatar: true
+            }
+          },
+          medias: {
+            where: {
+              deletedAt: null
+            },
+            select: {
+              id: true,
+              url: true
             }
           }
         }

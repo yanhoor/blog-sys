@@ -45,7 +45,7 @@ model User {
   createComments       Comment[]          @relation("CreateComment")
   blogCates            BlogCate[]
   replyComments        Comment[]          @relation("ReplyComment")
-  trends               Trend[]            @relation("Trend")
+  medias               Media[]            @relation("Media")
 
   @@index([createdAt])
 }
@@ -91,6 +91,20 @@ model UserCollectBlogs {
   @@id([userId, blogId])
 }
 
+model Media {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(name: "Media", fields: [createById], references: [id])
+  createById Int
+  url        String   @unique
+  blogId     Int?
+  blog       Blog?    @relation(fields: [blogId], references: [id])
+
+  deletedAt DateTime?
+
+  @@index([createdAt])
+}
+
 model Blog {
   id          Int                @id @default(autoincrement())
   createdAt   DateTime           @default(now())
@@ -104,12 +118,13 @@ model Blog {
   launch      Int                @default(0)
   operateAt   DateTime? // 发布/下架时间
 
-  title   String @db.VarChar(255)
+  // title   String @db.VarChar(255)
   content String @db.Text
 
   deletedAt     DateTime?
   comments      Comment[]
   notifications Notification[]
+  medias        Media[]
 
   @@index([createdAt])
 }
@@ -158,19 +173,6 @@ model Comment {
 
   content       String         @db.Text
   notifications Notification[]
-
-  deletedAt DateTime?
-
-  @@index([createdAt])
-}
-
-// 个人动态
-model Trend {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  createBy   User     @relation(name: "Trend", fields: [createById], references: [id])
-  createById Int
-  content    Json
 
   deletedAt DateTime?
 

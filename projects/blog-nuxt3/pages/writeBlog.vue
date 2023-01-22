@@ -1,23 +1,30 @@
 <template>
   <div class="mx-[150px] p-12 min-h-full">
     <n-form ref="formRef" :model="postForm" :rules="rules">
-      <n-form-item path="title" label="标题">
-        <n-input v-model:value="postForm.title" @keydown.enter.prevent placeholder="请输入标题" size="large" maxlength="60" show-count clearable/>
-      </n-form-item>
-      <n-form-item path="cateId" label="分类">
-        <n-select
-          v-model:value="postForm.cateId"
+      <n-form-item path="content" label="内容">
+        <n-input
+          :value="postForm.content"
+          @keydown.enter.prevent
+          type="textarea"
+          placeholder="请输入"
           size="large"
-          :options="cateList"
-          label-field="name"
-          value-field="id"
-          placeholder="请选择文章分类"
-          filterable
+          show-count
           clearable
+          :autosize="{
+            minRows: 5
+          }"
         />
       </n-form-item>
-      <n-form-item path="content" label="内容">
-        <MiniMCE v-model="postForm.content" />
+      <n-form-item path="medias" label="媒体">
+        <!--<n-upload
+          v-model:file-list="postForm.medias"
+          @finish="handleFinish"
+          :custom-request="customRequest"
+          :show-preview-button="false"
+          list-type="image-card"
+        >
+        </n-upload>-->
+        <CustomUpload v-model="postForm.medias"/>
       </n-form-item>
     </n-form>
     <div class="text-center">
@@ -28,7 +35,25 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NSelect, NForm, NFormItem, NInput, FormInst, FormRules, FormItemRule, FormItemInst, createDiscreteApi } from "naive-ui"
+import type { UploadFileInfo } from "naive-ui"
+import {
+  NButton,
+  NIcon,
+  NUpload,
+  NCard,
+  NSpace,
+  NGridItem,
+  NSelect,
+  NForm,
+  NFormItem,
+  NInput,
+  FormInst,
+  FormRules,
+  FormItemRule,
+  FormItemInst,
+  createDiscreteApi,
+  UploadCustomRequestOptions
+} from "naive-ui"
 import { Blog, BlogCate } from '@/types'
 import {useFetchPost} from "~/composables/useBaseFetch";
 
@@ -44,23 +69,16 @@ interface BlogForm extends Blog{
 }
 const route = useRoute()
 const config = useRuntimeConfig()
-const cateList = ref<BlogCate[]>([])
 const postForm = ref<BlogForm>({
   id: '',
-  title: '',
   content: '',
   isPost: 1,
+  medias: [],
   cateId: undefined, // 空字符不会显示 placeholder
 })
 const isProcessing = ref(false)
 const formRef = ref<FormInst | null>(null)
 const rules: FormRules = {
-  title: [
-    {
-      required: true,
-      message: '请输入标题'
-    }
-  ],
   content: [
     {
       required: true,
@@ -69,20 +87,7 @@ const rules: FormRules = {
   ]
 }
 
-getAllCate()
 getBlogInfo()
-
-async function getAllCate(){
-  try{
-    const {success, result, msg} = await useFetchPost('/blogCate/all', {})
-    if(success){
-      cateList.value = result
-    }else{
-    }
-  }catch (e) {
-
-  }
-}
 
 async function handlePost(){
   formRef.value?.validate(async (errors) => {
@@ -123,6 +128,54 @@ async function getBlogInfo(){
   }catch (e) {
     console.log('=====/blog/info=======', e)
   }
+}
+
+const customRequest = async ({
+                               file,
+                               data,
+                               headers,
+                               withCredentials,
+                               action,
+                               onFinish,
+                               onError,
+                               onProgress
+                             }: UploadCustomRequestOptions) => {
+  const { message } = createDiscreteApi(["message"])
+  // console.log('==============', file, data)
+  try{
+    if(file.file?.size && file.file?.size > 1024 * 1024 * 5){
+      message.error('文件不能大于 5M')
+      onError()
+      return
+    }
+    const {success, result, msg} = await useFetchPost('/upload', { file: file.file }, true)
+    if(success){
+      file.url = result.path
+      postForm.value.medias.push({
+        url: result.path as string
+      })
+      onFinish()
+    }else{
+      message.error(msg as string)
+      onError()
+    }
+  }catch (e) {
+    onError()
+  }
+}
+const handleFinish = ({
+                        file,
+                        event
+                      }: {
+  file: UploadFileInfo
+  event?: ProgressEvent
+}) => {
+  console.log('-------------', file)
+  // message.success((event?.target as XMLHttpRequest).response)
+  const ext = file.name.split('.')[1]
+  // file.name = `更名.${ext}`
+  // file.url = '__HTTPS__://www.mocky.io/v2/5e4bafc63100007100d8b70f'
+  return file
 }
 </script>
 

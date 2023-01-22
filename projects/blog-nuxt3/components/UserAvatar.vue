@@ -3,8 +3,8 @@
     class="flex justify-center items-center"
     :class="{'cursor-pointer': !disabled}"
     round
-    :size="props.size"
-    :src="config.imageBase + props.user?.avatar"
+    :size="size"
+    :src="config.imageBase + user.avatar"
     :render-fallback="renderErrorAvatar"
     @click="handleUserHome"
   ></n-avatar>
