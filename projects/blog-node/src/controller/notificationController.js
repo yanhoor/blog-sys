@@ -37,7 +37,6 @@ class NotificationController extends BaseController{
             blog: {
               select: {
                 id: true,
-                title: true,
                 content: true
               }
             },
@@ -131,7 +130,7 @@ class NotificationController extends BaseController{
           blog: {
             select: {
               id: true,
-              title: true
+              content: true
             }
           },
           commentId: true,

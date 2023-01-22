@@ -30,11 +30,11 @@
           <div v-for="notification of pageList" :key="notification.id" class="flex items-start gap-[12px]">
             <n-checkbox size="large" :value="notification.id" :disabled="!!notification.isRead" v-if="showCheck"></n-checkbox>
             <n-card class="overflow-hidden">
-              <div class="group flex flex-col items-start divide-y divide-border-light dark:divide-border-dark" :class="{ 'text-gray-400': notification.isRead}">
+              <div class="group flex flex-col gap-[12px] items-start divide-y divide-border-light dark:divide-border-dark" :class="{ 'text-gray-400': notification.isRead}">
 
                 <slot :notification="notification"></slot>
 
-                <div class="flex justify-between items-center w-full mt-[12px] pt-[12px]">
+                <div class="flex justify-between items-center w-full pt-[12px]">
                   <n-time  type="datetime" :time="new Date(notification.createdAt)" class="text-gray-400"/>
                   <n-button text type="primary" class="hidden group-hover:block" v-if="!notification.isRead" @click="handleRemarkRead(notification.id)">标为已读</n-button>
                   <span class="text-green-700 hidden group-hover:block" v-else>已读</span>

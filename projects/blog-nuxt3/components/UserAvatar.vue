@@ -1,6 +1,6 @@
 <template>
   <n-avatar
-    class="flex justify-center items-center"
+    class="flex justify-center items-center shrink-0"
     :class="{'cursor-pointer': !disabled}"
     round
     :size="size"
