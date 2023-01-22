@@ -29,10 +29,9 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
       const { result, success } = await useFetchPost(url, pageFetchParams)
       if(success){
         for(let item of result.list){
-          if(!pageList.value.some((old: any) => initParams.uniqueKey && old[initParams.uniqueKey] === item[initParams.uniqueKey])){
-            pageList.value.push(item)
-          }
           if(!initParams.uniqueKey){
+            pageList.value.push(item)
+          }else if(!pageList.value.some((old: any) => old[initParams.uniqueKey as string] === item[initParams.uniqueKey as string])){
             pageList.value.push(item)
           }
         }
@@ -50,12 +49,19 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     return await fetchPage()
   }
 
+  async function handleLoadNextPage() {
+    if(pageLoadedFinish.value) return
+    pageFetchParams.page ++
+    return await fetchPage()
+  }
+
   return {
     pageTotal,
     pageList,
     pageLoading,
     pageLoadedFinish,
     pageFetchParams,
-    handlePageChange
+    handlePageChange,
+    handleLoadNextPage,
   }
 }
