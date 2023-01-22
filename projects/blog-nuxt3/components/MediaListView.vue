@@ -1,17 +1,16 @@
 <template>
   <div class="w-full h-full relative" v-if="isPreview">
-    <div class="absolute w-1/4 h-full left-0 top-0 flex justify-start items-center group">
-      <n-icon :component="ArrowCircleLeft24Regular" size="48" color="#fff" class="cursor-pointer hidden group-hover:inline-block" @click="handleNextPreview(-1)" v-if="currentPreviewIndex > 0"/>
+    <div class="absolute w-1/5 h-full left-0 top-0 flex justify-start items-center group cursor-pointer left-pre" @click="handleNextPreview(-1)" v-if="currentPreviewIndex > 0">
     </div>
     <img alt="图像" class="media-preview-item cursor-zoom-out" :src="config.imageBase + currentPreviewItem.url" v-if="config.imageType.includes(getFileExt(currentPreviewItem.url))" @click="handleCancelPreview">
     <video class="media-preview-item" :src="config.imageBase + currentPreviewItem.url" v-else-if="config.videoType.includes(getFileExt(currentPreviewItem.url))" controls @click.stop="handleCancelPreview"></video>
-    <div class="absolute w-1/4 h-full top-0 right-0 flex justify-end items-center group">
-      <n-icon :component="ArrowCircleRight24Regular" size="48" color="#fff" class="cursor-pointer hidden group-hover:inline-block" @click="handleNextPreview(1)" v-if="currentPreviewIndex !== list.length - 1"/>
+    <div class="absolute w-1/5 h-full top-0 right-0 flex justify-end items-center group cursor-pointer right-pre" @click="handleNextPreview(1)" v-if="currentPreviewIndex !== list.length - 1">
     </div>
   </div>
-  <div :class="[isPreview ? 'list-preview-item-container' : 'list-item-container']" v-for="(file, index) of list" :key="file.url">
-    <img alt="图像" class="media-item" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))" @click="handlePreview(file, index, 1)">
-    <video class="media-item" :src="config.imageBase + file.url" v-else-if="config.videoType.includes(getFileExt(file.url))" @click="handlePreview(file, index, 2)"></video>
+  <div :class="[isPreview ? 'list-preview-item-container' : 'list-item-container rounded relative group']" v-for="(file, index) of list" :key="file.url">
+    <img alt="图像" class="media-item" :src="config.imageBase + file.url" @click="handlePreview(file, index)" v-if="config.imageType.includes(getFileExt(file.url))">
+    <video class="media-item" :src="config.imageBase + file.url" @click="handlePreview(file, index)" v-else-if="config.videoType.includes(getFileExt(file.url))"></video>
+    <div class="absolute bg-gray-500 top-0 left-0 w-full h-full opacity-70 cursor-zoom-in hidden group-hover:inline-block" v-if="!isPreview" @click="handlePreview(file, index)"></div>
   </div>
 
   <n-modal
@@ -27,7 +26,7 @@
 
 <script setup lang="ts">
 import { Media } from '@/types'
-import { NIcon, NModal } from 'naive-ui'
+import { NIcon, NModal, NCollapseTransition } from 'naive-ui'
 import { ArrowCircleLeft24Regular, ArrowCircleRight24Regular } from '@vicons/fluent'
 
 interface Props{
@@ -41,8 +40,15 @@ const showModal = ref(false)
 const currentPreviewItem = ref<Media>()
 const currentPreviewIndex = ref<number>()
 
-function handlePreview(m: Media, idx: number, type: number) {
-  type ===2 ? showModal.value = true : isPreview.value = true
+function handlePreview(m: Media, idx: number) {
+  const isImage = config.imageType.includes(getFileExt(m.url))
+  if(isImage){
+    isPreview.value = true
+  }else{
+    showModal.value = true
+    isPreview.value = false
+  }
+  isImage ? isPreview.value = true : showModal.value = true
   currentPreviewIndex.value = idx
   currentPreviewItem.value = m
 }
@@ -78,9 +84,15 @@ function handleNextPreview(c: number) {
   @apply w-[60px] h-[60px]
 }
 .media-item{
-  @apply w-full h-full object-cover overflow-clip cursor-zoom-in
+  @apply w-full h-full object-cover overflow-clip
 }
 .media-preview-item{
   @apply w-full h-full object-contain
+}
+.left-pre{
+  cursor: url("@/assets/images/pic_prev.cur"), auto;
+}
+.right-pre{
+  cursor: url("@/assets/images/pic_next.cur"), auto;
 }
 </style>

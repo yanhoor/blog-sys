@@ -27,14 +27,14 @@
           </div>
         </n-card>
 
-        <n-card class="mt-[12px]">
+        <div class="mt-[12px]">
           <n-tabs type="line" v-model:value="contentType">
             <n-tab name="1">文章</n-tab>
             <n-tab name="2">别的东西</n-tab>
             <n-tab name="3">未想好</n-tab>
           </n-tabs>
           <BlogList :search-params="searchParams" :show-avatar="false" can-edit/>
-        </n-card>
+        </div>
       </div>
       <div class="sticky top-[80px]">
         <n-card>

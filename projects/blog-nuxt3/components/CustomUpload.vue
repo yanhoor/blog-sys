@@ -6,7 +6,7 @@
     :show-file-list="false"
     :custom-request="customRequest"
   >
-    <div class="flex flex-wrap gap-[12px] justify-between">
+    <div class="flex flex-wrap gap-[12px]">
       <template v-for="(file, index) of modelValue" :key="file.url">
         <div class="flex justify-center items-center relative limit-size border border-dashed border-gray-300 hover:border-green-600" @click.stop>
           <img alt="图像" class="object-cover overflow-clip" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">
