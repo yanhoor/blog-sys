@@ -8,7 +8,7 @@
         </div>
       </div>
 
-      <div>{{ comment.content }}</div>
+      <ExpandableContent :content="comment.content" :max-length="160"/>
 
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center flex-1">
@@ -34,7 +34,7 @@
         />
       </n-collapse-transition>
 
-      <CommentReplyList ref="replyListRef" :comment="comment" :allow-load-more="allowLoadMoreReply" @checkReply="handleCheckReply"/>
+      <CommentReplyList ref="replyListRef" :comment="comment" @checkReply="handleCheckReply"/>
     </div>
   </div>
   <CommentReplyModal :comment="comment" v-model:show="showReplyDetailList"/>
@@ -53,7 +53,6 @@ import { Chat24Regular, Chat24Filled, ArrowCircleDown24Regular } from '@vicons/f
 // 如果 props.comment.topCommentId 存在，props.comment 就是评论的回复，即当前组件在第二层
 interface Props{
   comment: Comment
-  allowLoadMoreReply: boolean
 }
 
 const props = defineProps<Props>()

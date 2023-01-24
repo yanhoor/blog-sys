@@ -7,10 +7,12 @@
       size="huge"
       closable
       @close="handleShowUpdate"
-      class="w-1/2 max-h-screen flex flex-col"
-      content-style="flex: 1; overflow: auto"
+      class="w-2/3 max-h-screen flex flex-col"
+      content-style="flex: 1; overflow: hidden; display: flex; flex-direction: column"
     >
-      <CommentItem :comment="comment" :allowLoadMoreReply="true"/>
+      <div id="replyModalContent" class="overflow-auto">
+        <CommentItem :comment="comment"/>
+      </div>
     </n-card>
   </n-modal>
 </template>
@@ -28,6 +30,7 @@ interface Props{
   show: boolean
 }
 
+provide('allow_load_more_reply', true)
 const props = defineProps<Props>()
 const emit = defineEmits(['update:show'])
 

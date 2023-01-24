@@ -1,5 +1,5 @@
 <template>
-  <div class="px-[12px] bg-content-light dark:bg-content-dark rounded-[5px] min-w-full" :class="[allowLoadMore ? 'overflow-y-auto' : '']">
+  <div class="px-[12px] bg-content-light dark:bg-content-dark rounded-[5px] min-w-full" v-loadMore="allowLoadMore ? { handler: handleLoadNextPage, scrollElSelector: '#replyModalContent' } : null">
     <div class="flex items-start pt-[20px]" v-for="reply of pageList">
       <UserAvatar :user="reply.createBy" :size="24"></UserAvatar>
       <div class="comment-right-container flex-1 ml-[12px] flex flex-col items-start gap-[6px] w-0 group">
@@ -16,7 +16,7 @@
           </template>
         </div>
 
-        <div>{{ reply.content }}</div>
+        <ExpandableContent :content="reply.content" :max-length="160"/>
 
         <div class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300" v-if="reply.replyComment?.topCommentId">{{ reply.replyComment?.content }}</div>
 
@@ -46,21 +46,19 @@
       </div>
     </div>
 
+    <div class="text-center my-[20px]" v-if="allowLoadMore">
+      <n-spin :size="24" v-if="pageLoading"/>
+    </div>
+
     <n-button
       class="ml-[12px] mb-[12px]"
       text
       type="primary"
       icon-placement="right"
-      v-if="!comment.topCommentId && comment._count?.childComments > 2 && !pageLoadedFinish"
-      @click="handleClickLoadMore"
-      :loading="pageLoading"
+      v-else-if="!comment.topCommentId && comment._count?.childComments > 2"
+      @click="emit('checkReply')"
     >
-      <template v-if="allowLoadMore">
-        查看更多回复
-      </template>
-      <template v-else>
-        共 {{ comment._count?.childComments }} 条回复
-      </template>
+      共 {{ comment._count?.childComments }} 条回复
       <template #icon>
         <n-icon :component="ChevronDown24Filled"/>
       </template>
@@ -75,7 +73,9 @@ import {
   NButton,
   NTime,
   NCollapseTransition,
-  NIcon, createDiscreteApi
+  NIcon,
+  NSpin,
+  createDiscreteApi
 } from "naive-ui"
 import { Chat24Regular, Chat24Filled, ChevronDown24Filled } from '@vicons/fluent'
 
@@ -85,17 +85,16 @@ interface CommentType extends Comment{
 // 如果 props.comment.topCommentId 存在，props.comment 就是评论的回复，即当前组件在第二层
 interface Props{
   comment: CommentType
-  // immediateFetch?: boolean
-  allowLoadMore: boolean // 是否允许加载更多回复还是弹窗显示回复列表
 }
 
+const allowLoadMore = inject('allow_load_more_reply', false) // 是否允许加载更多回复还是弹窗显示回复列表
 const props = defineProps<Props>()
 const emit = defineEmits(['checkReply'])
 const userInfo = useUserInfo()
 const commentDeleting = ref(false)
-const { pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Comment>('/comment/replyList', { blogId: props.comment.blogId, topCommentId: props.comment.id }, { initList: props.allowLoadMore ? [] : props.comment.childComments, pageSize: 10, uniqueKey: 'id' })
+const { pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Comment>('/comment/replyList', { blogId: props.comment.blogId, topCommentId: props.comment.id }, { initList: allowLoadMore ? [] : props.comment.childComments, pageSize: 10, uniqueKey: 'id' })
 
-if(props.allowLoadMore){
+if(allowLoadMore){
   handleLoadNextPage()
 }
 
@@ -107,14 +106,6 @@ function handleReplySuccess(reply: CommentType){
 // 暴露给父组件调用
 function handleReplyCommit(reply: Comment){
   pageList.value.push(reply)
-}
-
-function handleClickLoadMore() {
-  if(props.allowLoadMore){
-    handleLoadNextPage()
-  }else{
-    emit('checkReply')
-  }
 }
 
 function handleCommentDelete(comment: Comment) {
