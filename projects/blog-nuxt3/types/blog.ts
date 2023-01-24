@@ -9,5 +9,6 @@ export interface Blog{
   isCollect?: boolean
   likedByCount?: number
   collectedByCount?: number
+  commentsCount?: number
   medias: Media[]
 }
