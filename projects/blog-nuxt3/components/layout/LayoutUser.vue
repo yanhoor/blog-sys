@@ -1,6 +1,10 @@
 <template>
   <n-space class="cursor-pointer" v-if="userInfo">
-    <n-button type="primary" @click="showWritePost = true">写文章</n-button>
+    <n-button type="primary" @click="showWritePost = true">
+      <template #icon>
+        <n-icon :component="Compose24Regular"/>
+      </template>
+    </n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
       <UserAvatar :user="userInfo" disabled/>
     </n-dropdown>
@@ -28,7 +32,7 @@ import {
   NDropdown,
   createDiscreteApi
 } from "naive-ui"
-import {ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular} from "@vicons/fluent"
+import {ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular, Compose24Regular} from "@vicons/fluent"
 import {Component} from "vue"
 import websocket from '@/websocket'
 

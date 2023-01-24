@@ -3,7 +3,9 @@
     <div class="w-full h-full relative" v-if="isPreview">
       <div class="preview-item-control left-0 left-pre" @click="handleNextPreview(-1)" v-if="currentPreviewIndex > 0">
       </div>
-      <img alt="图像" class="media-preview-item cursor-zoom-out" :src="config.imageBase + currentPreviewItem.url" v-if="config.imageType.includes(getFileExt(currentPreviewItem.url))" @click="handleCancelPreview">
+      <div class="w-full h-full rounded-[5px]" v-if="config.imageType.includes(getFileExt(currentPreviewItem.url))" >
+        <img alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview">
+      </div>
       <video class="media-preview-item" :src="config.imageBase + currentPreviewItem.url" v-else-if="config.videoType.includes(getFileExt(currentPreviewItem.url))" controls @click.stop="handleCancelPreview"></video>
       <div class="preview-item-control right-0 right-pre" @click="handleNextPreview(1)" v-if="currentPreviewIndex !== list.length - 1">
       </div>
@@ -98,7 +100,7 @@ function handleNextPreview(c: number) {
 
 <style scoped lang="scss">
 .list-item-container{
-  @apply w-1/5 h-[180px];
+  @apply w-[180px] h-[180px];
   border-radius: 5px;
   &.preview{
     @apply w-[60px] h-[60px]

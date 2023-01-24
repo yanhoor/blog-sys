@@ -8,7 +8,7 @@ function handleScroll(el, binding, vnode, prevVnode) {
         const info = el.getBoundingClientRect()
         // console.log('----------handleScroll-----------', info.bottom, document.documentElement.clientHeight, typeof binding.value)
         if(typeof binding.value === 'function' && info.bottom <= document.documentElement.clientHeight){
-          const finish = binding.value() // 返回 true 表示已经全部加载完，移除监听
+          const finish = binding.value() // 绑定的函数返回 true 表示已经全部加载完，移除监听
           if(finish) document.removeEventListener('scroll', callback)
         }
       }, 200)

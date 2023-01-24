@@ -275,8 +275,8 @@ class CommentController extends BaseController{
 
   // 评论的回复列表
   replyList = async (ctx, next) => {
-    const {page = 1, pageSize = this.pageSize, blogId, topCommentId} = ctx.request.body
-    const skip = pageSize * (page - 1) + 2 // 已经显示2条
+    const {page = 1, pageSize = this.pageSize, blogId, topCommentId } = ctx.request.body
+    const skip = pageSize * (page - 1)
     const filter = { blogId: Number(blogId), topCommentId: Number(topCommentId) }
     try {
       const [list, total] = await prisma.$transaction([

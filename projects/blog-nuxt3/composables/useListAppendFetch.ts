@@ -14,7 +14,7 @@ interface PageFetchParams{
 }
 export const useListAppendFetch = <T>(url: string, params: Object = {}, initParams: InitParams<T>) => {
   const pageTotal = ref(0)
-  const pageList = ref<T[]>(initParams.initList || [])
+  const pageList = ref<T[]>(initParams.initList ? [...initParams.initList] : [])
   const pageLoading = ref(false)
   const pageLoadedFinish = ref(false) // 是否加载全部
   const pageFetchParams = reactive<PageFetchParams>({

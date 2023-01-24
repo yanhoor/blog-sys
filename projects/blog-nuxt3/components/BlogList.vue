@@ -15,16 +15,14 @@
             </div>
             <!--<div class="whitespace-pre-wrap break-words">{{ blog.content }}</div>-->
             <n-ellipsis :line-clamp="5" :tooltip="false" class="whitespace-pre-wrap break-words">{{ blog.content }}</n-ellipsis>
-            <div class="flex flex-wrap gap-[12px] w-full">
-              <MediaListView :list="blog.medias"/>
-            </div>
+            <MediaListView class="w-full" :list="blog.medias"/>
             <div class="grid grid-cols-3 w-full">
               <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="likeBlog(blog)">
                 <n-icon class="text-green-700" size="18" :component="ThumbLike16Filled" v-if="blog.isLike"></n-icon>
                 <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
                 <span>{{ blog.likedByCount ||  '赞' }}</span>
               </div>
-              <div class="flex justify-center items-center cursor-pointer gap-[6px]">
+              <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="blog.showReply = !blog.showReply">
                 <n-icon class="text-green-700" size="18" :component="CommentMultiple28Filled" v-if="blog.commentsCount"></n-icon>
                 <n-icon size="18" :component="CommentMultiple16Regular" v-else></n-icon>
                 <span>{{ blog.commentsCount || '评论' }}</span>
@@ -35,6 +33,10 @@
                 <span>{{ blog.collectedByCount || '收藏' }}</span>
               </div>
             </div>
+
+            <n-collapse-transition :show="blog.showReply">
+              <PostCommentList class="w-full" :blog="blog" :page-size="2" v-if="blog.showReply"/>
+            </n-collapse-transition>
           </div>
         </n-card>
       </template>
@@ -59,12 +61,12 @@ import {
   NCard,
   NEllipsis,
   NSpin,
+  NCollapseTransition,
   NCollapse,
   NCollapseItem,
   createDiscreteApi
 } from "naive-ui"
 import { Blog } from '@/types'
-import * as process from "process";
 
 interface Props {
   canEdit?: boolean // 是否能编辑文章
@@ -76,9 +78,7 @@ interface Props {
   }
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showAvatar: true
-})
+const props = defineProps<Props>()
 
 const fetchNewPost = useFetchNewPost()
 const route = useRoute()

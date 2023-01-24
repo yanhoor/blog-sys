@@ -6,10 +6,9 @@ const dayjs = require("dayjs")
 class BlogController extends BaseController{
   // 管理端列表
   manageList = async (ctx, next) => {
-    const {title, createById, page = 1, pageSize = this.pageSize} = ctx.request.body
+    const {createById, page = 1, pageSize = this.pageSize} = ctx.request.body
     const skip = pageSize * (page - 1)
     const filter = {}
-    if (title) filter.title = {contains: title}
     if (createById) filter.createById = createById
     try {
       const [list, total] = await prisma.$transaction([
@@ -66,11 +65,6 @@ class BlogController extends BaseController{
       const filter = { launch: 1 }
       if(uid) filter.createById = Number(uid)
       if (keyword) filter.OR = [
-        {
-          title: {
-            contains: keyword
-          }
-        },
         {
           content: {
             contains: keyword
@@ -370,7 +364,7 @@ class BlogController extends BaseController{
             // 在返回的结果新增自定义字段
             isLike: {
               // 计算这个新字段值需要依赖的真实字段
-              needs: { title: true, likedBy: true},
+              needs: { likedBy: true},
               compute(blog) {
                 // 计算获取这个新字段值的逻辑，即从何处来
                 return blog.likedBy.some(item => item.userId == userId)

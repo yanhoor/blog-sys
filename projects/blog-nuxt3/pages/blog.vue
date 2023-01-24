@@ -64,7 +64,7 @@
             </div>
             <div class="divide-y divide-border-light dark:divide-border-dark">
               <template v-for="comment of pageList" :key="comment.id">
-                <BlogCommentItem :comment="comment" :level="1" :blog="blogInfo" @commentDelete="handleCommentDelete"/>
+                <CommentItem :comment="comment" :level="1" :blog="blogInfo" @commentDelete="handleCommentDelete"/>
               </template>
             </div>
             <div class="mt-[12px] flex justify-end custom-border border-t pt-[20px]">
