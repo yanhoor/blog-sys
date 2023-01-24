@@ -9,7 +9,7 @@
         <n-select class="w-[200px]" v-model:value="searchParams.time" :options="timeOptions" @update:value="handleSearch"></n-select>
       </template>
     </n-tabs>
-    <BlogList :searchParams="searchParams"/>
+    <PostList :searchParams="searchParams"/>
   </n-card>
 </template>
 

@@ -16,8 +16,6 @@
 
       <div class="pt-[12px] font-semibold w-full">{{ notification.comment.content }}</div>
 
-      <!--<div class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300" v-if="notification.comment.replyComment">{{ notification.comment.replyComment.content }}</div>-->
-
       <div class="w-full p-[12px] bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700">
         <n-ellipsis :line-clamp="5" :tooltip="false" class="whitespace-pre-wrap border-t-0 break-words">{{ notification.blog.content }}</n-ellipsis>
       </div>

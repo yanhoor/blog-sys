@@ -33,7 +33,7 @@
             <n-tab name="2">别的东西</n-tab>
             <n-tab name="3">未想好</n-tab>
           </n-tabs>
-          <BlogList :search-params="searchParams" :show-avatar="false" can-edit/>
+          <PostList :search-params="searchParams" can-edit/>
         </div>
       </div>
       <div class="sticky top-[80px]">

@@ -32,9 +32,7 @@ provide('allow_load_more_comment', true)
 const route = useRoute()
 const loading = ref(false)
 const blogInfo = ref<Blog>()
-const userInfo = useUserInfo()
 const blogId = route.params.id
-const { pageList, pageTotal, pageLoading, pageFetchParams, fetchPage, handlePageChange  } = await usePageListFetch<Comment>('/comment/list', { blogId, sort: 1 })
 
 useHead(() => {
   return {

@@ -19,7 +19,7 @@
     title="快捷发布"
     class="w-1/2"
   >
-    <WritePost @complete="showWritePost = false"/>
+    <PostWrite @complete="showWritePost = false"/>
   </n-modal>
 </template>
 
