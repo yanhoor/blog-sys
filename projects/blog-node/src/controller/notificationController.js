@@ -5,6 +5,15 @@ class NotificationController extends BaseController{
     const {page = 1, pageSize = this.pageSize, type, isRead} = ctx.request.body
     const skip = pageSize * (page - 1)
     let userId = await this.getAuthUserId(ctx, next)
+    try {
+      if (!userId) throw new Error('未登录')
+    } catch (e) {
+      return ctx.body = {
+        code: this.CODE.NOT_LOGIN,
+        success: false,
+        msg: e.message
+      }
+    }
     const filter = { receiveUserId: userId }
     if(type) {
       const typeList = type.split(',')
@@ -66,7 +75,7 @@ class NotificationController extends BaseController{
           },
           orderBy: {createdAt: 'desc'}
         }),
-        prisma.notification.count({where: filter}),
+        prisma.notification.count({where: { ...filter, isRead: undefined }}),
         prisma.notification.count({where: { ...filter, isRead: 0 }}),
       ])
 
@@ -86,6 +95,15 @@ class NotificationController extends BaseController{
   // 通知数量
   count = async (ctx, next) => {
     let userId = await this.getAuthUserId(ctx, next)
+    try {
+      if (!userId) throw new Error('未登录')
+    } catch (e) {
+      return ctx.body = {
+        code: this.CODE.NOT_LOGIN,
+        success: false,
+        msg: e.message
+      }
+    }
     const filter = { receiveUserId: userId }
     try {
       const [total, unreadTotal, unreadComment, unreadLike, unreadCollect] = await prisma.$transaction([
@@ -160,6 +178,16 @@ class NotificationController extends BaseController{
 
   read = async (ctx, next) => {
     const { id, isAll = 0, type } = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
+    try {
+      if (!userId) throw new Error('未登录')
+    } catch (e) {
+      return ctx.body = {
+        code: this.CODE.NOT_LOGIN,
+        success: false,
+        msg: e.message
+      }
+    }
     let where = {}
     if(id){
       where.id = {

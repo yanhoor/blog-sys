@@ -387,7 +387,17 @@ class BlogController extends BaseController{
               compute(blog) {
                 return blog.collectedBy.some(item => item.userId == userId)
               },
-            }
+            },
+            // 在返回的结果新增自定义字段
+            commentsCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { comments: true },
+              compute(blog) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
+                return list.length
+              },
+            },
           },
         },
       })
@@ -404,6 +414,7 @@ class BlogController extends BaseController{
           isLike: true,
           likedByCount: true,
           collectedByCount: true,
+          commentsCount: true,
           isCollect: true,
           cate: {
             select: {
