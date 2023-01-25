@@ -52,11 +52,13 @@ const showModal = ref(false)
 const videoRef = ref<HTMLVideoElement[] | null>(null)
 const currentPreviewItem = ref<Media>()
 const currentPreviewIndex = ref<number>()
+const scrollY = ref(0)
 
 function handlePreview(m: Media, idx: number) {
   const isImage = config.imageType.includes(getFileExt(m.url))
   // console.log('++++++232323++++++')
   if(isImage){
+    scrollY.value = window.scrollY
     isPreview.value = true
   }else{
     if(!videoRef.value) return
@@ -78,6 +80,9 @@ function handlePreview(m: Media, idx: number) {
 function handleCancelPreview() {
   isPreview.value = false
   currentPreviewItem.value = undefined
+  nextTick(() => {
+    window.scrollTo(0, scrollY.value)
+  })
 }
 
 function getFileExt(path: string) {
