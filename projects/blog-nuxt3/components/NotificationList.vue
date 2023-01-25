@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <SkeletonNotification v-if="pageLoading"/>
+  <div v-loadMore="handleLoadNextPage">
+    <SkeletonNotification v-if="pageLoading && pageFetchParams.page === 1"/>
     <template v-else>
       <div class="flex justify-between items-center mb-[12px]">
         <div class="flex items-center gap-[6px]">
@@ -22,7 +22,7 @@
         </div>
         <n-radio-group v-model:value="pageFetchParams.isRead" @update:value="handlePageChange(1)" size="small">
           <n-radio-button :value="0" label="未读"></n-radio-button>
-          <n-radio-button :value="1" label="全部"></n-radio-button>
+          <n-radio-button :value="1" :label="`全部(${fetchResult?.total || 0})`"></n-radio-button>
         </n-radio-group>
       </div>
       <template v-if="pageList.length">
@@ -43,13 +43,11 @@
             </n-card>
           </div>
         </n-checkbox-group>
-        <div class="flex justify-end pt-[20px]">
-          <n-pagination v-model:page="pageFetchParams.page" :item-count="pageTotal" :page-size="20" @update:page="handlePageChange"/>
-        </div>
       </template>
-      <n-result v-else status="418" description="暂无消息" class="mt-[12px]">
-
-      </n-result>
+      <n-result v-else status="418" description="暂无消息" class="mt-[12px]"></n-result>
+      <div class="text-center mt-[20px]" v-if="pageLoading">
+        <n-spin :size="24"/>
+      </div>
     </template>
   </div>
 </template>
@@ -59,7 +57,7 @@ import {
   NButton,
   NTime,
   NCard,
-  NPagination,
+  NSpin,
   NIcon,
   NCheckbox,
   NCheckboxGroup,
@@ -94,13 +92,15 @@ switch (props.type) {
     fetchType = 'collect_blog'
     break
 }
-const { pageList, pageTotal, pageLoading, pageFetchParams, fetchResult, handlePageChange  } = await usePageListFetch<Notification>('/notification/list', { type: fetchType, isRead: 0 })
+const { pageList, pageLoading, pageFetchParams, fetchResult, handlePageChange, handleLoadNextPage  } = useListAppendFetch<Notification>('/notification/list', { type: fetchType, isRead: 0 }, {})
 const showCheck = ref(false)
 const checkAll = ref(false)
 const isIndeterminate = ref(false)
 const batchProcessing = ref(false)
 const checkedList = ref<any[]>([])
 const allItemList = computed(() => pageList.value.filter(i => !i.isRead)) // 排除已读的所有可选项
+
+handleLoadNextPage()
 
 function handleCheckAll(v: boolean) {
   checkedList.value = v ? allItemList.value.map(i => i.id) : []

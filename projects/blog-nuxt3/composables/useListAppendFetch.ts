@@ -38,7 +38,11 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
           }
         }
         pageTotal.value = result.total
-        if(result.list.length < pageFetchParams.pageSize) pageLoadedFinish.value = true
+        if(result.list.length < pageFetchParams.pageSize) {
+          pageLoadedFinish.value = true
+        }else{
+          pageLoadedFinish.value = false
+        }
       }
       pageLoading.value = false
     }catch (e) {
