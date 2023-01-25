@@ -27,18 +27,10 @@ import {
 } from "naive-ui"
 import { Blog } from '@/types'
 
-useHead({
-  title: '写文章'
-})
-definePageMeta({
-  layout: "empty",
-})
-
 interface BlogForm extends Blog{
   isPost?: number
 }
 const fetchNewPost = useFetchNewPost()
-const route = useRoute()
 const config = useRuntimeConfig()
 const postForm = ref<BlogForm>({
   id: '',
@@ -50,7 +42,6 @@ const postForm = ref<BlogForm>({
 const isProcessing = ref(false)
 const emit = defineEmits(['complete'])
 
-getBlogInfo()
 
 async function handlePost(){
   const { message } = createDiscreteApi(["message"])
@@ -75,21 +66,5 @@ async function handlePost(){
   }
 }
 
-async function getBlogInfo(){
-  if(!route.query.id) return
-
-  try{
-    const { result, success, msg, code } = await useFetchPost('/blog/info', { id: route.query.id })
-    const { message } = createDiscreteApi(["message"])
-    if(success){
-      postForm.value = result
-    } else if(code === 1) {
-      message.error(msg as string)
-      return navigateTo({  path: '/', replace: true })
-    }
-  }catch (e) {
-    console.log('=====/blog/info=======', e)
-  }
-}
 </script>
 

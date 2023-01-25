@@ -74,7 +74,7 @@ export const useShowNotificationDetail = async (id: string) => {
                   onClick: () => {
                     setRead(result.blogId)
                     n.destroy()
-                    navigateTo({  path: '/blog',  query: { id: result.blogId }})
+                    navigateTo('/post/' + result.blogId)
                   }
                 },
                 {

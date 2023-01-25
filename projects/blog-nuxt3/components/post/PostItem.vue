@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col items-start gap-[12px]">
-    <div class="flex items-center cursor-pointer gap-[6px]">
+    <div class="flex items-center gap-[6px]">
       <UserAvatar :user="blog.createBy" :size="56"/>
       <div class="flex flex-col items-start">
-        <div class="text-green-700 text-[20px]" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
+        <div class="text-green-700 text-[20px] cursor-pointer" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
         <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blog.updatedAt)"></n-time>
       </div>
     </div>
