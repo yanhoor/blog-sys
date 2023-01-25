@@ -12,11 +12,20 @@
 <script setup lang="ts">
 import {
   NTabs,
-  NTab
+  NTab, createDiscreteApi
 } from "naive-ui"
 
 definePageMeta({
-  redirect: '/notification/comment'
+  redirect: '/notification/comment',
+  middleware: async (to, from) => {
+    const { message } = createDiscreteApi(["message"])
+    const token = useCookie('token')
+    // console.log('=============', token, to.fullPath, from.fullPath)
+    if(!token.value){
+      message.error('请先登录')
+      return navigateTo({ path: '/', replace: true })
+    }
+  }
 })
 
 useFetchNotificationCount()

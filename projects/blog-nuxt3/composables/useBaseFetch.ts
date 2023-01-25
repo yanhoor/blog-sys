@@ -1,4 +1,5 @@
 import {useFetch, useRuntimeConfig} from "#app"
+import {createDiscreteApi} from "naive-ui"
 
 interface HttpResponseType {
   success: boolean
@@ -32,11 +33,22 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
     body: data,
     // key: url + json, // 相同的 key 不会再请求
     // initialCache: false, // 默认true，false 时不会缓存请求，即每次都会请求，即使 key 一样，false 避免出错后刷新无效
-    // transform(res){
-    //   // 相当于响应拦截
-    //   // console.log('===========tt=====', res)
+    // transform(res: any){
+    //   console.log('===========tt=====', res)
     //   return res
-    // }
+    // },
+    async onResponse({ request, response, options }) {
+      const { message } = createDiscreteApi(["message"])
+      // Log response
+      // console.log('[fetch response]', response._data)
+      const { code, success, msg } = response._data || {}
+      if(code === 111 || code === 999){
+        token.value = null
+        message.error(msg, {
+          duration: 0
+        })
+      }
+    }
   })
 }
 
@@ -56,5 +68,17 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
     headers: {
       'Authorization': Authorization
     },
+    async onResponse({ request, response, options }) {
+      const { message } = createDiscreteApi(["message"])
+      // Log response
+      // console.log('[fetch response]', response._data)
+      const { code, success, msg } = response._data || {}
+      if(code === 111 || code === 999){
+        token.value = null
+        message.error(msg, {
+          duration: 0
+        })
+      }
+    }
   })
 }

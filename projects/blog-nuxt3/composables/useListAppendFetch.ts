@@ -17,6 +17,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   const pageList = ref<T[]>(initParams.initList ? [...initParams.initList] : [])
   const pageLoading = ref(false)
   const pageLoadedFinish = ref(false) // 是否加载全部
+  const fetchResult = ref(null)
   const pageFetchParams = reactive<PageFetchParams>({
     page: 0,
     pageSize: initParams.pageSize || 20,
@@ -28,6 +29,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
       pageLoading.value = true
       const { result, success } = await useFetchPost(url, pageFetchParams)
       if(success){
+        fetchResult.value = result
         for(let item of result.list){
           if(!initParams.uniqueKey){
             pageList.value.push(item)
@@ -44,8 +46,8 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     }
   }
 
-  async function handlePageChange(page: number) {
-    pageFetchParams.page = page
+  async function handlePageChange(page?: number) {
+    pageFetchParams.page = page || pageFetchParams.page
     return await fetchPage()
   }
 
@@ -61,6 +63,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     pageLoading,
     pageLoadedFinish,
     pageFetchParams,
+    fetchResult,
     handlePageChange,
     handleLoadNextPage,
   }
