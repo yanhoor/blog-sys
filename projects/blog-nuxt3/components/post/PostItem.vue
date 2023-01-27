@@ -104,7 +104,7 @@ function handleSwitchType(val: ActionType) {
       likeBlog()
       break
     case 'comment':
-      if(props.blog.commentsCount) commentRef.value?.handlePageChange()
+      if(props.blog.commentsCount) commentRef.value?.handlePageChange(1)
       break
     case 'collect':
       collectBlog()

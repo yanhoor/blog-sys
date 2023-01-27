@@ -1,4 +1,5 @@
 // 无限加载
+import { Ref } from 'vue'
 
 type InitParams<T> = {
   initList?: T[]
@@ -14,7 +15,7 @@ interface PageFetchParams{
 }
 export const useListAppendFetch = <T>(url: string, params: Object = {}, initParams: InitParams<T>) => {
   const pageTotal = ref(0)
-  const pageList = ref<T[]>(initParams.initList ? [...initParams.initList] : [])
+  const pageList = ref<T[]>(initParams.initList ? [...initParams.initList] : []) as Ref<T[]>
   const pageLoading = ref(false)
   const pageLoadedFinish = ref(false) // 是否加载全部
   const fetchResult = ref(null)
@@ -52,6 +53,9 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
 
   async function handlePageChange(page?: number) {
     pageFetchParams.page = page || pageFetchParams.page
+    if(page == 1){
+      pageList.value = initParams.initList ? [...initParams.initList] : []
+    }
     return await fetchPage()
   }
 

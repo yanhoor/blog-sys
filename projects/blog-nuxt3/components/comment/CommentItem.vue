@@ -20,7 +20,7 @@
             {{ showReply ? '取消回复' : '回复' }}
           </n-button>
         </div>
-        <n-button class="hidden group-hover:block" text type="error" @click="handleDeleteComment" :loading="commentDeleting" v-if="props.comment?.createById === userInfo.id">删除</n-button>
+        <n-button class="hidden group-hover:block" text type="error" @click="handleDeleteComment" :loading="commentDeleting" v-if="props.comment?.createById === userInfo?.id">删除</n-button>
       </div>
 
       <n-collapse-transition :show="showReply">
