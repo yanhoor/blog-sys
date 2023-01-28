@@ -56,6 +56,7 @@ class UserController extends BaseController{
           id: true,
           name: true,
           avatar: true,
+          profileCardBg: true,
           mobile: true,
           lock: true,
           introduce: true,
@@ -123,6 +124,7 @@ class UserController extends BaseController{
           id: true,
           name: true,
           avatar: true,
+          profileCardBg: true,
           // mobile: true,
           createdAt: true,
           lock: true,
@@ -170,7 +172,7 @@ class UserController extends BaseController{
   // 更新用户信息
   update = async (ctx, next) => {
     const req = ctx.request
-    const { name, avatar, introduce, sign, gender, birthday } = req.body
+    const { name, avatar, introduce, sign, gender, birthday, profileCardBg } = req.body
     try{
       if(!name) throw new Error('名称不能为空')
     }catch(e){
@@ -180,7 +182,7 @@ class UserController extends BaseController{
       }
       return false
     }
-    const form = { name, avatar, introduce, sign, gender, birthday: new Date(birthday) }
+    const form = { name, avatar, introduce, sign, gender, birthday: new Date(birthday), profileCardBg }
     try {
       let id = await this.getAuthUserId(ctx, next)
       const result = await prisma.user.update({

@@ -20,21 +20,22 @@ enum NotificationType {
 model User {
   // 字段名----字段类型（又分为标量类型，如 Int/String 等，或模型类型，如 Blog[]）----属性，如 @id
   // 字段类型后面可以有类型修饰符 ? 和 []，如 String? 表示非必须，Blog[] 表示该字段值是列表。没有修饰符的是必填字段，不能为空
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  lastActiveAt DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  lock         Int       @default(2) // 1--锁定， 2--正常
-  name         String    @db.VarChar(255)
-  avatar       String?   @db.VarChar(255)
-  introduce    String?   @db.VarChar(255)
-  sign         String?   @db.VarChar(255)
-  mobile       String    @unique @db.VarChar(255) // @unique 唯一值
-  password     String    @db.VarChar(255)
-  type         Int       @default(2) // 1--超级管理员，2--普通用户
-  gender       Int       @default(0) // 1--男，2--女
-  birthday     DateTime?
-  deletedAt    DateTime?
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  lastActiveAt  DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lock          Int       @default(2) // 1--锁定， 2--正常
+  name          String    @db.VarChar(255)
+  avatar        String?   @db.VarChar(255)
+  profileCardBg String?   @db.VarChar(255)
+  introduce     String?   @db.VarChar(255)
+  sign          String?   @db.VarChar(255)
+  mobile        String    @unique @db.VarChar(255) // @unique 唯一值
+  password      String    @db.VarChar(255)
+  type          Int       @default(2) // 1--超级管理员，2--普通用户
+  gender        Int       @default(0) // 1--男，2--女
+  birthday      DateTime?
+  deletedAt     DateTime?
 
   blogs                Blog[]             @relation("CreateBlog")
   // 与博客likeBy显式多对多
