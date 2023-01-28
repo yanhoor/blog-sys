@@ -12,8 +12,8 @@
     <div class="text-center mt-[20px]" v-if="pageLoading">
       <n-spin :size="24"/>
     </div>
+    <n-back-top :right="50"/>
   </div>
-  <n-back-top :right="50"/>
 </template>
 
 <script setup lang="ts">

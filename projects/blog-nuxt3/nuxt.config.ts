@@ -51,14 +51,14 @@ export default defineNuxtConfig({
       ]
     },
     // https://nuxt.com/docs/getting-started/transitions
-    pageTransition: {
-      name: 'fade',
-      mode: 'out-in' // default
-    },
-    layoutTransition: {
-      name: 'slide',
-      mode: 'out-in' // default
-    }
+    // pageTransition: {
+    //   name: 'page',
+    //   mode: 'out-in' // default
+    // },
+    // layoutTransition: {
+    //   name: 'layout',
+    //   mode: 'out-in' // default
+    // }
   },
   // https://v3.nuxtjs.org/getting-started/deployment
   nitro: {

@@ -26,7 +26,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flex items-end">
+              <div class="flex items-end" v-if="myInfo">
                 <n-button type="primary" @click="navigateTo({ name: 'user-profile' })" v-if="myInfo?.id === userInfo.id">编辑资料</n-button>
                 <template v-else>
                   <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" :user="userInfo" @selectGroup="showGroupSelect = true">

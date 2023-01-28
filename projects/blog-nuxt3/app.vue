@@ -1,6 +1,6 @@
 <template>
   <n-message-provider>
-    <NConfigProvider :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
+    <NConfigProvider class="bg-page-light dark:bg-page-dark" :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
       <NuxtLoadingIndicator />
       <NuxtLayout>
         <!--导航会报错-->
@@ -48,18 +48,3 @@ function getPathKey() {
 }
 </script>
 
-<style>
-.page-enter-active,.page-leave-active {
-  transition: all 0.4s;
-}
-.page-enter-from,.page-leave-to {
-  opacity: 0;  filter: blur(1rem);
-}
-
-.layout-enter-active,.layout-leave-active {
-  transition: all 0.4s;
-}
-.layout-enter-from,.layout-leave-to {
-  filter: grayscale(1);
-}
-</style>
