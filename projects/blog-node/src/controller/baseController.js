@@ -15,7 +15,7 @@ class BaseController{
   WEBSOCKET_MESSAGE_TYPE = WEBSOCKET_MESSAGE_TYPE
   // 返回的 code
   CODE = {
-    NOT_LOGIN: 999, // 未登录/登录异常
+    USER_NOT_LOGIN: 999, // 未登录/登录异常
     USER_LOCK: 111, // 用户被锁定
     USER_NOT_FOUND: 222, // 用户不存在
   }

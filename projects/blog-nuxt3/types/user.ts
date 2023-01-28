@@ -8,4 +8,6 @@ export interface User{
   gender: string | number
   birthday?: string | number
   lock: number
+  followerCount?: number
+  followingCount?: number
 }

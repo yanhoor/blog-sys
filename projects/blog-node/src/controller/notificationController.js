@@ -9,7 +9,7 @@ class NotificationController extends BaseController{
       if (!userId) throw new Error('未登录')
     } catch (e) {
       return ctx.body = {
-        code: this.CODE.NOT_LOGIN,
+        code: this.CODE.USER_NOT_LOGIN,
         success: false,
         msg: e.message
       }
@@ -99,7 +99,7 @@ class NotificationController extends BaseController{
       if (!userId) throw new Error('未登录')
     } catch (e) {
       return ctx.body = {
-        code: this.CODE.NOT_LOGIN,
+        code: this.CODE.USER_NOT_LOGIN,
         success: false,
         msg: e.message
       }
@@ -183,7 +183,7 @@ class NotificationController extends BaseController{
       if (!userId) throw new Error('未登录')
     } catch (e) {
       return ctx.body = {
-        code: this.CODE.NOT_LOGIN,
+        code: this.CODE.USER_NOT_LOGIN,
         success: false,
         msg: e.message
       }

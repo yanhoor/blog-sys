@@ -37,7 +37,7 @@ model User {
   deletedAt    DateTime?
 
   blogs                Blog[]             @relation("CreateBlog")
-  // 与博客likeBy隐式多对多
+  // 与博客likeBy显式多对多
   likeBlogs            UserLikeBlogs[]
   collectBlogs         UserCollectBlogs[]
   createNotifications  Notification[]     @relation("CreateNotification")
@@ -46,8 +46,31 @@ model User {
   blogCates            BlogCate[]
   replyComments        Comment[]          @relation("ReplyComment")
   medias               Media[]            @relation("Media")
+  // 隐式多对多关系
+  // 粉丝
+  followers            User[]             @relation("Follow")
+  // 关注
+  followings           User[]             @relation("Follow")
+  // 创建的关注分组
+  followGroups         FollowGroup[]      @relation("CreateFollowGroup")
+  // 所在的关注分组
+  inFollowGroups       FollowGroup[]      @relation("InFollowGroup")
 
   @@index([createdAt])
+}
+
+// 关注分组
+model FollowGroup {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createBy     User     @relation(name: "CreateFollowGroup", fields: [createById], references: [id])
+  createById   Int
+  // 包含的用户
+  containUsers User[]   @relation("InFollowGroup")
+  name         String   @db.VarChar(255)
+
+  deletedAt DateTime?
 }
 
 model BlogCate {

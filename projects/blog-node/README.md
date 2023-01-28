@@ -24,6 +24,140 @@
 
 - 默认读取根目录下 `.env` 配置的数据库，[说明](https://prisma.yoga/guides/development-environment/environment-variables/managing-env-files-and-setting-variables)
 
+- 使用类型不同的值来查询，可能导致接口 404，如 `id` 一般为 `int`，使用了字符串值来查询
+
+### 多对多关系
+
+[参考](https://prisma.yoga/concepts/components/prisma-schema/relations/many-to-many-relations)。多对多关系中，可以使用隐式多对多或者创建关系表进行显式多对多，使用关系表的好处是可以记录创建关系的时间等自定义信息
+
+以下为例，用户的关注和粉丝使用了隐式，点赞博客使用了显式。
+
+```prisma
+model User{
+  // 与博客likeBy显式多对多
+  likeBlogs            UserLikeBlogs[]
+  
+  // 隐式多对多关系
+  // 粉丝
+  followers            User[]             @relation("Follow")
+  // 关注
+  followings           User[]             @relation("Follow")
+}
+
+model Blog{
+  likedBy     UserLikeBlogs[]
+}
+
+// 点赞博客关系表
+model UserLikeBlogs {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, blogId])
+}
+```
+
+```javascript
+const user = await prisma.user.update({
+  where: {
+    id: userId
+  },
+  data: {
+    followings: {
+      connect: { id: Number(id) } // 新增，取消可以使用 disconnect
+    }
+  }
+})
+
+// 点赞博客
+await prisma.blog.update({
+  where: { id },
+  data: {
+    likedBy: {
+      create: [
+        // 创建 UserLikeBlogs
+        {
+          user: {
+            // 连接到操作的 user
+            connect: {
+              id: userId
+            }
+          }
+        }
+      ]
+    }
+  }
+})
+
+// 取消点赞
+await prisma.blog.update({
+  where: { id },
+  data: {
+    likedBy: {
+      delete: [
+        // 删除相关 UserLikeBlogs
+        {
+          // 因为上面的 UserLikeBlogs 模型 @@id([userId, blogId])，可以使用 userId_blogId 找到对应关系
+          userId_blogId: {
+            userId,
+            blogId: id
+          }
+        }
+      ]
+    }
+  }
+})
+
+// 取消点赞，也可以直接删除关系表对应的数据
+await prisma.userLikeBlogs.delete({
+  where: {
+    userId_blogId: {
+      userId,
+      blogId: id
+    }
+  }
+})
+```
+
+`updateMany()` 不能用于更新多对多的关系，比如给关注用户设置分组：
+
+```javascript
+// 会报错
+await prisma.followGroup.updateMany({
+        where: {
+          id: {
+            in: groupIdList
+          }
+        },
+        data: {
+          containUsers: {
+            connect: {
+              id: userId
+            }
+          }
+        }
+})
+
+// 可以使用
+await prisma.$transaction(groupIdList.map(id => {
+  return prisma.followGroup.update({
+    where: {
+      id
+    },
+    data: {
+      containUsers: {
+        connect: {
+          id: userId
+        }
+      }
+    }
+  })
+}))
+```
+
 ### 未解决
 
 - [Github issues](https://github.com/prisma/prisma/discussions/3087), 列表查询时，不能计算返回相同查询条件得到的数据条数。[hack方法](https://prisma.yoga/concepts/components/prisma-client/transactions)
@@ -95,10 +229,6 @@ const result = await xprisma.blog.findUnique({
 ```
 
 - [Github issues](https://github.com/prisma/prisma/issues/5051), 取出来的时间是 `UTC +0.00` 的时间
-
-### 注意
-
-- 使用类型不同的值来查询，可能导致接口 404，如 `id` 一般为 `int`，使用了字符串值来查询
 
 ## 注意事项
 

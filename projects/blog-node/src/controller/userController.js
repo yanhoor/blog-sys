@@ -43,7 +43,7 @@ class UserController extends BaseController{
       if(!t){
         return ctx.body = {
           success: false,
-          code: this.CODE.NOT_LOGIN,
+          code: this.CODE.USER_NOT_LOGIN,
           msg: '登录信息已过期，请重新登录'
         }
       }
@@ -86,10 +86,36 @@ class UserController extends BaseController{
     }
   }
 
+  // 博客端用户信息
   userInfo = async (ctx, next) => {
     const { id } = ctx.request.params
+    let currentUserId = await this.getAuthUserId(ctx, next)
     try {
-      const user = await prisma.user.findUnique({
+      const xprisma = prisma.$extends({
+        result: {
+          user: {
+            followerCount: {
+              needs: { followers: true },
+              compute(user) {
+                return user.followers.length
+              }
+            },
+            followingCount: {
+              needs: { followings: true },
+              compute(user) {
+                return user.followings.length
+              }
+            },
+            isFollowing: {
+              needs: { followers: true },
+              compute(user) {
+                return user.followers.some(u => u.id === currentUserId)
+              }
+            }
+          }
+        }
+      })
+      const user = await xprisma.user.findUnique({
         where: {
           id: Number(id)
         },
@@ -104,6 +130,9 @@ class UserController extends BaseController{
           sign: true,
           gender: true,
           birthday: true,
+          followerCount: true,
+          followingCount: true,
+          isFollowing: true,
           // blogs: {
           //   select: {
           //     id: true,
@@ -373,6 +402,7 @@ class UserController extends BaseController{
     }
   }
 
+  // 锁定
   operateLock = async (ctx, next) => {
     const { type, id } = ctx.request.body
     try{
@@ -402,6 +432,7 @@ class UserController extends BaseController{
     }
   }
 
+  // 更新头像
   updateAvatar = async (ctx, next) => {
     const { avatar } = ctx.request.body
     const id = ctx.state.user.id
@@ -419,6 +450,90 @@ class UserController extends BaseController{
       }
     }catch (e) {
       this.errorLogger.error('user.edit--------->', e)
+    }
+  }
+
+  // 关注
+  operateFollow = async (ctx, next) => {
+    const { type, id } = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
+    try{
+      if(!type) throw new Error('缺少参数 type')
+      if(!id) throw new Error('缺少参数 id')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
+      if(Number(type) === 1){
+        const user = await prisma.user.update({
+          where: {
+            id: userId
+          },
+          data: {
+            followings: {
+              connect: { id: Number(id) }
+            }
+          }
+        })
+      }
+
+      if(Number(type) === 2){
+        const user = await prisma.user.update({
+          where: {
+            id: userId
+          },
+          data: {
+            followings: {
+              disconnect: { id: Number(id) }
+            }
+          }
+        })
+      }
+
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('user.operateFollow--------->', e)
+    }
+  }
+
+  // 设置关注的用户组。todo: 可能放在 followGroupController 比较合理，但是那样不能直接使用 set 覆盖关系
+  setGroup = async (ctx, next) => {
+    const {id, userId} = ctx.request.body
+    try {
+      if (!id || !userId) throw new Error('参数不全')
+    } catch (e) {
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
+      const idList = id.split(',').map(i => ({ id: Number(i) }))
+      const res = await prisma.user.update({
+        where: {
+          id: userId
+        },
+        data: {
+          inFollowGroups: {
+            set: idList
+          }
+        }
+      })
+
+      return ctx.body = {
+        success: true
+      }
+    } catch (e) {
+      this.errorLogger.error('user.setGroup--------->', e)
     }
   }
 

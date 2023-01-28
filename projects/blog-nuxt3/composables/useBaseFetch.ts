@@ -14,9 +14,6 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
   let Authorization = ''
   const token = useCookie('token')
   if(token.value) Authorization = 'Bearer ' + token.value
-  const headers = {
-    'Authorization': Authorization
-  }
   if(formData){
     const fd = new FormData()
     Object.keys(data).forEach(k => {
@@ -28,7 +25,9 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
     baseURL: runTimeConfig.apiBase,
-    headers,
+    headers: {
+      'Authorization': Authorization
+    },
     method: 'POST',
     body: data,
     // key: url + json, // 相同的 key 不会再请求

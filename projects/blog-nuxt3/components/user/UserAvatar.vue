@@ -1,13 +1,16 @@
 <template>
-  <n-avatar
-    class="flex justify-center items-center shrink-0"
-    :class="{'cursor-pointer': !disabled}"
-    round
-    :size="size"
-    :src="config.imageBase + user.avatar"
-    :render-fallback="renderErrorAvatar"
-    @click="handleUserHome"
-  ></n-avatar>
+  <UserCard :userId="user.id" :disabled="disabled">
+    <template #trigger>
+      <n-avatar
+        class="flex justify-center items-center shrink-0 cursor-pointer"
+        round
+        :size="size"
+        :src="config.imageBase + user.avatar"
+        :render-fallback="renderErrorAvatar"
+        @click="handleUserHome"
+      ></n-avatar>
+    </template>
+  </UserCard>
 </template>
 
 <script setup lang="ts">

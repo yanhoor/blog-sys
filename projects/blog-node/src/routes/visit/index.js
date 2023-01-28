@@ -5,6 +5,7 @@ const blogCateRouter = require('../manage/blogCate')
 const blogRouter = require('../manage/blog')
 const commentRouter = require('./comment')
 const notificationRouter = require('./notification')
+const followGroupRouter = require('./followGroup')
 const statisRouter = require('../manage/statis')
 
 router.prefix('/api')
@@ -15,6 +16,7 @@ router.use(blogCateRouter.routes(), blogCateRouter.allowedMethods())
 router.use(blogRouter.routes(), blogRouter.allowedMethods())
 router.use(commentRouter.routes(), commentRouter.allowedMethods())
 router.use(notificationRouter.routes(), notificationRouter.allowedMethods())
+router.use(followGroupRouter.routes(), followGroupRouter.allowedMethods())
 router.use(statisRouter.routes(), statisRouter.allowedMethods())
 
 // 测试 jsonp
