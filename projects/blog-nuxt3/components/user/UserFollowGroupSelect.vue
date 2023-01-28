@@ -80,7 +80,7 @@ const groupForm = ref({
 const groupList = ref<FollowGroup[]>([])
 
 watch(() => props.show, (val) => {
-  InitPage()
+  if(val) InitPage()
 })
 
 async function InitPage(){
@@ -121,7 +121,7 @@ async function handleConfirm(){
   try{
     const { result, success, code, msg } = await useFetchPost('/user/setGroup', { id: selectIdList.value.toString(), userId: props.userId })
     if(success){
-
+      emit('update:show', false)
     }else{
       message.error(msg as string)
     }

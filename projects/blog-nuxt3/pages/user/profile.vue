@@ -2,7 +2,7 @@
   <n-card>
     <div class="font-bold text-4xl">个人资料</div>
     <n-divider></n-divider>
-    <div class="flex items-start mt-12 gap-12">
+    <div class="mt-12">
       <n-form class="flex-1" ref="formRef" :model="postForm" :rules="rules" label-placement="left" label-width="120">
         <n-form-item path="name" label="名称">
           <n-input v-model:value="postForm.name" @keydown.enter.prevent maxlength="20" show-count clearable/>
@@ -31,12 +31,15 @@
           <n-input v-model:value="postForm.sign" @keydown.enter.prevent maxlength="20" show-count clearable/>
         </n-form-item>
         <n-form-item path="introduce" label="个人简介">
-          <n-input v-model:value="postForm.introduce" type="textarea" @keydown.enter.prevent maxlength="50" show-count clearable/>
+          <n-input v-model:value="postForm.introduce" type="textarea" @keydown.enter.prevent maxlength="80" show-count clearable/>
+        </n-form-item>
+        <n-form-item path="avatar" label="头像">
+          <UploadImg v-model="postForm.avatar"/>
+        </n-form-item>
+        <n-form-item path="profileCardBg" label="资料卡片背景">
+          <UploadImg v-model="postForm.profileCardBg"/>
         </n-form-item>
       </n-form>
-      <div>
-        <UploadImg v-model="postForm.avatar"/>
-      </div>
     </div>
     <div class="text-center">
       <n-button class="w-[80px]" type="primary" :loading="isProcessing" @click="handleSave">保存修改</n-button>
@@ -66,6 +69,7 @@ useHead({
 const postForm = ref<User>({
   name: '',
   avatar: '',
+  profileCardBg: '',
   mobile: '',
   id: '',
   gender: 0,

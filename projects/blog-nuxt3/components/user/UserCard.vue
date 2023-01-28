@@ -93,7 +93,7 @@ async function handleFollow(type: number) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .statis-item{
   @apply flex flex-col items-center;
   .statis-num{

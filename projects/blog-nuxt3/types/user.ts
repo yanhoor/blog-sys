@@ -3,6 +3,7 @@ export interface User{
   mobile: string
   name: string
   avatar?: string
+  profileCardBg?: string
   introduce?: string
   sign?: string
   gender: string | number

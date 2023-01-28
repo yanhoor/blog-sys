@@ -1,8 +1,9 @@
 <template>
-  <UserCard :userId="user.id" :disabled="disabled">
+  <UserCard :userId="user.id" :disabled="true">
     <template #trigger>
       <n-avatar
-        class="flex justify-center items-center shrink-0 cursor-pointer"
+        class="flex justify-center items-center shrink-0"
+        :class="{'cursor-pointer': !disabled}"
         round
         :size="size"
         :src="config.imageBase + user.avatar"

@@ -1,79 +1,107 @@
 <template>
   <div>
     <SkeletonUser v-if="loading"/>
-    <div class="flex items-start gap-8" v-else-if="userInfo">
+    <div v-else-if="userInfo">
       <div class="flex-1 overflow-hidden">
-        <n-card>
-          <div class="flex gap-12">
-            <UserAvatar :size="120" :user="userInfo" disabled/>
-            <div class="flex flex-1 flex-col gap-[6px]">
-              <div class="font-bold text-3xl">{{ userInfo?.name }}</div>
-              <div class="text-[14px] text-gray-400 flex items-center gap-[3px]">
-                <n-time type="date" format="yyyy-MM-dd" :time="new Date(userInfo.createdAt)"></n-time>
-                <span>加入</span>
+        <div>
+          <div class="w-full h-[180px]">
+            <img :src="config.imageBase + userInfo.profileCardBg" class="w-full h-full object-cover object-center" v-if="userInfo.profileCardBg">
+            <div class="w-full h-full bg-gradient-to-r from-purple-400 via-pink-500 to-red-500" v-else></div>
+          </div>
+          <div class="flex flex-col p-[12px] pt-0 gap-[12px] bg-card-light dark:bg-card-dark">
+            <div class="flex items-center gap-[12px]">
+              <div class="flex-1 flex gap-[12px]">
+                <UserAvatar class="relative -mt-[55px]" :size="120" :user="userInfo" disabled/>
+                <div class="flex flex-col gap-[6px]">
+                  <div class="font-bold text-3xl">{{ userInfo?.name }}</div>
+                  <div class="flex gap-[6px]">
+                    <div class="flex gap-[6px] items-center">
+                      <span class="text-gray-400">粉丝</span>
+                      <span class="text-[18px] font-semibold">{{ userInfo.followerCount }}</span>
+                    </div>
+                    <div class="flex gap-[6px] items-center">
+                      <span class="text-gray-400">关注</span>
+                      <span class="text-[18px] font-semibold">{{ userInfo.followingCount }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="flex items-center gap-[4px]" v-if="userInfo?.sign">
-                <n-icon :component="Accessibility24Regular" size="24"></n-icon>
-                <span class="font-semibold text-gray-600">{{ userInfo?.sign }}</span>
+              <div class="flex items-end">
+                <n-button type="primary" @click="navigateTo({ name: 'user-profile' })" v-if="myInfo?.id === userInfo.id">编辑资料</n-button>
+                <template v-else>
+                  <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" :user="userInfo" @selectGroup="showGroupSelect = true">
+                    <n-button type="tertiary" size="small" :loading="followLoading">已关注</n-button>
+                  </UserFollowDropdown>
+                  <n-button type="primary" @click="handleFollow(1)" :loading="followLoading" v-else>关注</n-button>
+                </template>
               </div>
-              <div class="flex gap-[4px]" v-if="userInfo?.introduce">
-                <n-icon :component="SlideText48Regular" size="24"></n-icon>
+            </div>
+
+            <div class="flex justify-between">
+              <div class="flex gap-[12px]">
+                <n-tag type="success" round>
+                  <div class="flex items-center gap-[6px]">
+                    <span>阅读数</span>
+                    <span>{{ statisInfo.readCount }}</span>
+                  </div>
+                </n-tag>
+                <n-tag type="success" round>
+                  <div class="flex items-center gap-[6px]">
+                    <span>点赞</span>
+                    <span>{{ statisInfo.likeCount }}</span>
+                  </div>
+                </n-tag>
+                <n-tag type="success" round>
+                  <div class="flex items-center gap-[6px]">
+                    <span>被收藏</span>
+                    <span>{{ statisInfo.collectCount }}</span>
+                  </div>
+                </n-tag>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-[12px] max-w-full text-gray-600">
+              <div class="flex items-start gap-[6px]" v-if="userInfo?.introduce">
+                <n-icon :component="DocumentText24Regular" size="20"/>
                 <span>{{ userInfo?.introduce }}</span>
               </div>
-            </div>
-            <div class="flex items-end" v-if="myInfo?.id === userInfo.id">
-              <n-button type="primary" @click="navigateTo({ name: 'user-profile' })">编辑资料</n-button>
+              <div class="flex items-start gap-[6px]">
+                <n-icon :component="CalendarLtr24Regular" size="20"/>
+                <n-time type="date" format="yyyy-MM-dd" :time="new Date(userInfo.createdAt)"></n-time>
+              </div>
             </div>
           </div>
-        </n-card>
+        </div>
 
         <div class="mt-[12px]">
           <n-tabs type="line" v-model:value="contentType">
-            <n-tab name="1">文章</n-tab>
+            <n-tab name="1">博客</n-tab>
             <n-tab name="2">别的东西</n-tab>
             <n-tab name="3">未想好</n-tab>
           </n-tabs>
           <PostList :search-params="searchParams" can-edit/>
         </div>
       </div>
-      <div class="sticky top-[80px]">
-        <n-card>
-          <div class="font-semibold custom-border border-b pb-[6px] text-[16px]">个人成就</div>
-          <div class="mt-[6px]">
-            <div class="statis-item">
-              <n-icon :component="Eye24Filled" size="24"></n-icon>
-              <span>文章被阅读</span>
-              <span class="statis-num">{{ statisInfo.readCount }}</span>
-            </div>
-            <div class="statis-item">
-              <n-icon :component="ThumbLike16Filled" size="24"></n-icon>
-              <span>文章被点赞</span>
-              <span class="statis-num">{{ statisInfo.likeCount }}</span>
-            </div>
-            <div class="statis-item">
-              <n-icon :component="Star48Filled" size="24"></n-icon>
-              <span>文章被收藏</span>
-              <span class="statis-num">{{ statisInfo.collectCount }}</span>
-            </div>
-          </div>
-        </n-card>
-      </div>
+      <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="userInfo.id" v-if="userInfo"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { SlideText48Regular, Accessibility24Regular, Star48Filled, ThumbLike16Filled, Eye24Filled } from '@vicons/fluent'
-import {NCard, NButton, NTabs, NTab, NTime, NIcon, createDiscreteApi} from 'naive-ui'
+import { Star48Filled, ThumbLike16Filled, Eye24Filled, CalendarLtr24Regular, DocumentText24Regular } from '@vicons/fluent'
+import {NCard, NButton, NTabs, NTab, NTime, NIcon, NTag, createDiscreteApi} from 'naive-ui'
 import {User} from "~/types"
 
 definePageMeta({
   key: (route) => route.fullPath
 })
+const config = useRuntimeConfig()
 const route = useRoute()
 const myInfo = useUserInfo()
 const userInfo = ref<User>()
 const loading = ref(false)
+const followLoading = ref(false)
+const showGroupSelect = ref(false)
 const searchParams = reactive({
   uid: ''
 })
@@ -128,6 +156,22 @@ async function getUserStatis(){
     }
   }catch (e) {
 
+  }
+}
+
+async function handleFollow(type: number) {
+  followLoading.value = true
+  const { message } = createDiscreteApi(["message"])
+  try{
+    const { result, success, code, msg } = await useFetchPost('/user/follow', { id: userInfo.value.id, type })
+    if(success){
+      getUserInfo()
+    }else{
+      message.error(msg as string)
+    }
+    followLoading.value = false
+  }catch (e) {
+    followLoading.value = false
   }
 }
 
