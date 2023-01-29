@@ -4,26 +4,50 @@
       <div class="preview-item-control left-0 left-pre" @click="handleNextPreview(-1)" v-if="currentPreviewIndex > 0">
       </div>
       <div class="w-full h-full rounded-[5px]" v-if="config.imageType.includes(getFileExt(currentPreviewItem.url))" >
-        <!--<img alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview">-->
-        <MediaImgView alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview"/>
+        <MediaImgView alt="图像" class="media-preview-item cursor-zoom-out" :url="currentPreviewItem.url" @click="handleCancelPreview"/>
       </div>
-      <video class="media-preview-item" :src="config.imageBase + currentPreviewItem.url" v-else-if="config.videoType.includes(getFileExt(currentPreviewItem.url))" controls @click.stop="handleCancelPreview"></video>
       <div class="preview-item-control right-0 right-pre" @click="handleNextPreview(1)" v-if="currentPreviewIndex !== list.length - 1">
       </div>
     </div>
 
-    <div :class="[isPreview ? 'preview' : 'group', config.videoType.includes(getFileExt(file.url)) ? 'video-wrapper' : '', 'relative list-item-container']" v-for="(file, index) of list" :key="file.url">
-      <!--<img alt="图像" class="media-item border-solid border-green-500" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">-->
-      <MediaImgView alt="图像" class="media-item border-solid border-green-500" :url="file.url" v-if="config.imageType.includes(getFileExt(file.url))" ratio="80"/>
-      <video ref="videoRef" class="media-item" controls :src="config.imageBase + file.url" v-else-if="config.videoType.includes(getFileExt(file.url))" @click.stop="handlePreview(file, index)"></video>
-
-      <div class="list-item-mask border-2 border-green-500" v-if="isPreview && currentPreviewItem === file" @click="handlePreview(file, index)"></div>
-      <div class="list-item-mask bg-gray-600 opacity-30 cursor-pointer" v-if="isPreview && currentPreviewItem !== file" @click="handlePreview(file, index)"></div>
-      <template v-if="!isPreview">
-        <div class="list-item-mask bg-gray-200 opacity-10 cursor-zoom-in hidden group-hover:inline-block" @click="handlePreview(file, index)" v-if="config.imageType.includes(getFileExt(file.url))">
+    <!--图片预览下面的小图-->
+    <div class="w-full relative" v-if="isPreview">
+      <div class="w-full overflow-hidden">
+        <div class="flex transition-all -ml-[6px]" :style="{'transform': `translateX(-${(currentImagePage - 1) * 100}%)`}">
+          <div class="w-1/12 pl-[6px] relative shrink-0" v-for="(file, index) of imageList" :key="file.url">
+            <div class="image-item-container">
+              <MediaImgView alt="图像" class="image-item border-solid border-green-500" :url="file.url" ratio="80"/>
+              <div class="list-item-mask border-2 border-green-500" v-if="currentPreviewItem === file"></div>
+              <div class="list-item-mask bg-gray-600 opacity-30 cursor-pointer" v-if="currentPreviewItem !== file" @click="handlePreview(file, index)"></div>
+            </div>
+          </div>
         </div>
-        <!--<n-icon :component="Play24Filled" :size="48" color="#fff" class="video-play-icon" v-else @click="handlePlayVideo(index)"/>-->
-      </template>
+      </div>
+      <div class="flex items-center cursor-pointer absolute -left-[20px] h-full top-0" @click="handleNextImagePage(-1)" v-if="currentImagePage > 1">
+        <n-icon :component="ChevronLeft24Regular" size="24"/>
+      </div>
+      <div class="flex items-center cursor-pointer h-full top-0 absolute -right-[20px]" @click="handleNextImagePage(1)" v-if="currentImagePage < imageTotalPage">
+        <n-icon :component="ChevronRight24Regular" size="24"/>
+      </div>
+    </div>
+
+    <!--图片列表-->
+    <div class="w-full flex flex-wrap -mt-[6px] -ml-[6px]" v-else-if="imageList.length">
+      <div class="w-1/5 pt-[6px] pl-[6px] group relative" v-for="(file, index) of imageList" :key="file.url">
+        <div class="image-item-container" v-if="index < 10">
+          <MediaImgView alt="图像" class="image-item" :url="file.url" ratio="80"/>
+          <div class="list-item-mask bg-gray-200 opacity-10 cursor-zoom-in hidden group-hover:inline-block" @click="handlePreview(file, index, true)">
+          </div>
+        </div>
+        <span class="overflow-num" v-if="imageList.length > 10 && index === 9">+{{ imageList.length - 10 }}</span>
+      </div>
+    </div>
+
+    <!--视频列表，只有一个-->
+    <div class="w-full" v-else-if="videoList.length">
+      <div class="w-full video-item-container" v-for="(file, index) of videoList" :key="file.url">
+        <video ref="videoRef" class="video-item" controls :src="config.imageBase + file.url"></video>
+      </div>
     </div>
   </div>
 
@@ -41,7 +65,7 @@
 <script setup lang="ts">
 import { Media } from '@/types'
 import { NIcon, NModal } from 'naive-ui'
-import { ArrowCircleLeft24Regular } from '@vicons/fluent'
+import { ArrowCircleLeft24Regular, ChevronLeft24Regular, ChevronRight24Regular } from '@vicons/fluent'
 
 interface Props{
   list: Media[]
@@ -56,32 +80,28 @@ const currentPreviewItem = ref<Media>()
 const currentPreviewIndex = ref<number>()
 const scrollY = ref(0)
 
-function handlePreview(m: Media, idx: number) {
-  const isImage = config.imageType.includes(getFileExt(m.url))
-  // console.log('++++++232323++++++')
-  if(isImage){
-    scrollY.value = window.scrollY
-    isPreview.value = true
-  }else{
-    if(!videoRef.value) return
-    // console.log('++++++++++++', videoRef.value[idx])
+const videoList = computed(() => props.list.filter(item => config.videoType.includes(getFileExt(item.url))))
+const imageList = computed(() => props.list.filter(item => config.imageType.includes(getFileExt(item.url))))
+const imageTotalPage = Math.ceil(imageList.value.length / 12) // 总页数
+const currentImagePage = ref(1)
 
-    const cur = videoRef.value[idx]
-    if(cur.paused) {
-      cur.play()
-      return
-    }
-    showModal.value = true
-    isPreview.value = false
-  }
-  isImage ? isPreview.value = true : showModal.value = true
+function handlePreview(m: Media, idx: number, record?: boolean) {
+  if(record) scrollY.value = window.scrollY
+  // console.log('++++++232323++++++', scrollY.value)
+  isPreview.value = true
   currentPreviewIndex.value = idx
   currentPreviewItem.value = m
+  currentImagePage.value = Math.ceil((idx + 1) / 12)
+  nextTick(() => {
+    // console.log('++++++444333s++++++', scrollY.value)
+    window.scrollTo(0, scrollY.value)
+  })
 }
 
 function handleCancelPreview() {
   isPreview.value = false
   currentPreviewItem.value = undefined
+  currentImagePage.value = 1
   nextTick(() => {
     window.scrollTo(0, scrollY.value)
   })
@@ -102,33 +122,22 @@ function handleNextPreview(c: number) {
     currentPreviewIndex.value --
     currentPreviewItem.value = props.list[currentPreviewIndex.value]
   }
+  currentImagePage.value = Math.ceil((currentPreviewIndex.value + 1) / 12)
   // 切换不同照片时返回点击放大时的位置
   nextTick(() => {
     window.scrollTo(0, scrollY.value)
   })
 }
+
+function handleNextImagePage(p: number) {
+  currentImagePage.value += p
+}
 </script>
 
 <style scoped lang="scss">
-.list-item-container{
-  @apply w-[180px] h-[180px];
-  border-radius: 5px;
-  &.preview{
-    @apply w-[60px] h-[60px]
-  }
-  &.video-wrapper{
-    @apply w-full h-[480px] bg-black;
-  }
-}
-.media-item{
-  @apply w-full h-full object-cover overflow-clip;
-  border-radius: inherit; // 图片圆角
-}
-video.media-item{
-  @apply object-contain absolute top-0 left-0
-}
 .media-preview-item{
-  @apply w-full h-full object-contain
+  @apply w-full h-full object-contain;
+  border-radius: inherit; // 图片圆角
 }
 .left-pre{
   cursor: url("@/assets/images/pic_prev.cur"), auto;
@@ -142,8 +151,29 @@ video.media-item{
 .preview-item-control{
   @apply absolute w-1/5 h-full top-0 flex justify-start items-center
 }
-.video-play-icon{
-  transform: translate(-50%,-50%);
-  @apply cursor-pointer absolute left-1/2 top-1/2
+
+.image-item-container{
+  @apply relative w-full h-0;
+  padding-top: 100%;
+  border-radius: 5px;
+  .image-item{
+    @apply w-full h-full object-cover overflow-clip absolute top-0 cursor-pointer;
+    border-radius: inherit; // 图片圆角
+  }
+}
+
+.overflow-num{
+  @apply absolute top-1/2 left-1/2 font-semibold text-[24px];
+  transform: translate(-50%, -50%);
+}
+
+.video-item-container{
+  @apply relative w-full h-0;
+  padding-top: 56.25%;
+  border-radius: 5px;
+  .video-item{
+    @apply w-full h-full object-contain overflow-clip absolute top-0 cursor-pointer bg-black;
+    border-radius: inherit; // 图片圆角
+  }
 }
 </style>
