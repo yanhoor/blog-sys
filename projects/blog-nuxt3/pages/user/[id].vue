@@ -74,12 +74,25 @@
         </div>
 
         <div class="mt-[12px]">
-          <n-tabs type="line" v-model:value="contentType">
-            <n-tab name="1">博客</n-tab>
-            <n-tab name="2">别的东西</n-tab>
-            <n-tab name="3">未想好</n-tab>
+          <n-tabs type="line" v-model:value="contentType" @update:value="handleTabChange">
+            <n-tab name="1">精选</n-tab>
+            <n-tab name="2">博客</n-tab>
+            <n-tab name="3">视频</n-tab>
+            <n-tab name="4">图片</n-tab>
           </n-tabs>
-          <PostList :search-params="searchParams" can-edit/>
+          <template v-if="contentType == 1">
+            <PostList :search-params="{...searchParams, sort: 3}"/>
+          </template>
+          <template v-if="contentType == 2">
+            <div class="my-[12px]">全部博客({{ blogTotal }})</div>
+            <PostList :search-params="searchParams" @fetchComplete="handleBlogFetchComplete"/>
+          </template>
+          <template v-if="contentType == 3">
+            <UserVideoWall :user-id="userInfo.id"/>
+          </template>
+          <template v-if="contentType == 4">
+            <UserImageWall :user-id="userInfo.id"/>
+          </template>
         </div>
       </div>
       <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="userInfo.id" v-if="userInfo"/>
@@ -88,9 +101,9 @@
 </template>
 
 <script setup lang="ts">
-import { Star48Filled, ThumbLike16Filled, Eye24Filled, CalendarLtr24Regular, DocumentText24Regular } from '@vicons/fluent'
+import { CalendarLtr24Regular, DocumentText24Regular } from '@vicons/fluent'
 import {NCard, NButton, NTabs, NTab, NTime, NIcon, NTag, createDiscreteApi} from 'naive-ui'
-import {User} from "~/types"
+import {User, Media} from "~/types"
 
 definePageMeta({
   key: (route) => route.fullPath
@@ -102,6 +115,8 @@ const userInfo = ref<User>()
 const loading = ref(false)
 const followLoading = ref(false)
 const showGroupSelect = ref(false)
+const blogTotal = ref(0)
+const imageList = ref<Media[]>([])
 const searchParams = reactive({
   uid: ''
 })
@@ -163,7 +178,7 @@ async function handleFollow(type: number) {
   followLoading.value = true
   const { message } = createDiscreteApi(["message"])
   try{
-    const { result, success, code, msg } = await useFetchPost('/user/follow', { id: userInfo.value.id, type })
+    const { result, success, code, msg } = await useFetchPost('/user/follow', { id: userInfo.value?.id, type })
     if(success){
       getUserInfo()
     }else{
@@ -174,6 +189,15 @@ async function handleFollow(type: number) {
     followLoading.value = false
   }
 }
+
+function handleBlogFetchComplete(res: any) {
+  blogTotal.value = res.value.total
+}
+
+function handleTabChange(val: string) {
+
+}
+
 
 </script>
 

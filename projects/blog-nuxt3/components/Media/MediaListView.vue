@@ -14,7 +14,7 @@
 
     <div :class="[isPreview ? 'preview' : 'group', config.videoType.includes(getFileExt(file.url)) ? 'video-wrapper' : '', 'relative list-item-container']" v-for="(file, index) of list" :key="file.url">
       <!--<img alt="图像" class="media-item border-solid border-green-500" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">-->
-      <MediaImgView alt="图像" class="media-item border-solid border-green-500" :url="file.url" v-if="config.imageType.includes(getFileExt(file.url))" ratio="50"/>
+      <MediaImgView alt="图像" class="media-item border-solid border-green-500" :url="file.url" v-if="config.imageType.includes(getFileExt(file.url))" ratio="80"/>
       <video ref="videoRef" class="media-item" controls :src="config.imageBase + file.url" v-else-if="config.videoType.includes(getFileExt(file.url))" @click.stop="handlePreview(file, index)"></video>
 
       <div class="list-item-mask border-2 border-green-500" v-if="isPreview && currentPreviewItem === file" @click="handlePreview(file, index)"></div>
@@ -40,8 +40,8 @@
 
 <script setup lang="ts">
 import { Media } from '@/types'
-import { NIcon, NModal, NCollapseTransition } from 'naive-ui'
-import { ArrowCircleLeft24Regular, ArrowCircleRight24Regular, Play24Filled } from '@vicons/fluent'
+import { NIcon, NModal } from 'naive-ui'
+import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
 interface Props{
   list: Media[]

@@ -20,8 +20,7 @@
 import {
   NCard,
   NBackTop,
-  NSpin,
-  createDiscreteApi
+  NSpin
 } from "naive-ui"
 import { Blog } from '@/types'
 
@@ -36,12 +35,16 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits(['fetchComplete'])
 provide('allow_load_more_comment', false)
 const fetchNewPost = useFetchNewPost()
 const route = useRoute()
 const userInfo = useUserInfo()
-const { pageFetchParams, pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>('/blog/list', props.searchParams, {})
-handleLoadNextPage()
+const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>('/blog/list', props.searchParams, {})
+
+handleLoadNextPage().then(r => {
+  emit('fetchComplete', fetchResult)
+})
 
 watch(fetchNewPost, (val) => {
   if(val && route.fullPath === '/'){

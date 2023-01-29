@@ -99,7 +99,7 @@ class BlogController extends BaseController{
         switch (sort) {
           // 综合排序
           case '1':
-            orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
+            orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
             break
           // 最新优先
           case '2':
@@ -107,7 +107,7 @@ class BlogController extends BaseController{
             break
           // 最热优先
           case '3':
-            orderBy.push({ comments: { _count: 'desc' } })
+            orderBy.push({ comments: { _count: 'desc' } }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
             break
         }
       }else{

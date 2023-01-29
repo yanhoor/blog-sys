@@ -1,7 +1,8 @@
 // config-lite配置文件，默认加载，其他配置会进行深合并
 
 module.exports = {
-    imgTypeList: ['.jpg', '.jpeg', '.png', '.gif', '.bmp'], // 图片上传允许类型
+    imgTypeList: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'], // 图片上传允许类型
+    videoTypeList: ['.mp4', '.mov', '.avi', '.mkv'], // 视频上传允许类型
     uploadMaxSize: 5, // 上传文件最大体积, M
     uploadDir: './src/assets/upload/', // 上传目录
     jwtSecret: 'jwt-sec',

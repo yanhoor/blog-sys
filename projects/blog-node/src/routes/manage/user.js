@@ -16,6 +16,7 @@ router.get('/info', controller.info)
 router.post('/update', controller.update)
 router.post('/follow', controller.operateFollow)
 router.post('/setGroup', controller.setGroup)
+router.post('/getMediaList', controller.getMediaList)
 router.post('/:id', controller.userInfo)
 
 module.exports = router
