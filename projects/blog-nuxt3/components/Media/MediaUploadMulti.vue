@@ -1,9 +1,11 @@
 <template>
   <n-upload
     abstract
+    multiple
     :accept="acceptType"
     list-type="image"
     :show-file-list="false"
+    :on-before-upload="handleBeforeUpload"
     :custom-request="customRequest"
   >
     <div class="flex flex-wrap gap-[12px]">
@@ -28,6 +30,7 @@
 <script setup lang="ts">
 import { Add24Regular, ZoomIn24Regular, Edit20Filled, Document24Regular, Delete24Regular } from '@vicons/fluent'
 import { NUpload, NModal, NIcon, NUploadTrigger, NIconWrapper, createDiscreteApi, UploadCustomRequestOptions} from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui'
 import { Media } from '@/types'
 
 interface Props {
@@ -40,15 +43,12 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits(['update:modelValue'])
 const uploadMode = ref(3) // 上传的类型，1--图片，2--视频, 3--视频/图片
 const config = useRuntimeConfig()
+const fileList = ref<any[]>([])
 
 watch(() => props.modelValue, (val) => {
-  if(val.length && config.imageType.includes(getFileExt(val[0].url))){
-    uploadMode.value = 1
-  } else if(val.length && config.videoType.includes(getFileExt(val[0].url))){
-    uploadMode.value = 2
-  }else{
-    uploadMode.value = 3
-  }
+  if(!val.length) return uploadMode.value = 3
+
+  setUploadMode(val[0].url)
 })
 
 const acceptType = computed(() => {
@@ -62,6 +62,29 @@ const acceptType = computed(() => {
   }
 })
 
+function setUploadMode(url: string) {
+  if(uploadMode.value !== 3) return
+
+  if(config.imageType.includes(getFileExt(url))){
+    uploadMode.value = 1
+  } else if(config.videoType.includes(getFileExt(url))){
+    uploadMode.value = 2
+  }
+}
+
+function handleBeforeUpload(options: {file: UploadFileInfo, fileList: UploadFileInfo[]}) {
+  const { message } = createDiscreteApi(["message"])
+  const path = options.file.fullPath as string
+  setUploadMode(path)
+  const conflict1 = uploadMode.value === 1 && config.videoType.includes(getFileExt(path))
+  const conflict2 = uploadMode.value === 2 && config.imageType.includes(getFileExt(path))
+  if(conflict1 || conflict2){
+    message.error('图片与视频不能同时上传')
+    return false
+  }
+  return true
+}
+
 const customRequest = async ({
                                file,
                                data,
@@ -73,7 +96,7 @@ const customRequest = async ({
                                onProgress
                              }: UploadCustomRequestOptions) => {
   const { message } = createDiscreteApi(["message"])
-  // console.log('==============', file, data)
+  // console.log('==============', file, props.modelValue)
   try{
     if(uploadMode.value == 2 && props.modelValue.length === 1){
       message.error('最多上传一个视频')
