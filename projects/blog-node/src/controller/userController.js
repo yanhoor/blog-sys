@@ -581,6 +581,9 @@ class UserController extends BaseController{
           skip,
           take: pageSize,
           where: filter,
+          orderBy: {
+            createdAt: 'desc'
+          },
           select: {
             id: true,
             url: true,

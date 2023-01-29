@@ -3,9 +3,9 @@
 
   <div v-else>
     <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
-      <template v-for="blog of pageList">
+      <template v-for="(blog, index) of pageList">
         <n-card>
-          <PostItem :blog="blog" :comment-page-size="2"/>
+          <PostItem :blog="blog" :comment-page-size="2" v-bind="$attrs" @delete="handlePostDelete(index)"/>
         </n-card>
       </template>
     </div>
@@ -25,7 +25,6 @@ import {
 import { Blog } from '@/types'
 
 interface Props {
-  canEdit?: boolean // 是否能编辑文章
   searchParams?: {
     keyword?: string
     time?: string
@@ -56,6 +55,10 @@ function handleLoadMore() {
   // console.log('----------handleLoadMore-----------')
   handleLoadNextPage()
   return pageLoadedFinish.value
+}
+
+function handlePostDelete(idx: number) {
+  pageList.value.splice(idx, 1)
 }
 </script>
 

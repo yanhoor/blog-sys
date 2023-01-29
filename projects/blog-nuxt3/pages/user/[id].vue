@@ -73,27 +73,27 @@
           </div>
         </div>
 
-        <div class="mt-[12px]">
+        <div class="my-[12px]">
           <n-tabs type="line" v-model:value="contentType" @update:value="handleTabChange">
             <n-tab name="1">精选</n-tab>
             <n-tab name="2">博客</n-tab>
             <n-tab name="3">视频</n-tab>
             <n-tab name="4">图片</n-tab>
           </n-tabs>
-          <template v-if="contentType == 1">
-            <PostList :search-params="{...searchParams, sort: 3}"/>
-          </template>
-          <template v-if="contentType == 2">
-            <div class="my-[12px]">全部博客({{ blogTotal }})</div>
-            <PostList :search-params="searchParams" @fetchComplete="handleBlogFetchComplete"/>
-          </template>
-          <template v-if="contentType == 3">
-            <UserVideoWall :user-id="userInfo.id"/>
-          </template>
-          <template v-if="contentType == 4">
-            <UserImageWall :user-id="userInfo.id"/>
-          </template>
         </div>
+        <template v-if="contentType == 1">
+          <PostList :search-params="{...searchParams, sort: 3}" canEdit/>
+        </template>
+        <template v-if="contentType == 2">
+          <div class="mb-[12px]">全部博客({{ blogTotal }})</div>
+          <PostList :search-params="searchParams" @fetchComplete="handleBlogFetchComplete" canEdit/>
+        </template>
+        <template v-if="contentType == 3">
+          <UserVideoWall :user-id="userInfo.id"/>
+        </template>
+        <template v-if="contentType == 4">
+          <UserImageWall :user-id="userInfo.id"/>
+        </template>
       </div>
       <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="userInfo.id" v-if="userInfo"/>
     </div>
