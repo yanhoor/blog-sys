@@ -9,7 +9,7 @@
     <div class="flex flex-wrap gap-[12px]">
       <template v-for="(file, index) of modelValue" :key="file.url">
         <div class="flex justify-center items-center relative limit-size border border-dashed border-gray-300 hover:border-green-600" @click.stop>
-          <img alt="图像" class="object-cover overflow-clip" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">
+          <MediaImgView alt="图像" class="object-cover overflow-clip" :url="file.url" v-if="config.imageType.includes(getFileExt(file.url))"/>
           <video :src="config.imageBase + file.url" v-else-if="config.videoType.includes(getFileExt(file.url))" controls></video>
           <n-icon :component="Document24Regular" size="48" v-else/>
           <n-icon-wrapper class="absolute -top-[8px] -right-[8px] cursor-pointer" :size="18" :border-radius="6" @click="handleDeleteItem(index)">

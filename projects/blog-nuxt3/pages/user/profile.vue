@@ -34,10 +34,10 @@
           <n-input v-model:value="postForm.introduce" type="textarea" @keydown.enter.prevent maxlength="80" show-count clearable/>
         </n-form-item>
         <n-form-item path="avatar" label="头像">
-          <UploadImg v-model="postForm.avatar"/>
+          <MediaUploadImg v-model="postForm.avatar"/>
         </n-form-item>
         <n-form-item path="profileCardBg" label="资料卡片背景">
-          <UploadImg v-model="postForm.profileCardBg"/>
+          <MediaUploadImg v-model="postForm.profileCardBg"/>
         </n-form-item>
       </n-form>
     </div>

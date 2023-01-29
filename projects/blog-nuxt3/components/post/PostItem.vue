@@ -11,6 +11,7 @@
     <ExpandableContent :content="blog.content"/>
 
     <MediaListView class="w-full" :list="blog.medias"/>
+
     <div class="grid grid-cols-3 w-full">
       <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="handleSwitchType('like')">
         <n-icon class="text-green-700" size="18" :component="ThumbLike16Filled" v-if="blog.isLike"></n-icon>
@@ -41,12 +42,9 @@ import { CommentMultiple16Regular, CommentMultiple28Filled, ThumbLike16Regular, 
 import {
   NTime,
   NIcon,
-  NEllipsis,
-  NButton,
   NCollapseTransition,
   createDiscreteApi
 } from "naive-ui"
-import ExpandableContent from "~/components/ExpandableContent.vue";
 
 interface Props{
   blog: Blog

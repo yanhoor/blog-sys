@@ -12,7 +12,7 @@
             maxRows: 15
           }"
     />
-    <CustomUpload v-model="postForm.medias" size="100px"/>
+    <MediaUploadMulti v-model="postForm.medias" size="100px"/>
     <div class="text-center self-center">
       <n-button class="w-[200px]" type="primary" round @click="handlePost" :loading="isProcessing">发布</n-button>
     </div>
@@ -26,6 +26,7 @@ import {
   createDiscreteApi
 } from "naive-ui"
 import { Blog } from '@/types'
+import MediaUploadMulti from "~/components/Media/MediaUploadMulti.vue";
 
 interface BlogForm extends Blog{
   isPost?: number

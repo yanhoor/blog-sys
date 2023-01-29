@@ -4,7 +4,8 @@
       <div class="preview-item-control left-0 left-pre" @click="handleNextPreview(-1)" v-if="currentPreviewIndex > 0">
       </div>
       <div class="w-full h-full rounded-[5px]" v-if="config.imageType.includes(getFileExt(currentPreviewItem.url))" >
-        <img alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview">
+        <!--<img alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview">-->
+        <MediaImgView alt="图像" class="media-preview-item cursor-zoom-out" style="border-radius: inherit;" :src="config.imageBase + currentPreviewItem.url" @click="handleCancelPreview"/>
       </div>
       <video class="media-preview-item" :src="config.imageBase + currentPreviewItem.url" v-else-if="config.videoType.includes(getFileExt(currentPreviewItem.url))" controls @click.stop="handleCancelPreview"></video>
       <div class="preview-item-control right-0 right-pre" @click="handleNextPreview(1)" v-if="currentPreviewIndex !== list.length - 1">
@@ -12,7 +13,8 @@
     </div>
 
     <div :class="[isPreview ? 'preview' : 'group', config.videoType.includes(getFileExt(file.url)) ? 'video-wrapper' : '', 'relative list-item-container']" v-for="(file, index) of list" :key="file.url">
-      <img alt="图像" class="media-item border-solid border-green-500" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">
+      <!--<img alt="图像" class="media-item border-solid border-green-500" :src="config.imageBase + file.url" v-if="config.imageType.includes(getFileExt(file.url))">-->
+      <MediaImgView alt="图像" class="media-item border-solid border-green-500" :url="file.url" v-if="config.imageType.includes(getFileExt(file.url))" ratio="50"/>
       <video ref="videoRef" class="media-item" controls :src="config.imageBase + file.url" v-else-if="config.videoType.includes(getFileExt(file.url))" @click.stop="handlePreview(file, index)"></video>
 
       <div class="list-item-mask border-2 border-green-500" v-if="isPreview && currentPreviewItem === file" @click="handlePreview(file, index)"></div>
@@ -100,6 +102,10 @@ function handleNextPreview(c: number) {
     currentPreviewIndex.value --
     currentPreviewItem.value = props.list[currentPreviewIndex.value]
   }
+  // 切换不同照片时返回点击放大时的位置
+  nextTick(() => {
+    window.scrollTo(0, scrollY.value)
+  })
 }
 </script>
 
