@@ -1,6 +1,6 @@
 <template>
-  <n-space class="cursor-pointer" v-if="userInfo">
-    <n-button type="primary" @click="showWritePost = true">
+  <div class="cursor-pointer flex items-center gap-[6px]" v-if="userInfo">
+    <n-button type="primary" @click="showWritePost = true" size="small">
       <template #icon>
         <n-icon :component="Compose24Regular"/>
       </template>
@@ -9,7 +9,7 @@
       <UserAvatar :user="userInfo" disabled/>
     </n-dropdown>
     <layout-notification />
-  </n-space>
+  </div>
   <n-button type="primary" v-else @click="navigateTo('/login')">登录</n-button>
   <n-modal
     :close-on-esc="false"

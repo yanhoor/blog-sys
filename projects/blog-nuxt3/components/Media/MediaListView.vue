@@ -33,10 +33,10 @@
 
     <!--图片列表-->
     <div class="w-full flex flex-wrap -mt-[6px] -ml-[6px]" v-else-if="imageList.length">
-      <div class="w-1/5 pt-[6px] pl-[6px] group relative" v-for="(file, index) of imageList" :key="file.url">
+      <div class="w-1/5 pt-[6px] pl-[6px] group relative cursor-zoom-in" v-for="(file, index) of imageList" :key="file.url" @click="handlePreview(file, index, true)">
         <div class="image-item-container" v-if="index < 10">
           <MediaImgView alt="图像" class="image-item" :url="file.url" ratio="80"/>
-          <div class="list-item-mask bg-gray-200 opacity-10 cursor-zoom-in hidden group-hover:inline-block" @click="handlePreview(file, index, true)">
+          <div class="list-item-mask bg-gray-200 opacity-10 hidden group-hover:inline-block">
           </div>
         </div>
         <span class="overflow-num" v-if="imageList.length > 10 && index === 9">+{{ imageList.length - 10 }}</span>
@@ -157,7 +157,7 @@ function handleNextImagePage(p: number) {
   padding-top: 100%;
   border-radius: 5px;
   .image-item{
-    @apply w-full h-full object-cover overflow-clip absolute top-0 cursor-pointer;
+    @apply w-full h-full object-cover overflow-clip absolute top-0;
     border-radius: inherit; // 图片圆角
   }
 }

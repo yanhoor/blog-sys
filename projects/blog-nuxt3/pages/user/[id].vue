@@ -74,7 +74,7 @@
         </div>
 
         <div class="my-[12px]">
-          <n-tabs type="line" v-model:value="contentType" @update:value="handleTabChange">
+          <n-tabs type="line" :value="contentType" @update:value="handleTabChange">
             <n-tab name="1">精选</n-tab>
             <n-tab name="2">博客</n-tab>
             <n-tab name="3">视频</n-tab>
@@ -106,7 +106,7 @@ import {NCard, NButton, NTabs, NTab, NTime, NIcon, NTag, createDiscreteApi} from
 import {User, Media} from "~/types"
 
 definePageMeta({
-  key: (route) => route.fullPath
+  key: (route) => route.path
 })
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -120,11 +120,15 @@ const imageList = ref<Media[]>([])
 const searchParams = reactive({
   uid: ''
 })
-const contentType = ref('1')
+const contentType = ref(route.query.tab || '1')
 const statisInfo = ref({
   readCount: 0,
   likeCount: 0,
   collectCount: 0
+})
+
+watch(() => route.query, (val) => {
+  contentType.value = val.tab || '1'
 })
 
 useHead(() => {
@@ -195,7 +199,7 @@ function handleBlogFetchComplete(res: any) {
 }
 
 function handleTabChange(val: string) {
-
+  navigateTo('/user/' + userInfo.value?.id + '?tab=' + val)
 }
 
 

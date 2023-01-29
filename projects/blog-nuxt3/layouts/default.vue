@@ -9,7 +9,7 @@
           </template>
         </n-button>
       </div>
-      <n-space class="items-center">
+      <div class="flex items-center gap-[12px]">
         <LayoutSearch />
 
         <LayoutUser/>
@@ -22,7 +22,7 @@
             <n-icon :component="WeatherSunny20Regular" />
           </template>
         </n-switch>
-      </n-space>
+      </div>
     </n-layout-header>
     <n-layout-content class="mt-[20px] mx-auto overflow-visible w-auto lg:w-[1024px] bg-page-light dark:bg-page-dark">
       <!--<div class="main-left">
