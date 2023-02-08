@@ -43,7 +43,8 @@ app.use(cors({
   origin(ctx){
     const { origin, Origin, referer, Referer } = ctx.request.headers;
     const allowOrigin = origin || Origin || referer || Referer || '*';
-    return 'http://localhost:3000';
+    // return 'http://localhost:3000';
+    return allowOrigin
   },
   credentials: true,
   maxAge: 60 * 60 * 24,
