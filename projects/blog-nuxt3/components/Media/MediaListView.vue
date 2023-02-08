@@ -39,7 +39,7 @@
           <div class="list-item-mask bg-gray-200 opacity-10 hidden group-hover:inline-block">
           </div>
         </div>
-        <span class="overflow-num" v-if="imageList.length > 10 && index === 9">+{{ imageList.length - 10 }}</span>
+        <span class="overflow-num text-white" v-if="imageList.length > 10 && index === 9">+{{ imageList.length - 10 }}</span>
       </div>
     </div>
 

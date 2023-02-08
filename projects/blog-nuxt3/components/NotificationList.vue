@@ -20,7 +20,7 @@
             <n-button size="small" @click="handleMultiRemark(true)" :disabled="batchProcessing">全部标为已读</n-button>
           </template>
         </div>
-        <n-radio-group v-model:value="pageFetchParams.isRead" @update:value="handlePageChange(1)" size="small">
+        <n-radio-group v-model:value="pageFetchParams.isRead" @update:value="handleLoadNextPage(1)" size="small">
           <n-radio-button :value="0" label="未读"></n-radio-button>
           <n-radio-button :value="1" :label="`全部(${fetchResult?.total || 0})`"></n-radio-button>
         </n-radio-group>
@@ -44,10 +44,12 @@
           </div>
         </n-checkbox-group>
       </template>
-      <n-result v-else status="418" description="暂无消息" class="mt-[12px]"></n-result>
       <div class="text-center mt-[20px]" v-if="pageLoading">
         <n-spin :size="24"/>
       </div>
+      <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
+      <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
+      <ResultNoMore v-else-if="pageLoadedFinish"/>
     </template>
   </div>
 </template>
@@ -67,7 +69,7 @@ import {
   createDiscreteApi
 } from "naive-ui"
 import { Notification } from "~/types"
-import { TaskListLtr20Filled, DismissCircle24Regular } from '@vicons/fluent'
+import { TaskListLtr20Filled } from '@vicons/fluent'
 
 interface Props{
   typeName: string
@@ -92,7 +94,7 @@ switch (props.type) {
     fetchType = 'collect_blog'
     break
 }
-const { pageList, pageLoading, pageFetchParams, fetchResult, handlePageChange, handleLoadNextPage  } = useListAppendFetch<Notification>('/notification/list', { type: fetchType, isRead: 0 }, {})
+const { pageList, pageLoading, pageFetchParams, fetchResult, pageLoadedFinish, handleLoadNextPage  } = useListAppendFetch<Notification>('/notification/list', { type: fetchType, isRead: 0 }, {})
 const showCheck = ref(false)
 const checkAll = ref(false)
 const isIndeterminate = ref(false)
@@ -130,7 +132,7 @@ async function handleRemarkRead(id: string, isAll = false) {
     const { result, success } = await useFetchPost('/notification/read', params)
     if(success){
       useFetchNotificationCount()
-      handlePageChange()
+      handleLoadNextPage(1)
       handleCancelCheck()
       return true
     }

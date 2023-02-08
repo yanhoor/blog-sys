@@ -6,7 +6,7 @@
       </template>
     </n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-      <UserAvatar :user="userInfo" disabled/>
+      <UserAvatar :title="userInfo.name" :user="userInfo" disabled/>
     </n-dropdown>
     <layout-notification />
   </div>

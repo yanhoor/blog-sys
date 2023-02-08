@@ -7,17 +7,21 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-wrap items-start w-full -mt-[6px] -ml-[6px]" v-loadMore="handleLoadNextPage" v-else-if="pageList.length">
-      <div class="img-wrapper" v-for="image of pageList" :key="image.id">
-        <div class="img-container" @click="handlePreview(image)">
-          <MediaImgView class="media-item" :url="image.url" ratio="70"/>
+    <div v-else>
+      <div class="flex flex-wrap items-start w-full -mt-[6px] -ml-[6px]" v-loadMore="handleLoadNextPage">
+        <div class="img-wrapper" v-for="image of pageList" :key="image.id">
+          <div class="img-container" @click="handlePreview(image)">
+            <MediaImgView class="media-item" :url="image.url" ratio="70"/>
+          </div>
         </div>
       </div>
       <div class="w-full text-center mt-[20px]" v-if="pageLoading">
         <n-spin :size="24"/>
       </div>
+      <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
+      <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
+      <ResultNoMore v-else-if="pageLoadedFinish"/>
     </div>
-    <n-result v-else status="418" description="暂无内容" class="mt-[12px]" size="huge"></n-result>
     <n-back-top :right="50"/>
     <MediaPreview :media="curMedia" v-model:show="showPreview" is-img/>
   </div>
@@ -38,7 +42,7 @@ interface Props{
 const props = defineProps<Props>()
 const curMedia = ref<Media>()
 const showPreview = ref(false)
-const { pageFetchParams, pageList, pageLoading, handleLoadNextPage } = useListAppendFetch<Media>('/user/getMediaList', { type: 1, userId: props.userId }, {})
+const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Media>('/user/getMediaList', { type: 1, userId: props.userId }, {})
 
 handleLoadNextPage()
 

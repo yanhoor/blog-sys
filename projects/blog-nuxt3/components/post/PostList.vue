@@ -1,5 +1,5 @@
 <template>
-  <SkeletonIndex v-if="pageLoading && pageFetchParams.page === 1"></SkeletonIndex>
+  <SkeletonPostList v-if="pageLoading && pageFetchParams.page === 1"></SkeletonPostList>
 
   <div v-else>
     <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
@@ -12,6 +12,9 @@
     <div class="text-center mt-[20px]" v-if="pageLoading">
       <n-spin :size="24"/>
     </div>
+    <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
+    <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
+    <ResultNoMore v-else-if="pageLoadedFinish"/>
     <n-back-top :right="50"/>
   </div>
 </template>

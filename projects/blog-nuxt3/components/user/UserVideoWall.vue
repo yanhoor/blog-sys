@@ -7,18 +7,22 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-wrap items-start w-full -mt-[6px] -ml-[6px]" v-loadMore="handleLoadNextPage" v-else-if="pageList.length">
-      <div class="img-wrapper" v-for="media of pageList" :key="media.id">
-        <div class="img-container" @click="handlePreview(media)">
-          <video class="media-item" :src="config.imageBase + media.url"></video>
-          <n-icon class="play-icon" :component="Play24Filled" size="48"/>
+    <div v-else>
+      <div class="flex flex-wrap items-start w-full -mt-[6px] -ml-[6px]" v-loadMore="handleLoadNextPage">
+        <div class="img-wrapper" v-for="media of pageList" :key="media.id">
+          <div class="img-container" @click="handlePreview(media)">
+            <video class="media-item" :src="config.imageBase + media.url"></video>
+            <n-icon class="play-icon" :component="Play24Filled" size="48"/>
+          </div>
         </div>
       </div>
       <div class="w-full text-center mt-[20px]" v-if="pageLoading">
         <n-spin :size="24"/>
       </div>
+      <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
+      <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
+      <ResultNoMore v-else-if="pageLoadedFinish"/>
     </div>
-    <n-result v-else status="418" description="暂无内容" class="mt-[12px]" size="huge"></n-result>
     <MediaPreview :media="curMedia" v-model:show="showPreview"/>
   </div>
 </template>
@@ -35,7 +39,7 @@ const props = defineProps<Props>()
 const config = useRuntimeConfig()
 const curMedia = ref<Media>()
 const showPreview = ref(false)
-const { pageFetchParams, pageList, pageLoading, handleLoadNextPage } = useListAppendFetch<Media>('/user/getMediaList', { type: 2, userId: props.userId }, {})
+const { pageFetchParams, pageList, pageLoading, pageLoadedFinish, fetchResult, handleLoadNextPage } = useListAppendFetch<Media>('/user/getMediaList', { type: 2, userId: props.userId }, {})
 
 handleLoadNextPage()
 

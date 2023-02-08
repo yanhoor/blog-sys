@@ -15,11 +15,11 @@
                 <div class="flex flex-col gap-[6px]">
                   <div class="font-bold text-3xl">{{ userInfo?.name }}</div>
                   <div class="flex gap-[6px]">
-                    <div class="flex gap-[6px] items-center">
+                    <div class="flex gap-[6px] items-center cursor-pointer" @click="handleViewFriends(2)">
                       <span class="text-gray-400">粉丝</span>
                       <span class="text-[18px] font-semibold">{{ userInfo.followerCount }}</span>
                     </div>
-                    <div class="flex gap-[6px] items-center">
+                    <div class="flex gap-[6px] items-center cursor-pointer" @click="handleViewFriends(1)">
                       <span class="text-gray-400">关注</span>
                       <span class="text-[18px] font-semibold">{{ userInfo.followingCount }}</span>
                     </div>
@@ -30,7 +30,7 @@
                 <n-button type="primary" @click="navigateTo({ name: 'user-profile' })" v-if="myInfo?.id === userInfo.id">编辑资料</n-button>
                 <template v-else>
                   <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" :user="userInfo" @selectGroup="showGroupSelect = true">
-                    <n-button type="tertiary" size="small" :loading="followLoading">已关注</n-button>
+                    <n-button type="tertiary" size="small" :loading="followLoading">{{ userInfo.isMutualFollowing ? '互相关注' : '已关注' }}</n-button>
                   </UserFollowDropdown>
                   <n-button type="primary" @click="handleFollow(1)" :loading="followLoading" v-else>关注</n-button>
                 </template>
@@ -133,7 +133,7 @@ watch(() => route.query, (val) => {
 
 useHead(() => {
   return {
-    title: userInfo.value?.name || '加载中...'
+    title: `@${userInfo.value?.name}的个人主页` || '加载中...'
   }
 })
 
@@ -202,6 +202,18 @@ function handleTabChange(val: string) {
   navigateTo('/user/' + userInfo.value?.id + '?tab=' + val)
 }
 
+function handleViewFriends(type: number) {
+  if(type === 1){
+    if(userInfo.value?.id === myInfo.value?.id){
+      navigateTo('/my/following')
+    }
+  }
+  if(type === 2){
+    if(userInfo.value?.id === myInfo.value?.id){
+      navigateTo('/my/follower')
+    }
+  }
+}
 
 </script>
 
