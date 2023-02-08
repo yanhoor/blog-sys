@@ -163,7 +163,7 @@ function handleNextImagePage(p: number) {
 }
 
 .overflow-num{
-  @apply absolute top-1/2 left-1/2 font-semibold text-[24px];
+  @apply absolute top-1/2 left-1/2 font-semibold text-[24px] break-keep;
   transform: translate(-50%, -50%);
 }
 

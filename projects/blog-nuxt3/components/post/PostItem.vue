@@ -4,7 +4,7 @@
       <UserAvatar :user="blog.createBy" :size="56"/>
       <div class="flex flex-col items-start">
         <div class="text-green-700 text-[20px] cursor-pointer" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
-        <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blog.updatedAt)"></n-time>
+        <span class="text-[12px] text-gray-500" v-time="new Date(blog.updatedAt)"></span>
       </div>
       <n-dropdown trigger="click" :options="actionOptions">
         <n-button quaternary circle type="default" class="absolute top-0 right-0 cursor-pointer">
@@ -47,7 +47,6 @@
 import { Blog } from '@/types'
 import { CommentMultiple16Regular, CommentMultiple28Filled, ThumbLike16Regular, ThumbLike16Filled, Star48Regular, Star48Filled, ChevronDown24Regular } from '@vicons/fluent'
 import {
-  NTime,
   NIcon,
   NButton,
   NDropdown,

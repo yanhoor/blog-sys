@@ -35,7 +35,7 @@
                 <slot :notification="notification"></slot>
 
                 <div class="flex justify-between items-center w-full pt-[12px]">
-                  <n-time  type="datetime" :time="new Date(notification.createdAt)" class="text-gray-400"/>
+                  <span v-time="notification.createdAt" class="text-gray-400"/>
                   <n-button text type="primary" class="hidden group-hover:block" v-if="!notification.isRead" @click="handleRemarkRead(notification.id)">标为已读</n-button>
                   <span class="text-green-700 hidden group-hover:block" v-else>已读</span>
                 </div>
@@ -57,7 +57,6 @@
 <script setup lang="ts">
 import {
   NButton,
-  NTime,
   NCard,
   NSpin,
   NIcon,
@@ -65,7 +64,6 @@ import {
   NCheckboxGroup,
   NRadioGroup,
   NRadioButton,
-  NResult,
   createDiscreteApi
 } from "naive-ui"
 import { Notification } from "~/types"

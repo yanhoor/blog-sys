@@ -3,7 +3,7 @@
 
   <div v-else>
     <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
-      <template v-for="(blog, index) of pageList">
+      <template v-for="(blog, index) of pageList" :key="blog.id">
         <n-card>
           <PostItem :blog="blog" :comment-page-size="2" v-bind="$attrs" @delete="handlePostDelete(index)"/>
         </n-card>

@@ -32,6 +32,7 @@
 import {
   NLayout,
   NLayoutSider,
+  NCard,
   NMenu,
   NIcon, createDiscreteApi
 } from "naive-ui"

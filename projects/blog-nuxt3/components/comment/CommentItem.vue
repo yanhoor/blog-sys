@@ -12,7 +12,7 @@
 
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center flex-1">
-          <n-time class="mr-[12px]" type="datetime" :time="new Date(comment.createdAt)"></n-time>
+          <span class="mr-[12px]" v-time="comment.createdAt"></span>
           <n-button text @click="triggerReply" v-if="userInfo">
             <template #icon>
               <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
@@ -41,14 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Blog } from '@/types'
+import { Comment } from '@/types'
 import {
   NButton,
-  NTime,
   NCollapseTransition,
   NIcon, createDiscreteApi
 } from "naive-ui"
-import { Chat24Regular, Chat24Filled, ArrowCircleDown24Regular } from '@vicons/fluent'
+import { Chat24Regular, Chat24Filled } from '@vicons/fluent'
 
 // 如果 props.comment.topCommentId 存在，props.comment 就是评论的回复，即当前组件在第二层
 interface Props{
