@@ -12,7 +12,7 @@
 
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center flex-1">
-          <span class="mr-[12px]" v-time="comment.createdAt"></span>
+          <n-time class="mr-[12px]" type="datetime" :time="new Date(comment.createdAt)" format="yyyy-MM-dd HH:mm"></n-time>
           <n-button text @click="triggerReply" v-if="userInfo">
             <template #icon>
               <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
@@ -45,7 +45,9 @@ import { Comment } from '@/types'
 import {
   NButton,
   NCollapseTransition,
-  NIcon, createDiscreteApi
+  NIcon,
+  NTime,
+  createDiscreteApi
 } from "naive-ui"
 import { Chat24Regular, Chat24Filled } from '@vicons/fluent'
 

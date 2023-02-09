@@ -29,6 +29,7 @@ definePageMeta({
 })
 
 provide('allow_load_more_comment', true)
+provide('post_item_in_detail', true)
 const route = useRoute()
 const loading = ref(false)
 const blogInfo = ref<Blog>()

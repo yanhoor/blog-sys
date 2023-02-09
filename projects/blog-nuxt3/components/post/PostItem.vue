@@ -4,7 +4,8 @@
       <UserAvatar :user="blog.createBy" :size="56"/>
       <div class="flex flex-col items-start">
         <div class="text-green-700 text-[20px] cursor-pointer" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
-        <span class="text-[12px] text-gray-500" v-time="new Date(blog.updatedAt)"></span>
+        <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blog.updatedAt)" format="yyyy-MM-dd HH:mm" v-if="isDetail"></n-time>
+        <span class="text-[12px] text-gray-500" v-time="new Date(blog.updatedAt)" v-else></span>
       </div>
       <n-dropdown trigger="click" :options="actionOptions">
         <n-button quaternary circle type="default" class="absolute top-0 right-0 cursor-pointer">
@@ -50,6 +51,7 @@ import {
   NIcon,
   NButton,
   NDropdown,
+  NTime,
   NCollapseTransition,
   createDiscreteApi
 } from "naive-ui"
@@ -64,6 +66,7 @@ interface Props{
 
 type ActionType = 'like' | 'comment' | 'collect' | undefined
 
+const isDetail = inject('post_item_in_detail', false) // 是否在详情页
 const props = defineProps<Props>()
 const emit = defineEmits(['delete'])
 const showType = ref<ActionType>(props.showType)
@@ -132,6 +135,10 @@ async function collectBlog() {
 }
 
 function handleSwitchType(val: ActionType) {
+  if(!isDetail && showType.value === 'comment'){
+    // 如果不是在详情，再次点击评论就收起
+    return showType.value = undefined
+  }
   showType.value = val
   switch (val) {
     case 'like':

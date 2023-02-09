@@ -106,6 +106,7 @@ async function handleCreateGroup() {
     if(success){
       groupForm.value.name = ''
       getAllGroup()
+      showAdd.value = false
     }else{
       message.error(msg as string)
     }

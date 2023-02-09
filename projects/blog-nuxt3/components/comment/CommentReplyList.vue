@@ -22,7 +22,7 @@
 
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center flex-1">
-            <n-time class="mr-[12px]" type="datetime" :time="new Date(reply.createdAt)"></n-time>
+            <n-time class="mr-[12px]" type="datetime" format="yyyy-MM-dd HH:mm" :time="new Date(reply.createdAt)"></n-time>
             <n-button text @click="reply.showReply = !reply.showReply" v-if="userInfo">
               <template #icon>
                 <n-icon :component="reply.showReply ? Chat24Filled : Chat24Regular" />

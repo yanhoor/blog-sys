@@ -1,6 +1,6 @@
 <template>
   <n-layout class="default-layout min-h-full pb-[20px] bg-page-light dark:bg-page-dark">
-    <n-layout-header class="sticky h-[60px] z-50 left-0 right-0 top-0 flex py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark">
+    <n-layout-header class="sticky h-[60px] z-50 left-0 right-0 top-0 flex gap-[12px] py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark">
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
