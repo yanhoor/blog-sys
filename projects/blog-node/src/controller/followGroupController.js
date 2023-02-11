@@ -109,15 +109,34 @@ class FollowGroupController extends BaseController {
   all = async (ctx, next) => {
     try {
       let userId = await this.getAuthUserId(ctx, next)
-      const result = await prisma.followGroup.findMany({
+      const xprisma = prisma.$extends({
+        result: {
+          followGroup: {
+            // 在返回的结果新增自定义字段
+            memberCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { containUsers: true },
+              compute(item) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                return item.containUsers.length
+              },
+            },
+          }
+        }
+      })
+      const result = await xprisma.followGroup.findMany({
         where: {
           createById: userId
         },
         select: {
           id: true,
-          name: true
+          name: true,
+          memberCount: true
         },
-        orderBy: {updatedAt: 'desc'}
+        orderBy: [
+          {sort: 'asc'},
+          {updatedAt: 'desc'},
+        ]
       })
 
       return ctx.body = {
@@ -126,6 +145,37 @@ class FollowGroupController extends BaseController {
       }
     } catch (e) {
       this.errorLogger.error('followGroup.all--------->', e)
+    }
+  }
+
+  sort = async (ctx, next) => {
+    const {ids} = ctx.request.body
+    try {
+      if (!ids) throw new Error('参数不全')
+    } catch (e) {
+      return ctx.body = {
+        success: false,
+        msg: e.message
+      }
+    }
+
+    try {
+      await prisma.$transaction(ids.split(',').map((id, idx) => {
+        return prisma.followGroup.update({
+          where: {
+            id: Number(id)
+          },
+          data: {
+            sort: idx + 1
+          }
+        })
+      }))
+
+      return ctx.body = {
+        success: true
+      }
+    } catch (e) {
+      this.errorLogger.error('followGroup.sort--------->', e)
     }
   }
 

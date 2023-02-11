@@ -11,25 +11,7 @@
     </div>
 
     <!--图片预览下面的小图-->
-    <div class="w-full relative" v-if="isPreview">
-      <div class="w-full overflow-hidden">
-        <div class="flex transition-all -ml-[6px]" :style="{'transform': `translateX(-${(currentImagePage - 1) * 100}%)`}">
-          <div class="w-1/12 pl-[6px] relative shrink-0" v-for="(file, index) of imageList" :key="file.url">
-            <div class="image-item-container">
-              <MediaImgView alt="图像" class="image-item border-solid border-green-500" :url="file.url" ratio="80"/>
-              <div class="list-item-mask border-2 border-green-500" v-if="currentPreviewItem === file"></div>
-              <div class="list-item-mask bg-gray-600 opacity-30 cursor-pointer" v-if="currentPreviewItem !== file" @click="handlePreview(file, index)"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center cursor-pointer absolute -left-[20px] h-full top-0" @click="handleNextImagePage(-1)" v-if="currentImagePage > 1">
-        <n-icon :component="ChevronLeft24Regular" size="24"/>
-      </div>
-      <div class="flex items-center cursor-pointer h-full top-0 absolute -right-[20px]" @click="handleNextImagePage(1)" v-if="currentImagePage < imageTotalPage">
-        <n-icon :component="ChevronRight24Regular" size="24"/>
-      </div>
-    </div>
+    <MediaNavigator v-model="currentPreviewItem" :page-size="12" :list="imageList" @itemChange="handlePreviewItemChange" v-if="isPreview"/>
 
     <!--图片列表-->
     <div class="w-full flex flex-wrap -mt-[6px] -ml-[6px]" v-else-if="imageList.length">
@@ -65,7 +47,7 @@
 <script setup lang="ts">
 import { Media } from '@/types'
 import { NIcon, NModal } from 'naive-ui'
-import { ArrowCircleLeft24Regular, ChevronLeft24Regular, ChevronRight24Regular } from '@vicons/fluent'
+import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
 interface Props{
   list: Media[]
@@ -82,8 +64,6 @@ const scrollY = ref(0)
 
 const videoList = computed(() => props.list.filter(item => config.videoType.includes(getFileExt(item.url))))
 const imageList = computed(() => props.list.filter(item => config.imageType.includes(getFileExt(item.url))))
-const imageTotalPage = Math.ceil(imageList.value.length / 12) // 总页数
-const currentImagePage = ref(1)
 
 function handlePreview(m: Media, idx: number, record?: boolean) {
   if(record) scrollY.value = window.scrollY
@@ -91,7 +71,6 @@ function handlePreview(m: Media, idx: number, record?: boolean) {
   isPreview.value = true
   currentPreviewIndex.value = idx
   currentPreviewItem.value = m
-  currentImagePage.value = Math.ceil((idx + 1) / 12)
   nextTick(() => {
     // console.log('++++++444333s++++++', scrollY.value)
     window.scrollTo(0, scrollY.value)
@@ -101,7 +80,6 @@ function handlePreview(m: Media, idx: number, record?: boolean) {
 function handleCancelPreview() {
   isPreview.value = false
   currentPreviewItem.value = undefined
-  currentImagePage.value = 1
   nextTick(() => {
     window.scrollTo(0, scrollY.value)
   })
@@ -122,15 +100,14 @@ function handleNextPreview(c: number) {
     currentPreviewIndex.value --
     currentPreviewItem.value = props.list[currentPreviewIndex.value]
   }
-  currentImagePage.value = Math.ceil((currentPreviewIndex.value + 1) / 12)
   // 切换不同照片时返回点击放大时的位置
   nextTick(() => {
     window.scrollTo(0, scrollY.value)
   })
 }
 
-function handleNextImagePage(p: number) {
-  currentImagePage.value += p
+function handlePreviewItemChange(item: Media, idx: number) {
+  currentPreviewIndex.value = idx
 }
 </script>
 

@@ -28,7 +28,8 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   async function fetchPage() {
     try{
       pageLoading.value = true
-      const { result, success } = await useFetchPost(url, pageFetchParams)
+      const respone = await useFetchPost(url, pageFetchParams)
+      const { result, success } = respone
       if(success){
         fetchResult.value = result
         for(let item of result.list){
@@ -46,6 +47,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
         }
       }
       pageLoading.value = false
+      return respone
     }catch (e) {
       pageLoading.value = false
     }
@@ -61,8 +63,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
 
   async function handleLoadNextPage(page?: number) {
     if(page){
-      handlePageChange(page)
-      return
+      return await handlePageChange(page)
     }
     if(pageLoadedFinish.value) return
     pageFetchParams.page ++

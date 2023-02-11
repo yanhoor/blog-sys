@@ -23,7 +23,7 @@
 import {
   NCard,
   NBackTop,
-  NSpin
+  NSpin, createDiscreteApi
 } from "naive-ui"
 import { Blog } from '@/types'
 
@@ -33,6 +33,8 @@ interface Props {
     time?: string
     sort?: string
     uid?: string
+    gid?: string
+    [k:string]: any
   }
 }
 
@@ -45,6 +47,10 @@ const userInfo = useUserInfo()
 const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>('/blog/list', props.searchParams, {})
 
 handleLoadNextPage().then(r => {
+  const { message } = createDiscreteApi(["message"])
+  if(!r?.success){
+    message.error(r?.msg || '请求出错')
+  }
   emit('fetchComplete', fetchResult)
 })
 
@@ -53,6 +59,14 @@ watch(fetchNewPost, (val) => {
     pageList.value.unshift(val as Blog)
   }
 })
+
+watch(() => props.searchParams, (val) => {
+  if(val){
+    for (let k in val){
+      pageFetchParams[k] = val[k]
+    }
+  }
+}, { deep: true })
 
 function handleLoadMore() {
   // console.log('----------handleLoadMore-----------')
@@ -63,5 +77,9 @@ function handleLoadMore() {
 function handlePostDelete(idx: number) {
   pageList.value.splice(idx, 1)
 }
+
+defineExpose({
+  handleLoadNextPage
+})
 </script>
 

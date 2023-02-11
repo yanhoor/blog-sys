@@ -59,7 +59,7 @@ class BlogController extends BaseController{
 
   list = async (ctx, next) => {
     try {
-      let { keyword, time, sort, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
+      let { keyword, time, sort, uid, gid, page = 1, pageSize = this.pageSize } = ctx.request.body
       sort = sort?.toString()
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
@@ -112,6 +112,30 @@ class BlogController extends BaseController{
         }
       }else{
         orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
+      }
+      if(gid){
+        const group = await prisma.followGroup.findUnique({
+          where: {
+            id: Number(gid)
+          },
+          select: {
+            containUsers: {
+              select: {
+                id: true
+              }
+            }
+          }
+        })
+        if(group){
+          filter.createById = {
+            in: group.containUsers.map(item => item.id)
+          }
+        }else{
+          return ctx.body = {
+            success: false,
+            msg: '分组不存在'
+          }
+        }
       }
       let userId = await this.getAuthUserId(ctx, next)
       const xprisma = prisma.$extends({

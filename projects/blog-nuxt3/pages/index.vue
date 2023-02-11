@@ -1,17 +1,40 @@
 <template>
   <div>
-    <PostList />
+    <div class="flex items-start gap-[12px]">
+      <n-card class="sticky top-[80px] max-w-[180px]" v-if="groupList.length">
+        <p class="group-title cursor-pointer" :class="{'active': !currentGroupId}" @click="handleChangeGroup()">全部关注</p>
+        <div class="flex items-center">
+          <p class="flex-1 font-semibold text-[16px] my-[6px]">自定义分组</p>
+          <n-button size="small" text @click="showManageGroup = true">
+            <template #icon>
+              <n-icon :component="Compose24Regular" size="18"/>
+            </template>
+          </n-button>
+        </div>
+        <p class="group-title" :class="{'active': currentGroupId == group.id }" v-for="group of groupList" :key="group.id" @click="handleChangeGroup(group.id)">
+          {{ group.name }}
+        </p>
+      </n-card>
+      <PostList ref="listRef" class="flex-1" :searchParams="{ gid: currentGroupId }"/>
+    </div>
 
     <div class="mt-20 text-center text-gray-400">
       <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>
     </div>
+
+    <UserFollowGroupSort v-model:show="showManageGroup"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  NCard
+  createDiscreteApi,
+  NCard,
+  NButton,
+  NIcon
 } from "naive-ui"
+import { FollowGroup } from '@/types'
+import { Compose24Regular } from "@vicons/fluent"
 
 useHead({
   title: '首页',
@@ -23,5 +46,55 @@ useHead({
 definePageMeta({
   pageTransition: false,
 })
+
+const route = useRoute()
+const groupList = ref<FollowGroup[]>([])
+const currentGroupId = ref(route.query.gid)
+const listRef = ref()
+const showManageGroup = ref(false)
+
+watch(() => route.query, (val) => {
+  if(val){
+    currentGroupId.value = val.gid
+  } else {
+    currentGroupId.value = ''
+  }
+  setTimeout(() => {
+    listRef.value.handleLoadNextPage(1)
+  })
+})
+
+getAllGroup()
+
+async function getAllGroup() {
+  const { message } = createDiscreteApi(["message"])
+  try{
+    const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
+    if(success){
+      groupList.value = result
+    }else{
+      message.error(msg as string)
+    }
+  }catch (e) {
+
+  }
+}
+
+function handleChangeGroup(gid?: number) {
+  gid ? navigateTo({ path: '/', query: { gid } }) : navigateTo('/')
+  window.scrollTo(0, 0)
+}
 </script>
+
+<style lang="scss" scoped>
+.group-title{
+  @apply cursor-pointer py-[3px] px-[6px];
+  &:hover{
+    @apply bg-gray-200 rounded dark:bg-gray-700;
+  }
+  &.active{
+    @apply text-green-600;
+  }
+}
+</style>
 

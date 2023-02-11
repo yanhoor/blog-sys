@@ -17,8 +17,8 @@
             <n-checkbox class="min-w-[100px]" v-for="group of groupList" :value="group.id" :label="group.name" :id="group.id"/>
           </n-checkbox-group>
           <n-input-group v-if="showAdd">
-            <n-input placeholder="分组名称" v-model:value="groupForm.name" clearable maxlength="5" size="small" @keyup.enter="handleCreateGroup"></n-input>
-            <n-button size="small" @click="handleCreateGroup">
+            <n-input placeholder="分组名称" v-model:value="groupForm.name" clearable show-count maxlength="8" size="small" @keyup.enter="handleCreateGroup"></n-input>
+            <n-button size="small" @click="handleCreateGroup" type="primary">
               <template #icon>
                 <n-icon :component="Checkmark24Regular"/>
               </template>
@@ -118,9 +118,13 @@ async function handleCreateGroup() {
 
 async function handleConfirm(){
   const { message } = createDiscreteApi(["message"])
+  if(!selectIdList.value.length){
+    message.warning('请选择分组')
+    return
+  }
   confirmLoading.value = true
   try{
-    const { result, success, code, msg } = await useFetchPost('/user/setGroup', { id: selectIdList.value.toString(), userId: props.userId })
+    const { result, success, code, msg } = await useFetchPost('/user/setGroup', { groupId: selectIdList.value.toString(), userId: props.userId })
     if(success){
       emit('update:show', false)
     }else{

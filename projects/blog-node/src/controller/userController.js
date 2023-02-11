@@ -507,6 +507,25 @@ class UserController extends BaseController{
 
       // 取消关注
       if(Number(type) === 2){
+        const gList = await prisma.followGroup.findMany({
+          where: {
+            createById: userId
+          },
+          select: {
+            id: true
+          }
+        })
+        await prisma.user.update({
+          where: {
+            id // 关注的用户id
+          },
+          data: {
+            inFollowGroups: {
+              disconnect: gList
+            }
+          }
+        })
+
         const user = await prisma.user.update({
           where: {
             id: userId
@@ -536,9 +555,9 @@ class UserController extends BaseController{
 
   // 设置关注的用户组。todo: 可能放在 followGroupController 比较合理，但是那样不能直接使用 set 覆盖关系
   setGroup = async (ctx, next) => {
-    const {id, userId} = ctx.request.body
+    const {groupId, userId} = ctx.request.body
     try {
-      if (!id || !userId) throw new Error('参数不全')
+      if (!groupId || !userId) throw new Error('参数不全')
     } catch (e) {
       ctx.body = {
         success: false,
@@ -548,10 +567,10 @@ class UserController extends BaseController{
     }
 
     try {
-      const idList = id.split(',').map(i => ({ id: Number(i) }))
+      const idList = groupId.split(',').map(i => ({ id: Number(i) }))
       const res = await prisma.user.update({
         where: {
-          id: userId
+          id: userId // 关注的用户id
         },
         data: {
           inFollowGroups: {
