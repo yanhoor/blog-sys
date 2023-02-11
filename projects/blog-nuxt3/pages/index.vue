@@ -22,7 +22,7 @@
       <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>
     </div>
 
-    <UserFollowGroupSort v-model:show="showManageGroup"/>
+    <UserFollowGroupSort v-model:show="showManageGroup" @change="getAllGroup" :groupList="groupList"/>
   </div>
 </template>
 

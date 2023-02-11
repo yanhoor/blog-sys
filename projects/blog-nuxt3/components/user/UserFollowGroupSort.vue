@@ -55,11 +55,11 @@ import { Dismiss24Regular, Checkmark24Regular } from "@vicons/fluent"
 
 interface Props{
   show: boolean
+  groupList: FollowGroup[]
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['update:show'])
-const groupList = shallowRef<FollowGroup[]>([])
+const emit = defineEmits(['update:show', 'change'])
 const sortableIns = ref()
 const saveLoading = ref(false)
 const editItem = ref<FollowGroup>()
@@ -67,42 +67,32 @@ const editItem = ref<FollowGroup>()
 watch(() => props.show, (val) => {
   if(val){
     editItem.value = undefined
-    getAllGroup()
     nextTick(() => {
       const el = document.querySelector('#groupSort')
       sortableIns.value = Sortable.create(el, {
-        onEnd({ newIndex, oldIndex }: any){
-          const item = groupList.value[oldIndex]
-          groupList.value?.splice(oldIndex, 1)
-          groupList.value?.splice(newIndex, 0, item)
-          handleSortGroup()
+        onEnd({ newIndex, oldIndex, to }: any){
+          const list = unref(props.groupList)
+          const item = list[oldIndex]
+          list?.splice(oldIndex, 1)
+          list?.splice(newIndex, 0, item)
+          handleSortGroup(list)
         }
       })
     })
   }
 })
 
-async function getAllGroup() {
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
-    if(success){
-      groupList.value = result
-    }else{
-      message.error(msg as string)
-    }
-  }catch (e) {
+onUnmounted(() => {
+  sortableIns.value?.destroy()
+})
 
-  }
-}
-
-async function handleSortGroup() {
+async function handleSortGroup(list: FollowGroup[]) {
   const { message } = createDiscreteApi(["message"])
-  const idList = groupList.value.map(item => item.id)
+  const idList = list.map(item => item.id)
   try{
     const { result = [], success, code, msg } = await useFetchPost('/followGroup/sort', { ids: idList.toString() })
     if(success){
-      getAllGroup()
+      emit('change')
     }else{
       message.error(msg as string)
     }
@@ -123,7 +113,7 @@ async function handleDeleteGroup(id: number){
         const { result = [], success, code, msg } = await useFetchPost('/followGroup/delete', { id })
         if(success){
           message.success('已删除')
-          getAllGroup()
+          emit('change')
         }else{
           message.error(msg as string)
         }
@@ -152,7 +142,7 @@ async function handleSave() {
     const { result, success, code, msg } = await useFetchPost('/followGroup/edit', editItem.value)
     if(success){
       editItem.value = undefined
-      getAllGroup()
+      emit('change')
     }else{
       message.error(msg as string)
     }
