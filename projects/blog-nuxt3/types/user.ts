@@ -11,4 +11,5 @@ export interface User{
   lock: number
   followerCount?: number
   followingCount?: number
+  isFollowing?: boolean
 }

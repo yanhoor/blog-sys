@@ -7,7 +7,7 @@
     </div>
 
     <n-card v-else>
-      <PostItem :blog="blogInfo" show-type="comment"/>
+      <PostItem :blog="blogInfo" show-type="comment" @refresh="getBlogInfo()"/>
     </n-card>
 
     <n-back-top :right="50"/>

@@ -667,6 +667,79 @@ class BlogController extends BaseController{
     }
   }
 
+  // 点赞的用户列表
+  likeList = async (ctx, next) => {
+    const { id } = ctx.request.body
+    try{
+      if(!id) throw new Error('博客id不能为空')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
+      let userId = await this.getAuthUserId(ctx, next)
+      const blog = await prisma.blog.findUnique({
+        where: {
+          id: Number(id)
+        },
+        select: {
+          likedBy: {
+            select: {
+              userId: true,
+            }
+          }
+        }
+      })
+
+      const xprisma = prisma.$extends({
+        result: {
+          user: {
+            followersCount: {
+              needs: { followers: true },
+              compute(result){
+                return result.followers.length
+              }
+            },
+            isFollowing: {
+              needs: { followers: true },
+              compute(result){
+                return result.followers.some(u => u.followById === userId)
+              }
+            }
+          }
+        }
+      })
+      const list = await xprisma.user.findMany({
+        where: {
+          id: {
+            in: blog.likedBy.map(i => i.userId)
+          }
+        },
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+          introduce: true,
+          followersCount: true,
+          isFollowing: true,
+        }
+      })
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list
+        }
+      }
+    }catch (e) {
+      this.errorLogger.error('blog.likeList--------->', e)
+    }
+  }
+
   // 收藏
   collect = async (ctx, next) => {
     const { id, isCollect } = ctx.request.body

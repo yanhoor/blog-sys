@@ -41,6 +41,10 @@
     <n-collapse-transition :show="showType === 'comment'">
       <PostCommentList ref="commentRef" class="w-full" :blog="blog" :page-size="commentPageSize" v-if="showType === 'comment'"/>
     </n-collapse-transition>
+
+    <n-collapse-transition :show="showType === 'like'">
+      <UserList ref="likeRef" :blog-id="blog.id"/>
+    </n-collapse-transition>
   </div>
 </template>
 
@@ -68,10 +72,11 @@ type ActionType = 'like' | 'comment' | 'collect' | undefined
 
 const isDetail = inject('post_item_in_detail', false) // 是否在详情页
 const props = defineProps<Props>()
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'refresh'])
 const showType = ref<ActionType>(props.showType)
 const userInfo = useUserInfo()
 const commentRef = ref()
+const likeRef = ref()
 const actionOptions = ref<DropdownOption[]>([
   {
     label: '复制博客地址',
@@ -110,6 +115,10 @@ async function likeBlog() {
     if(success){
       props.blog.isLike = !props.blog.isLike
       props.blog.isLike ? props.blog.likedByCount ++ : props.blog.likedByCount --
+      if(isDetail){
+        likeRef.value?.handleLoadNextPage(1)
+      }
+      emit('refresh')
     }
   }catch (e) {
 
@@ -139,15 +148,20 @@ function handleSwitchType(val: ActionType) {
     // 如果不是在详情，再次点击评论就收起
     return showType.value = undefined
   }
-  showType.value = val
   switch (val) {
     case 'like':
-      likeBlog()
+      if(isDetail){
+        showType.value === 'like' ? likeBlog() : showType.value = val
+      }else{
+        likeBlog()
+      }
       break
     case 'comment':
+      showType.value = val
       if(props.blog.commentsCount) commentRef.value?.handlePageChange(1)
       break
     case 'collect':
+      showType.value = val
       collectBlog()
       break
   }

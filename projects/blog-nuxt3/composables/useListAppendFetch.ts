@@ -57,6 +57,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     pageFetchParams.page = page
     if(page == 1){
       pageList.value = initParams.initList ? [...initParams.initList] : []
+      pageLoadedFinish.value = false
     }
     return await fetchPage()
   }
