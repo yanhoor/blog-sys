@@ -39,6 +39,11 @@
 
             <div class="flex justify-between">
               <div class="flex gap-[12px]">
+                <n-tag type="success" round v-if="userInfo.isMyFan">
+                  <div class="flex items-center gap-[6px]">
+                    <span>您的粉丝</span>
+                  </div>
+                </n-tag>
                 <n-tag type="success" round>
                   <div class="flex items-center gap-[6px]">
                     <span>阅读数</span>

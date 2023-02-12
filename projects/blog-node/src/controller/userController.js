@@ -115,6 +115,12 @@ class UserController extends BaseController{
                 return user.followers.some(u => u.followById === currentUserId)
               }
             },
+            isMyFan: {
+              needs: { followings: true },
+              compute(user) {
+                return user.followings.some(u => u.userId === currentUserId)
+              }
+            },
             // 是否互相关注
             isMutualFollowing: {
               needs: { followers: true, followings: true },
@@ -146,6 +152,7 @@ class UserController extends BaseController{
           followerCount: true,
           followingCount: true,
           isFollowing: true,
+          isMyFan: true,
           isMutualFollowing: true,
           // blogs: {
           //   select: {

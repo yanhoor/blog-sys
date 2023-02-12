@@ -11,5 +11,6 @@ export interface User{
   lock: number
   followerCount?: number
   followingCount?: number
-  isFollowing?: boolean
+  isFollowing?: boolean // 是否正在关注
+  isMyFan?: boolean // 是否是粉丝
 }
