@@ -51,6 +51,7 @@ const route = useRoute()
 const groupList = ref<FollowGroup[]>([])
 const currentGroupId = ref(route.query.gid)
 const listRef = ref()
+const myInfo = useUserInfo()
 const showManageGroup = ref(false)
 
 watch(() => route.query, (val) => {
@@ -67,6 +68,8 @@ watch(() => route.query, (val) => {
 getAllGroup()
 
 async function getAllGroup() {
+  if(!myInfo.value) return
+
   const { message } = createDiscreteApi(["message"])
   try{
     const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })

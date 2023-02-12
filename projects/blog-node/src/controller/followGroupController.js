@@ -109,6 +109,13 @@ class FollowGroupController extends BaseController {
   all = async (ctx, next) => {
     try {
       let userId = await this.getAuthUserId(ctx, next)
+      if(!userId){
+        return ctx.body = {
+          success: false,
+          code: this.CODE.USER_NOT_LOGIN,
+          msg: '未登录'
+        }
+      }
       const xprisma = prisma.$extends({
         result: {
           followGroup: {
