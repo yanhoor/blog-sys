@@ -36,9 +36,9 @@ const allowLoadMore = inject('allow_load_more_comment', false)
 const props = defineProps<Props>()
 const userInfo = useUserInfo()
 
-const { pageFetchParams, pageList, pageLoading, pageTotal, handleLoadNextPage, handlePageChange } = useListAppendFetch<Comment>('/comment/list', { blogId: props.blog.id, pageSize: props.pageSize || 20 }, { uniqueKey: 'id' })
+const { pageFetchParams, pageList, pageLoading, pageTotal, handleLoadNextPage } = useListAppendFetch<Comment>('/comment/list', { blogId: props.blog.id, pageSize: props.pageSize || 20 }, { uniqueKey: 'id' })
 
-handleLoadNextPage()
+handleLoadNextPage(1)
 
 function handleCommentCommit(c: Comment) {
   pageList.value.unshift(c)
@@ -50,6 +50,6 @@ function handleCommentDelete(comment: Comment) {
 }
 
 defineExpose({
-  handlePageChange
+  handleLoadNextPage,
 })
 </script>

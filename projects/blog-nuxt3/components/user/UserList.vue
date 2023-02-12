@@ -10,7 +10,7 @@
           <span class="text-gray-400 text-[12px] dark:text-gray-600">{{ user.introduce || '暂无介绍' }}</span>
           <span class="text-gray-400 text-[12px] dark:text-gray-600" v-if="user.followersCount">粉丝：{{ user.followersCount }}</span>
         </div>
-        <n-button round type="primary" size="small" @click="handleFollow(user)" :loading="followLoading" v-if="!user.isFollowing && user.id !== me.id">关注
+        <n-button round type="primary" size="small" @click="handleFollow(user)" :loading="followLoading" v-if="!user.isFollowing && user.id !== myInfo.id">关注
           <template #icon>
             <n-icon :component="Add24Regular"></n-icon>
           </template>
@@ -30,22 +30,21 @@
 import {User} from '@/types'
 import {
   NButton,
-  NTime,
-  NCollapseTransition,
   NIcon,
   NSpin,
   createDiscreteApi
 } from "naive-ui"
-import { Add24Regular, ZoomIn24Regular, Edit20Filled } from '@vicons/fluent'
+import { Add24Regular } from '@vicons/fluent'
 
 interface Props{
-  blogId: number | string
+  url: string
+  searchParams?: any
 }
 
 const props = defineProps<Props>()
-const me = useUserInfo()
+const myInfo = useUserInfo()
 const followLoading = ref(false)
-const { pageList, pageLoading,fetchResult, pageFetchParams, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<User>('/blog/likeList', { id: props.blogId }, { })
+const { pageList, pageLoading,fetchResult, pageFetchParams, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<User>(props.url, props.searchParams || {}, { })
 
 handleLoadNextPage()
 

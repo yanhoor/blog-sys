@@ -4,8 +4,7 @@
       <UserAvatar :user="blog.createBy" :size="56"/>
       <div class="flex flex-col items-start">
         <div class="text-green-700 text-[20px] cursor-pointer" @click="navigateTo({ path: '/user/' + blog.createBy.id })">{{ blog.createBy?.name }}</div>
-        <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blog.updatedAt)" format="yyyy-MM-dd HH:mm" v-if="isDetail"></n-time>
-        <span class="text-[12px] text-gray-500" v-time="new Date(blog.updatedAt)" v-else></span>
+        <span class="text-[12px] text-gray-500" v-time="new Date(blog.updatedAt)"></span>
       </div>
       <n-dropdown trigger="click" :options="actionOptions">
         <n-button quaternary circle type="default" class="absolute top-0 right-0 cursor-pointer">
@@ -21,30 +20,27 @@
     <MediaListView class="w-full" :list="blog.medias"/>
 
     <div class="grid grid-cols-3 w-full">
-      <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="handleSwitchType('like')">
-        <n-icon class="text-green-700" size="18" :component="ThumbLike16Filled" v-if="blog.isLike"></n-icon>
-        <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
+      <div class="flex justify-center items-center gap-[6px]">
+        <n-icon class="text-green-700 cursor-pointer" size="18" :component="ThumbLike16Filled" @click="likeBlog" v-if="blog.isLike"></n-icon>
+        <n-icon class="cursor-pointer" size="18" :component="ThumbLike16Regular" @click="likeBlog" v-else></n-icon>
         <span>{{ blog.likedByCount ||  '赞' }}</span>
       </div>
-      <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="handleSwitchType('comment')">
+      <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="showComment = !showComment">
         <n-icon class="text-green-700" size="18" :component="CommentMultiple28Filled" v-if="blog.commentsCount"></n-icon>
         <n-icon size="18" :component="CommentMultiple16Regular" v-else></n-icon>
         <span>{{ blog.commentsCount || '评论' }}</span>
       </div>
-      <div class="flex justify-center items-center cursor-pointer gap-[6px]" @click="handleSwitchType('collect')">
-        <n-icon class="text-green-700" size="18" :component="Star48Filled" v-if="blog.isCollect"></n-icon>
-        <n-icon size="18" :component="Star48Regular" v-else></n-icon>
+      <div class="flex justify-center items-center gap-[6px]">
+        <n-icon class="text-green-700 cursor-pointer" size="18" :component="Star48Filled" @click="collectBlog" v-if="blog.isCollect"></n-icon>
+        <n-icon class="cursor-pointer" size="18" :component="Star48Regular" @click="collectBlog" v-else></n-icon>
         <span>{{ blog.collectedByCount || '收藏' }}</span>
       </div>
     </div>
 
-    <n-collapse-transition :show="showType === 'comment'">
-      <PostCommentList ref="commentRef" class="w-full" :blog="blog" :page-size="commentPageSize" v-if="showType === 'comment'"/>
+    <n-collapse-transition :show="showComment">
+      <PostCommentList class="w-full" :blog="blog" :page-size="2" v-if="showComment"/>
     </n-collapse-transition>
 
-    <n-collapse-transition :show="showType === 'like'">
-      <UserList ref="likeRef" :blog-id="blog.id"/>
-    </n-collapse-transition>
   </div>
 </template>
 
@@ -64,19 +60,12 @@ import type { DropdownOption } from 'naive-ui'
 interface Props{
   canEdit?: boolean // 是否能编辑文章
   blog: Blog
-  showType?: ActionType
-  commentPageSize?: number
 }
 
-type ActionType = 'like' | 'comment' | 'collect' | undefined
-
-const isDetail = inject('post_item_in_detail', false) // 是否在详情页
 const props = defineProps<Props>()
 const emit = defineEmits(['delete', 'refresh'])
-const showType = ref<ActionType>(props.showType)
 const userInfo = useUserInfo()
-const commentRef = ref()
-const likeRef = ref()
+const showComment = ref(false)
 const actionOptions = ref<DropdownOption[]>([
   {
     label: '复制博客地址',
@@ -93,7 +82,7 @@ const actionOptions = ref<DropdownOption[]>([
   }
 ])
 
-if(props.canEdit){
+if( props.blog?.createById === userInfo.value?.id){
   actionOptions.value.unshift({
     label: '删除',
     key: 'delete',
@@ -104,7 +93,6 @@ if(props.canEdit){
 }
 
 async function likeBlog() {
-  showType.value = 'like'
   const { message } = createDiscreteApi(["message"])
   if(!userInfo.value) {
     return message.info('请先登录')
@@ -115,10 +103,6 @@ async function likeBlog() {
     if(success){
       props.blog.isLike = !props.blog.isLike
       props.blog.isLike ? props.blog.likedByCount ++ : props.blog.likedByCount --
-      if(isDetail){
-        likeRef.value?.handleLoadNextPage(1)
-      }
-      emit('refresh')
     }
   }catch (e) {
 
@@ -126,7 +110,6 @@ async function likeBlog() {
 }
 
 async function collectBlog() {
-  showType.value = 'collect'
   const { message } = createDiscreteApi(["message"])
   if(!userInfo.value) {
     return message.info('请先登录')
@@ -140,30 +123,6 @@ async function collectBlog() {
     }
   }catch (e) {
 
-  }
-}
-
-function handleSwitchType(val: ActionType) {
-  if(!isDetail && showType.value === 'comment'){
-    // 如果不是在详情，再次点击评论就收起
-    return showType.value = undefined
-  }
-  switch (val) {
-    case 'like':
-      if(isDetail){
-        showType.value === 'like' ? likeBlog() : showType.value = val
-      }else{
-        likeBlog()
-      }
-      break
-    case 'comment':
-      showType.value = val
-      if(props.blog.commentsCount) commentRef.value?.handlePageChange(1)
-      break
-    case 'collect':
-      showType.value = val
-      collectBlog()
-      break
   }
 }
 

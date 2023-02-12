@@ -667,11 +667,15 @@ class BlogController extends BaseController{
     }
   }
 
-  // 点赞的用户列表
-  likeList = async (ctx, next) => {
-    const { id } = ctx.request.body
+  // 点赞/收藏的用户列表
+  actionUserList = async (ctx, next) => {
+    // type: 1--点赞,2--收藏
+    const { blogId, page = 1, pageSize = this.pageSize } = ctx.request.body
+    const { type } = ctx.request.params
+    const skip = pageSize * (page - 1)
     try{
-      if(!id) throw new Error('博客id不能为空')
+      if(!blogId) throw new Error('博客id不能为空')
+      if(!type) throw new Error('type不能为空')
     }catch(e){
       ctx.body = {
         success: false,
@@ -684,10 +688,19 @@ class BlogController extends BaseController{
       let userId = await this.getAuthUserId(ctx, next)
       const blog = await prisma.blog.findUnique({
         where: {
-          id: Number(id)
+          id: Number(blogId)
         },
         select: {
           likedBy: {
+            skip,
+            take: pageSize,
+            select: {
+              userId: true,
+            }
+          },
+          collectedBy: {
+            skip,
+            take: pageSize,
             select: {
               userId: true,
             }
@@ -713,10 +726,17 @@ class BlogController extends BaseController{
           }
         }
       })
+      let idList = []
+      if(Number(type) === 1){
+        idList = blog.likedBy.map(i => i.userId)
+      }
+      if(Number(type) === 2){
+        idList = blog.collectedBy.map(i => i.userId)
+      }
       const list = await xprisma.user.findMany({
         where: {
           id: {
-            in: blog.likedBy.map(i => i.userId)
+            in: idList
           }
         },
         select: {

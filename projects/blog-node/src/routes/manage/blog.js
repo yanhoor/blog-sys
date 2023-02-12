@@ -10,7 +10,7 @@ router.post('/delete', controller.delete)
 router.post('/info', controller.info)
 router.post('/manageInfo', controller.manageInfo)
 router.post('/like', controller.like)
-router.post('/likeList', controller.likeList)
+router.post('/actionUserList/:type', controller.actionUserList)
 router.post('/collect', controller.collect)
 router.post('/operate', controller.operate)
 
