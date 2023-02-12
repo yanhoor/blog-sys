@@ -5,7 +5,7 @@
       <n-tab name="/notification/like">点赞({{ unreadLikeCount }})</n-tab>
       <n-tab name="/notification/collect">收藏({{ unreadCollectCount }})</n-tab>
     </n-tabs>
-    <NuxtPage/>
+    <NuxtPage :pageKey="route.fullPath"/>
   </div>
 </template>
 

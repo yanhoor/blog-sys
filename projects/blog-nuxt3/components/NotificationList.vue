@@ -1,7 +1,8 @@
 <template>
-  <div v-loadMore="handleLoadNextPage">
+  <div class="notification-list">
     <SkeletonNotification v-if="pageLoading && pageFetchParams.page === 1"/>
-    <template v-else>
+
+    <div v-loadMore="handleLoadNextPage" v-else>
       <div class="flex justify-between items-center mb-[12px]">
         <div class="flex items-center gap-[6px]">
           <template v-if="pageList.length > 0 && fetchResult.unreadTotal > 0">
@@ -22,7 +23,7 @@
         </div>
         <n-radio-group v-model:value="pageFetchParams.isRead" @update:value="handleLoadNextPage(1)" size="small">
           <n-radio-button :value="0" label="未读"></n-radio-button>
-          <n-radio-button :value="1" :label="`全部(${fetchResult?.total || 0})`"></n-radio-button>
+          <n-radio-button :value="3" :label="`全部(${fetchResult?.total || 0})`"></n-radio-button>
         </n-radio-group>
       </div>
       <template v-if="pageList.length">
@@ -50,7 +51,7 @@
       <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
       <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
       <ResultNoMore v-else-if="pageLoadedFinish"/>
-    </template>
+    </div>
   </div>
 </template>
 

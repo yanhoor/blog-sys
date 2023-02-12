@@ -24,7 +24,7 @@ class NotificationController extends BaseController{
         })
       }
     }
-    if(Number(isRead) === 0) {
+    if(Number(isRead) === 0 || Number(isRead) === 1) {
       filter.isRead = isRead
     }else{
       filter.isRead = undefined

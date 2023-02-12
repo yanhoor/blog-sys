@@ -178,7 +178,7 @@ model Notification {
   commentId     Int?
   comment       Comment?         @relation(fields: [commentId], references: [id])
   content       Json?
-  isRead        Int?             @default(0)
+  isRead        Int?             @default(0) // 0--未读，1--已读
   type          NotificationType
 
   deletedAt DateTime?

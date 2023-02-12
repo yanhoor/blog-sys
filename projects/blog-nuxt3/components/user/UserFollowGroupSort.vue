@@ -6,7 +6,7 @@
         size="large"
         closable
         @close="emit('update:show', false)"
-        class="w-3/5 max-h-screen"
+        class="w-2/5 max-h-screen"
       >
         <div class="flex flex-col gap-[12px]">
           <p class="text-[12px] text-gray-400">*点击修改分组名称，拖拽调整分组顺序</p>
