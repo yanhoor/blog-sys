@@ -708,7 +708,19 @@ class UserController extends BaseController{
                 const isFollowed = user.followings.some(u => u.userId === uid)
                 return isFollowed && isFollowing
               }
-            }
+            },
+            isFollowing: {
+              needs: { followers: true },
+              compute(result){
+                return result.followers.some(u => u.followById === uid)
+              }
+            },
+            followersCount: {
+              needs: { followers: true },
+              compute(result){
+                return result.followers.length
+              }
+            },
           }
         }
       })
@@ -742,6 +754,9 @@ class UserController extends BaseController{
           id: true,
           name: true,
           avatar: true,
+          introduce: true,
+          followersCount: true,
+          isFollowing: true,
           isMutualFollowing: true,
         }
       })

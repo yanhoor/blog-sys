@@ -1,14 +1,24 @@
 <template>
-  following
+  <div>
+    <n-card>
+      <UserList url="/user/friends" :search-params="{ relateType: 1, uid: myInfo?.id }"/>
+    </n-card>
+  </div>
 </template>
 
 <script setup lang="ts">
+import {
+  NCard,
+  NButton,
+  NIcon,
+  NInput,
+  NInputGroup,
+  NTag,
+  createDiscreteApi
+} from "naive-ui"
 import { User } from '@/types'
 
 const myInfo = useUserInfo()
-const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<User>('/user/friends', { relateType: 1, uid: myInfo.value?.id }, {})
-
-handleLoadNextPage()
 
 useHead(() => {
   return {

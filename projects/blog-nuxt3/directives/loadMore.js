@@ -40,7 +40,7 @@ const loadMore = {
     scrollEl.addEventListener('scroll', callback)
   },
   unmounted(el, binding, vnode, prevVnode) {
-    console.log('======loadMore unmounted=======')
+    // console.log('======loadMore unmounted=======')
     scrollEl.removeEventListener('scroll', callback)
   }
 }

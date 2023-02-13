@@ -15,9 +15,15 @@
               {{ group.name }}
               <span v-if="group.memberCount">({{ group.memberCount }})</span>
             </n-tag>
+            <n-button size="small" @click="editItem = { name: '' }" round>
+              <template #icon>
+                <n-icon :component="Add24Regular"/>
+              </template>
+              新增分组
+            </n-button>
           </div>
           <template v-if="editItem">
-            <span>修改分组</span>
+            <span>{{ editItem.id ? '修改分组' : '新增分组' }}</span>
             <n-input-group>
               <n-input placeholder="分组名称" v-model:value="editItem.name" clearable show-count maxlength="8" size="small" @keyup.enter="handleSave"></n-input>
               <n-button size="small" @click="handleSave" type="primary">
@@ -51,7 +57,7 @@ import {
 } from "naive-ui"
 import Sortable from 'sortablejs'
 import { FollowGroup } from "~/types"
-import { Dismiss24Regular, Checkmark24Regular } from "@vicons/fluent"
+import { Dismiss24Regular, Checkmark24Regular, Add24Regular } from "@vicons/fluent"
 
 interface Props{
   show: boolean
@@ -62,6 +68,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['update:show', 'change'])
 const sortableIns = ref()
 const saveLoading = ref(false)
+const showAdd = ref(false)
 const editItem = ref<FollowGroup>()
 
 watch(() => props.show, (val) => {

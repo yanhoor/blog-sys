@@ -18,11 +18,11 @@
       <PostList ref="listRef" class="flex-1" :searchParams="{ gid: currentGroupId }"/>
     </div>
 
-    <div class="mt-20 text-center text-gray-400">
+    <div class="mt-[20px] text-center text-gray-400">
       <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>
     </div>
 
-    <UserFollowGroupSort v-model:show="showManageGroup" @change="getAllGroup" :groupList="groupList"/>
+    <UserFollowGroupManage v-model:show="showManageGroup" @change="getAllGroup" :groupList="groupList"/>
   </div>
 </template>
 

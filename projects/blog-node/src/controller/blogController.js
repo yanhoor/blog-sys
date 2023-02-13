@@ -63,6 +63,7 @@ class BlogController extends BaseController{
       sort = sort?.toString()
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
+      let userId = await this.getAuthUserId(ctx, next)
       if(uid) filter.createById = Number(uid)
       if (keyword) filter.OR = [
         {
@@ -113,12 +114,13 @@ class BlogController extends BaseController{
       }else{
         orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
       }
-      if(gid){
+      if(gid && userId){
         const group = await prisma.followGroup.findUnique({
           where: {
             id: Number(gid)
           },
           select: {
+            createById: true,
             containUsers: {
               select: {
                 id: true
@@ -126,7 +128,7 @@ class BlogController extends BaseController{
             }
           }
         })
-        if(group){
+        if(group && group.createById === userId){
           filter.createById = {
             in: group.containUsers.map(item => item.id)
           }
@@ -137,7 +139,6 @@ class BlogController extends BaseController{
           }
         }
       }
-      let userId = await this.getAuthUserId(ctx, next)
       const xprisma = prisma.$extends({
         result: {
           blog: {

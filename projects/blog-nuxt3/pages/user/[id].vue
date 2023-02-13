@@ -28,12 +28,7 @@
               </div>
               <div class="flex items-end" v-if="myInfo">
                 <n-button type="primary" @click="navigateTo({ name: 'user-profile' })" v-if="myInfo?.id === userInfo.id">编辑资料</n-button>
-                <template v-else>
-                  <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" :user="userInfo" @selectGroup="showGroupSelect = true">
-                    <n-button type="tertiary" size="small" :loading="followLoading">{{ userInfo.isMutualFollowing ? '互相关注' : '已关注' }}</n-button>
-                  </UserFollowDropdown>
-                  <n-button type="primary" @click="handleFollow(1)" :loading="followLoading" v-else>关注</n-button>
-                </template>
+                <UserFollowDropdown v-else :user="userInfo" @update="getUserInfo" />
               </div>
             </div>
 
@@ -100,7 +95,6 @@
           <UserImageWall :user-id="userInfo.id"/>
         </template>
       </div>
-      <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="userInfo.id" v-if="userInfo"/>
     </div>
   </div>
 </template>
@@ -118,8 +112,6 @@ const route = useRoute()
 const myInfo = useUserInfo()
 const userInfo = ref<User>()
 const loading = ref(false)
-const followLoading = ref(false)
-const showGroupSelect = ref(false)
 const blogTotal = ref(0)
 const imageList = ref<Media[]>([])
 const searchParams = reactive({
@@ -180,22 +172,6 @@ async function getUserStatis(){
     }
   }catch (e) {
 
-  }
-}
-
-async function handleFollow(type: number) {
-  followLoading.value = true
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result, success, code, msg } = await useFetchPost('/user/follow', { id: userInfo.value?.id, type })
-    if(success){
-      getUserInfo()
-    }else{
-      message.error(msg as string)
-    }
-    followLoading.value = false
-  }catch (e) {
-    followLoading.value = false
   }
 }
 
