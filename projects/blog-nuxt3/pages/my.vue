@@ -37,7 +37,7 @@ import {
   NIcon, createDiscreteApi
 } from "naive-ui"
 import type { MenuOption } from 'naive-ui'
-import { People24Regular, PeopleCheckmark24Regular, Star48Regular, CaretDown24Regular } from '@vicons/fluent'
+import { People24Regular, PeopleCheckmark24Regular, Star48Filled, CaretDown24Regular, ThumbLike16Filled } from '@vicons/fluent'
 
 definePageMeta({
   redirect: '/my/follower',
@@ -68,9 +68,14 @@ const menuOptions: MenuOption[] = [
     icon: () => h(NIcon, null, { default: () => h(PeopleCheckmark24Regular) })
   },
   {
+    label: '我的点赞',
+    key: '/my/like',
+    icon: () => h(NIcon, null, { default: () => h(ThumbLike16Filled) })
+  },
+  {
     label: '我的收藏',
     key: '/my/collection',
-    icon: () => h(NIcon, null, { default: () => h(Star48Regular) })
+    icon: () => h(NIcon, null, { default: () => h(Star48Filled) })
   },
 ]
 const collapsed = ref(false)

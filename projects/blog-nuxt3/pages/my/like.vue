@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PostList url="/user/markBlogList" :search-params="{ type: 2 }"/>
+    <PostList url="/user/markBlogList" :search-params="{ type: 1 }"/>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ const myInfo = useUserInfo()
 
 useHead(() => {
   return {
-    title: `@${myInfo.value?.name}的全部收藏`
+    title: `@${myInfo.value?.name}的全部点赞`
   }
 })
 </script>

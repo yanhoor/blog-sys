@@ -36,15 +36,18 @@ interface Props {
     gid?: string
     [k:string]: any
   }
+  url?: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  url: '/blog/list'
+})
 const emit = defineEmits(['fetchComplete'])
 provide('allow_load_more_comment', false)
 const fetchNewPost = useFetchNewPost()
 const route = useRoute()
 const userInfo = useUserInfo()
-const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>('/blog/list', props.searchParams, {})
+const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>(props.url, props.searchParams, {})
 
 handleLoadNextPage().then(r => {
   const { message } = createDiscreteApi(["message"])

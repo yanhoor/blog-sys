@@ -18,7 +18,7 @@ router.post('/follow', controller.operateFollow)
 router.post('/setGroup', controller.setGroup)
 router.post('/getMediaList', controller.getMediaList)
 router.post('/friends', controller.friends)
-router.post('/collectBlogList', controller.collectBlogList)
+router.post('/markBlogList', controller.markBlogList)
 router.post('/:id', controller.userInfo)
 
 module.exports = router

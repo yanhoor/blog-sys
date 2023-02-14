@@ -32,7 +32,13 @@ import {
   NDropdown,
   createDiscreteApi
 } from "naive-ui"
-import {ArrowCircleRight20Regular, CalendarPerson20Regular, PersonCircle12Regular, Compose24Regular} from "@vicons/fluent"
+import {
+  ArrowCircleRight20Regular,
+  CalendarPerson20Regular,
+  PersonCircle12Regular,
+  Compose24Regular,
+  Star48Filled
+} from "@vicons/fluent"
 import {Component} from "vue"
 import websocket from '@/websocket'
 
@@ -61,6 +67,11 @@ const userOptions = ref([
     icon: renderIcon(CalendarPerson20Regular)
   },
   {
+    label: '我的收藏',
+    key: 'myCollection',
+    icon: renderIcon(Star48Filled)
+  },
+  {
     label: '退出登录',
     key: 'logout',
     icon: renderIcon(ArrowCircleRight20Regular)
@@ -74,6 +85,9 @@ function handleDropdownSelect(key: string | number){
       break
     case 'profile':
       navigateTo({ name: 'user-profile' })
+      break
+    case 'myCollection':
+      navigateTo({ name: 'my-collection' })
       break
     case 'logout':
       handleLogout()

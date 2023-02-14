@@ -773,8 +773,18 @@ class UserController extends BaseController{
     }
   }
 
-  collectBlogList = async (ctx, next) => {
-    const { page = 1, pageSize = this.pageSize } = ctx.request.body
+  markBlogList = async (ctx, next) => {
+    // type: 1--点赞，2--收藏
+    const { type, page = 1, pageSize = this.pageSize } = ctx.request.body
+    try{
+      if(!type) throw new Error('缺少参数')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
     let userId = await this.getAuthUserId(ctx, next)
     const skip = pageSize * (page - 1)
     let filter = {
@@ -822,21 +832,43 @@ class UserController extends BaseController{
       },
     })
 
-    const [refList, total] = await prisma.$transaction([
-      xprisma.userCollectBlogs.findMany({
-        skip,
-        take: pageSize,
-        where: JSON.parse(JSON.stringify(filter)),
-        select: {
-          userId: true,
-          blogId: true,
-        },
-        orderBy: {
-          assignedAt: 'desc'
-        }
-      }),
-      prisma.userCollectBlogs.count({ where: filter })
-    ])
+    let refList = [], total = 0
+
+    if(Number(type) === 1){
+      [refList, total] = await prisma.$transaction([
+        xprisma.LikeBlogRelation.findMany({
+          skip,
+          take: pageSize,
+          where: JSON.parse(JSON.stringify(filter)),
+          select: {
+            userId: true,
+            blogId: true,
+          },
+          orderBy: {
+            assignedAt: 'desc'
+          }
+        }),
+        prisma.LikeBlogRelation.count({ where: filter })
+      ])
+    }
+
+    if(Number(type) === 2){
+      [refList, total] = await prisma.$transaction([
+        xprisma.userCollectBlogs.findMany({
+          skip,
+          take: pageSize,
+          where: JSON.parse(JSON.stringify(filter)),
+          select: {
+            userId: true,
+            blogId: true,
+          },
+          orderBy: {
+            assignedAt: 'desc'
+          }
+        }),
+        prisma.userCollectBlogs.count({ where: filter })
+      ])
+    }
 
     const list = await xprisma.blog.findMany({
       where: {
