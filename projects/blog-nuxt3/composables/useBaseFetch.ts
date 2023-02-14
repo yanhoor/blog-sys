@@ -43,9 +43,7 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
       const { code, success, msg } = response._data || {}
       if(code === 111 || code === 999){
         token.value = null
-        message.error(msg, {
-          duration: 0
-        })
+        message.error(msg)
       }
     }
   })
@@ -74,9 +72,7 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
       const { code, success, msg } = response._data || {}
       if(code === 111 || code === 999){
         token.value = null
-        message.error(msg, {
-          duration: 0
-        })
+        message.error(msg)
       }
     }
   })

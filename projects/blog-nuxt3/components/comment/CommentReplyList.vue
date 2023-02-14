@@ -55,10 +55,10 @@
       text
       type="primary"
       icon-placement="right"
-      v-else-if="!comment.topCommentId && comment._count?.childComments > 2"
+      v-else-if="!comment.topCommentId && comment.childCommentsCount > 2"
       @click="emit('checkReply')"
     >
-      共 {{ comment._count?.childComments }} 条回复
+      共 {{ comment.childCommentsCount }} 条回复
       <template #icon>
         <n-icon :component="ChevronDown24Filled"/>
       </template>

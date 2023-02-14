@@ -261,6 +261,11 @@ class CommentController extends BaseController{
         prisma.comment.count({where: filter})
       ])
 
+      list.forEach(item => {
+        item.childCommentsCount = item._count.childComments
+        delete item._count
+      })
+
       return ctx.body = {
         success: true,
         result: {

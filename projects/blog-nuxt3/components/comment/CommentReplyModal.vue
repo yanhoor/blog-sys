@@ -3,7 +3,7 @@
     :show="show"
   >
     <n-card
-      :title="`${ comment._count?.childComments } 条回复`"
+      :title="`${ comment.childCommentsCount } 条回复`"
       size="huge"
       closable
       @close="handleShowUpdate"

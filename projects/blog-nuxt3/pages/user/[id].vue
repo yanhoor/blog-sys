@@ -130,7 +130,7 @@ watch(() => route.query, (val) => {
 
 useHead(() => {
   return {
-    title: `@${userInfo.value?.name}的个人主页` || '加载中...'
+    title: loading.value ? '加载中...' : `@${userInfo.value?.name}的个人主页`
   }
 })
 
