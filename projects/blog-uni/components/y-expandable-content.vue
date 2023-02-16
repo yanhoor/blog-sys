@@ -1,8 +1,8 @@
 <template>
-	<view class="container">
+	<view class="expandable-content">
 		{{ isExpanded ? content : getSummary(content) }}
 		<button class="action-btn" size="mini" type="primary" @click="handleExpand"
-			v-if="content.length > maxLength">{{ isExpanded ? '收起' : '展开' }}</button>
+			v-if="showBtn && content.length > maxLength">{{ isExpanded ? '收起' : '展开' }}</button>
 	</view>
 </template>
 
@@ -18,7 +18,11 @@
 				type: Number,
 				default: 180
 			},
-			content: String
+			content: String,
+			showBtn: {
+				type: Boolean,
+				default: true
+			}
 		},
 		data() {
 			return {
@@ -49,8 +53,8 @@
 	}
 </script>
 
-<style lang="less" scoped>
-	.container {}
+<style lang="scss" scoped>
+	.expandable-content {}
 
 	.action-btn {
 		padding: 0;

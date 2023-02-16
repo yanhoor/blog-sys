@@ -5,7 +5,6 @@
 </template>
 
 <script>
-	import Http from '@/http'
 	import scrollMixin from '@/mixins/scrollMixin.js'
 	import PostList from '@/components/post/post-list.vue'
 

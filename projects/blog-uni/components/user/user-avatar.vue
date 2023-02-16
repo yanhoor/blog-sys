@@ -22,7 +22,7 @@
 	}
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.user-avatar{
 		border-radius: 50%;
 	}
