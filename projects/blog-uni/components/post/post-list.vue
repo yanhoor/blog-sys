@@ -1,6 +1,6 @@
 <template>
-	<view>
-		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.blog_list" v-model="pageList">
+	<view class="post-list">
+		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.blog_list" v-model="pageList" :searchParams="searchParams" @fetch-end="$emit('fetch-end', $event)">
 			<PostItem v-for="post in pageList" :post="post" :key="post.id"></PostItem>
 			<SkeletonPostList #skeleton></SkeletonPostList>
 		</YAppendListWrapper>
@@ -18,8 +18,10 @@
 	export default {
 		name: "post-list",
 		props: {
-			pageUrl: String
+			pageUrl: String,
+			searchParams: Object
 		},
+		emits: ['fetch-end'],
 		components: {
 			YAppendListWrapper,
 			SkeletonPostList,

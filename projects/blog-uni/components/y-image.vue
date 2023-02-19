@@ -1,5 +1,5 @@
 <template>
-	<image class="y-image" :src="imageHost + url" mode="aspectFill"></image>
+	<image class="y-image" :style="style" :src="imageUrl" :mode="mode" :lazy-load="true"></image>
 </template>
 
 <script>
@@ -8,7 +8,16 @@
 	export default {
 		name:"y-image",
 		props: {
-			url: String
+			url: String,
+			ratio: String,
+			width: String,
+			height: String,
+			size: String,
+			round: Boolean,
+			mode: {
+				type: String,
+				default: 'aspectFill'
+			},
 		},
 		options: {
 		    // 微信小程序中 options 选项
@@ -21,7 +30,22 @@
 			return {
 				imageHost
 			}
-		}
+		},
+		computed: {
+			imageUrl(){
+				let r = imageHost + this.url
+				return this.ratio ? r += '?x-oss-process=image/resize,p_' + this.ratio : r
+			},
+			style(){
+				const result = {}
+				if(this.size){
+					result.height = result.width = Object.is(Number(this.size), NaN) ? this.size : this.size + 'px'
+				}
+				if(this.width) result.width = Object.is(Number(this.width), NaN) ? this.width : this.width + 'px'
+				if(this.height) result.height = Object.is(Number(this.height), NaN) ? this.height : this.height + 'px'
+				return result
+			}
+		},
 	}
 </script>
 
