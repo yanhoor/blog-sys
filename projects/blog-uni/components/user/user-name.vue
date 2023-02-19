@@ -1,13 +1,10 @@
 <template>
-	<image class="user-avatar" :style="{'width': size + 'px', 'height': size + 'px' }" :src="imageHost + user.avatar"
-		@click.stop="handleToUserPage" v-if="user.avatar"></image>
-	<uni-icons type="contact" :size="size" color="#8f939c" @click.stop="handleToUserPage" v-else></uni-icons>
+	<text class="reply-user text-ellipsis" :style="style" @click="handleToUserPage">
+		{{ content }}
+	</text>
 </template>
 
 <script>
-	import {
-		imageHost
-	} from "@/config/index.js"
 	import {
 		mapState,
 		mapActions,
@@ -15,27 +12,29 @@
 	import {
 		useMyInfoStore
 	} from '@/stores/userInfo.js'
-
+	
 	export default {
-		name: 'user-avatar',
+		name: 'user-name',
 		props: {
 			user: Object,
-			clickable: {
-				type: Boolean,
-				default: true
-			},
-			size: {
-				type: Number,
-				default: 52
-			}
+			text: String,
+			fontSize: String
 		},
 		data() {
 			return {
-				imageHost
+
 			}
 		},
 		computed: {
-			...mapState(useMyInfoStore, ['myInfo'])
+			...mapState(useMyInfoStore, ['myInfo']),
+			content(){
+				return this.text || this.user.name
+			},
+			style(){
+				const result = {}
+				if(this.fontSize) result.fontSize = Object.is(Number(this.fontSize), NaN) ? this.fontSize : this.fontSize + 'px'
+				return result
+			}
 		},
 		methods: {
 			handleToUserPage() {
@@ -56,7 +55,8 @@
 </script>
 
 <style lang="scss" scoped>
-	.user-avatar {
-		border-radius: 50%;
+	.reply-user {
+		color: $uni-primary;
+		font-weight: 600;
 	}
 </style>
