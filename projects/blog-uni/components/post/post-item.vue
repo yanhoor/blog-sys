@@ -1,33 +1,37 @@
 <template>
-	<uni-card margin="5px" class="card">
-		<view class="post-top">
-			<UserAvatar :url="post.createBy.avatar" :size="42"></UserAvatar>
-			<view class="item-user">
-				<view class="user-name">{{ post.createBy.name }}</view>
-				<YTime class="item-time" :time="post.createdAt"></YTime>
-			</view>
-		</view>
-		<YExpandanleContent class="post-content" :content="post.content"></YExpandanleContent>
-		<MediaList :list="post.medias"></MediaList>
-		<view class="action-container">
-			<view class="action-item" @click="handleLike">
-				<uni-icons type="hand-up-filled" size="20" color="#18a058" v-if="post.isLike"></uni-icons>
-				<uni-icons type="hand-up" size="20" color="#6B7280" v-else></uni-icons>
-				<view class="action-num">
-					{{ post.likedByCount }}
+	<uni-card margin="5px" class="card" @click="handleClickPost">
+		<view class="content-wrapper">
+			<view class="post-top">
+				<UserAvatar :user="post.createBy" :size="42"></UserAvatar>
+				<view class="item-user">
+					<view class="user-name text-ellipsis">{{ post.createBy.name }}</view>
+					<YTime class="item-time" :time="post.createdAt"></YTime>
 				</view>
 			</view>
-			<view class="action-item">
-				<uni-icons type="chatbubble" size="20" color="#6B7280"></uni-icons>
-				<view class="action-num">
-					{{ post.commentsCount }}
+			<YExpandanleContent class="post-content" :content="post.content"></YExpandanleContent>
+			<MediaList :list="post.medias" :maxCount="9"></MediaList>
+			<view class="action-container" @click.stop>
+				<view class="action-item" @click="handleLike">
+					<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058" v-if="post.isLike">
+					</uni-icons>
+					<uni-icons class="action-icon" type="hand-up" size="20" color="#6B7280" v-else></uni-icons>
+					<view class="action-num">
+						{{ post.likedByCount }}
+					</view>
 				</view>
-			</view>
-			<view class="action-item" @click="handleCollect">
-				<uni-icons type="star-filled" size="20" color="#18a058" v-if="post.isCollect"></uni-icons>
-				<uni-icons type="star" size="20" color="#6B7280" v-else></uni-icons>
-				<view class="action-num">
-					{{ post.collectedByCount }}
+				<view class="action-item" @click="handleClickPost">
+					<uni-icons class="action-icon" type="chatbubble" size="20" color="#6B7280"></uni-icons>
+					<view class="action-num">
+						{{ post.commentsCount }}
+					</view>
+				</view>
+				<view class="action-item" @click="handleCollect">
+					<uni-icons class="action-icon" type="star-filled" size="20" color="#18a058" v-if="post.isCollect">
+					</uni-icons>
+					<uni-icons class="action-icon" type="star" size="20" color="#6B7280" v-else></uni-icons>
+					<view class="action-num">
+						{{ post.collectedByCount }}
+					</view>
 				</view>
 			</view>
 		</view>
@@ -54,7 +58,7 @@
 			YTime,
 			YExpandanleContent,
 			MediaList,
-			UserAvatar,
+			UserAvatar
 		},
 		data() {
 			return {
@@ -71,29 +75,41 @@
 						success,
 						result,
 						msg
-					} = await Http.post(urls.blog_like, { isLike: this.post.isLike ? 0 : 1, id: this.post.id })
+					} = await Http.post(urls.blog_like, {
+						isLike: this.post.isLike ? 0 : 1,
+						id: this.post.id
+					})
 					if (success) {
 						this.post.isLike = !this.post.isLike
-						this.post.isLike ? this.post.likedByCount ++ : this.post.likedByCount --
+						this.post.isLike ? this.post.likedByCount++ : this.post.likedByCount--
 					}
 				} catch (e) {
 
 				}
 			},
-			async handleCollect(){
+			async handleCollect() {
 				try {
 					const {
 						success,
 						result,
 						msg
-					} = await Http.post(urls.blog_collect, { isCollect: this.post.isCollect ? 0 : 1, id: this.post.id })
+					} = await Http.post(urls.blog_collect, {
+						isCollect: this.post.isCollect ? 0 : 1,
+						id: this.post.id
+					})
 					if (success) {
 						this.post.isCollect = !this.post.isCollect
-						this.post.isCollect ? this.post.collectedByCount ++ : this.post.collectedByCount --
+						this.post.isCollect ? this.post.collectedByCount++ : this.post.collectedByCount--
 					}
 				} catch (e) {
 
 				}
+			},
+			handleClickPost() {
+				// console.log('=++======handleClickPost==========')
+				uni.navigateTo({
+					url: '/pages/post/post?id=' + this.post.id
+				})
 			}
 		}
 	}
@@ -104,6 +120,12 @@
 		::v-deep .uni-card {
 			padding: 0;
 		}
+	}
+
+	.content-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 12rpx;
 	}
 
 	.post-item {
@@ -121,7 +143,7 @@
 			.user-name {
 				font-size: 18px;
 				font-weight: 600;
-				color: #18a058;
+				color: $uni-primary;
 			}
 
 			.item-time {
@@ -131,14 +153,13 @@
 	}
 
 	.post-content {
-		::v-deep{
+		::v-deep {
 			color: $uni-main-color;
 		}
 	}
 
 	.action-container {
 		display: flex;
-		margin-top: 12px;
 
 		.action-item {
 			flex: 1;
@@ -146,6 +167,10 @@
 			align-items: center;
 			justify-content: center;
 			gap: 4px;
+
+			.action-icon {
+				display: flex;
+			}
 
 			.action-num {
 				font-size: 18px;
