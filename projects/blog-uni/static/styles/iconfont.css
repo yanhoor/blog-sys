@@ -1,0 +1,33 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3902401 */
+  src: url('iconfont.ttf?t=1676789765291') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.y-new:before {
+  content: "\e8ed";
+}
+
+.y-emptybox:before {
+  content: "\e673";
+}
+
+.y-person_crop_circle_badge_exclam:before {
+  content: "\e69e";
+}
+
+.y-Error-Cloud:before {
+  content: "\eab0";
+}
+
+.y-logout:before {
+  content: "\e6ce";
+}
+
