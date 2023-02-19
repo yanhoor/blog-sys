@@ -1,0 +1,192 @@
+<template>
+	<view class="login-page">
+		<uni-card class="card" margin="0px">
+			<view class="content-container">
+				<uni-forms ref="registerFormRef" label-width="100px" label-position="top" :modelValue="registerForm"
+					:rules="rules" v-if="isRegister">
+					<uni-forms-item label="用户名" name="name">
+						<uni-easyinput type="text" v-model="registerForm.name" maxlength="8" :trim="true"
+							placeholder="请输入用户名"></uni-easyinput>
+					</uni-forms-item>
+					<uni-forms-item label="手机号" name="mobile">
+						<uni-easyinput type="number" maxlength="11" :trim="true" v-model="registerForm.mobile"
+							placeholder="请输入手机号" />
+					</uni-forms-item>
+					<uni-forms-item label="密码" name="password">
+						<uni-easyinput type="password" :trim="true" v-model="registerForm.password" placeholder="请输入密码">
+						</uni-easyinput>
+					</uni-forms-item>
+					<uni-forms-item label="再次输入密码" name="repeatPassword">
+						<uni-easyinput type="password" :trim="true" v-model="registerForm.repeatPassword"
+							placeholder="请再次输入密码"></uni-easyinput>
+					</uni-forms-item>
+				</uni-forms>
+				<uni-forms ref="formRef" label-position="top" :modelValue="formData" :rules="rules" v-else>
+					<uni-forms-item label="手机号" name="mobile">
+						<uni-easyinput type="number" maxlength="11" v-model="formData.mobile" placeholder="请输入手机号" />
+					</uni-forms-item>
+					<uni-forms-item label="密码" name="password">
+						<uni-easyinput type="password" v-model="formData.password" placeholder="请输入密码"></uni-easyinput>
+					</uni-forms-item>
+				</uni-forms>
+				<button class="btn" type="primary" :loading="loading" @click="handleRegister"
+					v-if="isRegister">注册</button>
+				<button class="btn" type="primary" :loading="loading" @click="submitForm" v-else>登录</button>
+				<button class="btn" type="default" @click="isRegister = false" v-if="isRegister">已有账号，去登录</button>
+				<button class="btn" type="default" @click="isRegister = true" v-else>没有账号，去注册</button>
+			</view>
+		</uni-card>
+		<uni-popup ref="messageRef" type="message">
+			<uni-popup-message type="error" :message="messageText" :duration="2000"></uni-popup-message>
+		</uni-popup>
+	</view>
+</template>
+
+<script>
+	import Http, {
+		urls
+	} from '@/http'
+	import {
+		useMyInfoStore
+	} from '@/stores/userInfo.js'
+	import {
+		useScrollStatusStore
+	} from '@/stores/scrollStatus.js'
+
+	export default {
+		data() {
+			return {
+				messageText: '',
+				formData: {
+					mobile: '',
+					password: ''
+				},
+				registerForm: {
+					name: '',
+					mobile: '',
+					password: '',
+					repeatPassword: '',
+				},
+				rules: {
+					// 对name字段进行必填验证
+					name: {
+						rules: [{
+							required: true,
+							errorMessage: '请输入用户名',
+						}]
+					},
+					mobile: {
+						rules: [{
+							required: true,
+							errorMessage: '请输入手机号',
+						}]
+					},
+					// 对email字段进行必填验证
+					password: {
+						rules: [{
+							required: true,
+							errorMessage: '请输入密码',
+						}]
+					},
+					repeatPassword: {
+						rules: [{
+							required: true,
+							errorMessage: '请再次输入密码',
+						}]
+					}
+				},
+				isRegister: false,
+				loading: false
+			}
+		},
+		onUnload() {
+			// console.log('+++++++++++login page onUnload+++++++++++')
+			uni.setStorageSync('back_from_login', 1)
+		},
+		methods: {
+			submitForm() {
+				this.$refs.formRef.validate().then(async (res) => {
+					this.loading = true
+					try {
+						const {
+							success,
+							result,
+							msg
+						} = await Http.post(urls.login, this.formData)
+						this.loading = false
+						if (success) {
+							uni.setStorageSync('token', result)
+							const myInfo = useMyInfoStore()
+							await myInfo.getMyInfo()
+							const s = useScrollStatusStore()
+							s.setPullDownRefresh(['pages/notification/notification', 'pages/me/me'])
+							uni.navigateBack()
+						} else {
+							this.messageText = msg
+							this.$refs.messageRef.open()
+						}
+					} catch (e) {
+						this.loading = false
+					}
+				}).catch(err => {
+					console.log('表单错误信息：', err);
+				})
+			},
+			handleRegister() {
+				this.$refs.registerFormRef.validate().then(async (res) => {
+					this.loading = true
+					try {
+						const {
+							success,
+							result,
+							msg
+						} = await Http.post(urls.register, this.registerForm)
+						this.loading = false
+						if (success) {
+							uni.showToast({
+								title: '注册成功'
+							})
+							this.isRegister = false
+						} else {
+							this.messageText = msg
+							this.$refs.messageRef.open()
+						}
+					} catch (e) {
+						this.loading = false
+					}
+				}).catch(err => {
+					console.log('表单错误信息：', err);
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.login-page {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 20rpx;
+		width: 100%;
+		height: 100vh;
+		padding: 0 20rpx;
+		box-sizing: border-box;
+
+		.card {
+			width: 100%;
+		}
+	}
+
+	.btn {
+		width: 100%;
+		text-align: center;
+	}
+
+	.content-container {
+		display: flex;
+		flex-direction: column;
+		gap: 20rpx;
+	}
+</style>
