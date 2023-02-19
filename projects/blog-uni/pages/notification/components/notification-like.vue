@@ -5,13 +5,11 @@
 				<view class="item-container">
 					<view class="item-top">
 						<UserAvatar :user="notification.createBy" :size="32"></UserAvatar>
-						<view class="item-user-name">
-							{{ notification.createBy.name }}
-						</view>
+						<UserName fontSize="16" :user="notification.createBy"></UserName>
 						<view>点赞了</view>
 					</view>
 					<YExpandanleContent class="reply-content" :maxLength="80" :showBtn="false"
-						:content="notification.blog.content">
+						:content="notification.blog.content" @tap="handleClickPost(notification.blog)">
 					</YExpandanleContent>
 					<YTime class="item-time" :time="notification.createdAt"></YTime>
 				</view>
@@ -24,14 +22,12 @@
 	import NotificationBase from './notification-base.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import YTime from '@/components/y-time.vue'
-	import UserAvatar from '@/components/user/user-avatar.vue'
 
 	export default {
 		name: "notification-like",
 		components: {
 			YExpandanleContent,
 			YTime,
-			UserAvatar,
 			NotificationBase,
 		},
 		data() {
@@ -43,7 +39,11 @@
 			// console.log('++++++++notification-comment created++++++++++++', getCurrentPages())
 		},
 		methods: {
-
+			handleClickPost(post) {
+				uni.navigateTo({
+					url: '/pages/post/post?id=' + post.id
+				})
+			}
 		}
 	}
 </script>
@@ -61,11 +61,6 @@
 		align-items: center;
 		gap: 6px;
 
-		.item-user-name {
-			color: $uni-success;
-			font-weight: 600;
-			font-size: 16px;
-		}
 	}
 
 	.reply-content {
@@ -75,7 +70,8 @@
 		padding: 10px;
 		border-radius: 5px;
 	}
-	.item-time{
+
+	.item-time {
 		font-size: 14px;
 		color: $uni-secondary-color;
 	}

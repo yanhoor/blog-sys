@@ -14,13 +14,9 @@
 			<view class="comment-reply-container" v-if="comment.childComments.length">
 				<view class="reply-item" v-for="reply in comment.childComments" :key="reply.id"
 					@click.stop="$emit('showReply', reply)">
-					<text class="reply-user text-ellipsis">
-						@{{ reply.createBy.name }}
-					</text>{{ reply.replyComment && reply.replyComment.topCommentId ? '' : ':'}}
+					<UserName :user="reply.createBy" :text="'@' + reply.createBy.name"></UserName>{{ reply.replyComment && reply.replyComment.topCommentId ? '' : ':'}}
 					<view class="at-user-contsiner" v-if="reply.replyComment && reply.replyComment.topCommentId">
-						回复<view class="at-user text-ellipsis">
-							@{{ reply.replyComment.createBy.name }}
-						</view>:
+						回复<UserName :user="reply.replyComment.createBy" :text="'@' + reply.replyComment.createBy.name"></UserName>:
 					</view>
 					<view class="reply-content">
 						<YExpandanleContent :maxLength="120" :content="reply.content"></YExpandanleContent>
@@ -37,7 +33,6 @@
 </template>
 
 <script>
-	import UserAvatar from '@/components/user/user-avatar.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import YTime from '@/components/y-time.vue'
 	export default {
@@ -47,7 +42,6 @@
 		},
 		emits: ['showReply'],
 		components: {
-			UserAvatar,
 			YExpandanleContent,
 			YTime,
 		},

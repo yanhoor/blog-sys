@@ -17,7 +17,6 @@
 
 <script>
 	import YAppendListWrapper from '@/components/y-append-list-wrapper.vue'
-	import UserAvatar from '@/components/user/user-avatar.vue'
 	import CommentItem from './comment-item.vue'
 	import CommentReplyForm from '@/components/comment-reply-form.vue'
 	import SkeletonCommentList from '@/components/skeleton/skeleton-comment-list.vue'

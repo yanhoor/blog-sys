@@ -2,7 +2,7 @@
 	<view class="post-list">
 		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.blog_list" v-model="pageList" :searchParams="searchParams" @fetch-end="$emit('fetch-end', $event)">
 			<PostItem v-for="post in pageList" :post="post" :key="post.id"></PostItem>
-			<SkeletonPostList #skeleton></SkeletonPostList>
+			<SkeletonPostList #skeleton v-if="showSkeleton"></SkeletonPostList>
 		</YAppendListWrapper>
 	</view>
 </template>
@@ -19,7 +19,11 @@
 		name: "post-list",
 		props: {
 			pageUrl: String,
-			searchParams: Object
+			searchParams: Object,
+			showSkeleton: {
+				type: Boolean,
+				default: true
+			}
 		},
 		emits: ['fetch-end'],
 		components: {
@@ -34,7 +38,7 @@
 			}
 		},
 		created() {
-			
+			console.log('++++++created+++++++')
 		},
 		methods: {}
 	}

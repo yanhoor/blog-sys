@@ -4,9 +4,7 @@
 			<view class="comment-top-container">
 				<UserAvatar :user="topComment.createBy" :size="48"></UserAvatar>
 				<view class="top-right">
-					<view class="user-name">
-						{{ topComment.createBy.name }}
-					</view>
+					<UserName fontSize="16" :user="topComment.createBy"></UserName>
 					<YTime class="item-time" type="format" :time="topComment.createdAt"></YTime>
 				</view>
 			</view>
@@ -15,19 +13,16 @@
 			</view>
 		</view>
 		<YAppendListWrapper v-model="replyList" pageUrl="pages/comment-detail/comment-detail" :url="urls.reply_list"
-			:searchParams="{ blogId, topCommentId }" @fetchEnd="handleListFetchEnd">
+			:searchParams="{ blogId, topCommentId }" @fetch-end="handleListFetchEnd">
 			<view class="comment-reply-container">
-				<view class="reply-item" v-for="reply in replyList" :key="reply.id"
-					@click.stop="handleShowReply(reply)">
-					<text class="reply-user">
-						@{{ reply.createBy.name }}
-					</text>{{ reply.replyComment && reply.replyComment.topCommentId ? '' : ':'}}
+				<view class="reply-item" v-for="reply in replyList" :key="reply.id">
+					<UserName :user="reply.createBy" :text="'@' + reply.createBy.name"></UserName>
+					{{ reply.replyComment && reply.replyComment.topCommentId ? '' : ':'}}
 					<view class="at-user-contsiner" v-if="reply.replyComment && reply.replyComment.topCommentId">
-						回复<view class="at-user">
-							@{{ reply.replyComment.createBy.name }}
-						</view>:
+						回复<UserName :user="reply.replyComment.createBy" :text="'@' + reply.replyComment.createBy.name">
+						</UserName>:
 					</view>
-					<view class="reply-content">
+					<view class="reply-content" @click.stop="handleShowReply(reply)">
 						<YExpandanleContent :maxLength="120" :content="reply.content"></YExpandanleContent>
 					</view>
 				</view>
@@ -37,14 +32,13 @@
 				<SkeletonCommentDetail></SkeletonCommentDetail>
 			</template>
 		</YAppendListWrapper>
-		
+
 		<CommentReplyForm :currentReplyItem="currentReplyItem" v-model:show="showReply"></CommentReplyForm>
 
 	</uni-card>
 </template>
 
 <script>
-	import UserAvatar from '@/components/user/user-avatar.vue'
 	import YAppendListWrapper from '@/components/y-append-list-wrapper.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import CommentReplyForm from '@/components/comment-reply-form.vue'
@@ -60,7 +54,6 @@
 
 	export default {
 		components: {
-			UserAvatar,
 			YAppendListWrapper,
 			YExpandanleContent,
 			CommentReplyForm,
@@ -123,12 +116,6 @@
 			display: flex;
 			flex-direction: column;
 
-			.user-name {
-				font-size: 16px;
-				color: $uni-primary;
-				font-weight: 600;
-			}
-
 			.item-time {
 				color: $uni-secondary-color;
 				font-size: 14px;
@@ -152,20 +139,8 @@
 			word-break: break-word;
 			white-space: pre-wrap;
 
-			.reply-user {
-				color: $uni-primary;
-				font-weight: 600;
-			}
-
 			.at-user-contsiner {
 				display: inline;
-
-				.at-user {
-					margin: 0 2rpx;
-					color: $uni-primary;
-					font-weight: 600;
-					display: inline;
-				}
 			}
 
 			.reply-content {

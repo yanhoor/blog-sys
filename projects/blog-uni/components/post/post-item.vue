@@ -1,16 +1,16 @@
 <template>
-	<uni-card margin="5px" class="card" @click="handleClickPost">
+	<uni-card margin="5px" class="card">
 		<view class="content-wrapper">
 			<view class="post-top">
 				<UserAvatar :user="post.createBy" :size="42"></UserAvatar>
 				<view class="item-user">
-					<view class="user-name text-ellipsis">{{ post.createBy.name }}</view>
+					<UserName fontSize="18" :user="post.createBy"></UserName>
 					<YTime class="item-time" :time="post.createdAt"></YTime>
 				</view>
 			</view>
-			<YExpandanleContent class="post-content" :content="post.content"></YExpandanleContent>
+			<YExpandanleContent class="post-content" :content="post.content" @tap="handleClickPost"></YExpandanleContent>
 			<MediaList :list="post.medias" :maxCount="9"></MediaList>
-			<view class="action-container" @click.stop>
+			<view class="action-container">
 				<view class="action-item" @click="handleLike">
 					<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058" v-if="post.isLike">
 					</uni-icons>
@@ -43,7 +43,6 @@
 	import YTime from '@/components/y-time.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import MediaList from '@/components/media/media-list.vue'
-	import UserAvatar from '@/components/user/user-avatar.vue'
 	import Http, {
 		urls
 	} from '@/http'
@@ -57,8 +56,7 @@
 			YImage,
 			YTime,
 			YExpandanleContent,
-			MediaList,
-			UserAvatar
+			MediaList
 		},
 		data() {
 			return {
@@ -139,12 +137,6 @@
 
 		.item-user {
 			margin-left: 20rpx;
-
-			.user-name {
-				font-size: 18px;
-				font-weight: 600;
-				color: $uni-primary;
-			}
 
 			.item-time {
 				color: #6B7280;

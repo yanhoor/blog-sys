@@ -1,14 +1,13 @@
 <template>
 	<view class="post-page">
 		<SkeletonPostDetail v-if="loading && !postInfo"></SkeletonPostDetail>
-		<!-- <view v-if="loading">333</view> -->
 
 		<view v-else>
 			<uni-card margin="5px" class="card">
 				<view class="post-top">
 					<UserAvatar :user="postInfo.createBy" :size="42"></UserAvatar>
 					<view class="item-user">
-						<view class="user-name">{{ postInfo.createBy.name }}</view>
+						<UserName fontSize="18" :user="postInfo.createBy"></UserName>
 						<YTime class="item-time" type="format" :time="postInfo.createdAt"></YTime>
 					</view>
 				</view>
@@ -84,7 +83,6 @@
 	import YTime from '@/components/y-time.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import MediaList from '@/components/media/media-list.vue'
-	import UserAvatar from '@/components/user/user-avatar.vue'
 	import CommentList from './components/comment-list.vue'
 	import CommentReplyForm from '@/components/comment-reply-form.vue'
 	import SkeletonPostDetail from '@/components/skeleton/skeleton-post-detail.vue'
@@ -109,7 +107,6 @@
 			YTime,
 			YExpandanleContent,
 			MediaList,
-			UserAvatar,
 			CommentList,
 			CommentReplyForm,
 			SkeletonPostDetail,
@@ -191,7 +188,11 @@
 						id: this.postInfo.id
 					})
 					if (success) {
-						uni.startPullDownRefresh()
+						if(this.currentTab === 1) {
+							uni.startPullDownRefresh()
+						}else{
+							this.getPostInfo()
+						}
 					}
 				} catch (e) {
 
@@ -208,7 +209,11 @@
 						id: this.postInfo.id
 					})
 					if (success) {
-						uni.startPullDownRefresh()
+						if(this.currentTab === 3) {
+							uni.startPullDownRefresh()
+						}else{
+							this.getPostInfo()
+						}
 					}
 				} catch (e) {
 
@@ -286,12 +291,6 @@
 		.item-user {
 			margin-left: 20rpx;
 
-			.user-name {
-				font-size: 18px;
-				font-weight: 600;
-				color: $uni-primary;
-			}
-
 			.item-time {
 				color: #6B7280;
 			}
@@ -351,7 +350,7 @@
 			}
 
 			.tab-num {
-				font-size: 18px;
+				font-size: 16px;
 			}
 		}
 	}

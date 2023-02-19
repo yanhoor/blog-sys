@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-if="loading && !userInfo"></view>
+		<SkeletonUserMain v-if="loading && !userInfo"></SkeletonUserMain>
 
 		<view class="me-main" v-else>
 			<view class="top-wrapper">
@@ -96,6 +96,7 @@
 
 <script>
 	import YImage from '@/components/y-image.vue'
+	import SkeletonUserMain from '@/components/skeleton/skeleton-user-main.vue'
 	import {
 		imageHost
 	} from "@/config/index.js"
@@ -125,6 +126,7 @@
 			YImage,
 			PostList,
 			MediaImageWall,
+			SkeletonUserMain,
 		},
 		data() {
 			return {
