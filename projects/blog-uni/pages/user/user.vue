@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import UserMain from '@/components/user/user-main.vue'
+	import UserMain from './components/user-main.vue'
 
 	export default {
 		components: {

@@ -16,11 +16,6 @@
 							<image class="user-avatar default" src="@/static/images/personal.png" v-else></image>
 							<UserName fontSize="22" :user="userInfo"></UserName>
 						</view>
-						<view class="user-right">
-							<!-- <uni-icons type="bars" size="24" @click.stop="handleShowMenu"></uni-icons> -->
-							<uni-icons class="logout" custom-prefix="iconfont" type="y-logout" size="24"
-								@click="handleLogout" v-if="isMyPage"></uni-icons>
-						</view>
 					</view>
 					<view class="user-stats-container">
 						<view class="stats-item">
@@ -64,8 +59,13 @@
 							{{ imageTotal }}
 						</view>
 					</view>
+					<view class="action-section">
+						<view class="all-btn" @click="handleToAllImage">
+							全部
+						</view>
+					</view>
 				</view>
-				<MediaImageWall :userId="userInfo.id" @fetch-end="imageTotal = $event.total"></MediaImageWall>
+				<UserImageWall :userId="userInfo.id" @fetch-end="imageTotal = $event.total"></UserImageWall>
 			</view>
 
 			<view class="content-section">
@@ -84,13 +84,6 @@
 			</view>
 
 		</view>
-
-		<uni-popup ref="menuPopupRef" type="right" background-color="#fff">
-			<uni-list>
-				<uni-list-item title="title" note="node"></uni-list-item>
-				<uni-list-item title="退出登录" clickable @click.stop="handleLogout"></uni-list-item>
-			</uni-list>
-		</uni-popup>
 	</view>
 </template>
 
@@ -101,14 +94,11 @@
 		imageHost
 	} from "@/config/index.js"
 	import PostList from '@/components/post/post-list.vue'
-	import MediaImageWall from '@/components/media/media-image-wall.vue'
+	import UserImageWall from './user-image-wall.vue'
 	import {
 		mapState,
 		mapActions,
 	} from 'pinia'
-	import {
-		useMyInfoStore
-	} from '@/stores/userInfo.js'
 	import {
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
@@ -125,7 +115,7 @@
 		components: {
 			YImage,
 			PostList,
-			MediaImageWall,
+			UserImageWall,
 			SkeletonUserMain,
 		},
 		data() {
@@ -137,19 +127,12 @@
 				userInfo: null
 			}
 		},
-		computed: {
-			...mapState(useMyInfoStore, ['myInfo']),
-			isMyPage(){
-				return this.userId == this.myInfo.id
-			}
-		},
 		created() {
 			this.initPage().finally(() => {
 				uni.stopPullDownRefresh()
 			})
 		},
 		methods: {
-			...mapActions(useMyInfoStore, ['clearMyInfo']),
 			...mapActions(useScrollStatusStore, ['setPullDownRefresh']),
 			async initPage() {
 				try {
@@ -190,36 +173,9 @@
 					indicator: 'number'
 				})
 			},
-			handleLogout() {
-				uni.showModal({
-					title: '提示',
-					content: '确定退出登录吗',
-					success: async (res) => {
-						if (res.confirm) {
-							try {
-								const {
-									success,
-									result,
-									msg
-								} = await Http.post(urls.logout)
-								if (success) {
-									uni.showToast({
-										title: '已退出登录'
-									})
-									this.clearMyInfo()
-									uni.removeTabBarBadge({
-										index: 3
-									})
-									uni.setStorageSync('token', '')
-									uni.switchTab({
-										url: '/pages/index/index'
-									})
-								}
-							} catch (e) {}
-						} else if (res.cancel) {
-							console.log('用户点击取消');
-						}
-					}
+			handleToAllImage() {
+				uni.navigateTo({
+					url: '/pages/user-all-image/user-all-image?id=' + this.userId
 				})
 			}
 		}
@@ -312,9 +268,10 @@
 			}
 
 			.introduce {
-				font-size: 16px;
+				font-size: 14px;
 				margin-top: 40rpx;
 				color: $uni-secondary-color;
+				word-break: break-word;
 			}
 		}
 	}
@@ -341,6 +298,12 @@
 				.title-num {
 					font-size: 22px;
 					font-weight: 600;
+				}
+			}
+			
+			.action-section{
+				.all-btn{
+					font-size: 14px;
 				}
 			}
 		}

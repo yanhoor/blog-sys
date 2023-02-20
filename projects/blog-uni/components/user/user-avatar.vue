@@ -20,9 +20,9 @@
 		name: 'user-avatar',
 		props: {
 			user: Object,
-			clickable: {
+			disabled: {
 				type: Boolean,
-				default: true
+				default: false
 			},
 			size: {
 				type: Number,
@@ -39,7 +39,7 @@
 		},
 		methods: {
 			handleToUserPage() {
-				if (this.myInfo.id === this.user.id) return
+				if (this.disabled) return
 
 				const pages = getCurrentPages()
 				const currentPage = pages[pages.length - 1]
@@ -49,7 +49,7 @@
 
 				uni.navigateTo({
 					url: '/pages/user/user?id=' + this.user.id
-				});
+				})
 			}
 		},
 	}
