@@ -15,6 +15,10 @@ class UserController extends BaseController{
       if(!password) throw new Error('密码不能为空')
       if(!mobile) throw new Error('手机号不能为空')
 
+      if(name.length > 8) throw new Error('用户名不能超过8个字符')
+      const u1 = await prisma.user.findFirst({where: {name}})
+      if(u1) throw new Error('该用户名已存在')
+
       const u = await prisma.user.findFirst({where: {mobile}})
       if(u) throw new Error('该手机号已注册')
     }catch(e){
@@ -26,7 +30,7 @@ class UserController extends BaseController{
     }
 
     try{
-      const user = await prisma.user.create({data: { password, mobile, name }})
+      const user = await prisma.user.create({data: { password, mobile, name, birthday: null }})
       return ctx.body = {
         success: true,
         result: '注册成功'
@@ -50,7 +54,25 @@ class UserController extends BaseController{
         }
       }
 
-      const user = await prisma.user.findUnique({
+      const xprisma = prisma.$extends({
+        result: {
+          user: {
+            followerCount: {
+              needs: { followers: true },
+              compute(user) {
+                return user.followers.length
+              }
+            },
+            followingCount: {
+              needs: { followings: true },
+              compute(user) {
+                return user.followings.length
+              }
+            }
+          }
+        }
+      })
+      const user = await xprisma.user.findUnique({
         where: {
           id
         },
@@ -59,12 +81,14 @@ class UserController extends BaseController{
           name: true,
           avatar: true,
           profileCardBg: true,
-          mobile: true,
+          // mobile: true,
+          createdAt: true,
           lock: true,
           introduce: true,
-          sign: true,
           gender: true,
           birthday: true,
+          followerCount: true,
+          followingCount: true,
         }
       })
       await prisma.user.update({
@@ -80,6 +104,12 @@ class UserController extends BaseController{
           msg: '您的账号已经被锁定，请联系管理员解锁'
         }
       }
+
+      // 收到的点赞数
+      const likeList = await redisClient.hVals(this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id)
+      const likedCount = likeList.reduce((pre, cur) => Number(pre) + Number(cur), 0)
+      user.likedCount = likedCount
+
       return ctx.body = {
         success: true,
         result: user
@@ -146,7 +176,6 @@ class UserController extends BaseController{
           createdAt: true,
           lock: true,
           introduce: true,
-          sign: true,
           gender: true,
           birthday: true,
           followerCount: true,
@@ -179,6 +208,11 @@ class UserController extends BaseController{
         }
       }
 
+      // 收到的点赞数
+      const likeList = await redisClient.hVals(this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id)
+      const likedCount = likeList.reduce((pre, cur) => Number(pre) + Number(cur), 0)
+      user.likedCount = likedCount
+
       return ctx.body = {
         success: true,
         result: user
@@ -191,9 +225,13 @@ class UserController extends BaseController{
   // 更新用户信息
   update = async (ctx, next) => {
     const req = ctx.request
-    const { name, avatar, introduce, sign, gender, birthday, profileCardBg } = req.body
+    const { name, avatar, introduce, gender, birthday, profileCardBg } = req.body
+    let id = await this.getAuthUserId(ctx, next)
     try{
       if(!name) throw new Error('名称不能为空')
+      if(name.length > 8) throw new Error('用户名不能超过8个字符')
+      const u1 = await prisma.user.findFirst({where: {name}})
+      if(u1 && id !== u1.id) throw new Error('该用户名已存在')
     }catch(e){
       ctx.body = {
         success: false,
@@ -201,9 +239,8 @@ class UserController extends BaseController{
       }
       return false
     }
-    const form = { name, avatar, introduce, sign, gender, birthday: new Date(birthday), profileCardBg }
+    const form = { name, avatar, introduce, gender: Number(gender), birthday: new Date(birthday), profileCardBg }
     try {
-      let id = await this.getAuthUserId(ctx, next)
       const result = await prisma.user.update({
         where: { id },
         data: form
@@ -665,7 +702,7 @@ class UserController extends BaseController{
   }
 
   friends = async (ctx, next) => {
-    const {relateType, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
+    let {relateType, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
     const skip = pageSize * (page - 1)
     let filter = { noDelete: true }
     let orderBy = { }
@@ -679,6 +716,7 @@ class UserController extends BaseController{
       return false
     }
 
+    uid = Number(uid)
     switch (Number(relateType)) {
       // 关注
       case 1:
@@ -791,128 +829,193 @@ class UserController extends BaseController{
       userId,
       noDelete: true
     }
-    const xprisma = prisma.$extends({
-      result: {
-        blog: {
-          // 在返回的结果新增自定义字段
-          commentsCount: {
-            // 计算这个新字段值需要依赖的真实字段
-            needs: { comments: true },
-            compute(blog) {
-              // 计算获取这个新字段值的逻辑，即从何处来
-              const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
-              return list.length
+    try {
+      const xprisma = prisma.$extends({
+        result: {
+          blog: {
+            // 在返回的结果新增自定义字段
+            commentsCount: {
+              // 计算这个新字段值需要依赖的真实字段
+              needs: { comments: true },
+              compute(blog) {
+                // 计算获取这个新字段值的逻辑，即从何处来
+                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
+                return list.length
+              },
             },
+            likedByCount: {
+              needs: { likedBy: true },
+              compute(blog) {
+                return blog.likedBy.length
+              },
+            },
+            isLike: {
+              needs: { likedBy: true },
+              compute(blog) {
+                return blog.likedBy.some(item => item.userId == userId)
+              },
+            },
+            collectedByCount: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.length
+              },
+            },
+            isCollect: {
+              needs: { collectedBy: true },
+              compute(blog) {
+                return blog.collectedBy.some(item => item.userId == userId)
+              },
+            }
           },
-          likedByCount: {
-            needs: { likedBy: true },
-            compute(blog) {
-              return blog.likedBy.length
+        },
+      })
+
+      let refList = [], total = 0
+
+      if(Number(type) === 1){
+        [refList, total] = await prisma.$transaction([
+          xprisma.LikeBlogRelation.findMany({
+            skip,
+            take: pageSize,
+            where: JSON.parse(JSON.stringify(filter)),
+            select: {
+              userId: true,
+              blogId: true,
             },
-          },
-          isLike: {
-            needs: { likedBy: true },
-            compute(blog) {
-              return blog.likedBy.some(item => item.userId == userId)
+            orderBy: {
+              assignedAt: 'desc'
+            }
+          }),
+          prisma.LikeBlogRelation.count({ where: filter })
+        ])
+      }
+
+      if(Number(type) === 2){
+        [refList, total] = await prisma.$transaction([
+          xprisma.userCollectBlogs.findMany({
+            skip,
+            take: pageSize,
+            where: JSON.parse(JSON.stringify(filter)),
+            select: {
+              userId: true,
+              blogId: true,
             },
-          },
-          collectedByCount: {
-            needs: { collectedBy: true },
-            compute(blog) {
-              return blog.collectedBy.length
-            },
-          },
-          isCollect: {
-            needs: { collectedBy: true },
-            compute(blog) {
-              return blog.collectedBy.some(item => item.userId == userId)
-            },
+            orderBy: {
+              assignedAt: 'desc'
+            }
+          }),
+          prisma.userCollectBlogs.count({ where: filter })
+        ])
+      }
+
+      const list = await xprisma.blog.findMany({
+        where: {
+          id: {
+            in: refList.map(ref => ref.blogId)
           }
         },
-      },
-    })
-
-    let refList = [], total = 0
-
-    if(Number(type) === 1){
-      [refList, total] = await prisma.$transaction([
-        xprisma.LikeBlogRelation.findMany({
-          skip,
-          take: pageSize,
-          where: JSON.parse(JSON.stringify(filter)),
-          select: {
-            userId: true,
-            blogId: true,
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          createById: true,
+          launch: true,
+          likedByCount: true,
+          collectedByCount: true,
+          commentsCount: true,
+          isLike: true,
+          isCollect: true,
+          content: true,
+          createBy: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
           },
-          orderBy: {
-            assignedAt: 'desc'
-          }
-        }),
-        prisma.LikeBlogRelation.count({ where: filter })
-      ])
-    }
-
-    if(Number(type) === 2){
-      [refList, total] = await prisma.$transaction([
-        xprisma.userCollectBlogs.findMany({
-          skip,
-          take: pageSize,
-          where: JSON.parse(JSON.stringify(filter)),
-          select: {
-            userId: true,
-            blogId: true,
-          },
-          orderBy: {
-            assignedAt: 'desc'
-          }
-        }),
-        prisma.userCollectBlogs.count({ where: filter })
-      ])
-    }
-
-    const list = await xprisma.blog.findMany({
-      where: {
-        id: {
-          in: refList.map(ref => ref.blogId)
-        }
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        createById: true,
-        launch: true,
-        likedByCount: true,
-        collectedByCount: true,
-        commentsCount: true,
-        isLike: true,
-        isCollect: true,
-        content: true,
-        createBy: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        medias: {
-          where: {
-            deletedAt: null
-          },
-          select: {
-            id: true,
-            url: true
+          medias: {
+            where: {
+              deletedAt: null
+            },
+            select: {
+              id: true,
+              url: true
+            }
           }
         }
-      }
-    })
+      })
 
-    return ctx.body = {
-      success: true,
-      result: {
-        list,
-        total
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
       }
+    }catch (e) {
+      this.errorLogger.error('user.markBlogList--------->', e)
+    }
+  }
+
+  // 我的评论列表
+  myCommentList = async (ctx, next) => {
+    const { page = 1, pageSize = this.pageSize } = ctx.request.body
+    let userId = await this.getAuthUserId(ctx, next)
+    const skip = pageSize * (page - 1)
+    let filter = {
+      createById: userId,
+    }
+
+    try {
+      const [list, total] = await prisma.$transaction([
+        prisma.comment.findMany({
+          skip,
+          take: pageSize,
+          where: filter,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            blogId: true,
+            topCommentId: true,
+            createById: true,
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+              }
+            },
+            replyToId: true,
+            replyTo: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+              }
+            },
+            blog: {
+              select: {
+                id: true,
+                content: true
+              }
+            }
+          }
+        }),
+        prisma.comment.count({where: filter})
+      ])
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
+      }
+    }catch (e) {
+      this.errorLogger.error('user.myCommentList--------->', e)
     }
   }
 

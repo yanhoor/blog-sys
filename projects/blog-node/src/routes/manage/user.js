@@ -19,6 +19,7 @@ router.post('/setGroup', controller.setGroup)
 router.post('/getMediaList', controller.getMediaList)
 router.post('/friends', controller.friends)
 router.post('/markBlogList', controller.markBlogList)
+router.post('/myCommentList', controller.myCommentList)
 router.post('/:id', controller.userInfo)
 
 module.exports = router
