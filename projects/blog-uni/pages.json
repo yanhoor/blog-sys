@@ -35,6 +35,33 @@
 			}
 		},
 		{
+			"path": "pages/profile/profile",
+			"style": {
+				"navigationBarTitleText": "编辑资料"
+			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "用户主页",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/post/post",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/comment-detail/comment-detail",
+			"style": {
+				"navigationBarTitleText": "所有评论回复",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录"
@@ -49,12 +76,6 @@
 		"app-plus": {
 			"background": "#efeff4"
 		}
-	},
-	"midButton": {
-		"iconPath": "static/images/add.png",
-		"height": "80",
-		"iconWidth": "50",
-		"text": "发布"
 	},
 	"tabBar": {
 		"color": "#7A7E83",
