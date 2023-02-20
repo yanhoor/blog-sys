@@ -74,11 +74,11 @@ class BlogController extends BaseController{
       ]
       if(time){
         let timeRange
-        switch (time) {
-          case '0':
+        switch (Number(time)) {
+          case 0:
             timeRange = undefined
             break
-          case '1':
+          case 1:
             const start = dayjs().subtract(24, 'h')
             const lte = new Date()
             timeRange = {
@@ -86,10 +86,10 @@ class BlogController extends BaseController{
               lte
             }
             break
-          case '2':
+          case 2:
             timeRange = this.createTimeRange(7, 0)
             break
-          case '3':
+          case 3:
             timeRange = this.createTimeRange(90, 0)
             break
         }
@@ -97,17 +97,17 @@ class BlogController extends BaseController{
       }
       let orderBy = []
       if(sort){
-        switch (sort) {
+        switch (Number(sort)) {
           // 综合排序
-          case '1':
+          case 1:
             orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
             break
           // 最新优先
-          case '2':
+          case 2:
             orderBy.push({ updatedAt: 'desc' })
             break
           // 最热优先
-          case '3':
+          case 3:
             orderBy.push({ comments: { _count: 'desc' } }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
             break
         }
@@ -215,7 +215,8 @@ class BlogController extends BaseController{
               },
               select: {
                 id: true,
-                url: true
+                url: true,
+                blogId: true,
               }
             }
           },

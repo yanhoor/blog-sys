@@ -46,7 +46,8 @@ class NotificationController extends BaseController{
             blog: {
               select: {
                 id: true,
-                content: true
+                content: true,
+                deletedAt: true,
               }
             },
             commentId: true,

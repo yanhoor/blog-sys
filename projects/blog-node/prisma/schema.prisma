@@ -25,11 +25,10 @@ model User {
   lastActiveAt  DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lock          Int       @default(2) // 1--锁定， 2--正常
-  name          String    @db.VarChar(255)
+  name          String    @unique @db.VarChar(255)
   avatar        String?   @db.VarChar(255)
   profileCardBg String?   @db.VarChar(255)
   introduce     String?   @db.VarChar(255)
-  sign          String?   @db.VarChar(255)
   mobile        String    @unique @db.VarChar(255) // @unique 唯一值
   password      String    @db.VarChar(255)
   type          Int       @default(2) // 1--超级管理员，2--普通用户

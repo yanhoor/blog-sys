@@ -56,7 +56,6 @@ class CommentController extends BaseController{
               id: true,
               name: true,
               avatar: true,
-              sign: true,
             }
           },
           replyTo: {
@@ -78,7 +77,6 @@ class CommentController extends BaseController{
                   id: true,
                   name: true,
                   avatar: true,
-                  sign: true,
                 }
               },
               replyTo: {
@@ -202,7 +200,6 @@ class CommentController extends BaseController{
                     id: true,
                     name: true,
                     avatar: true,
-                    sign: true,
                   }
                 },
                 replyTo: {
@@ -226,7 +223,6 @@ class CommentController extends BaseController{
                         id: true,
                         name: true,
                         avatar: true,
-                        sign: true,
                       }
                     },
                     replyTo: {
@@ -245,7 +241,6 @@ class CommentController extends BaseController{
                 id: true,
                 name: true,
                 avatar: true,
-                sign: true,
               }
             },
             replyTo: {
@@ -284,7 +279,26 @@ class CommentController extends BaseController{
     const skip = pageSize * (page - 1)
     const filter = { blogId: Number(blogId), topCommentId: Number(topCommentId) }
     try {
-      const [list, total] = await prisma.$transaction([
+      const [topComment, list, total] = await prisma.$transaction([
+        prisma.comment.findUnique({
+          where: {
+            id: Number(topCommentId)
+          },
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            blogId: true,
+            createById: true,
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
+            },
+          }
+        }),
         prisma.comment.findMany({
           skip,
           take: pageSize,
@@ -309,8 +323,7 @@ class CommentController extends BaseController{
                   select: {
                     id: true,
                     name: true,
-                    avatar: true,
-                    sign: true,
+                    avatar: true
                   }
                 },
               }
@@ -319,8 +332,7 @@ class CommentController extends BaseController{
               select: {
                 id: true,
                 name: true,
-                avatar: true,
-                sign: true,
+                avatar: true
               }
             },
             replyTo: {
@@ -340,6 +352,7 @@ class CommentController extends BaseController{
       return ctx.body = {
         success: true,
         result: {
+          topComment,
           list,
           total
         }
@@ -356,9 +369,9 @@ class CommentController extends BaseController{
     try{
       if(!id) throw new Error('缺少参数: id')
       const comment = await prisma.comment.findUnique({
-        where: { id: Number(id), createById: userId }
+        where: { id: Number(id) }
       })
-      if(!comment) throw new Error('评论不存在')
+      if(!comment || comment.createById !== userId) throw new Error('评论不存在')
     }catch (e) {
       return ctx.body = {
         success: false,
