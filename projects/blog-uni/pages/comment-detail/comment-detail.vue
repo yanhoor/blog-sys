@@ -1,29 +1,46 @@
 <template>
-	<uni-card margin="5px">
-		<view class="comment-container" v-if="topComment">
-			<view class="comment-top-container">
-				<UserAvatar :user="topComment.createBy" :size="48"></UserAvatar>
-				<view class="top-right">
-					<UserName fontSize="16" :user="topComment.createBy"></UserName>
+	<uni-card margin="5px" spacing="0" isFull>
+		<view class="comment-item" v-if="topComment">
+			<view class="comment-left">
+				<UserAvatar :user="topComment.createBy" :size="36"></UserAvatar>
+			</view>
+			<view class="comment-right">
+				<UserName :user="topComment.createBy"></UserName>
+				<YExpandanleContent :maxLength="120" :content="topComment.content" @tap="handleShowReply(topComment)">
+				</YExpandanleContent>
+				<view class="comment-bottom">
 					<YTime class="item-time" type="format" :time="topComment.createdAt"></YTime>
+					<uni-icons class="action-icon" type="more-filled" size="20" color="#909399"
+						@click.stop="handleShowMenu(topComment)"></uni-icons>
 				</view>
 			</view>
-			<view class="comment-bottom-contsiner" @click.stop="handleShowReply(topComment)">
-				<YExpandanleContent :maxLength="120" :content="topComment.content"></YExpandanleContent>
-			</view>
+
 		</view>
-		<YAppendListWrapper v-model="replyList" pageUrl="pages/comment-detail/comment-detail" :url="urls.reply_list"
+	</uni-card>
+
+	<uni-card margin="5px" spacing="0">
+		<YAppendListWrapper v-model="replyList" :pageUrl="pageUrl" :url="urls.reply_list"
 			:searchParams="{ blogId, topCommentId }" @fetch-end="handleListFetchEnd">
 			<view class="comment-reply-container">
-				<view class="reply-item" v-for="reply in replyList" :key="reply.id">
-					<UserName :user="reply.createBy" :text="'@' + reply.createBy.name"></UserName>
-					{{ reply.replyComment && reply.replyComment.topCommentId ? '' : ':'}}
-					<view class="at-user-contsiner" v-if="reply.replyComment && reply.replyComment.topCommentId">
-						回复<UserName :user="reply.replyComment.createBy" :text="'@' + reply.replyComment.createBy.name">
-						</UserName>:
+				<view class="comment-item" v-for="reply in replyList" :key="reply.id">
+					<view class="comment-left">
+						<UserAvatar :user="reply.createBy" :size="36"></UserAvatar>
 					</view>
-					<view class="reply-content" @click.stop="handleShowReply(reply)">
-						<YExpandanleContent :maxLength="120" :content="reply.content"></YExpandanleContent>
+					<view class="comment-right">
+						<UserName :user="reply.createBy"></UserName>
+						<view class="reply-content-container" @click="handleShowReply(reply)">
+							<view class="at-user-contsiner" v-if="reply.replyComment && reply.replyComment.topCommentId">
+								回复<UserName :user="reply.replyComment.createBy" :text="'@' + reply.replyComment.createBy.name">
+								</UserName>:
+							</view>
+							<YExpandanleContent :maxLength="120" :content="reply.content">
+							</YExpandanleContent>
+						</view>
+						<view class="comment-bottom">
+							<YTime class="item-time" type="format" :time="reply.createdAt"></YTime>
+							<uni-icons class="action-icon" type="more-filled" size="20" color="#909399"
+								@click.stop="handleShowMenu(reply)"></uni-icons>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -32,10 +49,24 @@
 				<SkeletonCommentDetail></SkeletonCommentDetail>
 			</template>
 		</YAppendListWrapper>
-
-		<CommentReplyForm :currentReplyItem="currentReplyItem" v-model:show="showReply"></CommentReplyForm>
-
 	</uni-card>
+	
+	<CommentReplyForm :currentReplyItem="currentReplyItem" v-model:show="showReply"></CommentReplyForm>
+	
+	<uni-popup ref="menuPopupRef" type="bottom" background-color="#fff">
+		<uni-list class="menu-list" v-if="operationItem">
+			<uni-list-item clickable @click.stop="handleDelete" v-if="operationItem.createById === myInfo?.id">
+				<template v-slot:body>
+					<view class="action-sheet-text red">删除</view>
+				</template>
+			</uni-list-item>
+			<uni-list-item clickable @click.stop="handleCopyContent">
+				<template v-slot:body>
+					<view class="action-sheet-text">复制内容</view>
+				</template>
+			</uni-list-item>
+		</uni-list>
+	</uni-popup>
 </template>
 
 <script>
@@ -51,6 +82,13 @@
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
 	import scrollMixin from '@/mixins/scrollMixin.js'
+	import {
+		mapState,
+		mapActions,
+	} from 'pinia'
+	import {
+		useMyInfoStore
+	} from '@/stores/userInfo.js'
 
 	export default {
 		components: {
@@ -69,8 +107,13 @@
 				replyList: [],
 				topComment: null,
 				currentReplyItem: null,
-				showReply: false
+				operationItem: null, // 正在操作的评论
+				showReply: false,
+				pageUrl: "pages/comment-detail/comment-detail"
 			}
+		},
+		computed: {
+			...mapState(useMyInfoStore, ['myInfo'])
 		},
 		created() {
 			// console.log('+++++++++created+++++++==')
@@ -85,7 +128,7 @@
 		},
 		onPullDownRefresh() {
 			const s = useScrollStatusStore()
-			s.setPullDownRefresh('pages/comment-detail/comment-detail')
+			s.setPullDownRefresh(this.pageUrl)
 		},
 		methods: {
 			handleListFetchEnd(result) {
@@ -94,59 +137,97 @@
 			handleShowReply(comment) {
 				this.currentReplyItem = comment
 				this.showReply = true
+			},
+			handleShowMenu(item) {
+				this.operationItem = item
+				this.$refs.menuPopupRef.open()
+			},
+			handleCopyContent() {
+				uni.setClipboardData({
+					data: this.operationItem.content,
+					success: () => {
+						uni.showToast({
+							title: '已复制'
+						})
+					},
+					complete: () => {
+						this.$refs.menuPopupRef.close()
+					}
+				})
+			},
+			handleDelete() {
+				uni.showModal({
+					title: '提示',
+					confirmColor: '#e43d33',
+					content: '确定删除该评论吗，评论下的所有回复也会被删除',
+					success: async (res) => {
+						if (res.confirm) {
+							try {
+								const {
+									success,
+									result,
+									msg
+								} = await Http.post(urls.comment_delete, {
+									id: this.operationItem.id
+								})
+								if (success) {
+									uni.showToast({
+										title: '已删除'
+									})
+									setTimeout(() => {
+										uni.startPullDownRefresh()
+									}, 1000)
+								}
+							} catch (e) {}
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	.comment-container {
+	.comment-reply-container{
+		display: flex;
+		flex-direction: column;
+		gap: 12rpx;
+		.comment-item{
+			&+.comment-item{
+				padding-top: 12rpx;
+				border-top: 1px solid $uni-border-3;
+			}
+		}
+	}
+	.comment-item {
 		display: flex;
 		align-items: flex-start;
-		flex-direction: column;
 		gap: 20rpx;
 	}
 
-	.comment-top-container {
+	.comment-right {
 		display: flex;
-		align-items: center;
-		gap: 20rpx;
+		flex-direction: column;
+		gap: 8rpx;
+		flex: 1;
 
-		.top-right {
+		.comment-bottom {
 			display: flex;
-			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8rpx;
+			width: 100%;
 
 			.item-time {
 				color: $uni-secondary-color;
 				font-size: 14px;
 			}
 		}
-	}
-
-	.comment-bottom-contsiner {
-		margin-bottom: 20rpx;
-	}
-
-	.comment-reply-container {
-		border-radius: 6rpx;
-		background-color: $uni-bg-color;
-		padding: 26rpx;
-		width: 100%;
-		box-sizing: border-box;
-
-		.reply-item {
-			word-wrap: break-word;
-			word-break: break-word;
-			white-space: pre-wrap;
-
-			.at-user-contsiner {
-				display: inline;
-			}
-
-			.reply-content {
-				margin-left: 10rpx;
-				display: inline;
-			}
+		
+		.at-user-contsiner{
+			display: inline;
 		}
 	}
 </style>

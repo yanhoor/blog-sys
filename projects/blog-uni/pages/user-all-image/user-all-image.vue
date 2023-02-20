@@ -1,7 +1,7 @@
 <template>
 	<view class="user-all-image">
 		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.user_media_list" v-model="pageList"
-			:searchParams="{ type: 1, userId }" @fetch-end="$emit('fetch-end', $event)">
+			:searchParams="{ type: 1, userId }">
 			<view class="image-wrapper">
 				<view class="image-item" v-for="image in pageList" :key="image.id" @click="handleClickImage(image)">
 					<view class="image-item-container">
@@ -9,12 +9,17 @@
 					</view>
 				</view>
 			</view>
+
+			<template #skeleton>
+				<SkeletonMediaList></SkeletonMediaList>
+			</template>
 		</YAppendListWrapper>
 	</view>
 </template>
 
 <script>
 	import YAppendListWrapper from '@/components/y-append-list-wrapper.vue'
+	import SkeletonMediaList from '@/components/skeleton/skeleton-media-list.vue'
 	import YImage from '@/components/y-image.vue'
 	import Http, {
 		urls
@@ -36,6 +41,7 @@
 		components: {
 			YAppendListWrapper,
 			YImage,
+			SkeletonMediaList,
 		},
 		data() {
 			return {

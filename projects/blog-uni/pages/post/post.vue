@@ -71,9 +71,21 @@
 	</view>
 	<uni-popup ref="menuPopupRef" type="bottom" background-color="#fff" v-if="postInfo">
 		<uni-list class="menu-list">
-			<uni-list-item title="删除" clickable @click.stop="handleDelete" v-if="postInfo.createById === myInfo?.id">
+			<uni-list-item clickable @click.stop="handleDelete" v-if="postInfo.createById === myInfo?.id">
+				<template v-slot:body>
+					<view class="action-sheet-text red">删除</view>
+				</template>
 			</uni-list-item>
-			<uni-list-item title="复制链接" clickable @click.stop="handleCopyLink"></uni-list-item>
+			<uni-list-item clickable @click.stop="handleCopyContent">
+				<template v-slot:body>
+					<view class="action-sheet-text">复制内容</view>
+				</template>
+			</uni-list-item>
+			<uni-list-item clickable @click.stop="handleCopyLink">
+				<template v-slot:body>
+					<view class="action-sheet-text">复制链接</view>
+				</template>
+			</uni-list-item>
 		</uni-list>
 	</uni-popup>
 </template>
@@ -175,8 +187,8 @@
 					this.postInfo = result
 				} else {
 					uni.showToast({
-						icon:'error',
-						title:msg || '加载失败'
+						icon: 'error',
+						title: msg || '加载失败'
 					})
 					setTimeout(() => {
 						uni.navigateBack()
@@ -195,9 +207,9 @@
 						id: this.postInfo.id
 					})
 					if (success) {
-						if(this.currentTab === 1) {
+						if (this.currentTab === 1) {
 							uni.startPullDownRefresh()
-						}else{
+						} else {
 							this.getPostInfo()
 						}
 					}
@@ -216,9 +228,9 @@
 						id: this.postInfo.id
 					})
 					if (success) {
-						if(this.currentTab === 3) {
+						if (this.currentTab === 3) {
 							uni.startPullDownRefresh()
-						}else{
+						} else {
 							this.getPostInfo()
 						}
 					}
@@ -232,6 +244,19 @@
 			handleCopyLink() {
 				uni.setClipboardData({
 					data: 'https://niubility.website/blog/post/' + this.postInfo.id,
+					success: () => {
+						uni.showToast({
+							title: '已复制'
+						})
+					},
+					complete: () => {
+						this.$refs.menuPopupRef.close()
+					}
+				})
+			},
+			handleCopyContent(){
+				uni.setClipboardData({
+					data: this.postInfo.content,
 					success: () => {
 						uni.showToast({
 							title: '已复制'
@@ -371,4 +396,5 @@
 			margin-top: 20rpx;
 		}
 	}
+
 </style>

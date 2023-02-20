@@ -11,6 +11,7 @@ export const user_friends = '/user/friends' // 关注/粉丝列表
 export const user_markBlogList = '/user/markBlogList' // 我的收藏
 export const user_myCommentList = '/user/myCommentList' // 我的评论
 export const user_media_list = '/user/getMediaList' // 照片墙
+export const followGroup_all = '/followGroup/all' // 所有分组
 export const blog_like = '/blog/like' // 点赞
 export const blog_collect = '/blog/collect' // 收藏
 export const blog_edit = '/blog/edit' // 编辑

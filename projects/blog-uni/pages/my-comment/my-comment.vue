@@ -6,7 +6,7 @@
 					<view class="item-top">
 						<template v-if="comment.replyTo">
 							我回复了
-							<UserName :user="comment.replyTo" :text="'@' + comment.replyTo.name"></UserName>:
+							<UserName :user="comment.replyTo" :text="'@' + comment.replyTo.name"></UserName>的评论:
 						</template>
 						<template v-else>
 							我评论了:
@@ -22,7 +22,7 @@
 					</YExpandanleContent>
 					<view class="item-bottom">
 						<YTime class="item-time" :time="comment.createdAt"></YTime>
-						<uni-icons type="trash" size="20" color="#6B7280" @click="handleDeleteComment(comment.id)"></uni-icons>
+						<uni-icons type="trash" size="20" color="#909399" @click="handleDeleteComment(comment.id)"></uni-icons>
 					</view>
 				</view>
 			</uni-card>
@@ -76,7 +76,7 @@
 				uni.showModal({
 					title: '提示',
 					confirmColor: '#e43d33',
-					content: '确定删除该评论吗',
+					content: '确定删除该评论吗，评论下的所有回复也会被删除',
 					success: async (res) => {
 						if (res.confirm) {
 							try {

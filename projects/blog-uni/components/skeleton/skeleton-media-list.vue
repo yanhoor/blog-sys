@@ -37,6 +37,7 @@
 		width: calc(100%/3);
 		padding-top: 8rpx;
 		padding-left: 8rpx;
+		box-sizing: border-box;
 
 		.item-container {
 			position: relative;
@@ -47,6 +48,8 @@
 				border-radius: 10rpx;
 				position: absolute;
 				top: 0;
+				width: 100%;
+				height: 100%;
 			}
 		}
 	}

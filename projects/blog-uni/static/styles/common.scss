@@ -4,3 +4,12 @@
 	word-break: keep-all;
 	white-space: nowrap;
 }
+
+.action-sheet-text{
+	text-align: center;
+	font-size: 14px;
+	width: 100%;
+	&.red{
+		color: $uni-error;
+	}
+}

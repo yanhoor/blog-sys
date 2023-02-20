@@ -46,8 +46,8 @@
 					title="我的点赞"></uni-list-item>
 				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'chatbubble-filled' }" to="/pages/my-comment/my-comment"
 					title="我的评论"></uni-list-item>
-				<!-- <uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'clear' }" title="退出登录"
-					@click="handleLogout"></uni-list-item> -->
+				<!-- <uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'staff-filled' }" to="/pages/user-group-manage/user-group-manage" title="我的分组"></uni-list-item> -->
+
 			</uni-list>
 		</uni-card>
 	</view>
@@ -89,7 +89,7 @@
 			} else if (!this.myInfo) {
 				uni.navigateTo({
 					url: '/pages/login/login'
-				});
+				})
 				return
 			}
 		},

@@ -1,5 +1,5 @@
 <template>
-	<text class="reply-user text-ellipsis" :style="style" @click="handleToUserPage">
+	<text class="reply-user text-ellipsis" :style="style" @click.stop="handleToUserPage">
 		{{ content }}
 	</text>
 </template>
