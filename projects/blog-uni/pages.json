@@ -55,6 +55,13 @@
 			}
 		},
 		{
+			"path": "pages/my-comment/my-comment",
+			"style": {
+				"navigationBarTitleText": "我的评论",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
 			"path": "pages/notification/notification",
 			"style": {
 				"navigationBarTitleText": "通知",
