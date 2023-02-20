@@ -387,12 +387,25 @@ class CommentController extends BaseController{
     }
 
     try{
-      const res = await prisma.comment.update({
-        where: { id: Number(id) },
-        data: {
-          deletedAt: new Date()
-        }
-      })
+      await prisma.$transaction([
+        prisma.comment.update({
+          where: { id: Number(id) },
+          data: {
+            deletedAt: new Date()
+          }
+        }),
+        prisma.comment.updateMany({
+          where: {
+            OR: [
+              { topCommentId: Number(id) },
+              { replyCommentId: Number(id) },
+            ]
+          },
+          data: {
+            deletedAt: new Date()
+          }
+        })
+      ])
       return ctx.body = {
         success: true
       }
