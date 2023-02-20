@@ -49,12 +49,17 @@
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
-        /* 小程序特有相关 */
-        "appid" : "wx00a09e9676bb0927",
-        "setting" : {
-            "urlCheck" : false
-        },
-        "usingComponents" : true
+		/* 小程序特有相关 */
+		"appid": "wx00a09e9676bb0927",
+		"setting": {
+			"urlCheck": false,
+			"minified": true
+		},
+		"optimization": {
+			"subPackages": true
+		},
+		"lazyCodeLoading": "requiredComponents",
+		"usingComponents": true
     },
     "vueVersion" : "3"
 }

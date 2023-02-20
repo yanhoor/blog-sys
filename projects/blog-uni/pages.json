@@ -97,7 +97,7 @@
 		{
 			"path": "pages/post/post",
 			"style": {
-				"navigationBarTitleText": "详情",
+				"navigationBarTitleText": "博客详情",
 				"enablePullDownRefresh": true
 			}
 		},
