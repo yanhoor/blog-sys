@@ -27,6 +27,20 @@
 			}
 		},
 		{
+			"path": "pages/followings/followings",
+			"style": {
+				"navigationBarTitleText": "关注列表",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/followers/followers",
+			"style": {
+				"navigationBarTitleText": "粉丝列表",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
 			"path": "pages/notification/notification",
 			"style": {
 				"navigationBarTitleText": "通知",
