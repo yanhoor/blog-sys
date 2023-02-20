@@ -9,7 +9,13 @@
 		{
 			"path": "pages/search/search",
 			"style": {
-				"navigationBarTitleText": "搜索",
+				"navigationBarTitleText": "搜索"
+			}
+		},
+		{
+			"path": "pages/search-result/search-result",
+			"style": {
+				"navigationBarTitleText": "搜索结果",
 				"enablePullDownRefresh": true
 			}
 		},
@@ -30,8 +36,7 @@
 		{
 			"path": "pages/me/me",
 			"style": {
-				"navigationBarTitleText": "我的",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "我的"
 			}
 		},
 		{
@@ -44,6 +49,13 @@
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "用户主页",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/user-all-image/user-all-image",
+			"style": {
+				"navigationBarTitleText": "所有图片",
 				"enablePullDownRefresh": true
 			}
 		},
