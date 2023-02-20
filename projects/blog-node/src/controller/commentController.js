@@ -179,7 +179,14 @@ class CommentController extends BaseController{
             createById: true,
             // childCommentsCount: true, // 会使 childComments select 无效
             _count: {
-              select: { childComments: true }, // 这个数量错误，包含了已删除的
+              select: {
+                childComments: {
+                  where: {
+                    // topCommentId: blogId,
+                    deletedAt: null
+                  },
+                }
+              }, // 这个数量错误，包含了已删除的
             },
             childComments: {
               take: 2,

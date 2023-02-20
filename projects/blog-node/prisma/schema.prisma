@@ -1,7 +1,9 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["clientExtensions"]
+  previewFeatures = ["clientExtensions", "filteredRelationCount"]
 }
+
+// 关系计数filteredRelationCount: https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing#filter-the-relation-count
 
 datasource db {
   provider = "mysql"
