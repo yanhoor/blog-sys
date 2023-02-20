@@ -1,5 +1,5 @@
 <template>
-	<uni-card margin="5px" class="card">
+	<uni-card margin="5px" spacing="0" class="card">
 		<view class="content-wrapper">
 			<view class="post-top">
 				<UserAvatar :user="post.createBy" :size="42"></UserAvatar>
@@ -9,7 +9,7 @@
 				</view>
 			</view>
 			<YExpandanleContent class="post-content" :content="post.content" @tap="handleClickPost"></YExpandanleContent>
-			<MediaList :list="post.medias" :maxCount="9"></MediaList>
+			<MediaList class="media-list" :list="post.medias" :maxCount="9" @space-click="handleClickPost"></MediaList>
 			<view class="action-container">
 				<view class="action-item" @click="handleLike">
 					<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058" v-if="post.isLike">
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-	import YImage from '@/components/y-image.vue'
 	import YTime from '@/components/y-time.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import MediaList from '@/components/media/media-list.vue'
@@ -53,7 +52,6 @@
 			post: Object
 		},
 		components: {
-			YImage,
 			YTime,
 			YExpandanleContent,
 			MediaList
@@ -148,6 +146,11 @@
 		::v-deep {
 			color: $uni-main-color;
 		}
+	}
+	
+	.media-list{
+		display: flex;
+		justify-content: center;
 	}
 
 	.action-container {

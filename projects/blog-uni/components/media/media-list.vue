@@ -1,5 +1,5 @@
 <template>
-	<view class="media-list">
+	<view class="media-list" @click="$emit('space-click')">
 		<view class="media-item" v-for="(media, index) in displayImageList" :key="media.id" @click.stop>
 			<view class="media-image-container media-item-container" @click="handleClickImage(media)">
 				<YImage class="media-image" :url="media.url" ratio="70" mode="aspectFill"></YImage>
@@ -37,6 +37,7 @@
 			},
 			maxCount: Number
 		},
+		emits: ['space-click'],
 		components: {
 			YImage
 		},

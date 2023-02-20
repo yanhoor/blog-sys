@@ -23,4 +23,5 @@ export const upload = '/upload' // 上传
 export const stats_user = '/stats/user' // 用户数据
 export const comment_list = '/comment/list' // 评论列表
 export const comment_commit = '/comment/commit' // 发表评论
+export const comment_delete = '/comment/delete' // 删除评论
 export const reply_list = '/comment/replyList' // 回复列表

@@ -2,7 +2,7 @@
 	<view class="profile-page">
 		<uni-card margin="5px" spacing="0">
 			<view class="content-container">
-				<uni-forms ref="editformRef" :modelValue="editForm" :rules="rules">
+				<uni-forms ref="editformRef" :modelValue="editForm" :rules="rules" label-position="top" label-width="150px">
 					<uni-forms-item label="用户名" name="name">
 						<uni-easyinput type="text" v-model="editForm.name" maxlength="8" :trim="true"
 							placeholder="请输入用户名"></uni-easyinput>

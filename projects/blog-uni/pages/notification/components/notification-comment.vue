@@ -10,8 +10,11 @@
 					</view>
 					<YExpandanleContent class="item-content" :content="notification.comment.content">
 					</YExpandanleContent>
+					<view class="reply-content blog-is-delete" v-if="notification.blog.deletedAt">
+						博客已经被删除
+					</view>
 					<YExpandanleContent class="reply-content" :maxLength="80" :showBtn="false"
-						:content="notification.blog.content" @tap="handleClickPost(notification.blog)">
+						:content="notification.blog.content" @tap="handleClickPost(notification.blog)" v-else>
 					</YExpandanleContent>
 					<YTime class="item-time" :time="notification.createdAt"></YTime>
 				</view>
@@ -75,6 +78,9 @@
 		background-color: #f3f4f6;
 		padding: 10px;
 		border-radius: 5px;
+		&.blog-is-delete{
+			color: $uni-error;
+		}
 	}
 
 	.item-time {

@@ -14,9 +14,9 @@ export const useScrollStatusStore = defineStore('scrollStatus', {
 		setReachBottom(){
 			console.log('+++++setReachBottom+++++')
 		},
-		// 仅用于监听
-		setPullDownRefresh(){
-			console.log('+++++setPullDownRefresh+++++')
+		// 在 y-append-list-wrapper 仅用于监听，type：all --- 所有页面刷新，页面path数组 --- 该页面刷新，无参数 --- 当前所在页面刷新
+		setPullDownRefresh(pages){
+			console.log('+++++setPullDownRefresh+++++', pages)
 		}
 	},
 });

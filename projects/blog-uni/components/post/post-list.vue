@@ -1,6 +1,6 @@
 <template>
 	<view class="post-list">
-		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.blog_list" v-model="pageList" :searchParams="searchParams" @fetch-end="$emit('fetch-end', $event)">
+		<YAppendListWrapper :pageUrl="pageUrl" :url="url" v-model="pageList" :searchParams="searchParams" @fetch-end="$emit('fetch-end', $event)">
 			<PostItem v-for="post in pageList" :post="post" :key="post.id"></PostItem>
 			<SkeletonPostList #skeleton v-if="showSkeleton"></SkeletonPostList>
 		</YAppendListWrapper>
@@ -23,6 +23,10 @@
 			showSkeleton: {
 				type: Boolean,
 				default: true
+			},
+			url: {
+				type: String,
+				default: urls.blog_list
 			}
 		},
 		emits: ['fetch-end'],

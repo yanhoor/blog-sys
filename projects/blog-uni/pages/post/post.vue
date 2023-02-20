@@ -174,6 +174,13 @@
 				if (success) {
 					this.postInfo = result
 				} else {
+					uni.showToast({
+						icon:'error',
+						title:msg || '加载失败'
+					})
+					setTimeout(() => {
+						uni.navigateBack()
+					}, 500)
 					return Promise.reject(false)
 				}
 			},

@@ -14,12 +14,19 @@
 					</view>
 					<YExpandanleContent class="item-content" :content="comment.content">
 					</YExpandanleContent>
+					<view class="reply-content blog-is-delete" v-if="comment.blog.deletedAt">
+						博客已经被删除
+					</view>
 					<YExpandanleContent class="reply-content" :maxLength="80" :showBtn="false"
-						:content="comment.blog.content" @tap="handleClickPost(comment.blog)">
+						:content="comment.blog.content" @tap="handleClickPost(comment.blog)" v-else>
 					</YExpandanleContent>
-					<YTime class="item-time" :time="comment.createdAt"></YTime>
+					<view class="item-bottom">
+						<YTime class="item-time" :time="comment.createdAt"></YTime>
+						<uni-icons type="trash" size="20" color="#6B7280" @click="handleDeleteComment(comment.id)"></uni-icons>
+					</view>
 				</view>
 			</uni-card>
+			<SkeletonNotificationList #skeleton></SkeletonNotificationList>
 		</YAppendListWrapper>
 	</view>
 </template>
@@ -27,6 +34,7 @@
 <script>
 	import YAppendListWrapper from '@/components/y-append-list-wrapper.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
+	import SkeletonNotificationList from '@/components/skeleton/skeleton-notification-list.vue'
 	import YTime from '@/components/y-time.vue'
 	import scrollMixin from '@/mixins/scrollMixin.js'
 	import Http, {
@@ -41,6 +49,7 @@
 		components: {
 			YAppendListWrapper,
 			YExpandanleContent,
+			SkeletonNotificationList,
 			YTime,
 		},
 		data() {
@@ -61,6 +70,36 @@
 			handleClickPost(post) {
 				uni.navigateTo({
 					url: '/pages/post/post?id=' + post.id
+				})
+			},
+			handleDeleteComment(id){
+				uni.showModal({
+					title: '提示',
+					confirmColor: '#e43d33',
+					content: '确定删除该评论吗',
+					success: async (res) => {
+						if (res.confirm) {
+							try {
+								const {
+									success,
+									result,
+									msg
+								} = await Http.post(urls.comment_delete, {
+									id
+								})
+								if (success) {
+									uni.showToast({
+										title: '已删除'
+									})
+									setTimeout(() => {
+										uni.startPullDownRefresh()
+									}, 1000)
+								}
+							} catch (e) {}
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
 				})
 			}
 		}
@@ -93,10 +132,21 @@
 		background-color: #f3f4f6;
 		padding: 10px;
 		border-radius: 5px;
+
+		&.blog-is-delete {
+			color: $uni-error;
+		}
 	}
 
-	.item-time {
-		font-size: 14px;
-		color: $uni-secondary-color;
+	.item-bottom {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		.item-time {
+			font-size: 14px;
+			color: $uni-secondary-color;
+		}
 	}
 </style>

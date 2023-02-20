@@ -15,8 +15,7 @@
 			style(){
 				const result = {}
 				if(this.size){
-					result.width = this.size + 'px'
-					result.height = this.size + 'px'
+					result.height = result.width = Object.is(Number(this.size), NaN) ? this.size : this.size + 'px'
 				}
 				if(this.width) result.width = Object.is(Number(this.width), NaN) ? this.width : this.width + 'px'
 				if(this.height) result.height = Object.is(Number(this.height), NaN) ? this.height : this.height + 'px'

@@ -21,12 +21,6 @@ export default {
 		const s = useScrollStatusStore()
 		s.setReachBottom()
 	},
-	onPullDownRefresh() {
-		// console.log('+++++++ onPullDownRefresh++++++++++')
-		// this.$refs.pageListRef?.getList()
-		const s = useScrollStatusStore()
-		s.setPullDownRefresh()
-	},
 	methods: {
 
 	}

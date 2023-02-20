@@ -35,29 +35,29 @@
 		},
 		onShow() {
 			const back = uni.getStorageSync('back_from_login')
-			if(back == 1){
+			if (back == 1) {
 				uni.removeStorageSync('back_from_login')
 				uni.switchTab({
-					url:'/pages/index/index'
+					url: '/pages/index/index'
 				})
-			}else if (!this.myInfo) {
+			} else if (!this.myInfo) {
 				uni.navigateTo({
-					url:'/pages/login/login'
+					url: '/pages/login/login'
 				})
 			}
 		},
 		methods: {
-			resetForm(){
+			resetForm() {
 				return {
 					content: '',
 					medias: []
 				}
 			},
-			async handleSubmit(){
-				if(!this.postForm.content){
+			async handleSubmit() {
+				if (!this.postForm.content) {
 					uni.showToast({
 						icon: 'error',
-						title:'请填写发布内容'
+						title: '请填写发布内容'
 					})
 					return
 				}
@@ -72,10 +72,10 @@
 					if (success) {
 						uni.showToast({
 							icon: 'success',
-							title:'已发布'
+							title: '已发布'
 						})
 						uni.switchTab({
-							url:'/pages/index/index'
+							url: '/pages/index/index'
 						})
 						uni.$emit('index_page_refresh', true)
 						this.postForm = this.resetForm()
@@ -99,7 +99,8 @@
 			margin-top: 20px;
 		}
 	}
-	.submit-btn{
+
+	.submit-btn {
 		margin-top: 20px;
 	}
 </style>

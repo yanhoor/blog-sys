@@ -18,7 +18,7 @@
 						</view>
 					</view>
 					<view class="user-stats-container">
-						<view class="stats-item">
+						<view class="stats-item" @click="handleToPage('/pages/followings/followings?userId=' + userId)">
 							<view class="stats-num">
 								{{ userInfo.followingCount }}
 							</view>
@@ -26,7 +26,7 @@
 								关注
 							</view>
 						</view>
-						<view class="stats-item">
+						<view class="stats-item" @click="handleToPage('/pages/followers/followers?userId=' + userId)">
 							<view class="stats-num">
 								{{ userInfo.followerCount }}
 							</view>
@@ -60,7 +60,7 @@
 						</view>
 					</view>
 					<view class="action-section">
-						<view class="all-btn" @click="handleToAllImage">
+						<view class="all-btn" @click="handleToPage('/pages/user-all-image/user-all-image?id=' + userId)">
 							全部
 						</view>
 					</view>
@@ -173,9 +173,9 @@
 					indicator: 'number'
 				})
 			},
-			handleToAllImage() {
+			handleToPage(url){
 				uni.navigateTo({
-					url: '/pages/user-all-image/user-all-image?id=' + this.userId
+					url
 				})
 			}
 		}
