@@ -12,6 +12,7 @@
 				</swiper-item>
 			</swiper>
 		</uni-card>
+		
 	</view>
 </template>
 
@@ -23,6 +24,7 @@
 	import {
 		imageHost
 	} from "@/config/index.js"
+	import { useImageSwiperStore } from '@/stores/imageSwiperStore.js'
 
 	export default {
 		name: 'media-image-wall',
@@ -71,10 +73,17 @@
 				} catch (e) {}
 			},
 			handleImagePreview(image){
-				uni.previewImage({
-					urls: this.imageList.map(i => this.imageHost + i.url),
-					current: this.imageHost + image.url,
-					indicator: 'number'
+				// uni.previewImage({
+				// 	urls: this.imageList.map(i => this.imageHost + i.url),
+				// 	current: this.imageHost + image.url,
+				// 	indicator: 'number'
+				// })
+				const s = useImageSwiperStore()
+				s.setImageList(this.imageList)
+				const idx = this.imageList.indexOf(image)
+				s.setInitIndex(idx)
+				uni.navigateTo({
+					url:'/pages/image-swiper/image-swiper'
 				})
 			}
 		}

@@ -3,7 +3,7 @@
 		<YAppendListWrapper :pageUrl="pageUrl" :url="urls.user_media_list" v-model="pageList"
 			:searchParams="{ type: 1, userId }">
 			<view class="image-wrapper">
-				<view class="image-item" v-for="image in pageList" :key="image.id" @click="handleClickImage(image)">
+				<view class="image-item" v-for="(image, idx) in pageList" :key="image.id" @click="handleClickImage(idx)">
 					<view class="image-item-container">
 						<YImage class="y-image" :url="image.url" ratio="70" mode="aspectFill"></YImage>
 					</view>
@@ -34,6 +34,7 @@
 	import {
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
+	import { useImageSwiperStore } from '@/stores/imageSwiperStore.js'
 	import scrollMixin from '@/mixins/scrollMixin.js'
 
 	export default {
@@ -60,11 +61,17 @@
 			s.setPullDownRefresh(this.pageUrl)
 		},
 		methods: {
-			handleClickImage(image) {
-				uni.previewImage({
-					urls: this.pageList.map(i => imageHost + i.url),
-					current: imageHost + image.url,
-					indicator: 'number'
+			handleClickImage(idx) {
+				// uni.previewImage({
+				// 	urls: this.pageList.map(i => imageHost + i.url),
+				// 	current: imageHost + image.url,
+				// 	indicator: 'number'
+				// })
+				const s = useImageSwiperStore()
+				s.setImageList(this.pageList)
+				s.setInitIndex(idx)
+				uni.navigateTo({
+					url:'/pages/image-swiper/image-swiper'
 				})
 			},
 		},
