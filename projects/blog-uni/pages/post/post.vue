@@ -30,7 +30,7 @@
 						</uni-icons>
 						<uni-icons class="action-icon" type="star" size="20" color="#6B7280" v-else></uni-icons>
 					</view>
-					<view class="action-item" @click.stop="handleShowMenu">
+					<view class="action-item" @click.stop="showAction = true">
 						<uni-icons class="action-icon" type="more-filled" size="20" color="#6B7280"></uni-icons>
 					</view>
 				</view>
@@ -67,27 +67,11 @@
 					url="/blog/actionUserList/2"></UserList>
 			</view>
 		</uni-card>
+		
 		<CommentReplyForm :blogId="Number(postId)" v-model:show="showReply"></CommentReplyForm>
+		
+		<PostActions v-model="showAction" :post="postInfo" @delete="handleDeletePost"></PostActions>
 	</view>
-	<uni-popup ref="menuPopupRef" type="bottom" background-color="#fff" v-if="postInfo">
-		<uni-list class="menu-list">
-			<uni-list-item clickable @click.stop="handleDelete" v-if="postInfo.createById === myInfo?.id">
-				<template v-slot:body>
-					<view class="action-sheet-text red">删除</view>
-				</template>
-			</uni-list-item>
-			<uni-list-item clickable @click.stop="handleCopyContent">
-				<template v-slot:body>
-					<view class="action-sheet-text">复制内容</view>
-				</template>
-			</uni-list-item>
-			<uni-list-item clickable @click.stop="handleCopyLink">
-				<template v-slot:body>
-					<view class="action-sheet-text">复制链接</view>
-				</template>
-			</uni-list-item>
-		</uni-list>
-	</uni-popup>
 </template>
 
 <script>
@@ -99,6 +83,7 @@
 	import CommentReplyForm from '@/components/comment-reply-form.vue'
 	import SkeletonPostDetail from '@/components/skeleton/skeleton-post-detail.vue'
 	import UserList from '@/components/user/user-list.vue'
+	import PostActions from '@/components/post/post-actions.vue'
 	import Http, {
 		urls
 	} from '@/http'
@@ -106,14 +91,6 @@
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
 	import scrollMixin from '@/mixins/scrollMixin.js'
-	import {
-		mapState,
-		mapActions,
-	} from 'pinia'
-	import {
-		useMyInfoStore
-	} from '@/stores/userInfo.js'
-
 	export default {
 		components: {
 			YImage,
@@ -124,6 +101,7 @@
 			CommentReplyForm,
 			SkeletonPostDetail,
 			UserList,
+			PostActions,
 		},
 		mixins: [scrollMixin],
 		data() {
@@ -132,11 +110,9 @@
 				postInfo: null,
 				loading: true,
 				showReply: false,
+				showAction: false,
 				currentTab: 2, // 1--点赞，2--评论，3--收藏
 			}
-		},
-		computed: {
-			...mapState(useMyInfoStore, ['myInfo'])
 		},
 		onLoad(params) {
 			this.postId = params.id
@@ -240,67 +216,10 @@
 
 				}
 			},
-			handleShowMenu() {
-				this.$refs.menuPopupRef.open()
-			},
-			handleCopyLink() {
-				uni.setClipboardData({
-					data: 'https://niubility.website/blog/post/' + this.postInfo.id,
-					success: () => {
-						uni.showToast({
-							title: '已复制'
-						})
-					},
-					complete: () => {
-						this.$refs.menuPopupRef.close()
-					}
-				})
-			},
-			handleCopyContent(){
-				uni.setClipboardData({
-					data: this.postInfo.content,
-					success: () => {
-						uni.showToast({
-							title: '已复制'
-						})
-					},
-					complete: () => {
-						this.$refs.menuPopupRef.close()
-					}
-				})
-			},
-			handleDelete() {
-				uni.showModal({
-					title: '提示',
-					confirmColor: '#e43d33',
-					content: '确定删除吗',
-					success: async (res) => {
-						if (res.confirm) {
-							try {
-								const {
-									success,
-									result,
-									msg
-								} = await Http.post(urls.blog_delete, {
-									id: this.postId
-								})
-								if (success) {
-									this.$refs.menuPopupRef.close()
-									uni.showToast({
-										title: '已删除'
-									})
-									setTimeout(() => {
-										uni.navigateBack({
-											delta: 1
-										})
-									}, 1000)
-								}
-							} catch (e) {}
-						} else if (res.cancel) {
-							console.log('用户点击取消');
-						}
-					}
-				})
+			handleDeletePost(){
+				setTimeout(() => {
+					uni.navigateBack()
+				}, 500)
 			}
 		}
 	}

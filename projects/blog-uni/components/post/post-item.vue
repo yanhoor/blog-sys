@@ -8,7 +8,8 @@
 					<YTime class="item-time" :time="post.createdAt"></YTime>
 				</view>
 			</view>
-			<YExpandanleContent class="post-content" :content="post.content" @tap="handleClickPost"></YExpandanleContent>
+			<YExpandanleContent class="post-content" :content="post.content" @tap="handleClickPost">
+			</YExpandanleContent>
 			<MediaList class="media-list" :list="post.medias" :maxCount="9" @space-click="handleClickPost"></MediaList>
 			<view class="action-container">
 				<view class="action-item" @click="handleLike">
@@ -33,6 +34,9 @@
 						{{ post.collectedByCount }}
 					</view>
 				</view>
+				<view class="action-item" @click.stop="$emit('action-click')">
+					<uni-icons class="action-icon" type="more-filled" size="20" color="#6B7280"></uni-icons>
+				</view>
 			</view>
 		</view>
 	</uni-card>
@@ -51,6 +55,7 @@
 		props: {
 			post: Object
 		},
+		emits: ['action-click'],
 		components: {
 			YTime,
 			YExpandanleContent,
@@ -147,8 +152,8 @@
 			color: $uni-main-color;
 		}
 	}
-	
-	.media-list{
+
+	.media-list {
 		display: flex;
 		justify-content: center;
 	}
