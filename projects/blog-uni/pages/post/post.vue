@@ -105,6 +105,7 @@
 	import {
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
+	import scrollMixin from '@/mixins/scrollMixin.js'
 	import {
 		mapState,
 		mapActions,
@@ -124,6 +125,7 @@
 			SkeletonPostDetail,
 			UserList,
 		},
+		mixins: [scrollMixin],
 		data() {
 			return {
 				postId: '',
