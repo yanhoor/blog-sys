@@ -8,8 +8,17 @@
 			<uni-popup ref="menuPopupRef" type="bottom" background-color="#fff">
 				<uni-list class="menu-list">
 					<uni-list-item title="取消关注" clickable @click.stop="handleUnfollow"></uni-list-item>
-					<uni-list-item title="设置分组" clickable @click.stop="handleSetGroup"></uni-list-item>
+					<uni-list-item title="设置分组" clickable @click.stop="handleShowMenu"></uni-list-item>
 				</uni-list>
+			</uni-popup>
+
+			<uni-popup ref="groupPopupRef" type="bottom" background-color="#fff">
+				<view class="select-group-container">
+					<uni-data-checkbox mode="tag" multiple v-model="selectedGroupIdList" :localdata="allGroupList">
+					</uni-data-checkbox>
+					<button class="group-btn" type="primary" size="mini" :loading="groupLoading"
+						@click="handleSaveGroup">保存</button>
+				</view>
 			</uni-popup>
 		</template>
 	</view>
@@ -34,7 +43,10 @@
 		},
 		data() {
 			return {
-				followLoading: false
+				followLoading: false,
+				groupLoading: false,
+				allGroupList: [],
+				selectedGroupIdList: []
 			}
 		},
 		computed: {
@@ -89,7 +101,66 @@
 					this.followLoading = false
 				}
 			},
-			handleSetGroup() {},
+			handleShowMenu() {
+				this.$refs.menuPopupRef.close()
+				this.$refs.groupPopupRef.open()
+				this.getAllGroup()
+				this.getContainGroupList()
+			},
+			async getAllGroup() {
+				try {
+					const {
+						success,
+						result,
+						msg
+					} = await Http.post(urls.followGroup_all)
+					if (success) {
+						this.allGroupList = result.map(i => ({
+							...i,
+							text: i.name,
+							value: i.id
+						}))
+					}
+				} catch (e) {
+
+				}
+			},
+			async getContainGroupList() {
+				try {
+					const {
+						success,
+						result,
+						msg
+					} = await Http.post(urls.followGroup_containList, {
+						userId: this.user.id
+					})
+					if (success) {
+						this.selectedGroupIdList = result.map(i => i.id)
+					}
+				} catch (e) {}
+			},
+			async handleSaveGroup() {
+				this.groupLoading = true
+				try {
+					const {
+						success,
+						result,
+						msg
+					} = await Http.post(urls.user_setGroup, {
+						groupId: this.selectedGroupIdList.toString(),
+						userId: this.user.id
+					})
+					this.groupLoading = false
+					if (success) {
+						uni.showToast({
+							title: '保存成功'
+						})
+						this.$refs.groupPopupRef.close()
+					}
+				} catch (e) {
+					this.groupLoading = false
+				}
+			}
 		}
 	}
 </script>
@@ -98,6 +169,18 @@
 	::v-deep .uni-list-item {
 		::v-deep .uni-list-item__content-title {
 			text-align: center;
+		}
+	}
+
+	.select-group-container {
+		display: flex;
+		flex-direction: column;
+		padding: 20rpx;
+		gap: 20rpx;
+
+		.group-btn {
+			width: 100%;
+			box-sizing: border-box;
 		}
 	}
 </style>
