@@ -16,6 +16,9 @@
 		useMyInfoStore
 	} from '@/stores/userInfo.js'
 	import {
+		useScrollStatusStore
+	} from '@/stores/scrollStatus.js'
+	import {
 		mapState,
 		mapActions,
 	} from 'pinia'
@@ -33,10 +36,12 @@
 		computed: {
 			...mapState(useMyInfoStore, ['myInfo']),
 		},
+		created() {
+			// console.log('+++++++++++++++', this.myInfo)
+		},
 		onShow() {
 			const back = uni.getStorageSync('back_from_login')
 			if (back == 1) {
-				uni.removeStorageSync('back_from_login')
 				uni.switchTab({
 					url: '/pages/index/index'
 				})
@@ -45,8 +50,10 @@
 					url: '/pages/login/login'
 				})
 			}
+			uni.removeStorageSync('back_from_login')
 		},
 		methods: {
+			...mapActions(useScrollStatusStore, ['setPullDownRefresh']),
 			resetForm() {
 				return {
 					content: '',
@@ -77,7 +84,7 @@
 						uni.switchTab({
 							url: '/pages/index/index'
 						})
-						uni.$emit('index_page_refresh', true)
+						this.setPullDownRefresh('pages/index')
 						this.postForm = this.resetForm()
 					}
 					this.loading = false

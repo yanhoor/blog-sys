@@ -16,6 +16,9 @@
 							<image class="user-avatar default" src="@/static/images/personal.png" v-else></image>
 							<UserName fontSize="22" :user="userInfo"></UserName>
 						</view>
+						<view class="user-right">
+							<UserBtn :user="userInfo"></UserBtn>
+						</view>
 					</view>
 					<view class="user-stats-container">
 						<view class="stats-item" @click="handleToPage('/pages/followings/followings?userId=' + userId)">
@@ -95,6 +98,7 @@
 	} from "@/config/index.js"
 	import PostList from '@/components/post/post-list.vue'
 	import UserImageWall from './user-image-wall.vue'
+	import UserBtn from '@/components/user/user-btn.vue'
 	import {
 		mapState,
 		mapActions,
@@ -116,6 +120,7 @@
 			YImage,
 			PostList,
 			UserImageWall,
+			UserBtn,
 			SkeletonUserMain,
 		},
 		data() {
@@ -292,11 +297,13 @@
 				gap: 10rpx;
 
 				.title {
-					font-weight: 300;
+					// font-weight: 300;
+					font-size: 14px;
+					color: $uni-secondary-color;
 				}
 
 				.title-num {
-					font-size: 22px;
+					// font-size: 22px;
 					font-weight: 600;
 				}
 			}

@@ -1,6 +1,6 @@
 <template>
 	<view class="login-page">
-		<uni-card class="card" margin="0px">
+		<uni-card class="card" margin="5px" spacing="0">
 			<view class="content-container">
 				<uni-forms ref="registerFormRef" label-width="100px" label-position="top" :modelValue="registerForm"
 					:rules="rules" v-if="isRegister">
@@ -52,6 +52,10 @@
 	import {
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
+	import {
+		mapState,
+		mapActions,
+	} from 'pinia'
 
 	export default {
 		data() {
@@ -99,11 +103,19 @@
 				loading: false
 			}
 		},
+		computed: {
+			...mapState(useMyInfoStore, ['myInfo']),
+		},
+		created() {
+			uni.removeStorageSync('index-view-group-id')
+			uni.setStorageSync('token', '')
+		},
 		onUnload() {
 			// console.log('+++++++++++login page onUnload+++++++++++')
-			uni.setStorageSync('back_from_login', 1)
+			uni.setStorageSync('back_from_login', this.myInfo ? 2 : 1)
 		},
 		methods: {
+			...mapActions(useMyInfoStore, ['getMyInfo']),
 			submitForm() {
 				this.$refs.formRef.validate().then(async (res) => {
 					this.loading = true
@@ -116,10 +128,10 @@
 						this.loading = false
 						if (success) {
 							uni.setStorageSync('token', result)
-							const myInfo = useMyInfoStore()
-							await myInfo.getMyInfo()
-							const s = useScrollStatusStore()
-							s.setPullDownRefresh(['pages/notification/notification', 'pages/me/me'])
+							await this.getMyInfo()
+							// const s = useScrollStatusStore()
+							// s.setPullDownRefresh(['pages/notification', 'pages/index'])
+							uni.$emit('refresh_index_page')
 							uni.navigateBack()
 						} else {
 							this.messageText = msg
@@ -171,7 +183,6 @@
 		gap: 20rpx;
 		width: 100%;
 		height: 100vh;
-		padding: 0 20rpx;
 		box-sizing: border-box;
 
 		.card {

@@ -40,13 +40,14 @@
 		<uni-card spacing="0" margin="5px">
 			<uni-list :border="false">
 				<!-- <uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'compose' }" title="编辑资料" to="/pages/profile/profile"></uni-list-item> -->
-				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'star-filled' }" title="我的收藏" to="/pages/my-collections/my-collections">
+				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'star-filled' }" title="我的收藏"
+					to="/pages/my-collections/my-collections">
 				</uni-list-item>
-				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'hand-up-filled' }" to="/pages/my-like/my-like"
-					title="我的点赞"></uni-list-item>
-				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'chatbubble-filled' }" to="/pages/my-comment/my-comment"
-					title="我的评论"></uni-list-item>
-				<!-- <uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'staff-filled' }" to="/pages/user-group-manage/user-group-manage" title="我的分组"></uni-list-item> -->
+				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'hand-up-filled' }"
+					to="/pages/my-like/my-like" title="我的点赞"></uni-list-item>
+				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'chatbubble-filled' }"
+					to="/pages/my-comment/my-comment" title="我的评论"></uni-list-item>
+				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'staff-filled' }" to="/pages/user-group-manage/user-group-manage" title="我的分组"></uni-list-item>
 
 			</uni-list>
 		</uni-card>
@@ -75,13 +76,11 @@
 			...mapState(useMyInfoStore, ['myInfo'])
 		},
 		created() {
-			// console.log('+++++++++++++', this.myInfo)
+			console.log('+++++++++++++')
 		},
 		onShow() {
-			// console.log('+++++me show++++++')
 			const back = uni.getStorageSync('back_from_login')
 			if (back == 1) {
-				uni.removeStorageSync('back_from_login')
 				uni.switchTab({
 					url: '/pages/index/index'
 				})
@@ -92,6 +91,8 @@
 				})
 				return
 			}
+			console.log('+++++me show++++++', back)
+			uni.removeStorageSync('back_from_login')
 		},
 		methods: {
 			...mapActions(useMyInfoStore, ['clearMyInfo']),
@@ -121,7 +122,9 @@
 										uni.removeTabBarBadge({
 											index: 3
 										})
+										uni.removeStorageSync('index-view-group-id')
 										uni.setStorageSync('token', '')
+										uni.$emit('refresh_index_page')
 										uni.switchTab({
 											url: '/pages/index/index'
 										})
