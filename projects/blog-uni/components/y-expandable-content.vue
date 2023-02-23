@@ -1,8 +1,10 @@
 <template>
 	<view class="expandable-content">
 		{{ isExpanded ? content : getSummary(content) }}
-		<view class="action-btn" @click.stop="handleExpand"
-			v-if="showBtn && content.length > maxLength">{{ isExpanded ? '收起' : '展开' }}</view>
+		<slot name="action" v-if="showAction">
+			<view class="action-btn" @click.stop="handleExpand">
+				{{ isExpanded ? '收起' : '展开' }}</view>
+		</slot>
 	</view>
 </template>
 
@@ -18,6 +20,10 @@
 				type: Number,
 				default: 180
 			},
+			maxLine: {
+				type: Number,
+				default: 3
+			},
 			content: String,
 			showBtn: {
 				type: Boolean,
@@ -28,6 +34,20 @@
 			return {
 				isExpanded: false,
 				scrollTop: 0
+			}
+		},
+		computed: {
+			contentLineList(){
+				return this.content.split('\n')
+			},
+			showAction(){
+				if(this.showBtn) {
+					if(this.contentLineList.length > this.maxLine) return true
+					if(this.content.length > this.maxLength) return true
+					return false
+				} else{
+					return false
+				}
 			}
 		},
 		methods: {
@@ -43,7 +63,9 @@
 				}
 			},
 			getSummary(content) {
-				if (content && content.length > this.maxLength) {
+				if (this.contentLineList.length > this.maxLine){
+					return this.contentLineList.slice(0, 3).join('\n') + '\n'
+				}else if(content && content.length > this.maxLength) {
 					return content.slice(0, this.maxLength) + '...'
 				} else {
 					return content
@@ -56,6 +78,7 @@
 <style lang="scss" scoped>
 	.expandable-content {
 		display: inline;
+		white-space: pre-wrap;
 	}
 
 	.action-btn {
