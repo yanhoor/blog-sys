@@ -1,20 +1,24 @@
 # blog-sys
 
-本项目是个人学习 `Node.js/Vue3/Nuxt3/TypeScript` 并加以实践而构建的一个博客发布平台，计划通过搭积木式编写功能模块，逐步形成一个具有后端接口、后台管理和前端发布的完整系统。
+本项目是个人学习 `Node.js/Vue3/Nuxt3/uni-app/TypeScript` 并加以实践而构建的一个博客发布平台，计划通过搭积木式编写功能模块，逐步形成一个具有后端接口、后台管理和前端发布的完整系统。
+
+## 预览
+
+### PC 端
 
 [预览地址](https://niubility.website/blog/)
+
+### 小程序
+
+<video id="video" controls preload height='600px' width='350px'>
+<source id="mp4" src="https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4" type="video/mp4">
+</video>
 
 ## 项目运行
 
 - 确保已安装 `Mysql`、`Redis`、`Node v16`
 
 - `pnpm i`
-
-- 在 `blog-node` 目录下执行：
-
-  - `npx prisma generate`
-
-  - `npx prisma db push`
 
 - `pnpm run dev:node`
 
@@ -40,7 +44,7 @@
 
 ### 各项目功能目标
 
-#### blog-node
+#### blog-node: 后端接口
 
 - [x] 使用 `Koa2 + ES6 + Koa-router + Mysql`
 
@@ -54,7 +58,7 @@
 
 - [x] `Redis` 记录博客点赞/阅读/收藏/排行等数据，保存 `token`
 
-#### blog-manage
+#### blog-manage: 后台管理
 
 - [x] 使用 `Vue3 + Vue-Router + Vite + TypeScript + Element Plus + SCSS`
 
@@ -74,7 +78,7 @@
 
 - [x] 博客管理，上下架控制
 
-#### blog-nuxt3
+#### blog-nuxt3: PC端博客
 
 - [x] 使用 `Nuxt3 + TypeScript + Naive UI + SCSS`
 
@@ -112,66 +116,8 @@
 
 - [ ] 移动端适配
 
-## 目录结构
+#### blog-uni: 小程序端博客
 
-```
-blog-sys
-├── README.md
-├── docker-compose.yml
-├── package.json
-├── pnpm-lock.yaml
-├── pnpm-workspace.yaml
-└── projects
-    ├── blog-manage                             后台管理系统
-    │   ├── Dockerfile
-    │   ├── README.md
-    │   ├── auto-imports.d.ts
-    │   ├── components.d.ts
-    │   ├── index.html
-    │   ├── package-lock.json
-    │   ├── package.json
-    │   ├── postcss.config.cjs
-    │   ├── public
-    │   ├── src
-    │   ├── tailwind.config.cjs
-    │   ├── tsconfig.json
-    │   ├── tsconfig.node.json
-    │   └── vite.config.ts
-    ├── blog-node                               node 接口
-    │   ├── Dockerfile
-    │   ├── README.md
-    │   ├── config
-    │   ├── ecosystem.config.js
-    │   ├── logFiles
-    │   ├── node.zip
-    │   ├── package.json
-    │   ├── prisma
-    │   ├── public
-    │   └── src
-    └── blog-nuxt3                              前端博客系统
-        ├── Dockerfile
-        ├── README.md
-        ├── app.vue
-        ├── assets
-        ├── components
-        ├── components.d.ts
-        ├── composables
-        ├── ecosystem.config.js
-        ├── error.log
-        ├── error.vue
-        ├── layouts
-        ├── middleware
-        ├── nuxt.config.ts
-        ├── package-lock.json
-        ├── package.json
-        ├── pages
-        ├── plugins
-        ├── public
-        ├── server
-        ├── tailwind.config.js
-        ├── tsconfig.json
-        ├── types
-        └── websocket.ts
-```
+- [x] 使用 `uni-app` 构建
 
-21 directories, 36 files
+- [x] 其他功能同步 `blog-nuxt3`
