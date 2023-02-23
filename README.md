@@ -10,9 +10,10 @@
 
 ### 小程序
 
-<video id="video" controls preload height='600px' width='350px'>
-<source id="mp4" src="https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4" type="video/mp4">
+<video id="video" controls preload height='600px' width='350px' src="https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4" type="video/mp4">
 </video>
+
+[备用链接](https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4)
 
 ## 项目运行
 
