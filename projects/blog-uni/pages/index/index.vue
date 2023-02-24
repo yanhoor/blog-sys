@@ -61,7 +61,7 @@
 				// 不能使用 startPullDownRefresh，因为登录后返回其他tab时无效，刷新的是其他tab
 				this.initPage()
 			})
-			
+
 			uni.$on('refresh_index_group', () => {
 				this.getAllGroup()
 			})
@@ -100,6 +100,12 @@
 							},
 							...result
 						]
+						const group = this.groupList.find(g => g.id == this.currentGroupId)
+						if (group) {
+							uni.setNavigationBarTitle({
+								title: group.name
+							})
+						}
 						this.handleScrollToCurrentGroup()
 					}
 				} catch (e) {}
@@ -109,7 +115,13 @@
 				uni.setStorageSync('index-view-group-id', groupId)
 				// 不用 $nextTick 的话在真机获取的是上一个分组的列表？
 				this.$nextTick(() => {
-					uni.startPullDownRefresh()
+					this.setPullDownRefresh(this.pageUrl)
+					const group = this.groupList.find(g => g.id == this.currentGroupId)
+					if (group) {
+						uni.setNavigationBarTitle({
+							title: group.name
+						})
+					}
 				})
 			},
 			handleListFetchEnd(result) {
