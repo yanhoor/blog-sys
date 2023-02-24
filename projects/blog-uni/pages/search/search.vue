@@ -2,7 +2,7 @@
 	<view class="search-page">
 		<view class="input-container">
 			<uni-easyinput v-model="keyword" placeholder="输入要搜索的内容" clearable :trim="true" confirmType="search"
-				@confirm="handleSearch" />
+				@confirm="handleSearch" maxlength="20" />
 			<button type="primary" size="mini" @click="handleSearch">搜索</button>
 		</view>
 		<view class="section-block" v-if="historyList.length">
@@ -14,7 +14,7 @@
 					清除
 				</view>
 			</view>
-			<uni-card margin="5px" spacing="0">
+			<uni-card margin="5px" spacing="0" padding="0">
 				<view class="history-container" v-for="(item, index) in historyList" :key="item">
 					<view class="item" @click="handleClickHistoryItem(item)">
 						{{ item }}
@@ -36,7 +36,8 @@
 			}
 		},
 		onShow() {
-			this.historyList = JSON.parse(uni.getStorageSync('search-history')) || []
+			const storage = uni.getStorageSync('search-history')
+			this.historyList = storage ? JSON.parse(storage) : []
 		},
 		methods: {
 			handleIconClick(type) {
@@ -94,12 +95,12 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			color: $uni-secondary-color;
 			margin: 0 5px;
 
 			.section-title {
 				font-size: 14px;
 				font-weight: 600;
+				color: $uni-secondary-color;
 			}
 
 			.section-action {
@@ -118,13 +119,14 @@
 	.history-container {
 		display: flex;
 		align-items: center;
-		padding: 20rpx 0;
+		padding-right: 20rpx;
 
 		&+.history-container {
 			border-top: 1px solid $uni-border-3;
 		}
 
 		.item {
+			padding: 20rpx 0 20rpx 20rpx;
 			flex: 1;
 		}
 	}

@@ -3,19 +3,36 @@
 		<view class="search-section">
 			<uni-card margin="5px" padding="0" spacing="0" isFull>
 				<view class="search-container">
-					<uni-search-bar class="search-bar" v-model="searchParams.keyword" @confirm="handleSearch" bgColor="#f0f0f0"
-						@cancel="handleBack"></uni-search-bar>
-					<!-- <uni-icons type="tune" size="24" @click="showFilter = !showFilter" color="#d7d7d7"></uni-icons> -->
-				</view>
-				<view class="filter-container" v-if="showFilter">
-					<uni-data-select v-model="searchParams.sort" :clear="false" :localdata="sortTypeList" @change="handleSearch">
-					</uni-data-select>
-					<uni-data-select v-model="searchParams.time" :clear="false" :localdata="filterTimeList" @change="handleSearch">
-					</uni-data-select>
+					<uni-search-bar class="search-bar" v-model="searchParams.keyword" @confirm="handleSearch"
+						bgColor="#f0f0f0" @cancel="handleBack" maxlength="20"></uni-search-bar>
+					<uni-icons type="tune" size="18" @click="handleShowFilter" color="#707070"></uni-icons>
 				</view>
 			</uni-card>
 		</view>
 		<PostList :pageUrl="pageUrl" :searchParams="searchParams" :showSkeleton="false"></PostList>
+		<uni-popup ref="filterPopupRef" type="right" background-color="#fff">
+			<view class="filter-container">
+				<view class="filter-section-container">
+					<view class="filter-section">
+						<view class="filter-section-title">
+							排序
+						</view>
+						<uni-data-checkbox v-model="searchParams.sort" :localdata="sortTypeList">
+						</uni-data-checkbox>
+					</view>
+					<view class="filter-section">
+						<view class="filter-section-title">
+							时间
+						</view>
+						<uni-data-checkbox v-model="searchParams.time" :localdata="filterTimeList">
+						</uni-data-checkbox>
+					</view>
+				</view>
+				<view class="action-section">
+					<button type="primary" @click="handleFilterConfirm">确定</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -34,7 +51,6 @@
 		data() {
 			return {
 				pageUrl: '/pages/search',
-				showFilter: false,
 				searchParams: {
 					keyword: '',
 					sort: 1,
@@ -105,6 +121,13 @@
 
 				uni.startPullDownRefresh()
 			},
+			handleFilterConfirm(){
+				this.$refs.filterPopupRef.close()
+				this.handleSearch()
+			},
+			handleShowFilter() {
+				this.$refs.filterPopupRef.open()
+			},
 			handleBack() {
 				uni.navigateBack()
 			}
@@ -118,22 +141,52 @@
 		top: 0;
 		z-index: 1;
 	}
-	
-	.search-container{
+
+	.search-container {
 		display: flex;
 		align-items: center;
 		gap: 12rpx;
-		// padding-right: 10px;
-		.search-bar{
+
+		padding-right: 20rpx;
+
+		.search-bar {
 			flex: 1;
 		}
 	}
 
 	.filter-container {
 		display: flex;
-		align-items: center;
-		justify-content: space-around;
-		gap: 24rpx;
-		z-index: 1;
+		flex-direction: column;
+		box-sizing: border-box;
+		padding: 20rpx 20rpx env(safe-area-inset-bottom);
+		max-width: 80vw;
+		min-height: 100vh;
+
+		.filter-section-container {
+			flex: 1;
+
+			.filter-section {
+				display: flex;
+				flex-direction: column;
+				gap: 10rpx;
+				
+				&+.filter-section{
+					margin-top: 20rpx;
+				}
+
+				&-title {
+					color: $uni-secondary-color;
+				}
+			}
+		}
+
+		.action-section {
+			align-self: flex-end;
+			width: 100%;
+
+			button {
+				width: 100%;
+			}
+		}
 	}
 </style>
