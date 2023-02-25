@@ -59,7 +59,7 @@
 					} = await Http.post(urls.followGroup_all)
 					this.loading = false
 					if (success) {
-						this.pageList = result
+						this.pageList = result.filter(g => g.system === 2)
 					}
 				} catch (e) {
 					this.loading = false
@@ -103,6 +103,10 @@
 						}
 						uni.$emit('refresh_index_group')
 						this.getAllGroup()
+					}else{
+						uni.showModal({
+							content:msg
+						})
 					}
 				} catch (e) {
 					this.saveLoading = false
