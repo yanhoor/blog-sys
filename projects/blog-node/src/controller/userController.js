@@ -30,7 +30,19 @@ class UserController extends BaseController{
     }
 
     try{
-      const user = await prisma.user.create({data: { password, mobile, name, birthday: null }})
+      const user = await prisma.user.create({
+        data: {
+          password,
+          mobile,
+          name,
+          birthday: null,
+          followGroups: {
+            create: [
+              { name: '特别关注', system: 1 }
+            ]
+          }
+        }
+      })
       return ctx.body = {
         success: true,
         result: '注册成功'
@@ -559,34 +571,36 @@ class UserController extends BaseController{
             id: true
           }
         })
-        await prisma.user.update({
-          where: {
-            id // 关注的用户id
-          },
-          data: {
-            inFollowGroups: {
-              disconnect: gList
-            }
-          }
-        })
 
-        const user = await prisma.user.update({
-          where: {
-            id: userId
-          },
-          data: {
-            followings: {
-              delete: [
-                {
-                  userId_followById: {
-                    userId:  Number(id),
-                    followById: userId
-                  }
-                }
-              ]
+        await prisma.$transaction([
+          prisma.user.update({
+            where: {
+              id // 关注的用户id
+            },
+            data: {
+              inFollowGroups: {
+                disconnect: gList
+              }
             }
-          }
-        })
+          }),
+          prisma.user.update({
+            where: {
+              id: userId
+            },
+            data: {
+              followings: {
+                delete: [
+                  {
+                    userId_followById: {
+                      userId:  Number(id),
+                      followById: userId
+                    }
+                  }
+                ]
+              }
+            }
+          })
+        ])
       }
 
       return ctx.body = {

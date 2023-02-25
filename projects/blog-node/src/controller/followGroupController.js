@@ -3,15 +3,22 @@ const prisma = require('../database/prisma')
 
 class FollowGroupController extends BaseController {
   edit = async (ctx, next) => {
-    const {name, id} = ctx.request.body
+    let {name, id} = ctx.request.body
+    id = Number(id)
+    let userId = await this.getAuthUserId(ctx, next)
     try {
+      if (!userId) throw new Error('未登录')
       if (!name) throw new Error('分组名不能为空')
-      const nCate = await prisma.followGroup.findUnique({
-        where: {
-          name
-        }
-      })
-      if(nCate) throw new Error('已有相同名称的分组')
+      if (name.length > 8) throw new Error('分组名不能超过8个字符')
+
+      if(id){
+        const group = await prisma.followGroup.findUnique({
+          where: {id}
+        })
+
+        if (!group || group.createById !== userId) throw new Error('分组不存在')
+        if(group.system === 1) throw new Error('系统分组不允许修改')
+      }
     } catch (e) {
       ctx.body = {
         success: false,
@@ -19,18 +26,8 @@ class FollowGroupController extends BaseController {
       }
       return false
     }
-    let userId = await this.getAuthUserId(ctx, next)
 
     if (id) {
-      const cate = await prisma.followGroup.findUnique({
-        where: {id}
-      })
-      if (!cate) {
-        return ctx.body = {
-          success: false,
-          msg: '分组不存在'
-        }
-      }
       try {
         const nCate = await prisma.followGroup.update({
           where: {id},
@@ -51,6 +48,18 @@ class FollowGroupController extends BaseController {
       }
     } else {
       try {
+        const group = await prisma.followGroup.findUnique({
+          where: {
+            name
+          }
+        })
+        if(group && group.createById === userId) {
+          return ctx.body = {
+            success: false,
+            msg: '已有相同名称的分组'
+          }
+        }
+
         const nCate = await prisma.followGroup.create({
           data: {
             name,
@@ -87,6 +96,7 @@ class FollowGroupController extends BaseController {
             id: true,
             createdAt: true,
             updatedAt: true,
+            system: true,
             name: true
           },
           orderBy: {updatedAt: 'desc'}
@@ -138,9 +148,11 @@ class FollowGroupController extends BaseController {
         select: {
           id: true,
           name: true,
+          system: true,
           memberCount: true
         },
         orderBy: [
+          {system: 'asc'},
           {sort: 'asc'},
           {updatedAt: 'desc'},
         ]
@@ -173,7 +185,7 @@ class FollowGroupController extends BaseController {
             id: Number(id)
           },
           data: {
-            sort: idx + 1
+            sort: idx + 100
           }
         })
       }))
@@ -206,6 +218,24 @@ class FollowGroupController extends BaseController {
 
   delete = async (ctx, next) => {
     const {id} = ctx.request.body
+    let curUserId = await this.getAuthUserId(ctx, next)
+    try {
+      if (!curUserId) throw new Error('未登录')
+
+      const group = await prisma.followGroup.findUnique({
+        where: {
+          id
+        }
+      })
+
+      if (!group || group.createById !== curUserId) throw new Error('分组不存在')
+      if(group.system === 1) throw new Error('系统分组不允许删除')
+    } catch (e) {
+      return ctx.body = {
+        success: false,
+        msg: e.message
+      }
+    }
     try {
       await prisma.followGroup.update({
         where: {

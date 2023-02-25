@@ -72,6 +72,7 @@ model FollowGroup {
   // 包含的用户
   containUsers User[]   @relation("InFollowGroup")
   name         String   @db.VarChar(255)
+  system       Int      @default(2) // 1--是，2--否
 
   deletedAt DateTime?
 }
