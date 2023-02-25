@@ -1,6 +1,9 @@
 import {
 	baseUrl
 } from '@/config'
+import {
+	closeSocket
+} from '@/socket.js'
 export * as urls from './urls'
 
 class Http {
@@ -8,7 +11,7 @@ class Http {
 		const token = uni.getStorageSync('token')
 		let Authorization = ""
 		if (token) Authorization = 'Bearer ' + token
-		if(formData){
+		if (formData) {
 			const fd = new FormData()
 			Object.keys(params).forEach(k => {
 				fd.append(k, params[k])
@@ -25,13 +28,19 @@ class Http {
 				data: params,
 				success: function(d) {
 					const res = d.data
-					const { code, msg, success } = res
-					if(code == 111 || code == 999){
+					const {
+						code,
+						msg,
+						success
+					} = res
+					if (code == 111 || code == 999) {
 						uni.showToast({
-							icon:'error',
+							icon: 'error',
 							title: msg || '登录信息已过期'
 						})
+						closeSocket()
 						uni.setStorageSync('token', '')
+						uni.removeStorageSync('index-view-group-id')
 						return reject(msg)
 					}
 					resolve(res)
@@ -56,10 +65,14 @@ class Http {
 				data: params,
 				success: function(d) {
 					const res = d.data
-					const { code, msg, success } = res
-					if(code == 111 || code == 999){
+					const {
+						code,
+						msg,
+						success
+					} = res
+					if (code == 111 || code == 999) {
 						uni.showToast({
-							icon:'error',
+							icon: 'error',
 							title: msg || '登录信息已过期'
 						})
 						uni.setStorageSync('token', '')

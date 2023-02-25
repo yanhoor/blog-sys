@@ -15,6 +15,7 @@
 			<uni-icons type="list" size="18" @click="handleManageGroup"></uni-icons>
 		</view>
 	</view>
+	<view id="mountPoint"></view>
 </template>
 
 <script>

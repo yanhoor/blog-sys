@@ -26,7 +26,7 @@
 
 				<view class="action-container">
 					<view class="action-item" @click="handleToPage('/pages/profile/profile')">
-						<uni-icons type="compose"></uni-icons>
+						<uni-icons custom-prefix="iconfont" type="y-edit"></uni-icons>
 						<view>编辑资料</view>
 					</view>
 					<view class="action-item" @click="handleLogout">
@@ -47,7 +47,8 @@
 					to="/pages/my-like/my-like" title="我的点赞"></uni-list-item>
 				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'chatbubble-filled' }"
 					to="/pages/my-comment/my-comment" title="我的评论"></uni-list-item>
-				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'staff-filled' }" to="/pages/user-group-manage/user-group-manage" title="我的分组"></uni-list-item>
+				<uni-list-item clickable show-extra-icon showArrow :extra-icon="{ type: 'staff-filled' }"
+					to="/pages/user-group-manage/user-group-manage" title="我的分组"></uni-list-item>
 
 			</uni-list>
 		</uni-card>
@@ -65,6 +66,9 @@
 	import Http, {
 		urls
 	} from '@/http'
+	import {
+		closeSocket
+	} from '@/socket.js'
 
 	export default {
 		data() {
@@ -119,6 +123,7 @@
 									})
 									setTimeout(() => {
 										this.clearMyInfo()
+										closeSocket()
 										uni.removeTabBarBadge({
 											index: 3
 										})
