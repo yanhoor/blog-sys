@@ -11,7 +11,7 @@
         <div class="flex flex-col gap-[12px]">
           <p class="text-[12px] text-gray-400">*点击修改分组名称，拖拽调整分组顺序</p>
           <div class="flex flex-wrap gap-[12px]" id="groupSort">
-            <n-tag class="cursor-pointer" v-for="group of groupList" :key="group.id" round type="primary" closable @close="handleDeleteGroup(group.id)" @click="handleEditGroup(group)">
+            <n-tag class="cursor-pointer" v-for="group of filterGroupList" :key="group.id" round type="primary" closable @close="handleDeleteGroup(group.id)" @click="handleEditGroup(group)">
               {{ group.name }}
               <span v-if="group.memberCount">({{ group.memberCount }})</span>
             </n-tag>
@@ -71,6 +71,10 @@ const saveLoading = ref(false)
 const showAdd = ref(false)
 const editItem = ref<FollowGroup>()
 
+const filterGroupList = computed(() => {
+  return props.groupList.filter(g => g.system === 2)
+})
+
 watch(() => props.show, (val) => {
   if(val){
     editItem.value = undefined
@@ -78,7 +82,7 @@ watch(() => props.show, (val) => {
       const el = document.querySelector('#groupSort')
       sortableIns.value = Sortable.create(el, {
         onEnd({ newIndex, oldIndex, to }: any){
-          const list = unref(props.groupList)
+          const list = unref(filterGroupList.value)
           const item = list[oldIndex]
           list?.splice(oldIndex, 1)
           list?.splice(newIndex, 0, item)
