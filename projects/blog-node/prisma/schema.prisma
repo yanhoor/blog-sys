@@ -36,6 +36,7 @@ model User {
   type          Int       @default(2) // 1--超级管理员，2--普通用户
   gender        Int       @default(0) // 1--男，2--女
   birthday      DateTime?
+  openid        String?   @unique @db.VarChar(255)
   deletedAt     DateTime?
 
   blogs                Blog[]             @relation("CreateBlog")
@@ -154,6 +155,10 @@ model Blog {
   cate        BlogCate?          @relation(fields: [cateId], references: [id])
   cateId      Int?
   launch      Int                @default(0)
+  address     String?            @db.Text // 详细地址
+  addressName String?            @db.Text // 位置名称
+  latitude    Float?             @db.Double
+  longitude   Float?             @db.Double // 经度
   operateAt   DateTime? // 发布/下架时间
 
   // title   String @db.VarChar(255)

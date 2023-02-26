@@ -3,35 +3,38 @@
 		<SkeletonPostDetail v-if="loading && !postInfo"></SkeletonPostDetail>
 
 		<view v-else>
-			<uni-card margin="5px" class="card">
-				<view class="post-top">
-					<UserAvatar :user="postInfo.createBy" :size="42"></UserAvatar>
-					<view class="item-user">
-						<UserName fontSize="18" :user="postInfo.createBy"></UserName>
-						<YTime class="item-time" type="format" :time="postInfo.createdAt"></YTime>
+			<uni-card margin="5px" spacing="0" class="card">
+				<view class="post-content-wrapper">
+					<view class="post-top">
+						<UserAvatar :user="postInfo.createBy" :size="42"></UserAvatar>
+						<view class="item-user">
+							<UserName fontSize="18" :user="postInfo.createBy"></UserName>
+							<YTime class="item-time" type="format" :time="postInfo.createdAt"></YTime>
+						</view>
 					</view>
-				</view>
-				<YExpandanleContent class="post-content" :content="postInfo.content"></YExpandanleContent>
-				<MediaList :list="postInfo.medias"></MediaList>
-
-				<view class="action-container">
-					<view class="action-item" @click="handleLike">
-						<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058"
-							v-if="postInfo.isLike">
-						</uni-icons>
-						<uni-icons class="action-icon" type="hand-up" size="20" color="#6B7280" v-else></uni-icons>
-					</view>
-					<view class="action-item" @click.stop="showReply = true">
-						<uni-icons class="action-icon" type="chatbubble" size="20" color="#6B7280"></uni-icons>
-					</view>
-					<view class="action-item" @click="handleCollect">
-						<uni-icons class="action-icon" type="star-filled" size="20" color="#18a058"
-							v-if="postInfo.isCollect">
-						</uni-icons>
-						<uni-icons class="action-icon" type="star" size="20" color="#6B7280" v-else></uni-icons>
-					</view>
-					<view class="action-item" @click.stop="showAction = true">
-						<uni-icons class="action-icon" type="more-filled" size="20" color="#6B7280"></uni-icons>
+					<YExpandanleContent class="post-content" :content="postInfo.content"></YExpandanleContent>
+					<MediaList :list="postInfo.medias"></MediaList>
+					<PostAddress :address="postInfo"></PostAddress>
+					
+					<view class="action-container">
+						<view class="action-item" @click="handleLike">
+							<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058"
+								v-if="postInfo.isLike">
+							</uni-icons>
+							<uni-icons class="action-icon" type="hand-up" size="20" color="#6B7280" v-else></uni-icons>
+						</view>
+						<view class="action-item" @click.stop="showReply = true">
+							<uni-icons class="action-icon" type="chatbubble" size="20" color="#6B7280"></uni-icons>
+						</view>
+						<view class="action-item" @click="handleCollect">
+							<uni-icons class="action-icon" type="star-filled" size="20" color="#18a058"
+								v-if="postInfo.isCollect">
+							</uni-icons>
+							<uni-icons class="action-icon" type="star" size="20" color="#6B7280" v-else></uni-icons>
+						</view>
+						<view class="action-item" @click.stop="showAction = true">
+							<uni-icons class="action-icon" type="more-filled" size="20" color="#6B7280"></uni-icons>
+						</view>
 					</view>
 				</view>
 			</uni-card>
@@ -84,6 +87,7 @@
 	import SkeletonPostDetail from '@/components/skeleton/skeleton-post-detail.vue'
 	import UserList from '@/components/user/user-list.vue'
 	import PostActions from '@/components/post/post-actions.vue'
+	import PostAddress from '@/components/post/post-address.vue'
 	import Http, {
 		urls
 	} from '@/http'
@@ -102,6 +106,7 @@
 			SkeletonPostDetail,
 			UserList,
 			PostActions,
+			PostAddress,
 		},
 		mixins: [scrollMixin],
 		data() {
@@ -226,10 +231,11 @@
 </script>
 
 <style lang="scss" scoped>
-	.card {
-		::v-deep .uni-card {
-			padding: 0;
-		}
+	
+	.post-content-wrapper{
+		display: flex;
+		flex-direction: column;
+		gap: 16rpx;
 	}
 
 	.post-item {
@@ -260,12 +266,12 @@
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		margin-top: 12px;
 
 		.action-item {
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			flex: 1;
 		}
 	}
 

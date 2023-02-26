@@ -2,7 +2,7 @@
 	<view>
 		<uni-popup ref="menuPopupRef" type="bottom" background-color="#fff" :safe-area="safeArea"
 			@maskClick="$emit('update:modelValue', false)">
-			<uni-list class="menu-list">
+			<uni-list class="menu-list" v-if="modelValue">
 				<uni-list-item clickable @click.stop="handleDelete" v-if="post && post.createById === myInfo?.id">
 					<template v-slot:body>
 						<view class="action-sheet-text red">删除</view>

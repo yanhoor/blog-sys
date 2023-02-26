@@ -135,6 +135,7 @@ class BlogController extends BaseController{
         }else{
           return ctx.body = {
             success: false,
+            code: 12,
             msg: '分组不存在'
           }
         }
@@ -196,6 +197,10 @@ class BlogController extends BaseController{
             isLike: true,
             isCollect: true,
             content: true,
+            address: true,
+            addressName: true,
+            latitude: true,
+            longitude: true,
             cate: {
               select: {
                 id: true,
@@ -239,7 +244,7 @@ class BlogController extends BaseController{
   }
 
   edit = async (ctx, next) => {
-    const {medias = [], content, cateId, id, isPost = 0} = ctx.request.body
+    const {medias = [], content, id, address, addressName, latitude, longitude, isPost = 0} = ctx.request.body
     let userId = await this.getAuthUserId(ctx, next)
     try {
       if (!content) throw new Error('内容不能为空')
@@ -253,7 +258,10 @@ class BlogController extends BaseController{
 
     const newItem = {
       content,
-      cateId
+      address,
+      addressName,
+      latitude: Number(latitude),
+      longitude: Number(longitude)
     }
     if (id) {
       const blog = await prisma.blog.findUnique({
@@ -340,6 +348,10 @@ class BlogController extends BaseController{
             createById: true,
             launch: true,
             content: true,
+            address: true,
+            addressName: true,
+            latitude: true,
+            longitude: true,
             cate: {
               select: {
                 id: true,
@@ -442,6 +454,10 @@ class BlogController extends BaseController{
           collectedByCount: true,
           commentsCount: true,
           isCollect: true,
+          address: true,
+          addressName: true,
+          latitude: true,
+          longitude: true,
           cate: {
             select: {
               id: true,

@@ -22,8 +22,7 @@
 		{
 			"path": "pages/new-post/new-post",
 			"style": {
-				"navigationBarTitleText": "发布",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "发布"
 			}
 		},
 		{
@@ -62,6 +61,12 @@
 			}
 		},
 		{
+			"path": "pages/user-group-manage/user-group-manage",
+			"style": {
+				"navigationBarTitleText": "我的分组"
+			}
+		},
+		{
 			"path": "pages/notification/notification",
 			"style": {
 				"navigationBarTitleText": "通知",
@@ -78,6 +83,12 @@
 			"path": "pages/profile/profile",
 			"style": {
 				"navigationBarTitleText": "编辑资料"
+			}
+		},
+		{
+			"path": "pages/map/map",
+			"style": {
+				"navigationBarTitleText": "地址详情"
 			}
 		},
 		{
@@ -109,6 +120,14 @@
 			}
 		},
 		{
+			"path": "pages/image-swiper/image-swiper",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarBackgroundColor": "#000",
+				"backgroundColor": "#000"
+			}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录"
@@ -117,7 +136,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "Vipot",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
 		"app-plus": {

@@ -941,6 +941,10 @@ class UserController extends BaseController{
           isLike: true,
           isCollect: true,
           content: true,
+          address: true,
+          addressName: true,
+          latitude: true,
+          longitude: true,
           createBy: {
             select: {
               id: true,

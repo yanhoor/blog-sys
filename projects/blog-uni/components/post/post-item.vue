@@ -11,6 +11,7 @@
 			<YExpandanleContent class="post-content" :content="post.content" @tap="handleClickPost">
 			</YExpandanleContent>
 			<MediaList class="media-list" :list="post.medias" :maxCount="9" @space-click="handleClickPost"></MediaList>
+			<PostAddress :address="post"></PostAddress>
 			<view class="action-container">
 				<view class="action-item" @click="handleLike">
 					<uni-icons class="action-icon" type="hand-up-filled" size="20" color="#18a058" v-if="post.isLike">
@@ -46,6 +47,7 @@
 	import YTime from '@/components/y-time.vue'
 	import YExpandanleContent from '@/components/y-expandable-content.vue'
 	import MediaList from '@/components/media/media-list.vue'
+	import PostAddress from '@/components/post/post-address.vue'
 	import Http, {
 		urls
 	} from '@/http'
@@ -59,7 +61,8 @@
 		components: {
 			YTime,
 			YExpandanleContent,
-			MediaList
+			MediaList,
+			PostAddress,
 		},
 		data() {
 			return {
