@@ -258,10 +258,12 @@ class BlogController extends BaseController{
 
     const newItem = {
       content,
-      address,
-      addressName,
-      latitude: Number(latitude),
-      longitude: Number(longitude)
+    }
+    if(latitude){
+      newItem.address = address
+      newItem.addressName = addressName
+      newItem.latitude = Number(latitude)
+      newItem.longitude = Number(longitude)
     }
     if (id) {
       const blog = await prisma.blog.findUnique({
