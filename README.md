@@ -10,10 +10,9 @@
 
 ### 小程序
 
-<video id="video" controls preload height='600px' width='350px' src="https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4" type="video/mp4">
-</video>
+[预览地址1](https://niubility.website/blog/post/60)
 
-[备用链接](https://static-buck.oss-cn-shenzhen.aliyuncs.com/preview/blog-uni-miniprogram-preview.mp4)
+[预览地址2](https://niubility.website/blog/post/61)
 
 ## 项目运行
 
@@ -121,4 +120,8 @@
 
 - [x] 使用 `uni-app` 构建
 
+- [x] 发布地点/查看地点
+
 - [x] 其他功能同步 `blog-nuxt3`
+
+#### blog-flutter: Flutter 端博客
