@@ -6,11 +6,50 @@ const dayjs = require("dayjs")
 class BlogController extends BaseController{
   // 管理端列表
   manageList = async (ctx, next) => {
-    const {createById, page = 1, pageSize = this.pageSize} = ctx.request.body
-    const skip = pageSize * (page - 1)
-    const filter = {}
-    if (createById) filter.createById = createById
     try {
+      const requestBody = ctx.request.body
+      if(!requestBody) return ctx.body = 500
+
+      let {uid, uname, keyword, status, startTime, endTime, page = 1, pageSize = this.pageSize} = ctx.request.body
+      uid = Number(uid)
+      status = Number(status)
+      const skip = pageSize * (page - 1)
+      const filter = { }
+
+      // 作者
+      if (uid) filter.createById = uid
+      // 作者名
+      if (uname) filter.createBy = {
+        name: {
+          contains: uname
+        }
+      }
+
+      // 1--已删除
+      if (status === 1) {
+        filter.deletedAt = { not: null }
+      }else if(status === 2){
+        // 发布
+        filter.deletedAt = null
+        filter.launch = 1
+      }else if(status === 3){
+        // 下架
+        filter.launch = 0
+        filter.ALL_DATA = true
+      }else{
+        filter.ALL_DATA = true
+      }
+
+      // 关键词
+      if (keyword) filter.content = {
+        contains: keyword
+      }
+
+      // 创建时间
+      filter.createdAt = {}
+      if(startTime) filter.createdAt.gte = new Date(startTime)
+      if(endTime) filter.createdAt.lte = new Date(endTime)
+
       const [list, total] = await prisma.$transaction([
         prisma.blog.findMany({
           skip,
@@ -20,23 +59,26 @@ class BlogController extends BaseController{
             id: true,
             createdAt: true,
             updatedAt: true,
-            launch: true,
+            deletedAt: true,
+            createById: true,
             createBy: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                avatar: true
               }
             },
-            cate: {
-              select: {
-                id: true,
-                name: true
-              }
-            },
+            launch: true,
+            content: true,
+            address: true,
+            addressName: true,
+            latitude: true,
+            longitude: true,
             medias: {
               select: {
                 id: true,
-                url: true
+                url: true,
+                blogId: true,
               }
             }
           },
@@ -53,18 +95,23 @@ class BlogController extends BaseController{
         }
       }
     } catch (e) {
-      this.errorLogger.error('blog.list--------->', e)
+      this.errorLogger.error('blog.manageList--------->', e)
     }
   }
 
   list = async (ctx, next) => {
     try {
-      let { keyword, time, sort, uid, gid, page = 1, pageSize = this.pageSize } = ctx.request.body
-      sort = sort?.toString()
+      const requestBody = ctx.request.body
+      if(!requestBody) return ctx.body = 500
+
+      let { keyword, startTime, endTime, sort, uid, gid, page = 1, pageSize = this.pageSize } = requestBody
+      sort = Number(sort)
+      uid = Number(uid)
+      gid = Number(gid)
       const skip = pageSize * (page - 1)
       const filter = { launch: 1 }
       let userId = await this.getAuthUserId(ctx, next)
-      if(uid) filter.createById = Number(uid)
+      if(uid) filter.createById = uid
       if (keyword) filter.OR = [
         {
           content: {
@@ -72,32 +119,12 @@ class BlogController extends BaseController{
           }
         }
       ]
-      if(time){
-        let timeRange
-        switch (Number(time)) {
-          case 0:
-            timeRange = undefined
-            break
-          case 1:
-            const start = dayjs().subtract(24, 'h')
-            const lte = new Date()
-            timeRange = {
-              gte: new Date(start),
-              lte
-            }
-            break
-          case 2:
-            timeRange = this.createTimeRange(7, 0)
-            break
-          case 3:
-            timeRange = this.createTimeRange(90, 0)
-            break
-        }
-        filter.createdAt = timeRange
-      }
+      filter.createdAt = {}
+      if(startTime) filter.createdAt.gte = new Date(startTime)
+      if(endTime) filter.createdAt.lte = new Date(endTime)
       let orderBy = []
       if(sort){
-        switch (Number(sort)) {
+        switch (sort) {
           // 综合排序
           case 1:
             orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
@@ -117,7 +144,7 @@ class BlogController extends BaseController{
       if(gid && userId){
         const group = await prisma.followGroup.findUnique({
           where: {
-            id: Number(gid)
+            id: gid
           },
           select: {
             createById: true,
@@ -201,12 +228,6 @@ class BlogController extends BaseController{
             addressName: true,
             latitude: true,
             longitude: true,
-            cate: {
-              select: {
-                id: true,
-                name: true
-              }
-            },
             createBy: {
               select: {
                 id: true,
@@ -215,9 +236,6 @@ class BlogController extends BaseController{
               }
             },
             medias: {
-              where: {
-                deletedAt: null
-              },
               select: {
                 id: true,
                 url: true,
@@ -244,7 +262,9 @@ class BlogController extends BaseController{
   }
 
   edit = async (ctx, next) => {
-    const {medias = [], content, id, address, addressName, latitude, longitude, isPost = 0} = ctx.request.body
+    let {medias = [], content, id, address, addressName, latitude, longitude, isPost = 1} = ctx.request.body
+    latitude = Number(latitude)
+    longitude = Number(longitude)
     let userId = await this.getAuthUserId(ctx, next)
     try {
       if (!content) throw new Error('内容不能为空')
@@ -262,8 +282,8 @@ class BlogController extends BaseController{
     if(latitude){
       newItem.address = address
       newItem.addressName = addressName
-      newItem.latitude = Number(latitude)
-      newItem.longitude = Number(longitude)
+      newItem.latitude = latitude
+      newItem.longitude = longitude
     }
     if (id) {
       const blog = await prisma.blog.findUnique({
@@ -395,7 +415,8 @@ class BlogController extends BaseController{
   }
 
   info = async (ctx, next, isManage = false) => {
-    const {id} = ctx.request.body
+    let {id} = ctx.request.body
+    id = Number(id)
     let userId = await this.getAuthUserId(ctx, next)
     try {
       const xprisma = prisma.$extends({
@@ -443,7 +464,7 @@ class BlogController extends BaseController{
       })
       const result = await xprisma.blog.findUnique({
         where: {
-          id: Number(id)
+          id
         },
         select: {
           id: true,
@@ -498,6 +519,25 @@ class BlogController extends BaseController{
       result.readCount = num
 
       if(userId) {
+        await prisma.blog.update({
+          where: { id },
+          data: {
+            readBy: {
+              // 存在就连接，否则创建
+              connectOrCreate: {
+                where: {
+                  userId_blogId: {
+                    userId,
+                    blogId: id
+                  }
+                },
+                create: {
+                  userId
+                }
+              }
+            }
+          }
+        })
         const isRead = await redisClient.sIsMember(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id, userId.toString())
         if(!isRead){
           // 当前用户未读，记录阅读数

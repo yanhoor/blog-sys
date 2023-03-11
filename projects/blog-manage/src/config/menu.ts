@@ -40,78 +40,73 @@ const sourceMenus: Array<MenuProps> = [
     children: [
       {
         // group: '基础',
-        title: '博客分类',
-        path: 'blogCate'
-      },
-      {
-        // group: '基础',
         title: '博客列表',
         path: 'blog'
       }
     ]
   },
-  {
-    title: '状态管理',
-    icon: Star,
-    children: [
-      {
-        group: '基础',
-        title: 'pinia',
-        path: '/helloWorld'
-      }
-    ]
-  },
-  {
-    title: '测试多层菜单1',
-    icon: Location,
-    children: [
-      {
-        group: '分组1',
-        title: '菜单1-1',
-        children: [
-          {
-            group: '分组1-1',
-            title: '菜单1-1-1'
-          }
-        ]
-      },
-      {
-        title: '菜单1-2',
-        children: [
-          {
-            group: '分组1-2',
-            title: '菜单1-2-1'
-          }
-        ]
-      },
-      {
-        title: '菜单1-3',
-        children: [
-          {
-            title: '菜单1-3-1',
-            children: [
-              {
-                title: '菜单1-3-4-1',
-                children: [
-                  {
-                    title: '菜单1-3-5-1',
-                    children: [
-                      {
-                        title: '菜单1-3-6-1'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        title: '菜单1-4'
-      }
-    ]
-  }
+  // {
+  //   title: '状态管理',
+  //   icon: Star,
+  //   children: [
+  //     {
+  //       group: '基础',
+  //       title: 'pinia',
+  //       path: '/helloWorld'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: '测试多层菜单1',
+  //   icon: Location,
+  //   children: [
+  //     {
+  //       group: '分组1',
+  //       title: '菜单1-1',
+  //       children: [
+  //         {
+  //           group: '分组1-1',
+  //           title: '菜单1-1-1'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: '菜单1-2',
+  //       children: [
+  //         {
+  //           group: '分组1-2',
+  //           title: '菜单1-2-1'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: '菜单1-3',
+  //       children: [
+  //         {
+  //           title: '菜单1-3-1',
+  //           children: [
+  //             {
+  //               title: '菜单1-3-4-1',
+  //               children: [
+  //                 {
+  //                   title: '菜单1-3-5-1',
+  //                   children: [
+  //                     {
+  //                       title: '菜单1-3-6-1'
+  //                     }
+  //                   ]
+  //                 }
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: '菜单1-4'
+  //     }
+  //   ]
+  // }
 ]
 
 // 构建符合 el-menu 的菜单结构，主要是分组处理

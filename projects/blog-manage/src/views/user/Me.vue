@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/modules/userStore"
 import { ref } from 'vue'
-import UploadAvatar from '@/components/uploadAvatar.vue'
+import UploadAvatar from '@/components/upload_avatar.vue'
 import $http, {urls} from "@/http"
 import {ElMessage} from "element-plus"
 

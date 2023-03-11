@@ -2,34 +2,62 @@
   <ListWrapper>
     <template #filter>
       <el-row :gutter="24">
-        <el-col :span="8">
-          <el-input placeholder="标题" v-model="filterForm.title" clearable @keyup.enter="getList" @clear="getList"></el-input>
+        <el-col :span="6">
+          <el-input placeholder="内容" v-model="filterForm.keyword" clearable @keyup.enter="handleSearch" @clear="handleSearch"></el-input>
         </el-col>
-        <el-col :span="8">
-          <el-select placeholder="创建用户" v-model="filterForm.createById" clearable @change="getList">
+        <el-col :span="6">
+          <el-input placeholder="用户名" v-model="filterForm.uname" clearable @keyup.enter="handleSearch" @clear="handleSearch"></el-input>
+          <!--<el-select placeholder="创建用户" v-model="filterForm.createById" clearable @change="getList">
             <el-option :key="item.id" :value="item.id" :label="item.name" v-for="item of pageState.userList"></el-option>
+          </el-select>-->
+        </el-col>
+        <el-col :span="6">
+          <el-select class="w-full" placeholder="状态" v-model="filterForm.status" @change="handleSearch">
+            <el-option :value="0" label="全部"></el-option>
+            <el-option :value="1" label="已删除"></el-option>
+            <el-option :value="2" label="发布"></el-option>
+            <el-option :value="3" label="下架"></el-option>
           </el-select>
+        </el-col>
+        <el-col :span="6">
+          <el-date-picker
+            class="max-w-full"
+            v-model="dateRange"
+            type="daterange"
+            unlink-panels
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            :shortcuts="rangeShortcuts"
+          />
         </el-col>
       </el-row>
     </template>
 
     <template #actions>
-      <el-button type="primary" @click="handleAdd">新增</el-button>
-      <el-button @click="getList">查询</el-button>
+      <el-button @click="handleSearch">查询</el-button>
     </template>
 
     <template #table>
-      <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
+      <el-table border stripe :data="pageState.tableList" height="100%" v-loading="pageState.loading">
         <el-table-column key="seq" type="index" width="60" label="#"></el-table-column>
-        <el-table-column key="title" prop="title" label="标题"></el-table-column>
-        <el-table-column key="cate" label="所属分类">
+        <el-table-column key="createBy" label="作者">
           <template #default="{ row }">
-            <div>{{ row.cate?.name }}</div>
+            <div class="flex items-center">
+              <!--<image :src="IMG_HOST + row.avatar" class="w-[60px] h-[60px] mr-8" />-->
+              <el-avatar :src="IMG_HOST + row.createBy?.avatar"></el-avatar>
+              <span class="truncate flex-1 ml-3">{{ row.createBy?.name }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column key="content" prop="content" label="内容">
+          <template #default="{ row }">
+            <ExpandedContent :max-length="120" :show-btn="false" :content="row.content"/>
           </template>
         </el-table-column>
         <el-table-column key="launch" label="状态">
           <template #default="{ row }">
-            <el-tag v-if="row.launch" type="success">已发布</el-tag>
+            <el-tag v-if="row.deletedAt" type="danger">已删除</el-tag>
+            <el-tag v-else-if="row.launch" type="success">已发布</el-tag>
             <el-tag v-else type="info">下架</el-tag>
           </template>
         </el-table-column>
@@ -38,27 +66,27 @@
             <div>{{dayjs(row.operateAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
         </el-table-column>
-        <el-table-column key="createBy" label="创建用户">
-          <template #default="{ row }">
-            <div>{{ row.createBy?.name }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column key="updateTime" label="更新时间">
+        <!--<el-table-column key="updateTime" label="更新时间">
           <template #default="{ row }">
             <div>{{dayjs(row.updatedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column key="createTime" label="创建时间">
           <template #default="{ row }">
             <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </template>
         </el-table-column>
+        <el-table-column key="deletedAt" label="删除时间">
+          <template #default="{ row }">
+            <div v-if="row.deletedAt">{{dayjs(row.deletedAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
+            <div v-else>-</div>
+          </template>
+        </el-table-column>
         <el-table-column key="operate" label="操作" min-width="120">
           <template #default="{ row }">
-            <el-button @click="operateItem(row.id, 0)" link type="warning" v-if="row.launch">下架</el-button>
-            <el-button @click="operateItem(row.id, 1)" link type="success" v-else>发布</el-button>
+            <el-button @click="operateItem(row.id, 0)" link type="warning" v-if="row.launch && !row.deletedAt">下架</el-button>
+            <!--<el-button @click="operateItem(row.id, 1)" link type="success" v-else>发布</el-button>-->
             <el-button @click="viewItem(row.id)" link type="primary">查看</el-button>
-            <el-button @click="deleteItem(row.id)" link type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +112,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import ListWrapper from '@/layout/listWrapper.vue'
-import $http, { urls } from "@/http";
+import ExpandedContent from '@/components/expandable_content.vue'
+import $http, { urls, IMG_HOST } from "@/http";
 import { ElMessage, ElMessageBox } from "element-plus"
 import dayjs from "dayjs"
 import { useRouter } from 'vue-router'
@@ -97,18 +126,57 @@ const pageState = reactive({
   pageSizeList: [20, 50, 100, 200],
   tableTotal: 0,
 })
+const dateRange = ref([])
 const filterForm = reactive({
-  title: '',
-  createById: '',
+  keyword: '',
+  uname: '',
+  startTime: '',
+  endTime: '',
+  status: 0,
   page: 1,
   pageSize: 20
 })
+const rangeShortcuts = [
+  {
+    text: '昨天',
+    value: () => {
+      const start = dayjs().subtract(1, 'd').startOf('date').valueOf()
+      const end = dayjs().startOf('date').valueOf()
+      return [start, end] as const
+    }
+  },
+  {
+    text: '上周',
+    value: () => {
+      const start = dayjs().subtract(1, 'w').startOf('w').valueOf()
+      const end = dayjs().subtract(1, 'w').endOf('w').valueOf()
+      return [start, end] as const
+    }
+  },
+  {
+    text: '上个月',
+    value: () => {
+      const start = dayjs().subtract(1, 'M').startOf('M').valueOf()
+      const end = dayjs().subtract(1, 'M').endOf('M').valueOf()
+      return [start, end] as const
+    }
+  },
+  {
+    text: '今年',
+    value: () => {
+      const start = dayjs().startOf('y').valueOf()
+      const end = dayjs().valueOf()
+      return [start, end] as const
+    }
+  }
+]
 
 getList()
 getAllUser()
 
-function handleAdd() {
-  router.push('/blogEdit')
+function handleSearch(){
+  [filterForm.startTime, filterForm.endTime] = dateRange.value
+  getList()
 }
 
 async function getList(){
@@ -152,34 +220,6 @@ async function viewItem(id: string) {
       id
     }
   })
-}
-
-async function deleteItem(id: string) {
-  ElMessageBox.confirm(
-    '确定删除？',
-    '删除',
-    {
-      confirmButtonText: '删除',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then( async () => {
-    try{
-      const {success, result, msg} = await $http.post(urls.blog_delete, {id})
-      if(!success){
-        ElMessage.error({
-          message: msg
-        })
-      }else{
-        ElMessage.error({
-          message: '已删除'
-        })
-        getList()
-      }
-    }catch (e) {
-
-    }
-  }).catch(() => {})
 }
 
 async function operateItem(id: string, launch: number) {

@@ -21,8 +21,8 @@
 <script setup lang="ts">
 import $http, {urls} from "@/http"
 import {ElMessage} from "element-plus"
-import LineChart from '@/components/echarts/lineChart.vue'
-import NumberBoard from "@/components/numberBoard.vue"
+import LineChart from '@/components/echarts/line_chart.vue'
+import NumberBoard from "@/components/number_board.vue"
 import {reactive, ref} from "vue"
 
 const weekStatis: any = reactive({

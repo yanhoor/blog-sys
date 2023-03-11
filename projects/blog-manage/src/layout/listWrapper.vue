@@ -24,18 +24,14 @@
 
 <style lang="scss" scoped>
 .list-page-wrapper{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  @apply flex flex-col h-full;
   .filter-actions{
-    margin: 12px 0;
+    @apply my-[12px];
   }
   .list-table-container{
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
+    @apply flex flex-col flex-1 overflow-hidden;
     .vxe-table-container{
-      flex: 1;
+      @apply flex-1 overflow-hidden;
     }
   }
 }
