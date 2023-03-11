@@ -14,7 +14,6 @@
           <UserAvatar :user="userInfo" :size="36" disabled/>
           <div class="flex flex-col gap-[3px] items-start overflow-hidden">
             <div class="text-green-700 text-[16px] cursor-pointer" @click="navigateTo({ path: '/user/' + userInfo.id })">{{ userInfo?.name }}</div>
-            <span class="text-gray-400 text-[12px] truncate max-w-full">{{ userInfo.sign }}</span>
           </div>
         </div>
         <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" class="w-full" :user="userInfo" @selectGroup="showGroupSelect = true">

@@ -6,23 +6,21 @@
       <n-tab name="2">最新优先</n-tab>
       <n-tab name="3">最热优先</n-tab>
       <template #suffix>
-        <n-select class="w-[200px]" v-model:value="searchParams.time" :options="timeOptions" @update:value="handleSearch"></n-select>
+        <n-select class="w-[200px]" v-model:value="selectTime" :options="timeOptions" @update:value="handleTimeSelect"></n-select>
       </template>
     </n-tabs>
-    <PostList :searchParams="searchParams"/>
+    <PostList ref="blogListRef" :searchParams="searchParams"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  NCard,
-  NRow,
-  NCol,
   NTabs,
   NTab,
   NButton,
   NSelect
 } from "naive-ui"
+import dayjs from "dayjs"
 
 useHead({
   title: '搜索',
@@ -31,10 +29,13 @@ definePageMeta({
   key: (route) => route.fullPath
 })
 const route = useRoute()
+const selectTime = ref('0')
+const blogListRef = ref()
 const searchParams = reactive({
   keyword: route.query.keyword,
-  time: route.query.time || '0',
-  sort: route.query.sort || 1,
+  startTime: '',
+  endTime: '',
+  sort: 1,
 })
 const timeOptions = [
   { label: '时间不限', value: '0' },
@@ -43,8 +44,32 @@ const timeOptions = [
   { label: '最近三个月', value: '3' },
 ]
 
+function handleTimeSelect() {
+  switch (selectTime.value) {
+    case '0':
+      searchParams.startTime = ''
+      searchParams.endTime = ''
+      break
+    case '1':
+      searchParams.startTime = dayjs().subtract(24, 'h').toString()
+      searchParams.endTime = dayjs().toString()
+      break
+    case '2':
+      searchParams.startTime = dayjs().subtract(7, 'd').endOf('date').toString()
+      searchParams.endTime = dayjs().endOf('date').toString()
+      break
+    case '3':
+      searchParams.startTime = dayjs().subtract(90, 'd').endOf('date').toString()
+      searchParams.endTime = dayjs().endOf('date').toString()
+      break
+  }
+  handleSearch()
+}
 async function handleSearch() {
-  await navigateTo({ path: '/search', query: searchParams })
+  // await navigateTo({ path: '/search', query: searchParams })
+  setTimeout(() => {
+    blogListRef.value.handleLoadNextPage(1)
+  })
 }
 </script>
 

@@ -82,11 +82,26 @@
           </n-tabs>
         </div>
         <template v-if="contentType == 1">
-          <PostList :search-params="{...searchParams, sort: 3}" canEdit/>
+          <PostList :search-params="{uid: searchParams.uid, sort: '3'}" canEdit/>
         </template>
         <template v-if="contentType == 2">
-          <div class="mb-[12px]">全部博客({{ blogTotal }})</div>
-          <PostList :search-params="searchParams" @fetchComplete="handleBlogFetchComplete" canEdit/>
+          <div class="mb-[12px] flex justify-between items-center">
+            <div>全部博客({{ blogTotal }})</div>
+            <n-button quaternary size="small" type="primary" v-if="showSearch" @click="showSearch = false">取消</n-button>
+            <n-button size="small" type="primary" quaternary circle @click="showSearch = true" v-else>
+              <template #icon>
+                <n-icon :component="Search12Regular"/>
+              </template>
+            </n-button>
+          </div>
+          <n-collapse-transition class="mb-[12px]" :show="showSearch">
+            <div class="flex gap-[12px] items-center">
+              <y-search v-model:value="searchParams.keyword" @confirm="handleSearchPost"/>
+              <n-date-picker v-model:value="selectDateRange" :shortcuts="rangeShortcuts" :is-date-disabled="(ts) => ts > Date.now()" type="daterange" clearable />
+              <n-button size="small" type="primary" @click="handleSearchPost">确定</n-button>
+            </div>
+          </n-collapse-transition>
+          <PostList ref="blogListRef" :search-params="searchParams" @fetchComplete="handleBlogFetchComplete" canEdit/>
         </template>
         <template v-if="contentType == 3">
           <UserVideoWall :user-id="userInfo.id"/>
@@ -100,9 +115,10 @@
 </template>
 
 <script setup lang="ts">
-import { CalendarLtr24Regular, DocumentText24Regular } from '@vicons/fluent'
-import {NCard, NButton, NTabs, NTab, NTime, NIcon, NTag, createDiscreteApi} from 'naive-ui'
+import { CalendarLtr24Regular, DocumentText24Regular, Search12Regular } from '@vicons/fluent'
+import {NCollapseTransition, NButton, NTabs, NTab, NTime, NIcon, NTag, NDatePicker, createDiscreteApi} from 'naive-ui'
 import {User, Media} from "~/types"
+import dayjs from "dayjs"
 
 definePageMeta({
   key: (route) => route.path
@@ -112,10 +128,38 @@ const route = useRoute()
 const myInfo = useUserInfo()
 const userInfo = ref<User>()
 const loading = ref(false)
+const showSearch = ref(false)
+const selectDateRange = ref<[number, number]>()
+const rangeShortcuts = {
+  '昨天': () => {
+    const start = dayjs().subtract(1, 'd').startOf('date').valueOf()
+    const end = dayjs().startOf('date').valueOf()
+    return [start, end] as const
+  },
+  '上周': () => {
+    const start = dayjs().subtract(1, 'w').startOf('w').valueOf()
+    const end = dayjs().subtract(1, 'w').endOf('w').valueOf()
+    return [start, end] as const
+  },
+  '上个月': () => {
+    const start = dayjs().subtract(1, 'M').startOf('M').valueOf()
+    const end = dayjs().subtract(1, 'M').endOf('M').valueOf()
+    return [start, end] as const
+  },
+  '今年': () => {
+    const start = dayjs().startOf('y').valueOf()
+    const end = dayjs().valueOf()
+    return [start, end] as const
+  },
+}
+const blogListRef = ref()
 const blogTotal = ref(0)
 const imageList = ref<Media[]>([])
 const searchParams = reactive({
-  uid: ''
+  uid: '',
+  keyword: '',
+  startTime: '',
+  endTime: '',
 })
 const contentType = ref(route.query.tab || '1')
 const statisInfo = ref({
@@ -180,6 +224,10 @@ function handleBlogFetchComplete(res: any) {
 }
 
 function handleTabChange(val: string) {
+  searchParams.keyword = ''
+  searchParams.startTime = ''
+  searchParams.endTime = ''
+  selectDateRange.value = undefined
   navigateTo('/user/' + userInfo.value?.id + '?tab=' + val)
 }
 
@@ -194,6 +242,25 @@ function handleViewFriends(type: number) {
       navigateTo('/my/follower')
     }
   }
+}
+
+function handleSearchPost() {
+  const { message } = createDiscreteApi(["message"])
+  if(selectDateRange.value?.length){
+    const diff = dayjs(selectDateRange.value[1]).diff(dayjs(selectDateRange.value[0]), 'month', true)
+    if(diff > 12){
+      message.warning('时长不能超过一年')
+      return
+    }
+    searchParams.startTime = new Date(selectDateRange.value[0]).toString()
+    searchParams.endTime = new Date(selectDateRange.value[1]).toString()
+  }else{
+    searchParams.startTime = ''
+    searchParams.endTime = ''
+  }
+  setTimeout(() => {
+    blogListRef.value.handleLoadNextPage(1)
+  })
 }
 
 </script>

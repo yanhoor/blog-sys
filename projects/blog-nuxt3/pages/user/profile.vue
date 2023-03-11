@@ -5,7 +5,7 @@
     <div class="mt-12">
       <n-form class="flex-1" ref="formRef" :model="postForm" :rules="rules" label-placement="left" label-width="120">
         <n-form-item path="name" label="名称">
-          <n-input v-model:value="postForm.name" @keydown.enter.prevent maxlength="20" show-count clearable/>
+          <n-input v-model:value="postForm.name" @keydown.enter.prevent maxlength="8" show-count clearable/>
         </n-form-item>
         <n-form-item path="gender" label="性别">
           <n-radio-group v-model:value="postForm.gender" name="gender">
@@ -26,9 +26,6 @@
         <n-form-item path="birthday" label="生日">
           <n-date-picker type="date" v-model:value="postForm.birthday" :is-date-disabled="(ts) => ts > Date.now()" clearable>
           </n-date-picker>
-        </n-form-item>
-        <n-form-item path="sign" label="个人签名">
-          <n-input v-model:value="postForm.sign" @keydown.enter.prevent maxlength="20" show-count clearable/>
         </n-form-item>
         <n-form-item path="introduce" label="个人简介">
           <n-input v-model:value="postForm.introduce" type="textarea" @keydown.enter.prevent maxlength="80" show-count clearable/>
@@ -74,7 +71,6 @@ const postForm = ref<User>({
   id: '',
   gender: 0,
   birthday: 0,
-  sign: '',
   introduce: '',
   lock: 2,
 })

@@ -1,14 +1,12 @@
 <template>
-  <n-message-provider>
-    <NConfigProvider class="bg-page-light dark:bg-page-dark" :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
-      <NuxtLoadingIndicator />
-      <NuxtLayout>
-        <!--导航会报错-->
-        <!--<NuxtPage :page-key="getPathKey"/>-->
-        <NuxtPage/>
-      </NuxtLayout>
-    </NConfigProvider>
-  </n-message-provider>
+  <NConfigProvider class="bg-page-light dark:bg-page-dark" :theme="darkMode ? darkTheme : null" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
+    <NuxtLoadingIndicator />
+    <NuxtLayout>
+      <!--导航会报错-->
+      <!--<NuxtPage :page-key="getPathKey"/>-->
+      <NuxtPage/>
+    </NuxtLayout>
+  </NConfigProvider>
 </template>
 
 <script setup>

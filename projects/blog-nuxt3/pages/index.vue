@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="flex items-start gap-[12px]">
-      <n-card class="sticky top-[80px] max-w-[180px]" v-if="groupList.length">
-        <p class="group-title cursor-pointer" :class="{'active': !currentGroupId}" @click="handleChangeGroup()">全部关注</p>
-        <div class="flex items-center">
+      <n-card class="sticky top-[80px] max-w-[180px]" v-if="myInfo">
+        <p class="group-title" :class="{'active': !currentGroupId}" @click="handleChangeGroup()">全部关注</p>
+        <p class="group-title" :class="{'active': currentGroupId == group.id}" v-for="group of systemGroupList" :key="group.id" @click="handleChangeGroup(group.id)">{{ group.name }}</p>
+        <div class="flex items-center" v-if="customGroupList.length">
           <p class="flex-1 font-semibold text-[16px] my-[6px]">自定义分组</p>
           <n-button size="small" text @click="showManageGroup = true">
             <template #icon>
@@ -11,7 +12,7 @@
             </template>
           </n-button>
         </div>
-        <p class="group-title" :class="{'active': currentGroupId == group.id }" v-for="group of groupList" :key="group.id" @click="handleChangeGroup(group.id)">
+        <p class="group-title" :class="{'active': currentGroupId == group.id }" v-for="group of customGroupList" :key="group.id" @click="handleChangeGroup(group.id)">
           {{ group.name }}
         </p>
       </n-card>
@@ -22,7 +23,7 @@
       <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>
     </div>
 
-    <UserFollowGroupManage v-model:show="showManageGroup" @change="getAllGroup" :groupList="groupList"/>
+    <UserFollowGroupManage v-model:show="showManageGroup" @change="getAllGroup" :groupList="customGroupList"/>
   </div>
 </template>
 
@@ -48,7 +49,8 @@ definePageMeta({
 })
 
 const route = useRoute()
-const groupList = ref<FollowGroup[]>([])
+const customGroupList = ref<FollowGroup[]>([])
+const systemGroupList = ref<FollowGroup[]>([])
 const currentGroupId = ref(route.query.gid)
 const listRef = ref()
 const myInfo = useUserInfo()
@@ -74,7 +76,13 @@ async function getAllGroup() {
   try{
     const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
     if(success){
-      groupList.value = result
+      result.forEach(g => {
+        if(g.system === 1){
+          systemGroupList.value.push(g)
+        }else{
+          customGroupList.value.push(g)
+        }
+      })
     }else{
       message.error(msg as string)
     }

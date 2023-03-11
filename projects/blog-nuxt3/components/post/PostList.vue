@@ -31,6 +31,8 @@ interface Props {
   searchParams?: {
     keyword?: string
     time?: string
+    startTime?: string
+    endTime?: string
     sort?: string
     uid?: string
     gid?: string

@@ -1,7 +1,7 @@
 <template>
   <div class="whitespace-pre-wrap break-words transition-all">
     {{ isExpanded ? content : getPostSummary(content) }}
-    <n-button text type="primary" @click="handleExpand" v-if="showAction">{{ isExpanded ? '收起' : '展开' }}</n-button>
+    <n-button text type="primary" @click.stop="handleExpand" v-if="showAction">{{ isExpanded ? '收起' : '展开' }}</n-button>
   </div>
 </template>
 
@@ -25,9 +25,9 @@ const lineContentList = computed(() => {
 })
 const showAction = computed(() => {
   if(lineContentList.value.length > props.maxLine) return true
-  if(props.content?.length > props.maxLength) return true
 
-  return false
+  return props.content?.length > props.maxLength
+
 })
 
 function getPostSummary(content: string) {

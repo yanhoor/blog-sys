@@ -10,11 +10,13 @@
 				<view class="info-card">
 					<view class="user-info-container">
 						<view class="user-left">
-							<UserAvatar class="user-avatar" :size="72" :user="userInfo" :clickable="false"
-								v-if="userInfo.avatar">
+							<UserAvatar class="user-avatar" :size="72" :user="userInfo" :clickable="false">
 							</UserAvatar>
-							<image class="user-avatar default" src="@/static/images/personal.png" v-else></image>
 							<UserName fontSize="22" :user="userInfo"></UserName>
+							<uni-icons custom-prefix="iconfont" type="y-male" size="18" color="#409eff"
+								v-if="userInfo.gender === 1"></uni-icons>
+							<uni-icons custom-prefix="iconfont" type="y-female" size="18" color="#f56c6c"
+								v-if="userInfo.gender === 2"></uni-icons>
 						</view>
 						<view class="user-right">
 							<UserBtn :user="userInfo"></UserBtn>
@@ -63,7 +65,8 @@
 						</view>
 					</view>
 					<view class="action-section">
-						<view class="all-btn" @click="handleToPage('/pages/user-all-image/user-all-image?id=' + userId)">
+						<view class="all-btn"
+							@click="handleToPage('/pages/user-all-image/user-all-image?id=' + userId)">
 							全部
 						</view>
 					</view>
@@ -81,9 +84,16 @@
 							{{ postTotal }}
 						</view>
 					</view>
+					<view class="action-section">
+						<uni-icons type="search" size="20" @click="showSearch = true"></uni-icons>
+					</view>
 				</view>
-				<PostList class="post-list" :pageUrl="'/user/' + userId" :searchParams="{ uid: userInfo.id }"
+				<PostList class="post-list" :pageUrl="'/user/' + userId" :searchParams="{ uid: userInfo.id, keyword }"
 					@fetch-end="postTotal = $event.total"></PostList>
+			</view>
+
+			<view class="search-wrapper" v-if="showSearch">
+				<uni-search-bar focus @cancel="handleCancelSearch" v-model="keyword" @confirm="handleConfirmSearch" />
 			</view>
 
 		</view>
@@ -129,7 +139,9 @@
 				loading: false,
 				postTotal: 0,
 				imageTotal: 0,
-				userInfo: null
+				userInfo: null,
+				showSearch: false,
+				keyword: ''
 			}
 		},
 		created() {
@@ -157,19 +169,16 @@
 				}
 			},
 			async getUserInfo() {
-					const {
-						success,
-						result,
-						msg
-					} = await Http.post('/user/' + this.userId)
-					if (success) {
-						this.userInfo = result
-					}else{
-						return await Promise.reject(false)
-					}
-			},
-			handleShowMenu() {
-				this.$refs.menuPopupRef.open()
+				const {
+					success,
+					result,
+					msg
+				} = await Http.post('/user/' + this.userId)
+				if (success) {
+					this.userInfo = result
+				} else {
+					return await Promise.reject(false)
+				}
 			},
 			handleClickImage(url) {
 				uni.previewImage({
@@ -178,9 +187,22 @@
 					indicator: 'number'
 				})
 			},
-			handleToPage(url){
+			handleToPage(url) {
 				uni.navigateTo({
 					url
+				})
+			},
+			handleCancelSearch() {
+				this.showSearch = false
+				this.keyword = ''
+				setTimeout(() => {
+					this.setPullDownRefresh('/user/' + this.userId)
+				})
+			},
+			handleConfirmSearch() {
+				this.keyword = this.keyword.trim()
+				setTimeout(() => {
+					this.setPullDownRefresh('/user/' + this.userId)
 				})
 			}
 		}
@@ -228,7 +250,7 @@
 					flex: 1;
 					display: flex;
 					align-items: flex-start;
-					gap: 24rpx;
+					gap: 10rpx;
 
 					.user-avatar {
 						position: relative;
@@ -307,12 +329,23 @@
 					font-weight: 600;
 				}
 			}
-			
-			.action-section{
-				.all-btn{
+
+			.action-section {
+				.all-btn {
 					font-size: 14px;
 				}
 			}
 		}
+	}
+
+	.search-wrapper {
+		position: fixed;
+		bottom: 30rpx;
+		left: 0;
+		right: 0;
+		margin: 0 40rpx;
+		background-color: #f8f8f8;
+		padding: 0rpx 10rpx;
+		border-radius: 60rpx;
 	}
 </style>

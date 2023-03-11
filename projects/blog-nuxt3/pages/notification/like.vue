@@ -6,8 +6,11 @@
       点赞了
     </div>
 
-    <div class="w-full p-[12px] bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700">
-      <n-ellipsis :line-clamp="5" :tooltip="false" class="whitespace-pre-wrap border-t-0 break-words">{{ notification.blog.content }}</n-ellipsis>
+    <div class="w-full p-[12px] cursor-pointer bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700" @click="navigateTo({ path: '/post/' + notification.blog.id })" v-if="notification.blog">
+      <ExpandableContent :content="notification.blog.content"/>
+    </div>
+    <div class="w-full p-[12px] bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700" v-else>
+      <div class="text-red-500">博客已经被删除</div>
     </div>
   </NotificationList>
 </template>

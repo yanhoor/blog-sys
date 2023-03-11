@@ -10,17 +10,17 @@
   },
   "devDependencies": {
     "@vicons/fluent": "^0.12.0",
-    "nuxt": "3.1.0",
-    "sass": "^1.57.1",
+    "nuxt": "3.2.3",
+    "sass": "^1.58.3",
     "sass-loader": "^13.2.0"
   },
   "dependencies": {
     "@css-render/vue3-ssr": "^0.15.12",
-    "@nuxtjs/tailwindcss": "^6.2.0",
-    "@vueuse/nuxt": "^9.11.1",
+    "@nuxtjs/tailwindcss": "^6.4.1",
+    "@vueuse/nuxt": "^9.13.0",
     "dayjs": "^1.11.7",
     "naive-ui": "^2.34.3",
     "sortablejs": "^1.15.0",
-    "ufo": "^1.0.1"
+    "ufo": "^1.1.1"
   }
 }

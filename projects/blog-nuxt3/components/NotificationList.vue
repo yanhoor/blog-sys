@@ -51,6 +51,7 @@
       <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
       <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
       <ResultNoMore v-else-if="pageLoadedFinish"/>
+      <n-back-top :right="50"/>
     </div>
   </div>
 </template>
@@ -65,6 +66,7 @@ import {
   NCheckboxGroup,
   NRadioGroup,
   NRadioButton,
+  NBackTop,
   createDiscreteApi
 } from "naive-ui"
 import { Notification } from "~/types"

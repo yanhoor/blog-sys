@@ -18,7 +18,7 @@
       <div class="w-1/5 pt-[6px] pl-[6px] group relative cursor-zoom-in" v-for="(file, index) of imageList" :key="file.url" @click="handlePreview(file, index, true)">
         <div class="image-item-container" v-if="index < 10">
           <MediaImgView alt="图像" class="image-item" :url="file.url" ratio="80"/>
-          <div class="list-item-mask bg-gray-200 opacity-10 hidden group-hover:inline-block">
+          <div class="list-item-mask bg-gray-200 group-hover:inline-block" :class="[imageList.length > 10 && index === 9 ? 'num-mask' : 'hidden opacity-10']">
           </div>
         </div>
         <span class="overflow-num text-white" v-if="imageList.length > 10 && index === 9">+{{ imageList.length - 10 }}</span>
@@ -123,7 +123,10 @@ function handlePreviewItemChange(item: Media, idx: number) {
   cursor: url("@/assets/images/pic_next.cur"), auto;
 }
 .list-item-mask{
-  @apply absolute top-0 left-0 w-full h-full rounded-[5px]
+  @apply absolute top-0 left-0 w-full h-full rounded-[5px];
+  &.num-mask{
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 .preview-item-control{
   @apply absolute w-1/5 h-full top-0 flex justify-start items-center

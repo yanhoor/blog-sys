@@ -24,7 +24,7 @@
 						<view class="filter-section-title">
 							时间
 						</view>
-						<uni-data-checkbox v-model="searchParams.time" :localdata="filterTimeList">
+						<uni-data-checkbox v-model="selectTime" :localdata="filterTimeList">
 						</uni-data-checkbox>
 					</view>
 				</view>
@@ -42,6 +42,7 @@
 	import {
 		useScrollStatusStore
 	} from '@/stores/scrollStatus.js'
+	import dayjs from 'dayjs'
 
 	export default {
 		mixins: [scrollMixin],
@@ -51,10 +52,12 @@
 		data() {
 			return {
 				pageUrl: '/pages/search',
+				selectTime: 0,
 				searchParams: {
 					keyword: '',
 					sort: 1,
-					time: 0
+					startTime: '',
+					endTime: '',
 				},
 				historyList: [],
 				sortTypeList: [{
@@ -121,8 +124,26 @@
 
 				uni.startPullDownRefresh()
 			},
-			handleFilterConfirm(){
+			handleFilterConfirm() {
 				this.$refs.filterPopupRef.close()
+				switch (this.selectTime) {
+					case 0:
+						this.searchParams.startTime = ''
+						this.searchParams.endTime = ''
+						break
+					case 1:
+						this.searchParams.startTime = dayjs().subtract(24, 'h')
+						this.searchParams.endTime = dayjs()
+						break
+					case 2:
+						this.searchParams.startTime = dayjs().subtract(7, 'd').endOf('date')
+						this.searchParams.endTime = dayjs().endOf('date')
+						break
+					case 3:
+						this.searchParams.startTime = dayjs().subtract(90, 'd').endOf('date')
+						this.searchParams.endTime = dayjs().endOf('date')
+						break
+				}
 				this.handleSearch()
 			},
 			handleShowFilter() {
@@ -169,8 +190,8 @@
 				display: flex;
 				flex-direction: column;
 				gap: 10rpx;
-				
-				&+.filter-section{
+
+				&+.filter-section {
 					margin-top: 20rpx;
 				}
 

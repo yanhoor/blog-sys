@@ -5,7 +5,6 @@ export interface User{
   avatar?: string
   profileCardBg?: string
   introduce?: string
-  sign?: string
   gender: string | number
   birthday?: string | number
   lock: number
