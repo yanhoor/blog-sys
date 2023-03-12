@@ -76,6 +76,8 @@ async function getAllGroup() {
   try{
     const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
     if(success){
+      systemGroupList.value = []
+      customGroupList.value = []
       result.forEach(g => {
         if(g.system === 1){
           systemGroupList.value.push(g)
