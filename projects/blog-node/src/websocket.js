@@ -7,7 +7,6 @@ const WEBSOCKET_MESSAGE_TYPE = {
   heart_beat: 'heart_beat'
 }
 class WS{
-  websocket = null
   wss = null
   koaServer = null
   wsMap = new Map()
@@ -52,8 +51,6 @@ class WS{
       this.wsMap.set(uid.toString(), ws)
       // console.log('ws connection uid----->', uid, this.wsMap.get(uid))
 
-      this.websocket = ws
-
       ws.on('message', data => {
         const msg = data.toString()
         console.log('ws message---->', msg)
@@ -84,13 +81,13 @@ class WS{
     });
   }
 
-  sendWsMessage = (uid, msg) => {
+  sendWsMessage = (uid, data) => {
     console.log('sendWsMessage--->', uid)
     // 通过客户端发送的特定 uuid 记录其对应的 ws，后面再通过 uuid 找到 ws，给客户端发送消息
     const ws = this.wsMap.get(uid.toString())
     try {
       if(ws){
-        ws.send(msg)
+        ws.send(data)
       }
     }catch (e) {
       errorLogger.error('sendWsMessage------->', e.message)

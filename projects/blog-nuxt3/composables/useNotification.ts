@@ -31,12 +31,18 @@ export const useNotificationUnreadCollectCount = () => {
   return useState<number>('notificationUnreadCollectCount', () => 0)
 }
 
+// 未读审核通知数
+export const useNotificationUnreadAuditCount = () => {
+  return useState<number>('notificationUnreadAuditCount', () => 0)
+}
+
 export const useFetchNotificationCount = async (params = {}) => {
   const notificationTotalCount = useNotificationTotalCount()
   const notificationUnreadCount = useNotificationUnreadCount()
   const unreadCommentCount = useNotificationUnreadCommentCount()
   const unreadLikeCount = useNotificationUnreadLikeCount()
   const unreadCollectCount = useNotificationUnreadCollectCount()
+  const unreadAuditCount = useNotificationUnreadAuditCount()
   try{
     const { result, success } = await useFetchPost('/notification/count', params)
     if(success){
@@ -45,6 +51,7 @@ export const useFetchNotificationCount = async (params = {}) => {
       unreadCommentCount.value = result.unreadComment
       unreadLikeCount.value = result.unreadLike
       unreadCollectCount.value = result.unreadCollect
+      unreadAuditCount.value = result.unreadAudit
     }
   }catch (e) {
 
@@ -56,12 +63,34 @@ export const useShowNotificationDetail = async (id: string) => {
   const { notification } = createDiscreteApi(["notification"])
   try{
     const { result, success } = await useFetchPost('/notification/info', { id })
+    if(!['comment_reply', 'comment', 'system_audit'].includes(result.type)) return
     if(success){
       const n = notification.create({
         title: '通知',
         // @ts-ignore
         content: () =>
-          h(
+          result.type === 'system_audit' ? h(
+            'div',
+            null,
+            [
+              '你有新的系统审核动态，',
+              h(
+                NButton,
+                {
+                  text: true,
+                  type: 'primary',
+                  onClick: () => {
+                    setRead(result.blogId)
+                    n.destroy()
+                    navigateTo('/notification/system')
+                  }
+                },
+                {
+                  default: () => '去查看'
+                }
+              )
+            ]
+          ) : h(
             'div',
             null,
             [

@@ -23,7 +23,10 @@ export const urls = {
   blog_list: '/blog/manageList',
   blog_delete: '/blog/delete',
   blog_info: '/blog/manageInfo',
-  blog_operate: '/blog/operate',
+  blog_audit: '/blog/audit',
+
+  comment_manageList: '/comment/manageList',
+  comment_audit: '/comment/audit',
 
   address_child: '/address/query_children',
   address_search: '/address/search',

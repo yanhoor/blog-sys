@@ -4,6 +4,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const { websocket, WEBSOCKET_MESSAGE_TYPE } = require('../websocket')
 const redisClient = require('../database/redis')
 const dayjs = require('dayjs')
+const Axios = require('axios')
 const { NotificationType } = require('@prisma/client')
 
 class BaseController{
@@ -65,6 +66,16 @@ class BaseController{
       gte,
       lte,
     }
+  }
+
+  $get = async (url, params) => {
+    return new Promise((r, j) => {
+      Axios.get(url, {
+        params
+      }).then(res => {
+        r(res.data)
+      })
+    })
   }
 }
 

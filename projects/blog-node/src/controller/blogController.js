@@ -25,17 +25,18 @@ class BlogController extends BaseController{
         }
       }
 
-      // 1--已删除
+      // 1--未审核
       if (status === 1) {
-        filter.deletedAt = { not: null }
+        filter.auditStatus = 0
       }else if(status === 2){
-        // 发布
-        filter.deletedAt = null
-        filter.launch = 1
+        // 审核通过
+        filter.auditStatus = 1
       }else if(status === 3){
-        // 下架
-        filter.launch = 0
-        filter.ALL_DATA = true
+        // 审核不通过
+        filter.auditStatus = 2
+      }else if(status === 4){
+        // 删除
+        filter.deletedAt = { not: null }
       }else{
         filter.ALL_DATA = true
       }
@@ -68,7 +69,10 @@ class BlogController extends BaseController{
                 avatar: true
               }
             },
-            launch: true,
+            status: true,
+            auditStatus: true,
+            auditedAt: true,
+            auditTip: true,
             content: true,
             address: true,
             addressName: true,
@@ -109,7 +113,11 @@ class BlogController extends BaseController{
       uid = Number(uid)
       gid = Number(gid)
       const skip = pageSize * (page - 1)
-      const filter = { launch: 1 }
+      const filter = {
+        status: {
+          notIn: [3, 4]
+        }
+      }
       let userId = await this.getAuthUserId(ctx, next)
       if(uid) filter.createById = uid
       if (keyword) filter.OR = [
@@ -127,11 +135,11 @@ class BlogController extends BaseController{
         switch (sort) {
           // 综合排序
           case 1:
-            orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
+            orderBy.push({ createdAt: 'desc' }, { comments: { _count: 'desc' } }, { likedBy: { _count: 'desc' } }, { collectedBy: { _count: 'desc' } })
             break
           // 最新优先
           case 2:
-            orderBy.push({ updatedAt: 'desc' })
+            orderBy.push({ createdAt: 'desc' })
             break
           // 最热优先
           case 3:
@@ -139,7 +147,7 @@ class BlogController extends BaseController{
             break
         }
       }else{
-        orderBy.push({ updatedAt: 'desc' }, { comments: { _count: 'desc' } })
+        orderBy.push({ createdAt: 'desc' }, { comments: { _count: 'desc' } })
       }
       if(gid && userId){
         const group = await prisma.followGroup.findUnique({
@@ -176,7 +184,7 @@ class BlogController extends BaseController{
               needs: { comments: true },
               compute(blog) {
                 // 计算获取这个新字段值的逻辑，即从何处来
-                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
+                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt && ![3, 4].includes(item.status))
                 return list.length
               },
             },
@@ -217,7 +225,7 @@ class BlogController extends BaseController{
             createdAt: true,
             updatedAt: true,
             createById: true,
-            launch: true,
+            status: true,
             likedByCount: true,
             collectedByCount: true,
             commentsCount: true,
@@ -262,7 +270,7 @@ class BlogController extends BaseController{
   }
 
   edit = async (ctx, next) => {
-    let {medias = [], content, id, address, addressName, latitude, longitude, isPost = 1} = ctx.request.body
+    let {medias = [], content, id, address, addressName, latitude, longitude} = ctx.request.body
     latitude = Number(latitude)
     longitude = Number(longitude)
     let userId = await this.getAuthUserId(ctx, next)
@@ -278,6 +286,7 @@ class BlogController extends BaseController{
 
     const newItem = {
       content,
+      updatedAt: new Date()
     }
     if(latitude){
       newItem.address = address
@@ -295,12 +304,6 @@ class BlogController extends BaseController{
           msg: '博客不存在'
         }
       }
-      // if (blog.launch) {
-      //   return ctx.body = {
-      //     success: false,
-      //     msg: '博客已发布，不能修改'
-      //   }
-      // }
       try {
         const oldList = await prisma.media.findMany({
           where: {
@@ -355,7 +358,6 @@ class BlogController extends BaseController{
           item.createById = userId
         })
         newItem.createById = userId
-        if(isPost) newItem.launch = 1
         const res = await prisma.blog.create({
           data: {
             ...newItem,
@@ -368,7 +370,7 @@ class BlogController extends BaseController{
             createdAt: true,
             updatedAt: true,
             createById: true,
-            launch: true,
+            status: true,
             content: true,
             address: true,
             addressName: true,
@@ -414,7 +416,7 @@ class BlogController extends BaseController{
     return this.info(ctx, next, true)
   }
 
-  info = async (ctx, next, isManage = false) => {
+  info = async (ctx, next) => {
     let {id} = ctx.request.body
     id = Number(id)
     let userId = await this.getAuthUserId(ctx, next)
@@ -455,7 +457,7 @@ class BlogController extends BaseController{
               needs: { comments: true },
               compute(blog) {
                 // 计算获取这个新字段值的逻辑，即从何处来
-                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
+                const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt && ![3, 4].includes(item.status))
                 return list.length
               },
             },
@@ -470,7 +472,7 @@ class BlogController extends BaseController{
           id: true,
           createdAt: true,
           updatedAt: true,
-          launch: true,
+          status: true,
           content: true,
           isLike: true,
           likedByCount: true,
@@ -507,7 +509,7 @@ class BlogController extends BaseController{
         }
       })
 
-      if(!result || (!isManage && result.launch === 0)){
+      if(!result || [3, 4].includes(result.status)){
         return ctx.body = {
           success: false,
           code: 1,
@@ -576,6 +578,14 @@ class BlogController extends BaseController{
           data: {
             deletedAt: new Date()
           }
+        }),
+        prisma.comment.updateMany({
+          where: {
+            blogId: Number(id)
+          },
+          data: {
+            deletedAt: new Date()
+          }
         })
       ])
 
@@ -587,44 +597,58 @@ class BlogController extends BaseController{
     }
   }
 
-  // 发布/取消发布
-  operate = async (ctx, next) => {
-    const {id, launch} = ctx.request.body
-    try {
-      if (launch === undefined) throw new Error('缺少参数 launch')
-    } catch (e) {
-      return ctx.body = {
+  audit = async (ctx, next) => {
+    let { id, auditTip, type } = ctx.request.body
+    id = Number(id)
+    type = Number(type)
+    try{
+      if(!id) throw new Error('id不能为空')
+      if(type === 2 && !auditTip) throw new Error('审核意见不能为空')
+    }catch(e){
+      ctx.body = {
         success: false,
         msg: e.message
       }
+      return false
     }
-
     try {
-      const blog = await prisma.blog.findUnique({
-        where: {id}
-      })
-      if (!blog) {
-        return ctx.body = {
-          success: false,
-          msg: '博客不存在'
-        }
-      }
-      const t = new Date()
-      await prisma.blog.update({
+      let userId = await this.getAuthUserId(ctx, next)
+      const blog = await prisma.blog.update({
         where: {
-          id: Number(id)
+          id
         },
         data: {
-          operateAt: t,
-          launch
+          auditById: userId,
+          auditStatus: type === 1 ? 1 : 2,
+          status: type === 1 ? 2 : 3,
+          auditTip: auditTip || null,
+          auditedAt: new Date()
         }
       })
+
+      const nd = {
+        createById: Number(userId),
+        receiveUserId: blog.createById,
+        type: this.NOTIFICATION_TYPE.system_audit,
+        blogId: blog.id,
+        content: {
+          auditStatusText: blog.auditStatus === 1 ? '审核通过' : '审核不通过',
+          auditTip: blog.auditTip,
+        }
+      }
+      const notification = await prisma.notification.create({
+        data: nd
+      })
+      this.websocket.sendWsMessage(blog.createById, JSON.stringify({
+        type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+        id: notification.id
+      }))
 
       return ctx.body = {
         success: true
       }
-    } catch (e) {
-      this.errorLogger.error('blog.operate--------->', e)
+    }catch (e) {
+      this.errorLogger.error('blog.audit--------->', e)
     }
   }
 

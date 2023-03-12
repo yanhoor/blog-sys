@@ -12,7 +12,7 @@
           <UserAvatar :user="blogInfo.createBy" :size="56"/>
           <div class="flex flex-col items-start">
             <div class="text-green-700 text-[20px] cursor-pointer" @click="navigateTo({ path: '/user/' + blogInfo.createBy.id })">{{ blogInfo.createBy?.name }}</div>
-            <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blogInfo.updatedAt)" format="yyyy-MM-dd HH:mm"></n-time>
+            <n-time class="text-[12px] text-gray-500" type="datetime" :time="new Date(blogInfo.createdAt)" format="yyyy-MM-dd HH:mm"></n-time>
           </div>
           <n-dropdown trigger="click" :options="actionOptions">
             <n-button quaternary circle type="default" class="absolute top-0 right-0 cursor-pointer">

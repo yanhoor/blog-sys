@@ -4,6 +4,7 @@
       <n-tab name="/notification/comment">评论({{ unreadCommentCount }})</n-tab>
       <n-tab name="/notification/like">点赞({{ unreadLikeCount }})</n-tab>
       <n-tab name="/notification/collect">收藏({{ unreadCollectCount }})</n-tab>
+      <n-tab name="/notification/system">系统审核({{ unreadAuditCount }})</n-tab>
     </n-tabs>
     <NuxtPage :pageKey="route.fullPath"/>
   </div>
@@ -14,6 +15,7 @@ import {
   NTabs,
   NTab, createDiscreteApi
 } from "naive-ui"
+import {useNotificationUnreadAuditCount} from "~/composables/useNotification";
 
 definePageMeta({
   redirect: '/notification/comment',
@@ -33,6 +35,7 @@ const route = useRoute()
 const unreadCommentCount = useNotificationUnreadCommentCount()
 const unreadLikeCount = useNotificationUnreadLikeCount()
 const unreadCollectCount = useNotificationUnreadCollectCount()
+const unreadAuditCount = useNotificationUnreadAuditCount()
 const currentTab = ref(route.path)
 
 watch(() => route.path, (val) => {

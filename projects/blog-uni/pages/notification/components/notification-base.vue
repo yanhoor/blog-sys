@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<YAppendListWrapper pageUrl="pages/notification/notification" :url="urls.notification_list"
+		<YAppendListWrapper pageUrl="pages/notification" :url="urls.notification_list"
 			:searchParams="searchParams" :modelValue="modelValue" @update:modelValue="handleListChange">
 			<template #skeleton>
 				<SkeletonNotificationList></SkeletonNotificationList>
@@ -48,6 +48,9 @@
 				}
 				if (this.type === 3) {
 					result.type = 'collect_blog'
+				}
+				if (this.type === 4) {
+					result.type = 'system_audit'
 				}
 				return result
 			}

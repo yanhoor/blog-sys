@@ -64,7 +64,7 @@
 			},
 			getSummary(content) {
 				if (this.contentLineList.length > this.maxLine){
-					return this.contentLineList.slice(0, 3).join('\n') + '\n'
+					return this.contentLineList.slice(0, this.maxLine).join('\n') + (this.showBtn ? '\n' : '\n...')
 				}else if(content && content.length > this.maxLength) {
 					return content.slice(0, this.maxLength) + '...'
 				} else {

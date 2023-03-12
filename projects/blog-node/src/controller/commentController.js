@@ -134,11 +134,104 @@ class CommentController extends BaseController{
     }
   }
 
+  manageList = async (ctx, next) => {
+    try {
+      const requestBody = ctx.request.body
+      if(!requestBody) return ctx.body = 500
+
+      let {uid, uname, keyword, status, startTime, endTime, page = 1, pageSize = this.pageSize} = ctx.request.body
+      uid = Number(uid)
+      status = Number(status)
+      const skip = pageSize * (page - 1)
+      const filter = { }
+
+      // 作者
+      if (uid) filter.createById = uid
+      // 作者名
+      if (uname) filter.createBy = {
+        name: {
+          contains: uname
+        }
+      }
+
+      // 1--未审核
+      if (status === 1) {
+        filter.auditStatus = 0
+      }else if(status === 2){
+        // 审核通过
+        filter.auditStatus = 1
+      }else if(status === 3){
+        // 审核不通过
+        filter.auditStatus = 2
+      }else if(status === 4){
+        // 删除
+        filter.deletedAt = { not: null }
+      }else{
+        filter.ALL_DATA = true
+      }
+
+      // 关键词
+      if (keyword) filter.content = {
+        contains: keyword
+      }
+
+      // 创建时间
+      filter.createdAt = {}
+      if(startTime) filter.createdAt.gte = new Date(startTime)
+      if(endTime) filter.createdAt.lte = new Date(endTime)
+
+      const [list, total] = await prisma.$transaction([
+        prisma.comment.findMany({
+          skip,
+          take: pageSize,
+          where: filter,
+          select: {
+            id: true,
+            auditStatus: true,
+            auditTip: true,
+            status: true,
+            createdAt: true,
+            deletedAt: true,
+            auditedAt: true,
+            content: true,
+            blogId: true,
+            createById: true,
+            createBy: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+              }
+            }
+          },
+          orderBy: { createdAt: 'desc' }
+        }),
+        prisma.comment.count({where: filter})
+      ])
+
+      return ctx.body = {
+        success: true,
+        result: {
+          list,
+          total
+        }
+      }
+    }catch(e){
+      this.errorLogger.error('comment.manageList--------->', e)
+    }
+  }
+
   // 评论列表
   list = async (ctx, next) => {
     const {page = 1, pageSize = this.pageSize, blogId, sort = 1} = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = { blogId: Number(blogId), topCommentId: null }
+    const filter = {
+      blogId: Number(blogId),
+      topCommentId: null,
+      status: {
+        notIn: [3, 4]
+      }
+    }
     let orderBy = { createdAt: 'desc' }
     switch (sort) {
       case 1:
@@ -183,7 +276,10 @@ class CommentController extends BaseController{
                 childComments: {
                   where: {
                     // topCommentId: blogId,
-                    deletedAt: null
+                    deletedAt: null,
+                    status: {
+                      notIn: [3, 4]
+                    }
                   },
                 }
               }, // 这个数量错误，包含了已删除的
@@ -191,7 +287,10 @@ class CommentController extends BaseController{
             childComments: {
               take: 2,
               where: {
-                deletedAt: null
+                deletedAt: null,
+                status: {
+                  notIn: [3, 4]
+                }
               },
               // 可以用include
               select: {
@@ -276,7 +375,7 @@ class CommentController extends BaseController{
         }
       }
     } catch (e) {
-      this.errorLogger.error('blog.list--------->', e)
+      this.errorLogger.error('comment.list--------->', e)
     }
   }
 
@@ -284,7 +383,13 @@ class CommentController extends BaseController{
   replyList = async (ctx, next) => {
     const {page = 1, pageSize = this.pageSize, blogId, topCommentId } = ctx.request.body
     const skip = pageSize * (page - 1)
-    const filter = { blogId: Number(blogId), topCommentId: Number(topCommentId) }
+    const filter = {
+      blogId: Number(blogId),
+      topCommentId: Number(topCommentId),
+      status: {
+        notIn: [3, 4]
+      }
+    }
     try {
       const [topComment, list, total] = await prisma.$transaction([
         prisma.comment.findUnique({
@@ -365,7 +470,7 @@ class CommentController extends BaseController{
         }
       }
     } catch (e) {
-      this.errorLogger.error('blog.replyList--------->', e)
+      this.errorLogger.error('comment.replyList--------->', e)
     }
   }
 
@@ -391,7 +496,8 @@ class CommentController extends BaseController{
         prisma.comment.update({
           where: { id: Number(id) },
           data: {
-            deletedAt: new Date()
+            deletedAt: new Date(),
+            status: 4
           }
         }),
         prisma.comment.updateMany({
@@ -402,7 +508,8 @@ class CommentController extends BaseController{
             ]
           },
           data: {
-            deletedAt: new Date()
+            deletedAt: new Date(),
+            status: 4
           }
         })
       ])
@@ -411,6 +518,70 @@ class CommentController extends BaseController{
       }
     }catch (e) {
       this.errorLogger.error('comment.delete--------->', e)
+    }
+  }
+
+  audit = async (ctx, next) => {
+    let { id, auditTip, type } = ctx.request.body
+    id = Number(id)
+    type = Number(type)
+    try{
+      if(!id) throw new Error('id不能为空')
+      if(type === 2 && !auditTip) throw new Error('审核意见不能为空')
+    }catch(e){
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+    try {
+      let userId = await this.getAuthUserId(ctx, next)
+      const comment = await prisma.comment.update({
+        where: {
+          id
+        },
+        data: {
+          auditById: userId,
+          auditStatus: type,
+          status: type === 1 ? 2 : 3,
+          auditTip: auditTip || null,
+          auditedAt: new Date()
+        },
+        select: {
+          id: true,
+          createById: true,
+          content: true,
+          createdAt: true,
+          blogId: true,
+          auditStatus: true,
+          auditTip: true,
+        }
+      })
+      const nd = {
+        createById: Number(userId),
+        receiveUserId: comment.createById,
+        type: this.NOTIFICATION_TYPE.system_audit,
+        blogId: comment.blogId,
+        commentId: comment.id,
+        content: {
+          auditStatusText: comment.auditStatus === 1 ? '审核通过' : '审核不通过',
+          auditTip: comment.auditTip,
+        }
+      }
+      const notification = await prisma.notification.create({
+        data: nd
+      })
+      this.websocket.sendWsMessage(comment.createById, JSON.stringify({
+        type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+        id: notification.id
+      }))
+
+      return ctx.body = {
+        success: true
+      }
+    }catch (e) {
+      this.errorLogger.error('comment.audit--------->', e)
     }
   }
 }

@@ -4,7 +4,7 @@ export interface Blog{
   createById?: number | string
   content: string
   cateId?: string | number
-  launch?: string | number
+  status?: string | number
   isLike?: boolean
   isCollect?: boolean
   likedByCount?: number

@@ -12,10 +12,11 @@ datasource db {
 
 // 通知类型
 enum NotificationType {
-  collect_blog
-  like_blog
-  comment
-  comment_reply
+  collect_blog // 博客被收藏
+  like_blog // 博客被点赞
+  comment // 博客被评论
+  comment_reply // 评论被回复
+  system_audit // 评论/博客审核
 }
 
 // 模型，对应数据库的表
@@ -39,25 +40,28 @@ model User {
   openid        String?   @unique @db.VarChar(255)
   deletedAt     DateTime?
 
-  blogs                Blog[]             @relation("CreateBlog")
+  blogs                Blog[]              @relation("CreateBlog")
   // 与博客likeBy显式多对多
   likeBlogs            LikeBlogRelation[]
   collectBlogs         UserCollectBlogs[]
-  createNotifications  Notification[]     @relation("CreateNotification")
-  receiveNotifications Notification[]     @relation("ReceiveNotifications")
-  createComments       Comment[]          @relation("CreateComment")
+  readBlogs            ReadBlogsRelation[]
+  createNotifications  Notification[]      @relation("CreateNotification")
+  receiveNotifications Notification[]      @relation("ReceiveNotifications")
+  createComments       Comment[]           @relation("CreateComment")
+  auditComments        Comment[]           @relation("AuditComment")
+  auditBlogs           Blog[]              @relation("AuditBlog")
   blogCates            BlogCate[]
-  replyComments        Comment[]          @relation("ReplyComment")
-  medias               Media[]            @relation("Media")
+  replyComments        Comment[]           @relation("ReplyComment")
+  medias               Media[]             @relation("Media")
   // 隐式多对多关系
   // 粉丝
-  followers            FollowRelation[]   @relation("FollowTarget")
+  followers            FollowRelation[]    @relation("FollowTarget")
   // 关注
-  followings           FollowRelation[]   @relation("FollowBy")
+  followings           FollowRelation[]    @relation("FollowBy")
   // 创建的关注分组
-  followGroups         FollowGroup[]      @relation("CreateFollowGroup")
+  followGroups         FollowGroup[]       @relation("CreateFollowGroup")
   // 所在的关注分组
-  inFollowGroups       FollowGroup[]      @relation("InFollowGroup")
+  inFollowGroups       FollowGroup[]       @relation("InFollowGroup")
 
   @@index([createdAt])
 }
@@ -130,6 +134,17 @@ model UserCollectBlogs {
   @@id([userId, blogId])
 }
 
+// 阅读博客关系表
+model ReadBlogsRelation {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, blogId])
+}
+
 model Media {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
@@ -145,20 +160,26 @@ model Media {
 }
 
 model Blog {
-  id          Int                @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  createBy    User               @relation(name: "CreateBlog", fields: [createById], references: [id])
+  id          Int                 @id @default(autoincrement())
+  createdAt   DateTime            @default(now())
+  createBy    User                @relation(name: "CreateBlog", fields: [createById], references: [id])
   createById  Int
   likedBy     LikeBlogRelation[]
   collectedBy UserCollectBlogs[]
-  updatedAt   DateTime           @updatedAt
-  cate        BlogCate?          @relation(fields: [cateId], references: [id])
+  readBy      ReadBlogsRelation[]
+  updatedAt   DateTime
+  cate        BlogCate?           @relation(fields: [cateId], references: [id])
   cateId      Int?
-  launch      Int                @default(0)
-  address     String?            @db.Text // 详细地址
-  addressName String?            @db.Text // 位置名称
-  latitude    Float?             @db.Double
-  longitude   Float?             @db.Double // 经度
+  auditBy     User?               @relation(name: "AuditBlog", fields: [auditById], references: [id])
+  auditById   Int?
+  auditTip    String?             @db.VarChar(255)
+  auditStatus Int                 @default(0) // 1--审核通过，0--未审核，2--审核不通过
+  auditedAt   DateTime? // 审核时间
+  status      Int                 @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
+  address     String?             @db.Text // 详细地址
+  addressName String?             @db.Text // 位置名称
+  latitude    Float?              @db.Double
+  longitude   Float?              @db.Double // 经度
   operateAt   DateTime? // 发布/下架时间
 
   // title   String @db.VarChar(255)
@@ -199,6 +220,12 @@ model Comment {
   createdAt      DateTime  @default(now())
   createBy       User      @relation(name: "CreateComment", fields: [createById], references: [id])
   createById     Int
+  auditBy        User?     @relation(name: "AuditComment", fields: [auditById], references: [id])
+  auditById      Int?
+  auditTip       String?   @db.VarChar(255)
+  auditStatus    Int       @default(0) // 1--审核通过，0--未审核，2--审核不通过
+  auditedAt      DateTime? // 审核时间
+  status         Int       @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
   replyTo        User?     @relation(name: "ReplyComment", fields: [replyToId], references: [id])
   replyToId      Int?
   blog           Blog      @relation(fields: [blogId], references: [id])

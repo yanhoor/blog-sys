@@ -25,6 +25,13 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: '/comment',
+        component: () => import('@/views/comment/CommentList.vue'),
+        meta: {
+          title: '评论列表'
+        }
+      },
+      {
         path: '/me',
         component: () => import('@/views/user/Me.vue'),
         meta: {

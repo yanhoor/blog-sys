@@ -30,7 +30,7 @@ class NotificationController extends BaseController{
       filter.isRead = undefined
     }
     try {
-      const [list, total, unreadTotal] = await prisma.$transaction([
+      let [list, total, unreadTotal] = await prisma.$transaction([
         prisma.notification.findMany({
           skip,
           take: pageSize,
@@ -80,6 +80,12 @@ class NotificationController extends BaseController{
         prisma.notification.count({where: { ...filter, isRead: 0 }}),
       ])
 
+      list = list.map(n => {
+        if(n.blog.deletedAt){
+          n.blog = null
+        }
+        return n
+      })
       return ctx.body = {
         success: true,
         result: {
@@ -107,12 +113,13 @@ class NotificationController extends BaseController{
     }
     const filter = { receiveUserId: userId }
     try {
-      const [total, unreadTotal, unreadComment, unreadLike, unreadCollect] = await prisma.$transaction([
+      const [total, unreadTotal, unreadComment, unreadLike, unreadCollect, unreadAudit] = await prisma.$transaction([
         prisma.notification.count({where: filter}),
         prisma.notification.count({where: { ...filter, isRead: 0 }}),
         prisma.notification.count({where: { ...filter, isRead: 0, OR: [{ type: 'comment' }, { type: 'comment_reply' }] }}),
         prisma.notification.count({where: { ...filter, isRead: 0, type: 'like_blog' }}),
         prisma.notification.count({where: { ...filter, isRead: 0, type: 'collect_blog' }}),
+        prisma.notification.count({where: { ...filter, isRead: 0, type: 'system_audit' }}),
       ])
 
       return ctx.body = {
@@ -123,6 +130,7 @@ class NotificationController extends BaseController{
           unreadComment,
           unreadLike,
           unreadCollect,
+          unreadAudit,
         }
       }
     }catch (e) {

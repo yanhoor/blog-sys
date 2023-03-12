@@ -8,12 +8,13 @@
 						<UserName fontSize="16" :user="notification.createBy"></UserName>
 						<view>点赞了</view>
 					</view>
-					<view class="reply-content blog-is-delete" v-if="notification.blog.deletedAt">
+					
+					<YExpandanleContent class="reply-content" :maxLength="80" :showBtn="false"
+						:content="notification.blog.content" @tap="handleClickPost(notification.blog)" v-if="notification.blog">
+					</YExpandanleContent>
+					<view class="reply-content blog-is-delete" v-else>
 						博客已经被删除
 					</view>
-					<YExpandanleContent class="reply-content" :maxLength="80" :showBtn="false"
-						:content="notification.blog.content" @tap="handleClickPost(notification.blog)" v-else>
-					</YExpandanleContent>
 					<YTime class="item-time" :time="notification.createdAt"></YTime>
 				</view>
 			</uni-card>

@@ -20,9 +20,4 @@ import {
   NEllipsis,
 } from "naive-ui"
 
-function getText(str: string) {
-  return str
-    .replace(/<[^<>]+>/g, "")
-    .replace(/&nbsp;/gi, "");
-}
 </script>

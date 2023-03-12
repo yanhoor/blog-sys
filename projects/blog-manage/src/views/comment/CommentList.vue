@@ -89,7 +89,7 @@
           <template #default="{ row }">
             <el-button @click="handleAudit(row.id, 1)" link type="success" v-if="!row.deletedAt && row.auditStatus !== 1">审核通过</el-button>
             <el-button @click="handleAudit(row.id, 2)" link type="warning" v-if="!row.deletedAt && row.auditStatus !== 2">审核不通过</el-button>
-            <el-button @click="viewItem(row.id)" link type="primary">查看</el-button>
+            <el-button @click="handleViewDetail(row.id)" link type="primary">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -108,7 +108,6 @@
         @size-change="(v) => handleChangeFetchParams({ pageSize: v})"
       />
     </template>
-
   </ListWrapper>
 
   <el-dialog
@@ -130,6 +129,7 @@
       </div>
     </template>
   </el-dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -139,11 +139,9 @@ import ExpandedContent from '@/components/expandable_content.vue'
 import $http, { urls, IMG_HOST } from "@/http"
 import useListFetch from "@/composables/useListFetch"
 import { ElMessage, ElMessageBox } from "element-plus"
-import dayjs from "dayjs"
-import { useRouter } from 'vue-router'
 import dateRangeShortcuts from "@/utils/dateRangeShortcuts"
+import dayjs from "dayjs"
 
-const router = useRouter()
 const pageState = reactive({
   pageSizeList: [20, 50, 100, 200]
 })
@@ -160,9 +158,9 @@ const filterForm = reactive({
   uname: '',
   startTime: '',
   endTime: '',
-  status: 0
+  status: 0,
 })
-const {pageList, pageTotal, listLoading, pageFetchParams, handlePageChange, handleChangeFetchParams} = useListFetch(urls.blog_list, filterForm)
+const {pageList, pageTotal, listLoading, pageFetchParams, handlePageChange, handleChangeFetchParams} = useListFetch(urls.comment_manageList, filterForm)
 
 handlePageChange(1)
 
@@ -171,20 +169,14 @@ function handleSearch(){
   handleChangeFetchParams(filterForm)
 }
 
-async function viewItem(id: string) {
-  // window.open(import.meta.env.VITE_BLOG_BASE + '/blog?id=' + id)
-  // router.push({
-  //   path: '/blogEdit',
-  //   query: {
-  //     id
-  //   }
-  // })
-}
-
 function handleAudit(id: number, type: number) {
   auditForm.value.id = id
   auditForm.value.type = type
   showAudit.value = true
+}
+
+function handleViewDetail(id: number) {
+
 }
 
 async function handleConfirmAudit() {
@@ -195,7 +187,7 @@ async function handleConfirmAudit() {
       return
     }
     auditLoading.value = true
-    const {success, msg} = await $http.post(urls.blog_audit, auditForm.value)
+    const {success, msg} = await $http.post(urls.comment_audit, auditForm.value)
     auditLoading.value = false
     if(success){
       ElMessage.success('操作成功')

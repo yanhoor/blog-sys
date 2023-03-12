@@ -12,6 +12,6 @@ router.post('/manageInfo', controller.manageInfo)
 router.post('/like', controller.like)
 router.post('/actionUserList/:type', controller.actionUserList)
 router.post('/collect', controller.collect)
-router.post('/operate', controller.operate)
+router.post('/audit', controller.audit)
 
 module.exports = router

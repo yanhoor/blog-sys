@@ -42,6 +42,11 @@ const sourceMenus: Array<MenuProps> = [
         // group: '基础',
         title: '博客列表',
         path: 'blog'
+      },
+      {
+        // group: '基础',
+        title: '评论列表',
+        path: 'comment'
       }
     ]
   },

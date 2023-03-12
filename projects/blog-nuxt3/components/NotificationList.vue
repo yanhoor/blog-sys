@@ -94,6 +94,10 @@ switch (props.type) {
   case 3:
     fetchType = 'collect_blog'
     break
+  // 系统
+  case 4:
+    fetchType = 'system_audit'
+    break
 }
 const { pageList, pageLoading, pageFetchParams, fetchResult, pageLoadedFinish, handleLoadNextPage  } = useListAppendFetch<Notification>('/notification/list', { type: fetchType, isRead: 0 }, {})
 const showCheck = ref(false)
