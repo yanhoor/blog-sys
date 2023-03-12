@@ -5,7 +5,6 @@ const OSS = require('ali-oss')
 
 class UploadController extends BaseController{
   AliOssClient = new OSS(this.globalConfig.aliOss)
-
   async aliUpload (target, source) {
     try {
       // 填写OSS文件完整路径和本地文件的完整路径。OSS文件完整路径中不能包含Bucket名称。

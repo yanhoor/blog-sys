@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const controller = require('../../controller/blogController')
+const controller = require('../../controller/blogController/index')
 
 router.prefix('/blog')
 

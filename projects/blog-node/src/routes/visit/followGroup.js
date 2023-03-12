@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const controller = require('../../controller/followGroupController')
+const controller = require('../../controller/followGroupController/index')
 
 router.prefix('/followGroup')
 
