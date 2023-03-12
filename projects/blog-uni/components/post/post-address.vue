@@ -1,8 +1,10 @@
 <template>
-	<view class="address-container" v-if="address.addressName" @click="handleToMapPage">
-		<uni-icons type="location"></uni-icons>
-		<view class="address-name text-ellipsis">
-			{{ address.addressName }}
+	<view class="post-address">
+		<view class="address-container" v-if="address.addressName" @click="handleToMapPage">
+			<uni-icons type="location"></uni-icons>
+			<view class="address-name text-ellipsis">
+				{{ address.addressName }}
+			</view>
 		</view>
 	</view>
 </template>
@@ -29,15 +31,18 @@
 </script>
 
 <style lang="scss" scoped>
-	.address-container {
+	.post-address{
 		max-width: 60%;
 		box-sizing: border-box;
 		display: flex;
+	}
+	.address-container {
+		display: flex;
 		align-items: center;
 		gap: 8rpx;
-		padding: 2rpx 10rpx;
-		border-radius: 30rpx;
-		background-color: #e0e0e0;
+		padding: 2rpx 16rpx;
+		border-radius: 20rpx;
+		background-color: #f0f0f0;
 
 		.address-name {
 			font-size: 12px;

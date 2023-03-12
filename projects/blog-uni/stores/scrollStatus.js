@@ -16,6 +16,7 @@ export const useScrollStatusStore = defineStore('scrollStatus', {
 		},
 		// 在 y-append-list-wrapper 仅用于监听，type：all --- 所有页面刷新，页面path数组 --- 该页面刷新，无参数 --- 当前所在页面刷新
 		setPullDownRefresh(pages){
+			// pages 应该与 y-append-list-wrapper 绑定的 pageUrl 一致
 			console.log('+++++setPullDownRefresh+++++', pages)
 		}
 	},

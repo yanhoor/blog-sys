@@ -34,6 +34,8 @@
 				<button class="btn" type="primary" :loading="loading" @click="submitForm" v-else>登录</button>
 				<button class="btn" type="default" @click="isRegister = false" v-if="isRegister">已有账号，去登录</button>
 				<button class="btn" type="default" @click="isRegister = true" v-else>没有账号，去注册</button>
+				<!-- <button type="default" @click="getUserInfo">test</button>
+				<button type="default" open-type="getPhoneNumber" @getPhoneNumber="getPhoneNumber">test</button> -->
 			</view>
 		</uni-card>
 		<uni-popup ref="messageRef" type="message">
@@ -169,6 +171,31 @@
 				}).catch(err => {
 					console.log('表单错误信息：', err);
 				})
+			},
+			// https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html
+			getUserInfo(e) {
+				uni.login({
+					"provider": "weixin",
+					"onlyAuthorize": true, // 微信登录仅请求授权认证
+					success: async function(event) {
+						const {
+							code
+						} = event
+						console.log('++++++++++++', event)
+						await Http.post('/wechat/login', {
+							code
+						})
+					},
+					fail: function(err) {
+						// 登录授权失败  
+						// err.code是错误码
+					}
+				})
+
+			},
+			// 暂不支持个人开发者，参考 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
+			getPhoneNumber(c) {
+				console.log('+++++++getPhoneNumber++++++++', c)
 			}
 		}
 	}

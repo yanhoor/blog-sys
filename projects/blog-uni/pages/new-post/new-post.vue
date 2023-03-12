@@ -151,7 +151,7 @@
 			align-items: center;
 			gap: 8rpx;
 			border-radius: 30rpx;
-			background-color: #e0e0e0;
+			background-color: #e7e7e7;
 			padding: 2rpx 10rpx;
 			max-width: 80%;
 			

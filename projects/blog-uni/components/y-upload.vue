@@ -58,7 +58,6 @@
 			// 1--图片，2--视频，3--混合
 			uploadMode() {
 				if (!this.modelValue.length) return 3
-				// console.log('++++++3333333++++++++', this.modelValue)
 				const t = this.getFileExtName(this.modelValue[0].url)
 				// console.log('++++++++++++++', t)
 				return supportedImageType.includes(t) ? 1 : 2
@@ -88,7 +87,7 @@
 			},
 			async handleUploadFile(tempFile) {
 				this.loading = true
-				uni.uploadFile({
+				const uploadTask = uni.uploadFile({
 					url: baseUrl + urls.upload, //仅为示例，非真实的接口地址
 					filePath: tempFile.tempFilePath,
 					name: 'file',
@@ -107,6 +106,11 @@
 					complete: () => {
 						this.loading = false
 					}
+				})
+				uploadTask.onProgressUpdate((res) => {
+				  console.log('上传进度', res.progress)
+				  console.log('已经上传的数据长度', res.totalBytesSent)
+				  console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
 				})
 			},
 			handleRemove(idx) {

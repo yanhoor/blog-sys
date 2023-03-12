@@ -180,7 +180,6 @@ model Blog {
   addressName String?             @db.Text // 位置名称
   latitude    Float?              @db.Double
   longitude   Float?              @db.Double // 经度
-  operateAt   DateTime? // 发布/下架时间
 
   // title   String @db.VarChar(255)
   content String @db.Text

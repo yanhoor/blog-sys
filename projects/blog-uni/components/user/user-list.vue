@@ -7,7 +7,7 @@
 			<view class="item-container">
 				<view class="user-item" v-for="user in userList" :key="user.id">
 					<view class="item-left">
-						<UserAvatar :user="user" :size="50"></UserAvatar>
+						<UserAvatar :user="user" :size="36"></UserAvatar>
 						<view class="name-container">
 							<UserName fontSize="16" :user="user"></UserName>
 							<YExpandanleContent :content="user.introduce" :maxLength="30" :showBtn="false">
@@ -83,7 +83,6 @@
 			.name-container {
 				display: flex;
 				flex-direction: column;
-				gap: 4rpx;
 			}
 		}
 	}

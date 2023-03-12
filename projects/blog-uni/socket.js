@@ -1,6 +1,9 @@
 import {
 	socketBase
 } from '@/config/index.js'
+import {
+	useMyInfoStore
+} from '@/stores/userInfo.js'
 
 let socketOpen = false
 let socketMsgQueue = []
@@ -23,10 +26,6 @@ function initSocket(userId) {
 	uni.onSocketOpen(function(res) {
 		socketOpen = true
 		heartBeat()
-		
-		uni.showToast({
-			title:'test'
-		})
 
 		for (let i = 0; i < socketMsgQueue.length; i++) {
 			sendSocketMessage(socketMsgQueue[i])
@@ -42,10 +41,14 @@ function initSocket(userId) {
 
 	uni.onSocketMessage(function(e) {
 		const res = JSON.parse(e.data)
+		const userStore = useMyInfoStore()
 		// console.log('收到服务器内容：' + res.type)
 		switch (res.type) {
 			case 'heart_beat':
 				heartBeat()
+				break
+			case 'notification':
+				userStore.getNotificationCount()
 				break
 		}
 	})

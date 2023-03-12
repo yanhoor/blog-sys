@@ -1,6 +1,6 @@
 <template>
 	<view class="map-page">
-		<map :latitude="latitude" :longitude="longitude" enable-building enable-3D :markers="{ latitude, longitude, ...markers }" v-if="latitude"></map>
+		<map :latitude="latitude" :longitude="longitude" enable-building enable-traffic show-compass enable-3D :markers="[{ id: 0, width: 30, height: 30, latitude, longitude, ...markers }]" v-if="latitude"></map>
 	</view>
 </template>
 
@@ -11,12 +11,11 @@
 				latitude: '',
 				longitude: '',
 				markers: {
-					iconPath: '/static/images/location-fill.png'
+					iconPath: '/static/images/location.png'
 				}
 			}
 		},
 		onLoad(params) {
-			console.log('++++++++++++', params)
 			this.latitude = params.latitude
 			this.longitude = params.longitude
 		}

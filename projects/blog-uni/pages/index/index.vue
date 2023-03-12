@@ -15,7 +15,6 @@
 			<uni-icons type="list" size="18" @click="handleManageGroup"></uni-icons>
 		</view>
 	</view>
-	<view id="mountPoint"></view>
 </template>
 
 <script>
@@ -62,7 +61,7 @@
 				// 不能使用 startPullDownRefresh，因为登录后返回其他tab时无效，刷新的是其他tab
 				this.initPage()
 			})
-			
+
 			uni.$on('refresh_index_group', () => {
 				this.getAllGroup()
 			})
@@ -73,6 +72,10 @@
 				uni.startPullDownRefresh()
 			}
 			uni.removeStorageSync('back_from_login')
+			uni.showShareMenu({
+				withShareTicket: true,
+				menus: ['shareAppMessage', 'shareTimeline']
+			})
 		},
 		onPullDownRefresh() {
 			this.initPage()
@@ -139,7 +142,7 @@
 		bottom: 30rpx;
 		left: 50%;
 		transform: translateX(-50%);
-		background-color: #f0f0f0;
+		background-color: #f8f8f8;
 		// background: rgba(250, 250, 250, 0.7);
 		border-radius: 30rpx;
 		box-shadow: $uni-shadow-sm;

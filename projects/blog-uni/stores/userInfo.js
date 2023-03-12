@@ -4,6 +4,7 @@ import {
 import Http, {
 	urls
 } from '@/http'
+import { initSocket } from '@/socket.js'
 
 export const useMyInfoStore = defineStore('myInfo', {
 	state: () => {
@@ -13,6 +14,7 @@ export const useMyInfoStore = defineStore('myInfo', {
 			unreadCollect: 0,
 			unreadComment: 0,
 			unreadLike: 0,
+			unreadAudit: 0,
 		};
 	},
 	actions: {
@@ -29,6 +31,7 @@ export const useMyInfoStore = defineStore('myInfo', {
 				} = await Http.get(urls.myInfo)
 				if (success) {
 					this.myInfo = result
+					initSocket(result.id)
 					return Promise.resolve(true)
 				}
 				return Promise.reject()
@@ -55,6 +58,7 @@ export const useMyInfoStore = defineStore('myInfo', {
 					this.unreadLike = result.unreadLike
 					this.unreadComment = result.unreadComment
 					this.unreadCollect = result.unreadCollect
+					this.unreadAudit = result.unreadAudit
 					
 					const pages = getCurrentPages()
 					const currentPage = pages[pages.length - 1]

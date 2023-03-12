@@ -57,8 +57,12 @@ class UploadController extends BaseController{
       //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
       // }
 
-      if(config.imgTypeList.includes(extname.toLowerCase()) && file.size > config.uploadMaxSize * 1024 * 1024){
-        return reject(`图片最大不能超过${config.uploadMaxSize}M`)
+      if(config.imgTypeList.includes(extname.toLowerCase()) && file.size > config.uploadImgMaxSize * 1024 * 1024){
+        return reject(`图片最大不能超过${config.uploadImgMaxSize}M`)
+      }
+
+      if(config.videoTypeList.includes(extname.toLowerCase()) && file.size > config.uploadVideoMaxSize * 1024 * 1024){
+        return reject(`视频最大不能超过${config.uploadVideoMaxSize}M`)
       }
 
       const hashName = (new Date().getTime() + Math.ceil(Math.random()*10000)).toString(16)

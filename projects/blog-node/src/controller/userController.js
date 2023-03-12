@@ -718,7 +718,7 @@ class UserController extends BaseController{
   friends = async (ctx, next) => {
     let {relateType, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
     const skip = pageSize * (page - 1)
-    let filter = { noDelete: true }
+    let filter = { ALL_DATA: true }
     let orderBy = { }
     try{
       if(!relateType || !uid) throw new Error('缺少参数')
@@ -841,7 +841,7 @@ class UserController extends BaseController{
     const skip = pageSize * (page - 1)
     let filter = {
       userId,
-      noDelete: true
+      ALL_DATA: true
     }
     try {
       const xprisma = prisma.$extends({
@@ -934,7 +934,7 @@ class UserController extends BaseController{
           createdAt: true,
           updatedAt: true,
           createById: true,
-          launch: true,
+          status: true,
           likedByCount: true,
           collectedByCount: true,
           commentsCount: true,
@@ -999,6 +999,7 @@ class UserController extends BaseController{
             blogId: true,
             topCommentId: true,
             createById: true,
+            status: true,
             createBy: {
               select: {
                 id: true,

@@ -18,6 +18,7 @@
 					</uni-data-checkbox>
 					<button class="group-btn" type="primary" size="mini" :loading="groupLoading"
 						@click="handleSaveGroup">保存</button>
+					<button class="group-btn" type="default" size="mini" @click="handleToGroupManage">分组管理</button>
 				</view>
 			</uni-popup>
 		</template>
@@ -160,6 +161,12 @@
 				} catch (e) {
 					this.groupLoading = false
 				}
+			},
+			handleToGroupManage(){
+				this.$refs.groupPopupRef.close()
+				uni.navigateTo({
+					url:'/pages/user-group-manage/user-group-manage'
+				})
 			}
 		}
 	}

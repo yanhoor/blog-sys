@@ -24,7 +24,7 @@
 
 - 默认读取根目录下 `.env` 配置的数据库，[说明](https://prisma.yoga/guides/development-environment/environment-variables/managing-env-files-and-setting-variables)
 
-- 使用类型不同的值来查询，可能导致接口 404，如 `id` 一般为 `int`，使用了字符串值来查询
+- 传参错误（类型错误/没有传）可能导致接口 `404`，如 `id` 一般为 `int`，使用了字符串值来查询。可以通过设置 `ctx.status = 500` 等改变返回的状态码。
 
 ### 多对多关系
 
@@ -158,78 +158,6 @@ await prisma.$transaction(groupIdList.map(id => {
 }))
 ```
 
-### 未解决
-
-- [Github issues](https://github.com/prisma/prisma/discussions/3087), 列表查询时，不能计算返回相同查询条件得到的数据条数。[hack方法](https://prisma.yoga/concepts/components/prisma-client/transactions)
-
-```javascript
-const [list, total] = await prisma.$transaction([
-  prisma.shopCategory.findMany({
-    skip,
-    take: pageSize,
-    where: filter,
-    select: {
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      name: true
-    },
-    orderBy: { updatedAt: 'desc' }
-  }),
-  prisma.shopCategory.count({where: filter}) // 与上面一样的条件
-])
-
-// 或者用以下方法
-
-// v4.7.0 可以使用预览功能，在返回的结果增加自定义字段
-const xprisma = prisma.$extends({
-  result: {
-    blog: {
-      // 在返回的结果新增自定义字段
-      isLike: {
-        // 计算这个新字段值需要依赖的真实字段
-        needs: { title: true},
-        compute(blog) {
-          // 计算获取这个新字段值的逻辑，即从何处来
-          return blog.likedBy.some(item => item.userId == userId)
-        },
-      },
-    },
-  },
-})
-
-// 注意这里使用上面的 xprisma
-const result = await xprisma.blog.findUnique({
-  where: {
-    id: Number(id)
-  },
-  select: {
-    id: true,
-    title: true,
-    createdAt: true,
-    updatedAt: true,
-    launch: true,
-    content: true,
-    isLike: true, // 注意自定义返回的字段要选择显示
-    cate: {
-      select: {
-        id: true,
-        name: true
-      }
-    },
-    createBy: {
-      select: {
-        id: true,
-        name: true,
-        avatar: true
-      }
-    }
-  }
-})
-```
-
-- [Github issues](https://github.com/prisma/prisma/issues/5051), 取出来的时间是 `UTC +0.00` 的时间
-
 ## 注意事项
 
 ### 文件路径
@@ -341,40 +269,105 @@ app.use(mount('/manage', require('koa-static')(__dirname + '../public/manage')))
 
 ## 待解决
 
+### enum 类型
+
+[参考](https://github.com/prisma/prisma/issues/273), 现在 `schema.prisma` 定义的 `enum` 类型值只能是字符串，以后支持整数类型时需要将各种状态和类型改成 `enum` 类型使用
+
+### 查询列表的总数
+
+[Github issues](https://github.com/prisma/prisma/discussions/3087), 列表查询时，不能计算返回相同查询条件得到的数据条数。[hack方法](https://prisma.yoga/concepts/components/prisma-client/transactions)
+
+```javascript
+const [list, total] = await prisma.$transaction([
+  prisma.shopCategory.findMany({
+    skip,
+    take: pageSize,
+    where: filter,
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      name: true
+    },
+    orderBy: { updatedAt: 'desc' }
+  }),
+  prisma.shopCategory.count({where: filter}) // 与上面一样的条件
+])
+```
+
 ### 时间格式问题
 
-- 使用数据库默认格式，这样可以自动记录创建时间和更新时间等，但是前端需要显示格式化的时间，这样是后端还是前端处理？特别是深层嵌套的时间
-- 如果使用格式化后的时间字符串，这样每个时间需要自己处理后保存
+[Github issues](https://github.com/prisma/prisma/issues/5051), 使用 `@default(now())` 保存时间时，是 `UTC +0.00` 的时间
 
-`prisma` 取出来的时间是 `UTC +0.00` 的时间，[Github issues](https://github.com/prisma/prisma/issues/5051)
-
-### 软删除问题
+### ~~软删除问题~~
 
 [参考](https://prisma.yoga/concepts/components/prisma-client/middleware/soft-delete-middleware), 暂时使用中间件根据操作类型和参数，设置删除时间来表示，同时拦截查询和操作软删除的数据。但是对于某些可能需要查找软删除数据或硬删除的场景，需要怎样处理？添加参数如 `includedDeleted` 来查询？这样需要给数据添加不代表真实数据的字段
 
-### 关联查询
+解决：删除时调用 `prisma.update`，更新 `deletedAt` 字段，这个字段有值都是已删除。然后使用 `prisma.$use` 添加中间件，对 `findUnique()/findMany()/count()` 等查询添加 `where.deletedAt = null` 过滤软删除的数据
 
-用户与博客的多对多关系中，如何在博客列表查询当前用户是否点赞。可以[使用 `prisma.$extends()`](https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions/result)
+```javascript
+prisma.$use(async (params, next) => {
+  let where
+  if(params.args?.where){
+    // 避免 findMany/count 使用相同的 where 查询时，ALL_DATA 被删除
+    where = JSON.parse(JSON.stringify(params.args?.where))
+  }
+  // 有 ALL_DATA 说明不需要添加 deletedAt 参数，比如硬删除的不会有这个参数
+  if(params.args?.where?.ALL_DATA) {
+    delete where.ALL_DATA
+    params.args.where = where
+    return next(params)
+  }
 
-### prisma.$extends() 查询关系不能选择字段
+  if (params.action == 'findUnique') {
+    // 更改为 findFirst - 无法过滤
+    // 除 ID / unique 和 findUnique 之外的任何内容
+    params.action = 'findFirst'
+    // 添加 'deleted' 过滤器
+    // 保持 ID 过滤器
+    if (!params.args.where.deletedAt) params.args.where['deletedAt'] = null
+  }
+  if (['findMany', 'count'].includes(params.action)) {
+    // 查找许多查询
+    if (params.args?.where != undefined) {
+      if (!params.args.where.deletedAt) {
+        // 如果未明确要求删除记录，则将其排除在外
+        params.args.where['deletedAt'] = null
+      }
+    } else {
+      params.args = {...params.args}
+      params.args['where'] = { deletedAt: null }
+    }
+  }
+  return next(params)
+})
+```
+
+### ~~关联查询~~
+
+用户与博客的多对多关系中，如何在博客列表查询当前用户是否点赞。
+
+解决：可以[使用 `prisma.$extends()`](https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions/result)，增加 `result` 返回的字段。
+
+### ~~prisma.$extends() 查询关系不能选择字段~~
 
 使用 `prisma.$extends()` 增加自定义字段，如果在 `findMany()` 等查询方法的 `select` 选择 `childCommentsCount: true`，则 `childComments` 的 `select` 就无效
 ```javascript
 const xprisma = prisma.$extends({
-        result: {
-          comment: {
-            childCommentsCount: {
-              // 计算这个新字段值需要依赖的真实字段
-              needs: { childComments: true },
-              compute(comment) {
-                // 计算获取这个新字段值的逻辑，即从何处来
-                const list = comment.childComments.filter(c => !c.deletedAt)
-                return list.length
-              },
-            }
-          }
-        }
-      })
+  result: {
+    comment: {
+      childCommentsCount: {
+        // 计算这个新字段值需要依赖的真实字段
+        needs: { childComments: true },
+        compute(comment) {
+          // 计算获取这个新字段值的逻辑，即从何处来
+          const list = comment.childComments.filter(c => !c.deletedAt)
+          return list.length
+        },
+      }
+    }
+  }
+})
 
 const list = xprisma.comment.findMany({
   select: {
@@ -382,6 +375,26 @@ const list = xprisma.comment.findMany({
     childComments: {
       id: true // 无效，仍然会返回所有字段
     }
+  }
+})
+```
+
+解决：不要使用 `prisma.$extends()`，可以使用预览功能 `filteredRelationCount`，然后 `select._count`:
+
+```javascript
+await prisma.comment.findMany({
+  where,
+  select: {
+    _count: {
+      select: {
+        childComments: {
+          where: {
+            // topCommentId: blogId,
+            deletedAt: null
+          },
+        }
+      }, // 这个数量错误，包含了已删除的
+    },
   }
 })
 ```
