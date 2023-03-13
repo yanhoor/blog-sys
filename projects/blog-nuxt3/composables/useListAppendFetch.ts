@@ -19,7 +19,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   const pageLoading = ref(false)
   const pageLoadedFinish = ref(false) // 是否加载全部
   const fetchResult = ref(null)
-  const pageFetchParams = reactive<PageFetchParams>({
+  const pageFetchParams = ref<PageFetchParams>({
     page: 0,
     pageSize: initParams.pageSize || 20,
     ...params
@@ -28,7 +28,8 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   async function fetchPage() {
     try{
       pageLoading.value = true
-      const respone = await useFetchPost(url, pageFetchParams)
+      const respone = await useFetchPost(url, pageFetchParams.value)
+      pageLoading.value = false
       const { result, success } = respone
       if(success){
         fetchResult.value = result
@@ -40,21 +41,17 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
           }
         }
         pageTotal.value = result.total
-        if(result.list.length < pageFetchParams.pageSize) {
-          pageLoadedFinish.value = true
-        }else{
-          pageLoadedFinish.value = false
-        }
+        pageLoadedFinish.value = result.list.length < pageFetchParams.value.pageSize
       }
-      pageLoading.value = false
       return respone
     }catch (e) {
+      console.log('=======useListAppendFetch======', e)
       pageLoading.value = false
     }
   }
 
   async function handlePageChange(page: number) {
-    pageFetchParams.page = page
+    pageFetchParams.value.page = page
     if(page == 1){
       pageList.value = initParams.initList ? [...initParams.initList] : []
       pageLoadedFinish.value = false
@@ -67,8 +64,15 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
       return await handlePageChange(page)
     }
     if(pageLoadedFinish.value) return
-    pageFetchParams.page ++
+    pageFetchParams.value.page ++
     return await fetchPage()
+  }
+
+  function handleChangeFetchParams(params: Object = {}) {
+    pageFetchParams.value = {
+      ...pageFetchParams.value,
+      ...params
+    }
   }
 
   return {
@@ -80,5 +84,6 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     fetchResult,
     handlePageChange,
     handleLoadNextPage,
+    handleChangeFetchParams,
   }
 }
