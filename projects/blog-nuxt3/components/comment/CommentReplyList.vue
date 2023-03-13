@@ -46,7 +46,9 @@
       </div>
     </div>
 
-    <ResultLoading v-if="allowLoadMore"/>
+    <template v-if="allowLoadMore">
+      <ResultLoading v-if="pageLoading"/>
+    </template>
 
     <n-button
       class="ml-[12px] mb-[12px]"
