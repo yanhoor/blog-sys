@@ -1,21 +1,21 @@
 <template>
-  <SkeletonPostList v-if="pageLoading && pageFetchParams.page === 1"></SkeletonPostList>
+  <div class="post-list">
+    <SkeletonPostList v-if="pageLoading && pageFetchParams.page === 1"></SkeletonPostList>
 
-  <div v-else>
-    <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
-      <template v-for="(blog, index) of pageList" :key="blog.id">
-        <n-card>
-          <PostItem :blog="blog" v-bind="$attrs" @delete="handlePostDelete(index)"/>
-        </n-card>
-      </template>
+    <div v-else>
+      <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
+        <template v-for="(blog, index) of pageList" :key="blog.id">
+          <n-card>
+            <PostItem :blog="blog" v-bind="$attrs" @delete="handlePostDelete(index)"/>
+          </n-card>
+        </template>
+      </div>
+      <ResultLoading v-if="pageLoading"/>
+      <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
+      <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
+      <ResultNoMore v-else-if="pageLoadedFinish"/>
+      <n-back-top :right="50"/>
     </div>
-    <div class="text-center mt-[20px]" v-if="pageLoading">
-      <n-spin :size="24"/>
-    </div>
-    <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
-    <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
-    <ResultNoMore v-else-if="pageLoadedFinish"/>
-    <n-back-top :right="50"/>
   </div>
 </template>
 
@@ -23,7 +23,7 @@
 import {
   NCard,
   NBackTop,
-  NSpin, createDiscreteApi
+  createDiscreteApi
 } from "naive-ui"
 import { Blog } from '@/types'
 
@@ -49,14 +49,17 @@ provide('allow_load_more_comment', false)
 const fetchNewPost = useFetchNewPost()
 const route = useRoute()
 const userInfo = useUserInfo()
-const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Blog>(props.url, props.searchParams, {})
+const { pageFetchParams, pageList, pageLoading, fetchResult, pageLoadedFinish, handleLoadNextPage, handleChangeFetchParams } = useListAppendFetch<Blog>(props.url, props.searchParams, {})
 
 handleLoadNextPage().then(r => {
   const { message } = createDiscreteApi(["message"])
-  if(!r?.success){
+  if(r?.success){
+    emit('fetchComplete', fetchResult)
+  }else{
     message.error(r?.msg || '请求出错')
   }
-  emit('fetchComplete', fetchResult)
+}).catch(e => {
+  console.log('-------', e.message)
 })
 
 watch(fetchNewPost, (val) => {
@@ -64,14 +67,6 @@ watch(fetchNewPost, (val) => {
     pageList.value.unshift(val as Blog)
   }
 })
-
-watch(() => props.searchParams, (val) => {
-  if(val){
-    for (let k in val){
-      pageFetchParams[k] = val[k]
-    }
-  }
-}, { deep: true })
 
 function handleLoadMore() {
   // console.log('----------handleLoadMore-----------')
@@ -84,7 +79,8 @@ function handlePostDelete(idx: number) {
 }
 
 defineExpose({
-  handleLoadNextPage
+  handleLoadNextPage,
+  handleChangeFetchParams,
 })
 </script>
 

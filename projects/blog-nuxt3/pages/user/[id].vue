@@ -258,9 +258,8 @@ function handleSearchPost() {
     searchParams.startTime = ''
     searchParams.endTime = ''
   }
-  setTimeout(() => {
-    blogListRef.value.handleLoadNextPage(1)
-  })
+  blogListRef.value.handleChangeFetchParams(searchParams)
+  blogListRef.value.handleLoadNextPage(1)
 }
 
 </script>

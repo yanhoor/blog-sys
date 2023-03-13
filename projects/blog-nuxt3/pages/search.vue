@@ -66,10 +66,8 @@ function handleTimeSelect() {
   handleSearch()
 }
 async function handleSearch() {
-  // await navigateTo({ path: '/search', query: searchParams })
-  setTimeout(() => {
-    blogListRef.value.handleLoadNextPage(1)
-  })
+  blogListRef.value.handleChangeFetchParams(searchParams)
+  blogListRef.value.handleLoadNextPage(1)
 }
 </script>
 

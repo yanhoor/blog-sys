@@ -45,9 +45,7 @@
           </div>
         </n-checkbox-group>
       </template>
-      <div class="text-center mt-[20px]" v-if="pageLoading">
-        <n-spin :size="24"/>
-      </div>
+      <ResultLoading v-if="pageLoading"/>
       <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
       <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
       <ResultNoMore v-else-if="pageLoadedFinish"/>

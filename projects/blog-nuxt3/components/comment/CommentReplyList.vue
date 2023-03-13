@@ -46,9 +46,7 @@
       </div>
     </div>
 
-    <div class="text-center my-[20px]" v-if="allowLoadMore">
-      <n-spin :size="24" v-if="pageLoading"/>
-    </div>
+    <ResultLoading v-if="allowLoadMore"/>
 
     <n-button
       class="ml-[12px] mb-[12px]"

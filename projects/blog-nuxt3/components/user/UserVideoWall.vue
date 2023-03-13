@@ -16,9 +16,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full text-center mt-[20px]" v-if="pageLoading">
-        <n-spin :size="24"/>
-      </div>
+      <ResultLoading v-if="pageLoading"/>
       <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)"/>
       <ResultEmpty v-else-if="pageList.length === 0" @refresh="handleLoadNextPage(1)"/>
       <ResultNoMore v-else-if="pageLoadedFinish"/>

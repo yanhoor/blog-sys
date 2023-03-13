@@ -7,9 +7,7 @@
     <template v-for="comment of pageList" :key="comment.id">
       <CommentItem :comment="comment" @commentDelete="handleCommentDelete"/>
     </template>
-    <div class="text-center mt-[20px]" v-if="pageLoading">
-      <n-spin :size="24"/>
-    </div>
+    <ResultLoading v-if="pageLoading"/>
     <div class="text-center" v-else-if="!allowLoadMore && pageTotal > pageSize">
       <n-divider/>
       <n-button text @click="navigateTo(`/post/${blog.id}`)">查看全部 {{ pageTotal }} 条评论</n-button>
