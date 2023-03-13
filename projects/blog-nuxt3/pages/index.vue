@@ -46,6 +46,7 @@ useHead({
 })
 definePageMeta({
   pageTransition: false,
+  key: (route) => route.fullPath
 })
 
 const route = useRoute()
@@ -55,17 +56,6 @@ const currentGroupId = ref(route.query.gid)
 const listRef = ref()
 const myInfo = useUserInfo()
 const showManageGroup = ref(false)
-
-watch(() => route.query, (val) => {
-  if(val){
-    currentGroupId.value = val.gid
-  } else {
-    currentGroupId.value = ''
-  }
-  setTimeout(() => {
-    listRef.value.handleLoadNextPage(1)
-  })
-})
 
 getAllGroup()
 
