@@ -16,7 +16,7 @@
 
 - 执行 `npx prisma generate`，每次修改 `schema` 都需要手动执行
 
-- 将 `schema` 的修改推送到数据库：`npx prisma db push`
+- 将 `schema` 的修改推送到数据库：`npx prisma db push`，生成定义的各个表
 
 - `npx Prisma studio` 查看数据库
 
@@ -25,6 +25,23 @@
 - 默认读取根目录下 `.env` 配置的数据库，[说明](https://prisma.yoga/guides/development-environment/environment-variables/managing-env-files-and-setting-variables)
 
 - 传参错误（类型错误/没有传）可能导致接口 `404`，如 `id` 一般为 `int`，使用了字符串值来查询。可以通过设置 `ctx.status = 500` 等改变返回的状态码。
+
+### docker 部署
+
+`Dockerfile` 里面使用 `RUN npx prisma generate` 无效，暂时以下解决:
+
+将该命令配置在 `package.json`，然后启动项目时先执行
+
+```json
+{
+  "scripts": {
+    "generate": "npx prisma generate",
+    "push": "npx prisma db push",
+    "dev": "npm run generate && npm run push && nodemon src/index.js",
+    "prod": "pm2 start ecosystem.config.js --env production"
+  }
+}
+```
 
 ### 多对多关系
 

@@ -9,14 +9,18 @@ createAdmin()
 
 // 创建超级管理员
 async function createAdmin(){
-  const admin = await prisma.user.findUnique({
-    where: { type: 1 }
-  })
-
-  if(!admin){
-    await prisma.user.create({
-      data: config.adminUser
+  try {
+    const admin = await prisma.user.findUnique({
+      where: { type: 1 }
     })
+
+    if(!admin){
+      await prisma.user.create({
+        data: config.adminUser
+      })
+    }
+  }catch (e) {
+    console.log('==============', e)
   }
 }
 

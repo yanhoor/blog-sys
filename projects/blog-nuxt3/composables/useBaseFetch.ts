@@ -1,4 +1,3 @@
-import {useFetch, useRuntimeConfig} from "#app"
 import {createDiscreteApi} from "naive-ui"
 
 interface HttpResponseType {
@@ -22,9 +21,11 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
     // headers['Content-Type'] = 'multipart/form-data'
     data = fd
   }
+  // console.log('======useFetchPost====', url, process.client, process.server)
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
-    baseURL: runTimeConfig.apiBase,
+    // baseURL: runTimeConfig.apiBase,
+    baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     headers: {
       'Authorization': Authorization
     },
@@ -36,15 +37,25 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
     //   console.log('===========tt=====', res)
     //   return res
     // },
-    async onResponse({ request, response, options }) {
-      const { message } = createDiscreteApi(["message"])
+
+    onRequestError({ request, options, error }) {
+      // Log error
+      console.log('[fetch request error]', request, error)
+    },
+    onResponse({ request, response, options }) {
+      // console.log('-------onResponse----------', url, process.server)
       // Log response
       // console.log('[fetch response]', response._data)
       const { code, success, msg } = response._data || {}
-      if(code === 111 || code === 999){
+      if(process.client && (code === 111 || code === 999)){
         token.value = null
+        const { message } = createDiscreteApi(["message"])
         message.error(msg)
       }
+    },
+    onResponseError({ request, response, options }) {
+      // Log error
+      console.log('[fetch response error]', request, response.status, response.body)
     }
   })
 }
@@ -56,8 +67,10 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
   const token = useCookie('token')
   if(token.value) Authorization = 'Bearer ' + token.value
   // console.log('=======useFetchPost.key======', url + json)
+  // console.log('======useFetchGet====', url, process.client, process.server, token.value)
   return $fetch(url, {
-    baseURL: runTimeConfig.apiBase,
+    // baseURL: runTimeConfig.apiBase,
+    baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     method: 'GET',
     params: data,
     // key: url + json,
@@ -65,15 +78,24 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
     headers: {
       'Authorization': Authorization
     },
-    async onResponse({ request, response, options }) {
-      const { message } = createDiscreteApi(["message"])
+    onRequestError({ request, options, error }) {
+      // Log error
+      console.log('[fetch request error]', request, error)
+    },
+    onResponse({ request, response, options }) {
+      // console.log('-------onResponse----------', url, process.server)
       // Log response
       // console.log('[fetch response]', response._data)
       const { code, success, msg } = response._data || {}
-      if(code === 111 || code === 999){
+      if(process.client && (code === 111 || code === 999)){
         token.value = null
+        const { message } = createDiscreteApi(["message"])
         message.error(msg)
       }
+    },
+    onResponseError({ request, response, options }) {
+      // Log error
+      console.log('[fetch response error]', request, response.status, response.body)
     }
   })
 }

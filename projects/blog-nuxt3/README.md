@@ -18,6 +18,10 @@
 
 使用 `pnpm i` 时 需要加 `--shamefully-hoist`，这样打包才不会提示缺少 `vue`
 
+### Docker 运行报错 `connect ECONNREFUSED 127.0.0.1:80`
+
+原因是服务端渲染请求后端接口时，`baseUrl` 应该是 `docker` 的网络名（如 `http://koa:8000/api` ），而不是暴露外网访问的 `localhost`
+
 ### `Error: nuxt instance unavailable`
 
 - `useCookie()/useState()/useFetch()/useLazyFetch()/useAsyncData()/useLazyAsyncData()` 只能在 `setup` 或者生命周期钩子使用

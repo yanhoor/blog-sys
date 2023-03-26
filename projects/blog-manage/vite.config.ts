@@ -7,6 +7,7 @@ import path from 'path'
 import { createStyleImportPlugin, VxeTableResolve, ElementPlusResolve } from 'vite-plugin-style-import'
 import viteCompression from "vite-plugin-compression"
 
+console.log('+++++++TEST_ENV++++++++', process.env.TEST_ENV)
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/manage/', // 所有静态资源都会以这个路径重写
@@ -64,9 +65,10 @@ export default defineConfig({
     }
   },
   server: {
+    host: "0.0.0.0",
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://koa:8000',
         // target: 'http://blog-koa:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')

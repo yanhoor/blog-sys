@@ -4,19 +4,20 @@
     "build": "nuxi build --dotenv .env",
     "start": "nuxi start",
     "dev": "nuxi dev --dotenv .env.dev",
+    "dev_docker": "nuxi dev --dotenv .env.dev_docker",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
     "postinstall": "nuxi prepare"
   },
   "devDependencies": {
     "@vicons/fluent": "^0.12.0",
-    "nuxt": "3.2.3",
-    "sass": "^1.58.3",
-    "sass-loader": "^13.2.0"
+    "nuxt": "3.3.2",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.1"
   },
   "dependencies": {
     "@css-render/vue3-ssr": "^0.15.12",
-    "@nuxtjs/tailwindcss": "^6.4.1",
+    "@nuxtjs/tailwindcss": "^6.6.4",
     "@vueuse/nuxt": "^9.13.0",
     "dayjs": "^1.11.7",
     "naive-ui": "^2.34.3",

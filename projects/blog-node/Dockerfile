@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:19.8.1
 
 # 指定作者
 LABEL maintainer="yanhoor"
@@ -7,25 +7,29 @@ LABEL maintainer="yanhoor"
 WORKDIR /projects/blog-node
 
 # 复制全部文件，源代码，将 . 项目中的当前目录复制到 . 镜像中的工作目录。
-# COPY [source1] [source2]...[target] source 路径相对于当前文件，target 路径相对于上面的 WORKDIR
-COPY ./package.json ./package.json
-COPY ./prisma ./prisma
-COPY ./.env ./.env
+# COPY [source1] [source2]...[target] source 路径相对于当前文件，target 路径相对于上面的 WORKDIR，以 / 结尾，否则当作文件
+# 复制 package.json package-lock.json
+#COPY ./package*.json prisma .env ecosystem.config.js ./
+#COPY ./package*.json ./
+#COPY ./prisma ./
+#COPY ./.env ./
+COPY . .
 
 # 运行命令，安装依赖
 # Dockerfile 的指令每执行一次都会在 docker 上新建一层。所以过多无意义的层，会造成镜像膨胀过大
 # 例如 RUN npm install && cd /app && mkdir logs
 # RUN npm install --registry=https://registry.npm.taobao.org
-RUN npm install --registry=https://registry.npm.taobao.org \
-    && npx prisma generate \
-    && npx prisma db push
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org \
+    && cnpm install
 
-COPY . .
+# RUN npx prisma generate \
+    #&& npx prisma db push
 
+#ENV DATABASE_URL="mysql://root:145261yan@mysql:3306/blogKoa2"
 # CMD 指令只能一个，是容器启动后执行的命令，算是程序的入口。
 # 如果还需要运行其他命令可以用 && 连接，也可以写成一个shell脚本去执行。
 # 例如 CMD cd /app && ./start.sh
-CMD ["npm","run","dev"]
+CMD ["npm","run","docker"]
 
 # 暴露端口到宿主机
 EXPOSE 8000
