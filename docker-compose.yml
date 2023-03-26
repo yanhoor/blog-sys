@@ -1,46 +1,51 @@
 version: '3'
-networks:
-  app-network:
-    driver: bridge
+#networks:
+#  app-network:
+#    driver: bridge # 需要先执行命令 docker network create -d bridge app-network
+
 services:
+  # 默认的 network 名也是这个，而不是 container_name
   koa:
     # working_dir: /projects/blog-node
     container_name: blog-koa
     # 开了会报错找不到依赖
-#    volumes:
-#      - ./projects/blog-node:/projects/blog-node
+    #    volumes:
+    #      - ./projects/blog-node:/projects/blog-node
     restart: always
     build:
       context: ./projects/blog-node   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
     depends_on: # 定义容器启动顺序 附带容器间的依赖关系
       - mysql
+      - redis
     ports:
-      - "8000:8000"
-    networks:
-      - app-network
+      - "8000:8000" # 宿主机端口：容器端口
+#    networks:
+#      - app-network
 
   manage:
     # working_dir: /projects/blog-manage
-#    volumes:
-#      - ./projects/blog-manage:/projects/blog-manage
+    #    volumes:
+    #      - ./projects/blog-manage:/projects/blog-manage
+    container_name: blog-manage
     build:
       context: ./projects/blog-manage   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
     ports:
       - "5173:5173"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
 
   nuxt:
     # working_dir: /projects/blog-nuxt3
     restart: always
-#    volumes:
-#      - ./projects/blog-nuxt3:/projects/blog-nuxt3
+    container_name: blog-nuxt3
+    #    volumes:
+    #      - ./projects/blog-nuxt3:/projects/blog-nuxt3
     build:
       context: ./projects/blog-nuxt3   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
     ports:
       - "3000:3000" # 本地端口：容器端口，即外部访问用的是本地端口，容器端口是项目运行使用的端口
-    networks:
-      - app-network
+#    networks:
+#      - app-network
 
   mysql:
     image: mysql:8.0 # 参考 https://hub.docker.com/_/mysql
@@ -54,5 +59,17 @@ services:
       - TZ=Asia/Shanghai # 设置时区
     ports:
       - "3306:3306"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
+
+  redis:
+    image: redis:7.0.10
+    restart: always
+    container_name: redis
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf # 将本机的配置文件 ./redis.conf 挂在到容器 /etc/redis/redis.conf，可以看作是复制到对应路径
+    command: redis-server /etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+#    networks:
+#      - app-network
