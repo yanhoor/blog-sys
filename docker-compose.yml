@@ -57,6 +57,8 @@ services:
       # - MYSQL_PASSWORD=21w13e # 设置用户 yanhoor 密码
       - MYSQL_DATABASE=blogKoa2 # 创建初始数据库
       - TZ=Asia/Shanghai # 设置时区
+    volumes: # 挂载数据卷
+      - /usr/local/volumes/mysql:/var/lib/mysql  # 数据持久化
     ports:
       - "3306:3306"
 #    networks:
@@ -68,7 +70,8 @@ services:
     container_name: redis
     volumes:
       - ./redis.conf:/etc/redis/redis.conf # 将本机的配置文件 ./redis.conf 挂在到容器 /etc/redis/redis.conf，可以看作是复制到对应路径
-    command: redis-server /etc/redis/redis.conf
+      - /usr/local/volumes/redis:/data # 数据持久化
+    command: redis-server /etc/redis/redis.conf --appendonly yes
     ports:
       - "6379:6379"
 #    networks:

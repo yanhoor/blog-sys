@@ -7,8 +7,8 @@ LABEL maintainer="yanhoor"
 WORKDIR /projects/blog-manage
 
 # 复制全部文件，源代码，将 . 项目中的当前目录复制到 . 镜像中的工作目录。
-#COPY ./package.json ./package.json
-COPY . .
+# 如果package.json和源代码一起添加到镜像，则每次修改源码都需要重新安装npm模块
+COPY ./package*.json ./
 
 # 运行命令，安装依赖
 # Dockerfile 的指令每执行一次都会在 docker 上新建一层。所以过多无意义的层，会造成镜像膨胀过大
@@ -16,6 +16,7 @@ COPY . .
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org \
     && cnpm i
 
+COPY . .
 # VITE_开头的可以在业务代码通过 import.meta.env.VITE_SOME_KEY 获取
 # 其他的可以通过 process.env.XXX 获取，如 process.env.TEST_ENV，但是不能在业务代码中使用
 ENV TEST_ENV=test_env_value VITE_SOME_KEY=123

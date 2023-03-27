@@ -117,7 +117,7 @@
 				})
 			},
 			handleListFetchEnd(result) {
-				if (result.code == 12) {
+				if (!result || result.code == 12) {
 					// 分组不存在
 					this.handleChangeGroup('')
 				}
