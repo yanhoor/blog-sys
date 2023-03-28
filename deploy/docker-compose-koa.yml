@@ -8,8 +8,8 @@ services:                                       # 多个容器集合
     #      - ./projects/blog-node:/projects/blog-node
     restart: always
     build:
-      context: .   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
-      dockerfile: Dockerfile-koa
+      context: ../projects/blog-node   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
+      dockerfile: ./Dockerfile-koa
     depends_on: # 定义容器启动顺序 附带容器间的依赖关系
       - mysql
       - redis
