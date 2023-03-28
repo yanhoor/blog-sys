@@ -13,7 +13,7 @@
     "prisma": "npm run generate && npm run push",
     "docker": "dotenv -e .env.docker -- npm run prisma && dotenv -e .env.docker -- nodemon src/index.js",
     "dev": "nodemon src/index.js",
-    "prod": "dotenv -e .env.production -- pm2 start ecosystem.config.js --env production"
+    "prod": "dotenv -e .env.production -- npm run prisma && dotenv -e .env.production -- pm2 start ecosystem.config.js"
   },
   "keywords": [],
   "author": "",
