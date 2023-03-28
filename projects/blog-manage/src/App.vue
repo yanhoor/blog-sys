@@ -1,3 +1,3 @@
-<template>test
+<template>
   <router-view></router-view>
 </template>
