@@ -5,9 +5,11 @@ class RedisClient{
   redisClient = null
   async initRedis() {
     // this.redisClient = createClient(config.redis)
+    const url = `redis://${config.redis.username}:${config.redis.password}@${config.redis.host}:${config.redis.port}`
+    console.log('======redis url=======', url)
     this.redisClient = createClient({
       // 格式: redis[s]://[[username][:password]@][host][:port][/db-number]
-      url: `redis://${config.redis.username}:${config.redis.password}@${config.redis.host}:${config.redis.port}`
+      url
     })
 
     this.redisClient.on('error', (err) => console.log('Redis Client Error', err))
