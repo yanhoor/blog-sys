@@ -46,7 +46,7 @@ class Http{
             from: router.currentRoute.value.fullPath
           }
         })
-        return Promise.reject(error);
+        return Promise.reject(false);
       }
       return response;
     }, error => {
