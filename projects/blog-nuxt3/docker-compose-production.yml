@@ -1,0 +1,19 @@
+version: '3'
+#networks:
+#  app-network:
+#    driver: bridge # 需要先执行命令 docker network create -d bridge app-network
+
+services:
+  nuxt:
+    # working_dir: /projects/blog-nuxt3
+    restart: always
+    container_name: blog-nuxt3
+    #    volumes:
+    #      - ./projects/blog-nuxt3:/projects/blog-nuxt3
+    build:
+      context: ./projects/blog-nuxt3   # 构建的目录，这是本地目录，会在该目录下面寻找 Dockerfile
+      dockerfile: Dockerfile-production
+    ports:
+      - "3000:3000" # 本地端口：容器端口，即外部访问用的是本地端口，容器端口是项目运行使用的端口
+#    networks:
+#      - app-network
