@@ -27,7 +27,7 @@ RUN npm install -g yarn --registry=https://registry.npm.taobao.org \
 # RUN npx prisma generate \
     #&& npx prisma db push
 
-COPY ../projects/blog-node/* ./
+COPY . .
 
 #ENV DATABASE_URL="mysql://root:145261yan@mysql:3306/blogKoa2"
 # CMD 指令只能一个，是容器启动后执行的命令，算是程序的入口。
