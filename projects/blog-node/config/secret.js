@@ -4,7 +4,7 @@ module.exports = {
     secret: '23ca458c9f3537908eae10a7e4a536b3',
   },
   redis: {
-    host: 'redis',
+    host: '127.0.0.1',
     port: '6379',
     username: 'default',
     password: '1q2w3e4r'
