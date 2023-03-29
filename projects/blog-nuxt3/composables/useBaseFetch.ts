@@ -24,8 +24,8 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
   // console.log('======useFetchPost====', url, process.client, process.server)
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
-    // baseURL: runTimeConfig.apiBase,
-    baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
+    baseURL: runTimeConfig.apiBase,
+    // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     headers: {
       'Authorization': Authorization
     },
@@ -69,8 +69,8 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
   // console.log('=======useFetchPost.key======', url + json)
   // console.log('======useFetchGet====', url, process.client, process.server, token.value)
   return $fetch(url, {
-    // baseURL: runTimeConfig.apiBase,
-    baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
+    baseURL: runTimeConfig.apiBase,
+    // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     method: 'GET',
     params: data,
     // key: url + json,
