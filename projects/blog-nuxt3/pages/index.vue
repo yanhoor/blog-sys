@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div>test
     <div class="flex items-start gap-[12px]">
       <n-card class="sticky top-[80px] max-w-[180px]" v-if="myInfo">
         <p class="group-title" :class="{'active': !currentGroupId}" @click="handleChangeGroup()">全部关注</p>
