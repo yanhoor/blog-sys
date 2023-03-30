@@ -1,6 +1,6 @@
 import IndexPage from '@/pages/index/Index'
 import TestRoutePage from '@/pages/test/test-route/TestRoute'
-import TestPage from '@/pages/test/Test'
+import TestPage from '@/pages/test/index/Test'
 import TestId from '@/pages/test/test-id/TestId'
 import App from '@/App'
 import { RouteObject } from "react-router-dom"

@@ -19,7 +19,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <button onClick={() => navigate('/index', { state: { a: 12 } })}>navigate</button>
+      <button onClick={() => navigate('/index', { state: { a: 12 } })}>navigate to index</button>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
