@@ -1,13 +1,13 @@
 import { User } from './user'
 
-enum Type{
+enum Type {
   collect_blog = 'collect_blog',
   like_blog = 'like_blog',
   comment = 'comment',
   comment_reply = 'comment_reply'
 }
 
-export interface Notification{
+export interface Notification {
   id: number | string
   createdAt: string
   content: any

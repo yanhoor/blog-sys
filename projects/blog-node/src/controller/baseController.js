@@ -7,7 +7,7 @@ const dayjs = require('dayjs')
 const Axios = require('axios')
 const { NotificationType } = require('@prisma/client')
 
-class BaseController{
+class BaseController {
   pageSize = config.pageSize
   globalConfig = config
   defaultLogger = defaultLogger
@@ -18,7 +18,7 @@ class BaseController{
   CODE = {
     USER_NOT_LOGIN: 999, // 未登录/登录异常
     USER_LOCK: 111, // 用户被锁定
-    USER_NOT_FOUND: 222, // 用户不存在
+    USER_NOT_FOUND: 222 // 用户不存在
   }
   // redis 储存 的 key 的前缀
   REDIS_KEY_PREFIX = {
@@ -36,19 +36,24 @@ class BaseController{
     BLOG_CREATE_RANKING: 'blog_create_ranking', // 博客创建数排名有序集合
     EVERY_BLOG_LIKE_USER: 'every_blog_like_user_', // 所有博客分别被点赞数量 hash
     EVERY_BLOG_READ_USER: 'every_blog_read_user_', // 所有博客分别被阅读数量 hash
-    EVERY_BLOG_COLLECT_USER: 'every_blog_collect_user_', // 所有博客分别被收藏数量 hash
+    EVERY_BLOG_COLLECT_USER: 'every_blog_collect_user_' // 所有博客分别被收藏数量 hash
   }
   NOTIFICATION_TYPE = NotificationType
 
   getAuthUserId = async (ctx, next) => {
     const token = ctx.headers['authorization']
     let userId = undefined
-    if(token) {
+    if (token) {
       try {
-        const user = await jsonwebtoken.verify(token.replace(/Bearer /g, ''), this.globalConfig.jwtSecret)
-        const clientToken = await redisClient.get(this.REDIS_KEY_PREFIX.TOKEN + user.id)
-        if(clientToken) userId = user.id
-      }catch (e) {
+        const user = await jsonwebtoken.verify(
+          token.replace(/Bearer /g, ''),
+          this.globalConfig.jwtSecret
+        )
+        const clientToken = await redisClient.get(
+          this.REDIS_KEY_PREFIX.TOKEN + user.id
+        )
+        if (clientToken) userId = user.id
+      } catch (e) {
         this.errorLogger.error('getAuthUserId--------->', e)
       }
     }
@@ -64,7 +69,7 @@ class BaseController{
 
     return {
       gte,
-      lte,
+      lte
     }
   }
 
@@ -72,7 +77,7 @@ class BaseController{
     return new Promise((r, j) => {
       Axios.get(url, {
         params
-      }).then(res => {
+      }).then((res) => {
         r(res.data)
       })
     })

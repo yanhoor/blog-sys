@@ -1,5 +1,7 @@
 <template>
-  <div class="index-skeleton divide-y divide-border-light dark:divide-border-dark">
+  <div
+    class="index-skeleton divide-y divide-border-light dark:divide-border-dark"
+  >
     <n-card>
       <div class="flex gap-12">
         <n-skeleton circle :width="80" :height="80"></n-skeleton>
@@ -17,11 +19,5 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NSkeleton,
-  NCard,
-  NSpace
-} from "naive-ui"
-
+import { NSkeleton, NCard, NSpace } from 'naive-ui'
 </script>
-

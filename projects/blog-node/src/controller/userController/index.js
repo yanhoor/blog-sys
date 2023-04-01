@@ -17,7 +17,7 @@ const friends = require('./friends')
 const markBlogList = require('./markBlogList')
 const myCommentList = require('./myCommentList')
 
-class UserController extends BaseController{
+class UserController extends BaseController {
   constructor() {
     super()
     this.register = register.bind(this)

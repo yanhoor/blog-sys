@@ -44,12 +44,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '用户列表'
         }
-      },
+      }
     ]
   },
   {
     path: '/login',
-    component: () => import('@/views/Login.vue'),
+    component: () => import('@/views/Login.vue')
   },
   {
     path: '/:path*',
@@ -62,17 +62,20 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach( (to, from) => {
+router.beforeEach((to, from) => {
   return new Promise(async (resolve, reject) => {
     const userStore = useUserStore()
     // console.log('beforeEach', to)
-    if(!userStore.user && to.path != '/login'){
-      await userStore.getUserInfo().then((r) => {
-        r ? resolve() : resolve('/login')
-      }).catch(() => {
-        reject()
-      })
-    }else{
+    if (!userStore.user && to.path != '/login') {
+      await userStore
+        .getUserInfo()
+        .then((r) => {
+          r ? resolve() : resolve('/login')
+        })
+        .catch(() => {
+          reject()
+        })
+    } else {
       resolve()
     }
   })

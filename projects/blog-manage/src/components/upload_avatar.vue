@@ -16,7 +16,7 @@
 import $http, { IMG_HOST, urls } from '@/http'
 import { reactive, ref } from 'vue'
 import type { UploadInstance, UploadRequestOptions } from 'element-plus'
-import { ElMessage } from "element-plus"
+import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 
 interface Props {
@@ -26,7 +26,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   url: '',
-  size: '178px',
+  size: '178px'
 })
 
 const emit = defineEmits(['update:url', 'change'])
@@ -34,19 +34,21 @@ const emit = defineEmits(['update:url', 'change'])
 const uploadRef = ref<UploadInstance>()
 
 const handleUpload = async (options: UploadRequestOptions) => {
-  try{
-    const {success, result, msg} = await $http.post(urls.upload, {file: options.file, lastFilePath: props.url}, true)
-    if(!success){
+  try {
+    const { success, result, msg } = await $http.post(
+      urls.upload,
+      { file: options.file, lastFilePath: props.url },
+      true
+    )
+    if (!success) {
       ElMessage.error({
         message: msg
       })
-    }else{
+    } else {
       emit('update:url', result.path)
       emit('change')
     }
-  }catch (e) {
-
-  }
+  } catch (e) {}
 }
 </script>
 
@@ -60,14 +62,15 @@ const handleUpload = async (options: UploadRequestOptions) => {
     overflow: hidden;
     transition: var(--el-transition-duration-fast);
   }
-  :deep(.el-upload):hover{
+  :deep(.el-upload):hover {
     border-color: var(--el-color-primary);
   }
-  .avatar{
+  .avatar {
     object-fit: contain;
   }
 }
-.el-icon.avatar-uploader-icon,.avatar {
+.el-icon.avatar-uploader-icon,
+.avatar {
   font-size: 28px;
   color: #8c939d;
   width: v-bind('props.size');

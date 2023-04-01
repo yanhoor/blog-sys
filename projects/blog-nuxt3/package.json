@@ -7,11 +7,19 @@
     "dev_docker": "nuxi dev --dotenv .env.dev_docker",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
+    "lint": "eslint --ext .js,.jsx,.vue,.ts,.tsx --fix --quiet ./",
     "postinstall": "nuxi prepare"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "@vicons/fluent": "^0.12.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.10.0",
     "nuxt": "3.3.2",
+    "prettier": "^2.8.7",
     "sass": "^1.60.0",
     "sass-loader": "^13.2.2"
   },

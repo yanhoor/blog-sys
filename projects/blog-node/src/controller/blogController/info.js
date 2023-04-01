@@ -1,8 +1,8 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  let {id} = ctx.request.body
+module.exports = async function (ctx, next) {
+  let { id } = ctx.request.body
   id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
   try {
@@ -12,29 +12,29 @@ module.exports = async function(ctx, next) {
           // 在返回的结果新增自定义字段
           isLike: {
             // 计算这个新字段值需要依赖的真实字段
-            needs: { likedBy: true},
+            needs: { likedBy: true },
             compute(blog) {
               // 计算获取这个新字段值的逻辑，即从何处来
-              return blog.likedBy.some(item => item.userId == userId)
-            },
+              return blog.likedBy.some((item) => item.userId == userId)
+            }
           },
           likedByCount: {
             needs: { likedBy: true },
             compute(blog) {
               return blog.likedBy.length
-            },
+            }
           },
           collectedByCount: {
             needs: { collectedBy: true },
             compute(blog) {
               return blog.collectedBy.length
-            },
+            }
           },
           isCollect: {
             needs: { collectedBy: true },
             compute(blog) {
-              return blog.collectedBy.some(item => item.userId == userId)
-            },
+              return blog.collectedBy.some((item) => item.userId == userId)
+            }
           },
           // 在返回的结果新增自定义字段
           commentsCount: {
@@ -42,12 +42,17 @@ module.exports = async function(ctx, next) {
             needs: { comments: true },
             compute(blog) {
               // 计算获取这个新字段值的逻辑，即从何处来
-              const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt && ![3, 4].includes(item.status))
+              const list = blog.comments.filter(
+                (item) =>
+                  !item.replyCommentId &&
+                  !item.deletedAt &&
+                  ![3, 4].includes(item.status)
+              )
               return list.length
-            },
-          },
-        },
-      },
+            }
+          }
+        }
+      }
     })
     const result = await xprisma.blog.findUnique({
       where: {
@@ -94,18 +99,20 @@ module.exports = async function(ctx, next) {
       }
     })
 
-    if(!result || [3, 4].includes(result.status)){
-      return ctx.body = {
+    if (!result || [3, 4].includes(result.status)) {
+      return (ctx.body = {
         success: false,
         code: 1,
         msg: '博客不存在'
-      }
+      })
     }
 
-    const num = await redisClient.sCard(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id)
+    const num = await redisClient.sCard(
+      this.REDIS_KEY_PREFIX.READ_BLOG_USER + id
+    )
     result.readCount = num
 
-    if(userId) {
+    if (userId) {
       await prisma.blog.update({
         where: { id },
         data: {
@@ -125,20 +132,34 @@ module.exports = async function(ctx, next) {
           }
         }
       })
-      const isRead = await redisClient.sIsMember(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id, userId.toString())
-      if(!isRead){
+      const isRead = await redisClient.sIsMember(
+        this.REDIS_KEY_PREFIX.READ_BLOG_USER + id,
+        userId.toString()
+      )
+      if (!isRead) {
         // 当前用户未读，记录阅读数
-        await redisClient.zIncrBy(this.REDIS_KEY_PREFIX.BLOG_READ_RANKING, 1, id.toString())
+        await redisClient.zIncrBy(
+          this.REDIS_KEY_PREFIX.BLOG_READ_RANKING,
+          1,
+          id.toString()
+        )
       }
       // 记录已读用户
-      await redisClient.sAdd(this.REDIS_KEY_PREFIX.READ_BLOG_USER + id, userId.toString())
+      await redisClient.sAdd(
+        this.REDIS_KEY_PREFIX.READ_BLOG_USER + id,
+        userId.toString()
+      )
     }
-    await redisClient.hSet(this.REDIS_KEY_PREFIX.EVERY_BLOG_READ_USER + result.createById, id, num)
+    await redisClient.hSet(
+      this.REDIS_KEY_PREFIX.EVERY_BLOG_READ_USER + result.createById,
+      id,
+      num
+    )
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result
-    }
+    })
   } catch (e) {
     this.errorLogger.error('blog.info--------->', e)
   }

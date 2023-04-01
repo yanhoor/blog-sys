@@ -1,4 +1,3 @@
-
 interface PageFetchParams {
   page: number
   pageSize: number
@@ -17,16 +16,16 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
   fetchPage()
 
   async function fetchPage() {
-    try{
+    try {
       pageLoading.value = true
       const { result, success } = await useFetchPost(url, pageFetchParams)
-      if(success){
+      if (success) {
         fetchResult.value = result
         pageList.value = result.list
         pageTotal.value = result.total
       }
       pageLoading.value = false
-    }catch (e) {
+    } catch (e) {
       pageLoading.value = false
     }
   }
@@ -43,6 +42,6 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
     pageFetchParams,
     fetchResult,
     fetchPage,
-    handlePageChange,
+    handlePageChange
   }
 }

@@ -1,48 +1,78 @@
 <template>
-  <div>test
+  <div>
+    test
     <div class="flex items-start gap-[12px]">
       <n-card class="sticky top-[80px] max-w-[180px]" v-if="myInfo">
-        <p class="group-title" :class="{'active': !currentGroupId}" @click="handleChangeGroup()">全部关注</p>
-        <p class="group-title" :class="{'active': currentGroupId == group.id}" v-for="group of systemGroupList" :key="group.id" @click="handleChangeGroup(group.id)">{{ group.name }}</p>
+        <p
+          class="group-title"
+          :class="{ active: !currentGroupId }"
+          @click="handleChangeGroup()"
+        >
+          全部关注
+        </p>
+        <p
+          class="group-title"
+          :class="{ active: currentGroupId == group.id }"
+          v-for="group of systemGroupList"
+          :key="group.id"
+          @click="handleChangeGroup(group.id)"
+        >
+          {{ group.name }}
+        </p>
         <div class="flex items-center" v-if="customGroupList.length">
           <p class="flex-1 font-semibold text-[16px] my-[6px]">自定义分组</p>
           <n-button size="small" text @click="showManageGroup = true">
             <template #icon>
-              <n-icon :component="Compose24Regular" size="18"/>
+              <n-icon :component="Compose24Regular" size="18" />
             </template>
           </n-button>
         </div>
-        <p class="group-title" :class="{'active': currentGroupId == group.id }" v-for="group of customGroupList" :key="group.id" @click="handleChangeGroup(group.id)">
+        <p
+          class="group-title"
+          :class="{ active: currentGroupId == group.id }"
+          v-for="group of customGroupList"
+          :key="group.id"
+          @click="handleChangeGroup(group.id)"
+        >
           {{ group.name }}
         </p>
       </n-card>
-      <PostList ref="listRef" class="flex-1" :searchParams="{ gid: currentGroupId }"/>
+      <PostList
+        ref="listRef"
+        class="flex-1"
+        :searchParams="{ gid: currentGroupId }"
+      />
     </div>
 
     <div class="mt-[20px] text-center text-gray-400">
-      <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" class="hover:text-green-700">粤ICP备2022151349号</a>
+      <a
+        href="https://beian.miit.gov.cn"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-green-700"
+        >粤ICP备2022151349号</a
+      >
     </div>
 
-    <UserFollowGroupManage v-model:show="showManageGroup" @change="getAllGroup" :groupList="customGroupList"/>
+    <UserFollowGroupManage
+      v-model:show="showManageGroup"
+      @change="getAllGroup"
+      :groupList="customGroupList"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  createDiscreteApi,
-  NCard,
-  NButton,
-  NIcon
-} from "naive-ui"
+import { createDiscreteApi, NCard, NButton, NIcon } from 'naive-ui'
 import { FollowGroup } from '@/types'
-import { Compose24Regular } from "@vicons/fluent"
+import { Compose24Regular } from '@vicons/fluent'
 
 useHead({
   title: '首页',
   meta: [
-    { name: "keywords", content: "vue3, nuxt3, ssr, naive ui, tailwind css" },
-    { name: "description", content: "基于vue3的nuxt3框架SSR博客站点首页" },
-  ],
+    { name: 'keywords', content: 'vue3, nuxt3, ssr, naive ui, tailwind css' },
+    { name: 'description', content: '基于vue3的nuxt3框架SSR博客站点首页' }
+  ]
 })
 definePageMeta({
   pageTransition: false,
@@ -60,27 +90,30 @@ const showManageGroup = ref(false)
 getAllGroup()
 
 async function getAllGroup() {
-  if(!myInfo.value) return
+  if (!myInfo.value) return
 
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
-    if(success){
+  const { message } = createDiscreteApi(['message'])
+  try {
+    const {
+      result = [],
+      success,
+      code,
+      msg
+    } = await useFetchPost('/followGroup/all', {})
+    if (success) {
       systemGroupList.value = []
       customGroupList.value = []
-      result.forEach(g => {
-        if(g.system === 1){
+      result.forEach((g) => {
+        if (g.system === 1) {
           systemGroupList.value.push(g)
-        }else{
+        } else {
           customGroupList.value.push(g)
         }
       })
-    }else{
+    } else {
       message.error(msg as string)
     }
-  }catch (e) {
-
-  }
+  } catch (e) {}
 }
 
 function handleChangeGroup(gid?: number) {
@@ -90,14 +123,13 @@ function handleChangeGroup(gid?: number) {
 </script>
 
 <style lang="scss" scoped>
-.group-title{
+.group-title {
   @apply cursor-pointer py-[3px] px-[6px];
-  &:hover{
+  &:hover {
     @apply bg-gray-200 rounded dark:bg-gray-700;
   }
-  &.active{
+  &.active {
     @apply text-green-600;
   }
 }
 </style>
-

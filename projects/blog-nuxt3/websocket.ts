@@ -1,5 +1,4 @@
-
-import { createDiscreteApi } from "naive-ui"
+import { createDiscreteApi } from 'naive-ui'
 
 const WEBSOCKET_MESSAGE_TYPE = {
   notification: 'notification',
@@ -9,8 +8,8 @@ class WS {
   heartBeatTime = 10000 // 心跳检测间隔
   reconnectCount = 0 // 重连次数
   reconnectTime = 3000 // 多少时间后尝试重连
-  reconnectTimer: number = 0
-  heartBeatTimer: number = 0
+  reconnectTimer = 0
+  heartBeatTimer = 0
   ws: WebSocket | null = null
   isClosed = false
   init = () => {
@@ -22,7 +21,7 @@ class WS {
     // 监听连接开启
     this.ws.onopen = (evt) => {
       // 主动向后台发送数据
-      this.ws?.send("msg from client")
+      this.ws?.send('msg from client')
       this.initHeartBeat()
       // console.log('============', ws.readyState)
     }
@@ -47,8 +46,8 @@ class WS {
 
     // 监听连接关闭
     this.ws.onclose = (evt) => {
-      console.log("Connection closed.", evt)
-      if(!this.isClosed){
+      console.log('Connection closed.', evt)
+      if (!this.isClosed) {
         this.reconnect()
       }
     }
@@ -68,22 +67,22 @@ class WS {
 
   // 失败重连
   reconnect = () => {
-    const { message } = createDiscreteApi(["message"])
+    const { message } = createDiscreteApi(['message'])
     clearTimeout(this.reconnectTimer)
     this.reconnectTimer = window.setTimeout(() => {
-      if(this.reconnectCount === 5){
+      if (this.reconnectCount === 5) {
         message.error('网络连接异常，请检查网络连接，刷新页面')
         this.reconnectTime = 5000
       }
-      if(this.reconnectCount === 20) return
+      if (this.reconnectCount === 20) return
 
-      this.reconnectCount ++
+      this.reconnectCount++
       this.init()
     }, this.reconnectTime)
   }
 
   initHeartBeat = () => {
-    if(this.isClosed) return
+    if (this.isClosed) return
 
     this.heartBeatTimer = window.setTimeout(() => {
       this.ws?.send('1')

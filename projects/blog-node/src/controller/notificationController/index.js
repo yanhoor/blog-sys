@@ -4,7 +4,7 @@ const count = require('./count')
 const nInfo = require('./info')
 const read = require('./read')
 
-class NotificationController extends BaseController{
+class NotificationController extends BaseController {
   constructor() {
     super()
     this.list = notificationList.bind(this)

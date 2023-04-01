@@ -4,10 +4,10 @@ const redisClient = require('../../database/redis')
 module.exports = async function (ctx, next) {
   const { type, id } = ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
-  try{
-    if(!type) throw new Error('缺少参数 type')
-    if(!id) throw new Error('缺少参数 id')
-  }catch(e){
+  try {
+    if (!type) throw new Error('缺少参数 type')
+    if (!id) throw new Error('缺少参数 id')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -17,7 +17,7 @@ module.exports = async function (ctx, next) {
 
   try {
     // 关注
-    if(Number(type) === 1){
+    if (Number(type) === 1) {
       const user = await prisma.user.update({
         where: {
           id: userId
@@ -39,7 +39,7 @@ module.exports = async function (ctx, next) {
     }
 
     // 取消关注
-    if(Number(type) === 2){
+    if (Number(type) === 2) {
       const gList = await prisma.followGroup.findMany({
         where: {
           createById: userId
@@ -69,7 +69,7 @@ module.exports = async function (ctx, next) {
               delete: [
                 {
                   userId_followById: {
-                    userId:  Number(id),
+                    userId: Number(id),
                     followById: userId
                   }
                 }
@@ -80,10 +80,10 @@ module.exports = async function (ctx, next) {
       ])
     }
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.operateFollow--------->', e)
   }
 }

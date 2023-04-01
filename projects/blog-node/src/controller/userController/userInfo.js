@@ -23,21 +23,25 @@ module.exports = async function (ctx, next) {
           isFollowing: {
             needs: { followers: true },
             compute(user) {
-              return user.followers.some(u => u.followById === currentUserId)
+              return user.followers.some((u) => u.followById === currentUserId)
             }
           },
           isMyFan: {
             needs: { followings: true },
             compute(user) {
-              return user.followings.some(u => u.userId === currentUserId)
+              return user.followings.some((u) => u.userId === currentUserId)
             }
           },
           // 是否互相关注
           isMutualFollowing: {
             needs: { followers: true, followings: true },
             compute(user) {
-              const isFollowing = user.followers.some(u => u.followById === currentUserId)
-              const isFollowed = user.followings.some(u => u.userId === currentUserId)
+              const isFollowing = user.followers.some(
+                (u) => u.followById === currentUserId
+              )
+              const isFollowed = user.followings.some(
+                (u) => u.userId === currentUserId
+              )
               return isFollowed && isFollowing
             }
           }
@@ -63,7 +67,7 @@ module.exports = async function (ctx, next) {
         followingCount: true,
         isFollowing: true,
         isMyFan: true,
-        isMutualFollowing: true,
+        isMutualFollowing: true
         // blogs: {
         //   select: {
         //     id: true,
@@ -81,24 +85,29 @@ module.exports = async function (ctx, next) {
       }
     })
 
-    if(!user){
-      return ctx.body = {
+    if (!user) {
+      return (ctx.body = {
         success: false,
         code: this.CODE.USER_NOT_FOUND,
         msg: '用户不存在'
-      }
+      })
     }
 
     // 收到的点赞数
-    const likeList = await redisClient.hVals(this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id)
-    const likedCount = likeList.reduce((pre, cur) => Number(pre) + Number(cur), 0)
+    const likeList = await redisClient.hVals(
+      this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id
+    )
+    const likedCount = likeList.reduce(
+      (pre, cur) => Number(pre) + Number(cur),
+      0
+    )
     user.likedCount = likedCount
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: user
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.userInfo--------->', e)
   }
 }

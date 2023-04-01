@@ -1,4 +1,4 @@
-export interface BlogCate{
+export interface BlogCate {
   id?: number
   name: string
 }

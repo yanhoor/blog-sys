@@ -12,13 +12,13 @@ module.exports = async function (ctx, next) {
         name: true,
         mobile: true
       },
-      orderBy: {createdAt: 'desc'}
+      orderBy: { createdAt: 'desc' }
     })
     ctx.body = {
       success: true,
       result
     }
-  }catch (e) {
+  } catch (e) {
     this.errorLogger.error('user.all--------->', e)
   }
 }

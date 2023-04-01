@@ -1,11 +1,10 @@
 <template>
   <div>
-    <PostList url="/user/markBlogList" :search-params="{ type: 2 }"/>
+    <PostList url="/user/markBlogList" :search-params="{ type: 2 }" />
   </div>
 </template>
 
 <script setup lang="ts">
-
 const myInfo = useUserInfo()
 
 useHead(() => {

@@ -27,7 +27,7 @@ module.exports = async function (ctx, next) {
         comment: {
           select: {
             id: true,
-            content: true,
+            content: true
           }
         },
         createBy: {
@@ -39,11 +39,11 @@ module.exports = async function (ctx, next) {
         }
       }
     })
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('notification.info--------->', e)
   }
 }

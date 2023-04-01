@@ -14,7 +14,7 @@ const app = createApp(AppVue)
 
 app.config.globalProperties.$http = $http
 app.use(ElementPlus, {
-  zIndex: 3000 ,
+  zIndex: 3000,
   locale: zhCn
 })
 app.use(router)

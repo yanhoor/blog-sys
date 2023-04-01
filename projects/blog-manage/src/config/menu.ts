@@ -5,7 +5,7 @@ import {
   Location,
   Star,
   Setting,
-  Avatar,
+  Avatar
 } from '@element-plus/icons-vue'
 import { Component } from 'vue'
 
@@ -49,7 +49,7 @@ const sourceMenus: Array<MenuProps> = [
         path: 'comment'
       }
     ]
-  },
+  }
   // {
   //   title: '状态管理',
   //   icon: Star,
@@ -115,31 +115,32 @@ const sourceMenus: Array<MenuProps> = [
 ]
 
 // 构建符合 el-menu 的菜单结构，主要是分组处理
-function buildMenuList(list: Array<any>, lastIndex?: number | string): Array<any> {
+function buildMenuList(
+  list: Array<any>,
+  lastIndex?: number | string
+): Array<any> {
   const result: Array<any> = []
   list.forEach((menu, index) => {
     const menuIndex = lastIndex ? lastIndex + '-' + (index + 1) : index + 1
     if (menu.children) {
-      const children = buildMenuList(menu.children, menuIndex )
+      const children = buildMenuList(menu.children, menuIndex)
       menu = { ...menu, children, menuIndex }
     }
 
-    const group = result.find(i => i.group === menu.group)
+    const group = result.find((i) => i.group === menu.group)
     menu = { ...menu, menuIndex }
     if (menu.group && group) {
       // menu = { ...menu, menuIndex }
       group.children.push(menu)
-    }
-    else if (menu.group) {
+    } else if (menu.group) {
       // menu = { ...menu, menuIndex }
       result.push({
         groupTitle: menu.group,
         children: [menu]
       })
-    }
-    else {
+    } else {
       // menu = { ...menu, menuIndex }
-      const otherGroup = result.find(i => i.groupTitle === '其他')
+      const otherGroup = result.find((i) => i.groupTitle === '其他')
       otherGroup
         ? otherGroup.children.push(menu)
         : result.push({
@@ -148,7 +149,7 @@ function buildMenuList(list: Array<any>, lastIndex?: number | string): Array<any
           })
     }
   })
-  const isOnlyOther = result.every(i => i.groupTitle === '其他')
+  const isOnlyOther = result.every((i) => i.groupTitle === '其他')
   // 如果有且只有一个其他分组，就不分组
   return isOnlyOther ? result[0].children : result
 }

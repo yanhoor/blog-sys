@@ -1,36 +1,78 @@
 <template>
-  <div class="px-[12px] bg-content-light dark:bg-content-dark rounded-[5px] min-w-full" v-loadMore="allowLoadMore ? { handler: handleLoadNextPage, scrollElSelector: '#replyModalContent' } : null">
+  <div
+    class="px-[12px] bg-content-light dark:bg-content-dark rounded-[5px] min-w-full"
+    v-loadMore="
+      allowLoadMore
+        ? {
+            handler: handleLoadNextPage,
+            scrollElSelector: '#replyModalContent'
+          }
+        : null
+    "
+  >
     <div class="flex items-start pt-[20px]" v-for="reply of pageList">
       <UserAvatar :user="reply.createBy" :size="24"></UserAvatar>
-      <div class="comment-right-container flex-1 ml-[12px] flex flex-col items-start gap-[6px] w-0 group">
+      <div
+        class="comment-right-container flex-1 ml-[12px] flex flex-col items-start gap-[6px] w-0 group"
+      >
         <div class="flex items-center">
-          <div class="cursor-pointer text-green-700" @click="navigateTo({ path: '/user/' + reply.createById })">
+          <div
+            class="cursor-pointer text-green-700"
+            @click="navigateTo({ path: '/user/' + reply.createById })"
+          >
             {{ reply.createBy?.name }}
           </div>
 
           <template v-if="reply.replyComment?.topCommentId">
             <span class="text-gray-500 mx-[6px]">回复</span>
-            <div class="cursor-pointer text-green-700" @click="navigateTo({ path: '/user/' + reply.replyTo.id })">
+            <div
+              class="cursor-pointer text-green-700"
+              @click="navigateTo({ path: '/user/' + reply.replyTo.id })"
+            >
               @{{ reply.replyTo?.name }}
             </div>
           </template>
         </div>
 
-        <ExpandableContent :content="reply.content" :max-length="160"/>
+        <ExpandableContent :content="reply.content" :max-length="160" />
 
-        <div class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300" v-if="reply.replyComment?.topCommentId">{{ reply.replyComment?.content }}</div>
+        <div
+          class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300"
+          v-if="reply.replyComment?.topCommentId"
+        >
+          {{ reply.replyComment?.content }}
+        </div>
 
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center flex-1">
-            <n-time class="mr-[12px]" type="datetime" format="yyyy-MM-dd HH:mm" :time="new Date(reply.createdAt)"></n-time>
-            <n-button text @click="reply.showReply = !reply.showReply" v-if="userInfo">
+            <n-time
+              class="mr-[12px]"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              :time="new Date(reply.createdAt)"
+            ></n-time>
+            <n-button
+              text
+              @click="reply.showReply = !reply.showReply"
+              v-if="userInfo"
+            >
               <template #icon>
-                <n-icon :component="reply.showReply ? Chat24Filled : Chat24Regular" />
+                <n-icon
+                  :component="reply.showReply ? Chat24Filled : Chat24Regular"
+                />
               </template>
               {{ reply.showReply ? '取消回复' : '回复' }}
             </n-button>
           </div>
-          <n-button class="hidden group-hover:block" text type="error" @click="handleDeleteComment(reply)" :loading="commentDeleting" v-if="reply?.createById === userInfo?.id">删除</n-button>
+          <n-button
+            class="hidden group-hover:block"
+            text
+            type="error"
+            @click="handleDeleteComment(reply)"
+            :loading="commentDeleting"
+            v-if="reply?.createById === userInfo?.id"
+            >删除</n-button
+          >
         </div>
 
         <n-collapse-transition :show="!!reply.showReply">
@@ -47,7 +89,7 @@
     </div>
 
     <template v-if="allowLoadMore">
-      <ResultLoading v-if="pageLoading"/>
+      <ResultLoading v-if="pageLoading" />
     </template>
 
     <n-button
@@ -60,10 +102,9 @@
     >
       共 {{ comment.childCommentsCount }} 条回复
       <template #icon>
-        <n-icon :component="ChevronDown24Filled"/>
+        <n-icon :component="ChevronDown24Filled" />
       </template>
     </n-button>
-
   </div>
 </template>
 
@@ -76,14 +117,18 @@ import {
   NIcon,
   NSpin,
   createDiscreteApi
-} from "naive-ui"
-import { Chat24Regular, Chat24Filled, ChevronDown24Filled } from '@vicons/fluent'
+} from 'naive-ui'
+import {
+  Chat24Regular,
+  Chat24Filled,
+  ChevronDown24Filled
+} from '@vicons/fluent'
 
-interface CommentType extends Comment{
+interface CommentType extends Comment {
   showReply?: boolean
 }
 // 如果 props.comment.topCommentId 存在，props.comment 就是评论的回复，即当前组件在第二层
-interface Props{
+interface Props {
   comment: CommentType
 }
 
@@ -92,55 +137,62 @@ const props = defineProps<Props>()
 const emit = defineEmits(['checkReply'])
 const userInfo = useUserInfo()
 const commentDeleting = ref(false)
-const { pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } = useListAppendFetch<Comment>('/comment/replyList', { blogId: props.comment.blogId, topCommentId: props.comment.id }, { initList: allowLoadMore ? [] : props.comment.childComments, pageSize: 10, uniqueKey: 'id' })
+const { pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } =
+  useListAppendFetch<Comment>(
+    '/comment/replyList',
+    { blogId: props.comment.blogId, topCommentId: props.comment.id },
+    {
+      initList: allowLoadMore ? [] : props.comment.childComments,
+      pageSize: 10,
+      uniqueKey: 'id'
+    }
+  )
 
-if(allowLoadMore){
+if (allowLoadMore) {
   handleLoadNextPage()
 }
 
-function handleReplySuccess(reply: CommentType){
+function handleReplySuccess(reply: CommentType) {
   pageList.value.push(reply)
   reply.showReply = false
 }
 
 // 暴露给父组件调用
-function handleReplyCommit(reply: Comment){
+function handleReplyCommit(reply: Comment) {
   pageList.value.push(reply)
 }
 
 function handleCommentDelete(comment: Comment) {
-  const index = pageList.value.findIndex(c => c.id === comment.id)
-  if(index > -1) pageList.value.splice(index, 1)
+  const index = pageList.value.findIndex((c) => c.id === comment.id)
+  if (index > -1) pageList.value.splice(index, 1)
 }
 
 async function handleDeleteComment(reply: Comment) {
-  const { message, dialog } = createDiscreteApi(["message", "dialog"])
+  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '删除',
     content: '确定删除该评论？',
     positiveText: '删除',
     negativeText: '取消',
     onPositiveClick: async () => {
-      try{
+      try {
         commentDeleting.value = true
         const { result, success, msg } = await useFetchPost('/comment/delete', {
           id: reply.id
         })
         commentDeleting.value = false
-        if(success){
+        if (success) {
           message.success('删除成功')
           handleCommentDelete(reply)
-        }else{
+        } else {
           message.error(msg as string)
         }
-      }catch (e) {
+      } catch (e) {
         commentDeleting.value = false
         console.log('=====/comment/delete=======', e)
       }
     },
-    onNegativeClick: () => {
-
-    }
+    onNegativeClick: () => {}
   })
 }
 

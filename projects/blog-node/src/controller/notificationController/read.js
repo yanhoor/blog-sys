@@ -7,25 +7,28 @@ module.exports = async function (ctx, next) {
   try {
     if (!userId) throw new Error('未登录')
   } catch (e) {
-    return ctx.body = {
+    return (ctx.body = {
       code: this.CODE.USER_NOT_LOGIN,
       success: false,
       msg: e.message
-    }
+    })
   }
   let where = {}
-  if(id){
+  if (id) {
     where.id = {
-      in: id.toString().split(',').map(i => Number(i))
+      in: id
+        .toString()
+        .split(',')
+        .map((i) => Number(i))
     }
   }
-  if(isAll){
+  if (isAll) {
     where.isRead = 0
   }
-  if(type) {
+  if (type) {
     const typeList = type.split(',')
     where.OR = []
-    for(let t of typeList){
+    for (let t of typeList) {
       where.OR.push({
         type: this.NOTIFICATION_TYPE[t]
       })
@@ -38,10 +41,10 @@ module.exports = async function (ctx, next) {
         isRead: 1
       }
     })
-    return ctx.body = {
+    return (ctx.body = {
       success: true
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('notification.read--------->', e)
   }
 }

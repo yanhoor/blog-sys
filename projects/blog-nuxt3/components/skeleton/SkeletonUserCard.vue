@@ -22,9 +22,5 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NSkeleton
-} from "naive-ui"
-
+import { NSkeleton } from 'naive-ui'
 </script>
-

@@ -1,10 +1,10 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
-const dayjs = require("dayjs")
+const dayjs = require('dayjs')
 
 module.exports = async function (ctx, next) {
   let rangeList = []
-  for(let i = 6; i >= 0; i--){
+  for (let i = 6; i >= 0; i--) {
     const date = dayjs().subtract(i, 'day')
     rangeList.push({
       createdAt: this.createTimeRange(i + 1, i),
@@ -13,7 +13,7 @@ module.exports = async function (ctx, next) {
   }
   try {
     let result = {}
-    for (let range of rangeList){
+    for (let range of rangeList) {
       const [blogCount, userRegisterCount] = await prisma.$transaction([
         prisma.blog.count({
           where: {
@@ -31,11 +31,11 @@ module.exports = async function (ctx, next) {
         userRegisterCount
       }
     }
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('statis.weekDetail---------->', e)
   }
 }

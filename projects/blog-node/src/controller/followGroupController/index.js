@@ -18,7 +18,6 @@ class FollowGroupController extends BaseController {
     this.delete = deleteGroup.bind(this)
     this.containList = containList.bind(this)
   }
-
 }
 
 module.exports = new FollowGroupController()

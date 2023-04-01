@@ -1,7 +1,5 @@
 <template>
-  <n-modal
-    :show="show"
-  >
+  <n-modal :show="show">
     <n-card
       title="设置分组"
       size="large"
@@ -11,34 +9,57 @@
       content-style="flex: 1; overflow: hidden; display: flex; flex-direction: column"
     >
       <div class="overflow-auto">
-        <n-spin v-if="loading"/>
+        <n-spin v-if="loading" />
         <div class="flex flex-wrap gap-[6px]" v-else>
-          <n-checkbox-group class="flex flex-wrap gap-[6px]" v-model:value="selectIdList">
-            <n-checkbox class="min-w-[100px]" v-for="group of groupList" :value="group.id" :label="group.name" :id="group.id"/>
+          <n-checkbox-group
+            class="flex flex-wrap gap-[6px]"
+            v-model:value="selectIdList"
+          >
+            <n-checkbox
+              class="min-w-[100px]"
+              v-for="group of groupList"
+              :value="group.id"
+              :label="group.name"
+              :id="group.id"
+            />
           </n-checkbox-group>
           <n-input-group v-if="showAdd">
-            <n-input placeholder="分组名称" v-model:value="groupForm.name" clearable show-count maxlength="8" size="small" @keyup.enter="handleCreateGroup"></n-input>
+            <n-input
+              placeholder="分组名称"
+              v-model:value="groupForm.name"
+              clearable
+              show-count
+              maxlength="8"
+              size="small"
+              @keyup.enter="handleCreateGroup"
+            ></n-input>
             <n-button size="small" @click="handleCreateGroup" type="primary">
               <template #icon>
-                <n-icon :component="Checkmark24Regular"/>
+                <n-icon :component="Checkmark24Regular" />
               </template>
             </n-button>
             <n-button size="small" @click="showAdd = false">
               <template #icon>
-                <n-icon :component="Dismiss24Regular"/>
+                <n-icon :component="Dismiss24Regular" />
               </template>
             </n-button>
           </n-input-group>
           <n-button size="small" @click="showAdd = true" v-else>
             <template #icon>
-              <n-icon :component="Add24Regular"/>
+              <n-icon :component="Add24Regular" />
             </template>
           </n-button>
         </div>
       </div>
       <template #footer>
         <div class="text-right">
-          <n-button type="primary" size="small" @click="handleConfirm" :loading="confirmLoading">确定</n-button>
+          <n-button
+            type="primary"
+            size="small"
+            @click="handleConfirm"
+            :loading="confirmLoading"
+            >确定</n-button
+          >
         </div>
       </template>
     </n-card>
@@ -57,11 +78,15 @@ import {
   NSpin,
   NCard,
   createDiscreteApi
-} from "naive-ui"
-import { Add24Regular, Dismiss24Regular, Checkmark24Regular } from "@vicons/fluent"
-import { FollowGroup } from "~/types"
+} from 'naive-ui'
+import {
+  Add24Regular,
+  Dismiss24Regular,
+  Checkmark24Regular
+} from '@vicons/fluent'
+import { FollowGroup } from '~/types'
 
-interface Props{
+interface Props {
   show: boolean
   userId: number
 }
@@ -79,88 +104,100 @@ const groupForm = ref({
 })
 const groupList = ref<FollowGroup[]>([])
 
-watch(() => props.show, (val) => {
-  if(val) InitPage()
-})
+watch(
+  () => props.show,
+  (val) => {
+    if (val) InitPage()
+  }
+)
 
-async function InitPage(){
+async function InitPage() {
   loading.value = true
-  try{
-    await Promise.all([
-      getAllGroup(),
-      getContainGroupList(),
-    ])
+  try {
+    await Promise.all([getAllGroup(), getContainGroupList()])
     loading.value = false
-  }catch (e) {
+  } catch (e) {
     loading.value = false
   }
 }
 
 async function handleCreateGroup() {
-  const { message } = createDiscreteApi(["message"])
+  const { message } = createDiscreteApi(['message'])
   groupForm.value.name = groupForm.value.name.trim()
-  if(adding.value) return
+  if (adding.value) return
   adding.value = true
-  try{
-    const { result, success, code, msg } = await useFetchPost('/followGroup/edit', groupForm.value)
-    if(success){
+  try {
+    const { result, success, code, msg } = await useFetchPost(
+      '/followGroup/edit',
+      groupForm.value
+    )
+    if (success) {
       groupForm.value.name = ''
       getAllGroup()
       showAdd.value = false
-    }else{
+    } else {
       message.error(msg as string)
     }
     adding.value = false
-  }catch (e) {
+  } catch (e) {
     adding.value = false
   }
 }
 
-async function handleConfirm(){
-  const { message } = createDiscreteApi(["message"])
-  if(!selectIdList.value.length){
+async function handleConfirm() {
+  const { message } = createDiscreteApi(['message'])
+  if (!selectIdList.value.length) {
     message.warning('请选择分组')
     return
   }
   confirmLoading.value = true
-  try{
-    const { result, success, code, msg } = await useFetchPost('/user/setGroup', { groupId: selectIdList.value.toString(), userId: props.userId })
-    if(success){
+  try {
+    const { result, success, code, msg } = await useFetchPost(
+      '/user/setGroup',
+      { groupId: selectIdList.value.toString(), userId: props.userId }
+    )
+    if (success) {
       emit('update:show', false)
-    }else{
+    } else {
       message.error(msg as string)
     }
     confirmLoading.value = false
-  }catch (e) {
+  } catch (e) {
     confirmLoading.value = false
   }
 }
 
 async function getAllGroup() {
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result = [], success, code, msg } = await useFetchPost('/followGroup/all', { })
-    if(success){
+  const { message } = createDiscreteApi(['message'])
+  try {
+    const {
+      result = [],
+      success,
+      code,
+      msg
+    } = await useFetchPost('/followGroup/all', {})
+    if (success) {
       groupList.value = result
-    }else{
+    } else {
       message.error(msg as string)
     }
-  }catch (e) {
-
-  }
+  } catch (e) {}
 }
 
-async function getContainGroupList(){
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result = [], success, code, msg } = await useFetchPost('/followGroup/containList', { userId: props.userId })
-    if(success){
-      selectIdList.value = result.map(g => g.id)
-    }else{
+async function getContainGroupList() {
+  const { message } = createDiscreteApi(['message'])
+  try {
+    const {
+      result = [],
+      success,
+      code,
+      msg
+    } = await useFetchPost('/followGroup/containList', { userId: props.userId })
+    if (success) {
+      selectIdList.value = result.map((g) => g.id)
+    } else {
       message.error(msg as string)
     }
-  }catch (e) {
-  }
+  } catch (e) {}
 }
-
 </script>

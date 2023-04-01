@@ -6,7 +6,7 @@ module.exports = {
       instances: 'max',
       // 默认环境及变量，可以被下面的 env_development 等覆盖
       env: {
-        "NODE_ENV": "production",
+        NODE_ENV: 'production'
       },
       env_production: {
         // DATABASE_URL: "mysql://yanhoor:1q2w3e4R%@110.41.142.213:3306/blogKoa2"

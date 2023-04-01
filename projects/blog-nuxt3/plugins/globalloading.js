@@ -1,4 +1,4 @@
-import { createDiscreteApi } from "naive-ui"
+import { createDiscreteApi } from 'naive-ui'
 
 // 显示顶部加载条
 export default defineNuxtPlugin((nuxtApp) => {

@@ -32,5 +32,5 @@ export const urls = {
   address_search: '/address/search',
 
   statis_week_detail: '/statis/weekDetail',
-  statis_total_count: '/statis/totalCount',
+  statis_total_count: '/statis/totalCount'
 }

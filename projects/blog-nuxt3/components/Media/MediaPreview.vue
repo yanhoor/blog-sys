@@ -6,27 +6,32 @@
   >
     <div class="w-full h-full pb-9/16 relative bg-black">
       <template v-if="isImg">
-        <MediaImgView class="media-item" :url="media.url"/>
+        <MediaImgView class="media-item" :url="media.url" />
       </template>
       <template v-else>
-        <video class="media-item" :src="config.imageBase + media.url" controls></video>
+        <video
+          class="media-item"
+          :src="config.imageBase + media.url"
+          controls
+        ></video>
       </template>
-      <n-icon :component="ArrowCircleLeft24Regular" color="#fff" :size="48" class="absolute top-[20px] left-[20px] cursor-pointer" @click="emit('update:show', false)"/>
+      <n-icon
+        :component="ArrowCircleLeft24Regular"
+        color="#fff"
+        :size="48"
+        class="absolute top-[20px] left-[20px] cursor-pointer"
+        @click="emit('update:show', false)"
+      />
     </div>
   </n-modal>
 </template>
 
 <script setup lang="ts">
 import { Media } from '@/types'
-import {
-  NCard,
-  NModal,
-  NIcon,
-  createDiscreteApi
-} from "naive-ui"
+import { NCard, NModal, NIcon, createDiscreteApi } from 'naive-ui'
 import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
-interface Props{
+interface Props {
   media: Media
   isImg?: boolean
   show: boolean
@@ -38,7 +43,7 @@ const config = useRuntimeConfig()
 </script>
 
 <style lang="scss" scoped>
-.media-item{
+.media-item {
   @apply absolute w-full h-full object-contain;
 }
 </style>

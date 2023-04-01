@@ -1,14 +1,14 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function (ctx, next){
+module.exports = async function (ctx, next) {
   const { id, isCollect } = ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
-  try{
-    if(!id) throw new Error('博客id不能为空')
-    if(!userId) throw new Error('用户未登录')
-    if(isCollect === undefined) throw new Error('isCollect不能为空')
-  }catch(e){
+  try {
+    if (!id) throw new Error('博客id不能为空')
+    if (!userId) throw new Error('用户未登录')
+    if (isCollect === undefined) throw new Error('isCollect不能为空')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -17,11 +17,11 @@ module.exports = async function (ctx, next){
   }
 
   let currentBlog
-  try{
+  try {
     currentBlog = await prisma.blog.findUnique({
       where: { id }
     })
-    if(isCollect){
+    if (isCollect) {
       await prisma.blog.update({
         where: { id },
         data: {
@@ -41,19 +41,22 @@ module.exports = async function (ctx, next){
         }
       })
 
-      await redisClient.sAdd(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id, userId.toString())
+      await redisClient.sAdd(
+        this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id,
+        userId.toString()
+      )
 
-      if(Number(userId) !== currentBlog.createById){
+      if (Number(userId) !== currentBlog.createById) {
         const notification = await prisma.notification.create({
           data: {
             createById: Number(userId),
             receiveUserId: currentBlog.createById,
             type: this.NOTIFICATION_TYPE.collect_blog,
-            blogId: Number(id),
+            blogId: Number(id)
           }
         })
       }
-    }else{
+    } else {
       // 这样好像也可以
       // await prisma.userLikeBlogs.delete({
       //   where: {
@@ -80,18 +83,30 @@ module.exports = async function (ctx, next){
         }
       })
 
-      await redisClient.sRem(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id, userId.toString())
+      await redisClient.sRem(
+        this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id,
+        userId.toString()
+      )
     }
 
     // 更新被收藏数
-    const num = await redisClient.sCard(this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id)
-    await redisClient.zAdd(this.REDIS_KEY_PREFIX.BLOG_COLLECT_RANKING, { score: num, value: id.toString() })
-    await redisClient.hSet(this.REDIS_KEY_PREFIX.EVERY_BLOG_COLLECT_USER + currentBlog.createById, id, num)
+    const num = await redisClient.sCard(
+      this.REDIS_KEY_PREFIX.COLLECT_BLOG_USER + id
+    )
+    await redisClient.zAdd(this.REDIS_KEY_PREFIX.BLOG_COLLECT_RANKING, {
+      score: num,
+      value: id.toString()
+    })
+    await redisClient.hSet(
+      this.REDIS_KEY_PREFIX.EVERY_BLOG_COLLECT_USER + currentBlog.createById,
+      id,
+      num
+    )
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('blog.collect--------->', e)
   }
 }

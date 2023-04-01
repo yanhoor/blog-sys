@@ -1,8 +1,8 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  let {name, id} = ctx.request.body
+module.exports = async function (ctx, next) {
+  let { name, id } = ctx.request.body
   id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
   try {
@@ -10,13 +10,13 @@ module.exports = async function(ctx, next) {
     if (!name) throw new Error('分组名不能为空')
     if (name.length > 8) throw new Error('分组名不能超过8个字符')
 
-    if(id){
+    if (id) {
       const group = await prisma.followGroup.findUnique({
-        where: {id}
+        where: { id }
       })
 
       if (!group || group.createById !== userId) throw new Error('分组不存在')
-      if(group.system === 1) throw new Error('系统分组不允许修改')
+      if (group.system === 1) throw new Error('系统分组不允许修改')
     }
   } catch (e) {
     ctx.body = {
@@ -29,7 +29,7 @@ module.exports = async function(ctx, next) {
   if (id) {
     try {
       const nCate = await prisma.followGroup.update({
-        where: {id},
+        where: { id },
         data: {
           name
         },
@@ -38,10 +38,10 @@ module.exports = async function(ctx, next) {
           name: true
         }
       })
-      return ctx.body = {
+      return (ctx.body = {
         success: true,
         result: nCate
-      }
+      })
     } catch (e) {
       this.errorLogger.error('followGroup.update--------->', e)
     }
@@ -52,27 +52,27 @@ module.exports = async function(ctx, next) {
           name
         }
       })
-      if(group && group.createById === userId) {
-        return ctx.body = {
+      if (group && group.createById === userId) {
+        return (ctx.body = {
           success: false,
           msg: '已有相同名称的分组'
-        }
+        })
       }
 
       const nCate = await prisma.followGroup.create({
         data: {
           name,
-          createById: userId,
+          createById: userId
         },
         select: {
           id: true,
           name: true
         }
       })
-      return ctx.body = {
+      return (ctx.body = {
         success: true,
         result: nCate
-      }
+      })
     } catch (e) {
       this.errorLogger.error('followGroup.create--------->', e)
     }

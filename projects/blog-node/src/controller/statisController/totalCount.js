@@ -1,13 +1,18 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
-const dayjs = require("dayjs");
+const dayjs = require('dayjs')
 
 module.exports = async function (ctx, next) {
   try {
     const date = dayjs()
     const gte = new Date(date.startOf('date'))
     const lte = new Date(date.endOf('date'))
-    const [blogCount, userRegisterCount, userActiveCount, userRegisterTodayCount] = await prisma.$transaction([
+    const [
+      blogCount,
+      userRegisterCount,
+      userActiveCount,
+      userRegisterTodayCount
+    ] = await prisma.$transaction([
       prisma.blog.count(),
       prisma.user.count({
         where: {
@@ -34,16 +39,16 @@ module.exports = async function (ctx, next) {
       })
     ])
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         blogCount,
         userRegisterCount,
         userActiveCount,
-        userRegisterTodayCount,
+        userRegisterTodayCount
       }
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('statis.totalCount---------->', e)
   }
 }

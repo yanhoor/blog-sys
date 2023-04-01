@@ -2,11 +2,11 @@
   <div class="cursor-pointer flex items-center gap-[6px]" v-if="userInfo">
     <n-button type="primary" @click="showWritePost = true" size="small">
       <template #icon>
-        <n-icon :component="Compose24Regular"/>
+        <n-icon :component="Compose24Regular" />
       </template>
     </n-button>
     <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-      <UserAvatar :title="userInfo.name" :user="userInfo" disabled/>
+      <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
     </n-dropdown>
     <layout-notification />
   </div>
@@ -19,7 +19,7 @@
     title="快捷发布"
     class="w-1/2"
   >
-    <PostWrite @complete="showWritePost = false"/>
+    <PostWrite @complete="showWritePost = false" />
   </n-modal>
 </template>
 
@@ -31,15 +31,15 @@ import {
   NIcon,
   NDropdown,
   createDiscreteApi
-} from "naive-ui"
+} from 'naive-ui'
 import {
   ArrowCircleRight20Regular,
   CalendarPerson20Regular,
   PersonCircle12Regular,
   Compose24Regular,
   Star48Filled
-} from "@vicons/fluent"
-import {Component} from "vue"
+} from '@vicons/fluent'
+import { Component } from 'vue'
 import websocket from '@/websocket'
 
 const renderIcon = (icon: Component) => {
@@ -78,7 +78,7 @@ const userOptions = ref([
   }
 ])
 
-function handleDropdownSelect(key: string | number){
+function handleDropdownSelect(key: string | number) {
   switch (key) {
     case 'userHome':
       handleUserHome()
@@ -95,43 +95,38 @@ function handleDropdownSelect(key: string | number){
   }
 }
 
-async function handleUserHome(){
+async function handleUserHome() {
   await navigateTo({ path: '/user/' + userInfo.value?.id })
 }
 
-async function handleLogout(){
-  const { message, dialog } = createDiscreteApi(["message", "dialog"])
+async function handleLogout() {
+  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '退出登录',
     content: '确定退出？',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      try{
-        const {success, result, msg} = await useFetchPost('/user/logout', {})
-        if(!success){
+      try {
+        const { success, result, msg } = await useFetchPost('/user/logout', {})
+        if (!success) {
           message.error(msg as string)
-        }else{
+        } else {
           token.value = ''
           userInfo.value = null
           websocket.closeWs()
           checkCurrentPath()
         }
-      }catch (e) {
-
-      }
+      } catch (e) {}
     },
-    onNegativeClick: () => {
-
-    }
+    onNegativeClick: () => {}
   })
 }
 
 // 假如当前在需要登录的页面
 async function checkCurrentPath() {
-  if(['/user/profile'].includes(route.path)){
+  if (['/user/profile'].includes(route.path)) {
     await navigateTo({ path: '/', replace: true })
   }
 }
 </script>
-

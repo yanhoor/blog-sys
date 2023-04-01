@@ -1,15 +1,27 @@
 <template>
   <div class="login-container">
     <el-card style="width: 350px">
-      <el-form ref="formRef" :model="postForm" :rules="formRules" label-width="100px" v-if="!isRegister">
+      <el-form
+        ref="formRef"
+        :model="postForm"
+        :rules="formRules"
+        label-width="100px"
+        v-if="!isRegister"
+      >
         <el-form-item label="手机号" prop="mobile">
-          <el-input v-model="postForm.mobile" maxlength="11"/>
+          <el-input v-model="postForm.mobile" maxlength="11" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="postForm.password" type="password" show-password/>
+          <el-input v-model="postForm.password" type="password" show-password />
         </el-form-item>
       </el-form>
-      <el-form ref="formRef" :model="registerForm" :rules="formRules" label-width="100px" v-else>
+      <el-form
+        ref="formRef"
+        :model="registerForm"
+        :rules="formRules"
+        label-width="100px"
+        v-else
+      >
         <el-form-item label="名称" prop="name">
           <el-input v-model="registerForm.name" />
         </el-form-item>
@@ -17,12 +29,28 @@
           <el-input v-model="registerForm.mobile" maxlength="11" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="registerForm.password" type="password" show-password/>
+          <el-input
+            v-model="registerForm.password"
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <el-row>
-        <el-button type="primary" style="width: 100%" @click="handleRegister(formRef)" v-if="isRegister">注册</el-button>
-        <el-button type="primary" style="width: 100%" @click="handleLogin(formRef)" v-else>登录</el-button>
+        <el-button
+          type="primary"
+          style="width: 100%"
+          @click="handleRegister(formRef)"
+          v-if="isRegister"
+          >注册</el-button
+        >
+        <el-button
+          type="primary"
+          style="width: 100%"
+          @click="handleLogin(formRef)"
+          v-else
+          >登录</el-button
+        >
       </el-row>
       <!--<el-row style="margin-top: 10px">
         <el-button style="width: 100%" @click="switchRegister">{{ isRegister ? '已账号，去登录' : '没有账号，去注册' }}</el-button>
@@ -41,14 +69,10 @@ import { ElMessage } from 'element-plus'
 const formRules = reactive<FormRules>({
   mobile: [
     { required: true, message: '请输入手机号', trigger: 'change' },
-    { len: 11, message: '请输入11位手机号', trigger: 'blur' },
+    { len: 11, message: '请输入11位手机号', trigger: 'blur' }
   ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'change' }
-  ],
-  name: [
-    { required: true, message: '请输入名称', trigger: 'change' }
-  ],
+  password: [{ required: true, message: '请输入密码', trigger: 'change' }],
+  name: [{ required: true, message: '请输入名称', trigger: 'change' }]
 })
 
 const isRegister = ref(false)
@@ -67,50 +91,48 @@ const registerForm = reactive({
   password: ''
 })
 
-
 const switchRegister = () => {
   isRegister.value = !isRegister.value
 }
 
 const handleLogin = async (formEl: FormInstance | undefined) => {
-  try{
+  try {
     await formEl?.validate()
-    const {success, result, msg} = await $http.post(urls.login, postForm)
-    if(!success){
+    const { success, result, msg } = await $http.post(urls.login, postForm)
+    if (!success) {
       ElMessage.error({
         message: msg
       })
-    }else{
+    } else {
       localStorage.setItem('sit', result)
       await router.replace('/home')
     }
-  }catch (e) {
-
-  }
+  } catch (e) {}
 }
 
 const handleRegister = async (formEl: FormInstance | undefined) => {
-  try{
+  try {
     await formEl?.validate()
-    const {success, result, msg} = await $http.post(urls.user_register, registerForm)
-    if(!success){
+    const { success, result, msg } = await $http.post(
+      urls.user_register,
+      registerForm
+    )
+    if (!success) {
       ElMessage.error({
         message: msg
       })
-    }else{
+    } else {
       ElMessage.success({
         message: '注册成功'
       })
       switchRegister()
     }
-  }catch (e) {
-
-  }
+  } catch (e) {}
 }
 </script>
 
 <style lang="scss" scoped>
-.login-container{
+.login-container {
   width: 100%;
   height: 100%;
   background-color: darkslategrey;
@@ -118,5 +140,4 @@ const handleRegister = async (formEl: FormInstance | undefined) => {
   justify-content: center;
   align-items: center;
 }
-
 </style>

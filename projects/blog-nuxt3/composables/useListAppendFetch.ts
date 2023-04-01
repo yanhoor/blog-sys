@@ -8,14 +8,20 @@ type InitParams<T> = {
   uniqueKey?: string // 过滤重复项的key
 }
 
-interface PageFetchParams{
+interface PageFetchParams {
   page: number
   pageSize: number
   [x: string]: any
 }
-export const useListAppendFetch = <T>(url: string, params: Object = {}, initParams: InitParams<T>) => {
+export const useListAppendFetch = <T>(
+  url: string,
+  params: Object = {},
+  initParams: InitParams<T>
+) => {
   const pageTotal = ref(0)
-  const pageList = ref<T[]>(initParams.initList ? [...initParams.initList] : []) as Ref<T[]>
+  const pageList = ref<T[]>(
+    initParams.initList ? [...initParams.initList] : []
+  ) as Ref<T[]>
   const pageLoading = ref(false)
   const pageLoadedFinish = ref(false) // 是否加载全部
   const fetchResult = ref(null)
@@ -26,25 +32,32 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   })
 
   async function fetchPage() {
-    try{
+    try {
       pageLoading.value = true
       const respone = await useFetchPost(url, pageFetchParams.value)
       pageLoading.value = false
       const { result, success } = respone
-      if(success){
+      if (success) {
         fetchResult.value = result
-        for(let item of result.list){
-          if(!initParams.uniqueKey){
+        for (const item of result.list) {
+          if (!initParams.uniqueKey) {
             pageList.value.push(item)
-          }else if(!pageList.value.some((old: any) => old[initParams.uniqueKey as string] === item[initParams.uniqueKey as string])){
+          } else if (
+            !pageList.value.some(
+              (old: any) =>
+                old[initParams.uniqueKey as string] ===
+                item[initParams.uniqueKey as string]
+            )
+          ) {
             pageList.value.push(item)
           }
         }
         pageTotal.value = result.total
-        pageLoadedFinish.value = result.list.length < pageFetchParams.value.pageSize
+        pageLoadedFinish.value =
+          result.list.length < pageFetchParams.value.pageSize
       }
       return respone
-    }catch (e) {
+    } catch (e) {
       console.log('=======useListAppendFetch======', e)
       pageLoading.value = false
     }
@@ -52,7 +65,7 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
 
   async function handlePageChange(page: number) {
     pageFetchParams.value.page = page
-    if(page == 1){
+    if (page == 1) {
       pageList.value = initParams.initList ? [...initParams.initList] : []
       pageLoadedFinish.value = false
     }
@@ -60,11 +73,11 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
   }
 
   async function handleLoadNextPage(page?: number) {
-    if(page){
+    if (page) {
       return await handlePageChange(page)
     }
-    if(pageLoadedFinish.value) return
-    pageFetchParams.value.page ++
+    if (pageLoadedFinish.value) return
+    pageFetchParams.value.page++
     return await fetchPage()
   }
 
@@ -84,6 +97,6 @@ export const useListAppendFetch = <T>(url: string, params: Object = {}, initPara
     fetchResult,
     handlePageChange,
     handleLoadNextPage,
-    handleChangeFetchParams,
+    handleChangeFetchParams
   }
 }

@@ -2,11 +2,11 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const {name, page = 1, pageSize = this.pageSize} = ctx.request.body
+  const { name, page = 1, pageSize = this.pageSize } = ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
   const skip = pageSize * (page - 1)
   const filter = { createById: userId }
-  if (name) filter.name = {contains: name}
+  if (name) filter.name = { contains: name }
   try {
     const [list, total] = await prisma.$transaction([
       prisma.followGroup.findMany({
@@ -20,18 +20,18 @@ module.exports = async function (ctx, next) {
           system: true,
           name: true
         },
-        orderBy: {updatedAt: 'desc'}
+        orderBy: { updatedAt: 'desc' }
       }),
-      prisma.followGroup.count({where: filter})
+      prisma.followGroup.count({ where: filter })
     ])
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
+    })
   } catch (e) {
     this.errorLogger.error('followGroup.list--------->', e)
   }

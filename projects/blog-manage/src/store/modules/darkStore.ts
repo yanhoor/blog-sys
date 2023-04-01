@@ -6,7 +6,7 @@ export const useDarkStore = defineStore(StoreTypes.DARK, {
     isDark: false
   }),
   actions: {
-    updateIsDark(val: boolean){
+    updateIsDark(val: boolean) {
       this.isDark = val
     }
   }

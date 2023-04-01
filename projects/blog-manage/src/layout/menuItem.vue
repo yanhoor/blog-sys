@@ -1,5 +1,8 @@
 <template>
-  <el-menu-item-group v-if="menu.children && menu.groupTitle" :title="menu.groupTitle">
+  <el-menu-item-group
+    v-if="menu.children && menu.groupTitle"
+    :title="menu.groupTitle"
+  >
     <template v-for="childMenu of menu.children" :key="childMenu.title">
       <!-- 通过组件 name 递归自身 -->
       <menu-item :menu="childMenu" />
@@ -27,7 +30,6 @@
 
 <script lang="ts" setup>
 defineProps({
-  menu: Object,
+  menu: Object
 })
-
 </script>

@@ -2,7 +2,13 @@
   <n-card class="form-container">
     <n-form ref="formRef" :model="postForm" :rules="rules">
       <n-form-item path="mobile" label="手机号">
-        <n-input v-model:value="postForm.mobile" @keydown.enter.prevent maxlength="11" show-count clearable/>
+        <n-input
+          v-model:value="postForm.mobile"
+          @keydown.enter.prevent
+          maxlength="11"
+          show-count
+          clearable
+        />
       </n-form-item>
       <n-form-item path="password" label="密码">
         <n-input
@@ -12,17 +18,10 @@
         />
       </n-form-item>
       <n-space vertical>
-        <n-button
-          class="w-full"
-          type="primary"
-          @click="handlePost"
-        >
+        <n-button class="w-full" type="primary" @click="handlePost">
           登录
         </n-button>
-        <n-button
-          class="w-full"
-          @click="toRegister"
-        >
+        <n-button class="w-full" @click="toRegister">
           没有账号，去注册
         </n-button>
       </n-space>
@@ -31,7 +30,22 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NForm, NFormItem, NInput, FormInst, FormRules, FormItemRule, FormItemInst, createDiscreteApi } from "naive-ui"
+import {
+  NButton,
+  NIcon,
+  NGrid,
+  NCard,
+  NSpace,
+  NGridItem,
+  NForm,
+  NFormItem,
+  NInput,
+  FormInst,
+  FormRules,
+  FormItemRule,
+  FormItemInst,
+  createDiscreteApi
+} from 'naive-ui'
 
 const token = useCookie('token', {
   maxAge: 60 * 60 * 24 * 7
@@ -51,7 +65,7 @@ interface ModelType {
 
 const postForm = ref<ModelType>({
   mobile: '',
-  password: '',
+  password: ''
 })
 const formRef = ref<FormInst | null>(null)
 const rules: FormRules = {
@@ -68,25 +82,26 @@ const rules: FormRules = {
     }
   ]
 }
-function handlePost (e: MouseEvent) {
+function handlePost(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    const { message } = createDiscreteApi(["message"])
+    const { message } = createDiscreteApi(['message'])
     if (!errors) {
-      try{
-        const { result, success, msg } = await useFetchPost('/user/login', postForm.value)
-        if(success){
+      try {
+        const { result, success, msg } = await useFetchPost(
+          '/user/login',
+          postForm.value
+        )
+        if (success) {
           message.success('登录成功')
 
           token.value = result
           await navigateTo('/', { replace: true })
           useFetchNotificationCount()
-        } else{
+        } else {
           message.error(msg as string)
         }
-      }catch (e) {
-
-      }
+      } catch (e) {}
     } else {
       console.log(errors)
       message.error('请将信息填写完整')
@@ -100,7 +115,7 @@ async function toRegister() {
 </script>
 
 <style lang="scss" scoped>
-.form-container{
+.form-container {
   width: 350px;
   position: relative;
   top: 50%;

@@ -6,9 +6,9 @@ const replyList = require('./replyList')
 const deleteComment = require('./delete')
 const audit = require('./audit')
 
-class CommentController extends BaseController{
+class CommentController extends BaseController {
   constructor() {
-    super();
+    super()
     this.commit = commit.bind(this)
     this.manageList = manageList.bind(this)
     this.list = commentList.bind(this)

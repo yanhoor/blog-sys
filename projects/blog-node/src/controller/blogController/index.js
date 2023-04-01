@@ -10,10 +10,9 @@ const like = require('./like')
 const actionUserList = require('./actionUserList')
 const collect = require('./collect')
 
-class BlogController extends BaseController{
-
+class BlogController extends BaseController {
   constructor() {
-    super();
+    super()
     this.manageList = manageList.bind(this)
     this.list = postList.bind(this)
     this.edit = edit.bind(this)

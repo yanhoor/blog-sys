@@ -18,19 +18,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-.list-page-wrapper{
+.list-page-wrapper {
   @apply flex flex-col h-full;
-  .filter-actions{
+  .filter-actions {
     @apply my-[12px];
   }
-  .list-table-container{
+  .list-table-container {
     @apply flex flex-col flex-1 overflow-hidden;
-    .vxe-table-container{
+    .vxe-table-container {
       @apply flex-1 overflow-hidden;
     }
   }

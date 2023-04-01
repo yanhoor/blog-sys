@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import StoreTypes from '../storeTypes'
-import $http, { urls } from "@/http"
+import $http, { urls } from '@/http'
 import { ElMessage } from 'element-plus'
 
 export const useUserStore = defineStore(StoreTypes.USER, {
@@ -9,20 +9,18 @@ export const useUserStore = defineStore(StoreTypes.USER, {
     user: null
   }),
   actions: {
-    async getUserInfo(){
-      try{
-        const {success, result, msg} = await $http.get(urls.user_info)
-        if(!success){
+    async getUserInfo() {
+      try {
+        const { success, result, msg } = await $http.get(urls.user_info)
+        if (!success) {
           ElMessage.error({
             message: msg
           })
-        }else{
+        } else {
           this.user = result
           return result
         }
-      }catch (e) {
-
-      }
+      } catch (e) {}
     }
   }
 })

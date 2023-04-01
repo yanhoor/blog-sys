@@ -6,13 +6,29 @@
     :custom-request="customRequest"
   >
     <div class="group relative upload-action" v-if="props.modelValue">
-      <MediaImgView alt="头像" class="w-full h-full object-contain" :url="props.modelValue"/>
-      <div class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex">
-        <n-icon class="cursor-pointer hover:text-green-600" :component="ZoomIn24Regular" size="48" @click.stop="showModal = true"></n-icon>
+      <MediaImgView
+        alt="头像"
+        class="w-full h-full object-contain"
+        :url="props.modelValue"
+      />
+      <div
+        class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex"
+      >
+        <n-icon
+          class="cursor-pointer hover:text-green-600"
+          :component="ZoomIn24Regular"
+          size="48"
+          @click.stop="showModal = true"
+        ></n-icon>
         <!--<n-icon :component="Edit20Filled" size="32"></n-icon>-->
       </div>
     </div>
-    <n-icon class="upload-action flex justify-center items-center cursor-pointer hover:text-green-600" size="70" :component="Add24Regular" v-else></n-icon>
+    <n-icon
+      class="upload-action flex justify-center items-center cursor-pointer hover:text-green-600"
+      size="70"
+      :component="Add24Regular"
+      v-else
+    ></n-icon>
   </n-upload>
   <n-modal
     v-model:show="showModal"
@@ -20,13 +36,19 @@
     class="w-[600px]"
     title="预览"
   >
-    <MediaImgView alt="预览" :url="props.modelValue" class="w-full"/>
+    <MediaImgView alt="预览" :url="props.modelValue" class="w-full" />
   </n-modal>
 </template>
 
 <script setup lang="ts">
 import { Add24Regular, ZoomIn24Regular, Edit20Filled } from '@vicons/fluent'
-import { NUpload, NModal, NIcon, createDiscreteApi, UploadCustomRequestOptions} from 'naive-ui'
+import {
+  NUpload,
+  NModal,
+  NIcon,
+  createDiscreteApi,
+  UploadCustomRequestOptions
+} from 'naive-ui'
 
 interface Props {
   modelValue?: string
@@ -34,7 +56,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
-  size: '178px',
+  size: '178px'
 })
 const emits = defineEmits(['update:modelValue'])
 const previewImageUrl = ref('')
@@ -51,27 +73,30 @@ const customRequest = async ({
   onError,
   onProgress
 }: UploadCustomRequestOptions) => {
-  const { message } = createDiscreteApi(["message"])
+  const { message } = createDiscreteApi(['message'])
   // console.log('==============', file, data)
-  try{
-    if(file.file?.size && file.file?.size > 1024 * 1024 * 5){
+  try {
+    if (file.file?.size && file.file?.size > 1024 * 1024 * 5) {
       message.error('文件不能大于 5M')
       onError()
       return
     }
-    const {success, result, msg} = await useFetchPost('/upload', { file: file.file }, true)
-    if(success){
+    const { success, result, msg } = await useFetchPost(
+      '/upload',
+      { file: file.file },
+      true
+    )
+    if (success) {
       onFinish()
       emits('update:modelValue', result.path)
-    }else{
+    } else {
       message.error(msg as string)
       onError()
     }
-  }catch (e) {
+  } catch (e) {
     onError()
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -79,7 +104,7 @@ const customRequest = async ({
 //  width: v-bind('props.size');
 //  height: v-bind('props.size');
 //}
-.upload-action{
-  @apply w-[178px] h-[178px] border border-dashed border-gray-300 hover:border-green-600 hover:opacity-80
+.upload-action {
+  @apply w-[178px] h-[178px] border border-dashed border-gray-300 hover:border-green-600 hover:opacity-80;
 }
 </style>

@@ -30,10 +30,10 @@ module.exports = async function (ctx, next) {
       }
     })
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result
-    }
+    })
   } catch (e) {
     this.errorLogger.error('followGroup.containList--------->', e)
   }

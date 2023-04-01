@@ -8,11 +8,12 @@
     ]
   },
   "scripts": {
+    "lint": "eslint --ext .js,.jsx,.vue,.ts,.tsx --fix --quiet ./",
     "generate": "npx prisma generate",
     "push": "npx prisma db push",
-    "prisma": "npm run generate && npm run push",
+    "prisma": "dotenv -e .env.production -- npm run generate && npm run push",
     "docker": "dotenv -e .env.docker -- npm run prisma && dotenv -e .env.docker -- nodemon src/index.js",
-    "dev": "nodemon src/index.js",
+    "dev": "dotenv -e .env.development -- npm run prisma && dotenv -e .env.development -- nodemon src/index.js",
     "prod": "dotenv -e .env.production -- npm run prisma && dotenv -e .env.production -- pm2 start ecosystem.config.js"
   },
   "keywords": [],
@@ -21,7 +22,11 @@
   "devDependencies": {
     "@prisma/client": "^4.11.0",
     "dotenv-cli": "^7.1.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.21",
+    "prettier": "^2.8.7",
     "prisma": "^4.11.0",
     "redis": "^4.6.5"
   },

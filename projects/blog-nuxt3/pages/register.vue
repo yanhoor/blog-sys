@@ -1,11 +1,24 @@
 <template>
-  <n-card class="w-[350px] relative top-1/2 left-1/2" style="transform: translate(-50%, -50%)">
+  <n-card
+    class="w-[350px] relative top-1/2 left-1/2"
+    style="transform: translate(-50%, -50%)"
+  >
     <n-form ref="formRef" :model="registerForm" :rules="rules">
       <n-form-item path="name" label="名称">
-        <n-input v-model:value="registerForm.name" @keydown.enter.prevent maxlength="20" show-count/>
+        <n-input
+          v-model:value="registerForm.name"
+          @keydown.enter.prevent
+          maxlength="20"
+          show-count
+        />
       </n-form-item>
       <n-form-item path="mobile" label="手机号">
-        <n-input v-model:value="registerForm.mobile" @keydown.enter.prevent maxlength="11" show-count/>
+        <n-input
+          v-model:value="registerForm.mobile"
+          @keydown.enter.prevent
+          maxlength="11"
+          show-count
+        />
       </n-form-item>
       <n-form-item path="password" label="密码">
         <n-input
@@ -29,19 +42,10 @@
         />
       </n-form-item>
       <n-space vertical>
-        <n-button
-          class="w-full"
-          type="primary"
-          @click="handleRegister"
-        >
+        <n-button class="w-full" type="primary" @click="handleRegister">
           注册
         </n-button>
-        <n-button
-          class="w-full"
-          @click="toLogin"
-        >
-          已有账号，去登录
-        </n-button>
+        <n-button class="w-full" @click="toLogin"> 已有账号，去登录 </n-button>
       </n-space>
     </n-form>
   </n-card>
@@ -49,10 +53,24 @@
 
 <script setup lang="ts">
 import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
-import {useFetchPost} from "@/composables/useBaseFetch"
-import { NButton, NIcon, NGrid, NCard, NSpace, NGridItem, NForm, NFormItem, NInput, FormInst, FormRules, FormItemRule, FormItemInst, createDiscreteApi } from "naive-ui"
-import {useColorMode} from "@vueuse/core";
-
+import { useFetchPost } from '@/composables/useBaseFetch'
+import {
+  NButton,
+  NIcon,
+  NGrid,
+  NCard,
+  NSpace,
+  NGridItem,
+  NForm,
+  NFormItem,
+  NInput,
+  FormInst,
+  FormRules,
+  FormItemRule,
+  FormItemInst,
+  createDiscreteApi
+} from 'naive-ui'
+import { useColorMode } from '@vueuse/core'
 
 const colorModel = useColorMode()
 
@@ -79,7 +97,7 @@ const registerForm = ref<ModelType>({
   mobile: '',
   name: '',
   password: '',
-  reenteredPassword: '',
+  reenteredPassword: ''
 })
 const formRef = ref<FormInst | null>(null)
 const rPasswordFormItemRef = ref<FormItemInst | null>(null)
@@ -121,39 +139,37 @@ const rules: FormRules = {
   ]
 }
 
-function handlePasswordInput () {
+function handlePasswordInput() {
   if (registerForm.value.reenteredPassword) {
     rPasswordFormItemRef.value?.validate({ trigger: 'password-input' })
   }
 }
 
-function validatePasswordStartWith (
-  rule: FormItemRule,
-  value: string
-): boolean {
+function validatePasswordStartWith(rule: FormItemRule, value: string): boolean {
   return (
     !!registerForm.value.password &&
     registerForm.value.password.startsWith(value) &&
     registerForm.value.password.length >= value.length
   )
 }
-function validatePasswordSame (rule: FormItemRule, value: string): boolean {
+function validatePasswordSame(rule: FormItemRule, value: string): boolean {
   return value === registerForm.value.password
 }
-function handleRegister (e: MouseEvent) {
+function handleRegister(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    const { message } = createDiscreteApi(["message"])
+    const { message } = createDiscreteApi(['message'])
     if (!errors) {
-      try{
-        const { result, success } = await useFetchPost('/user/register', registerForm.value)
-        if(success){
+      try {
+        const { result, success } = await useFetchPost(
+          '/user/register',
+          registerForm.value
+        )
+        if (success) {
           message.success('注册成功')
           toLogin()
         }
-      }catch (e) {
-
-      }
+      } catch (e) {}
     } else {
       console.log(errors)
       message.error('请将信息填写完整')
@@ -167,7 +183,7 @@ async function toLogin() {
 </script>
 
 <style lang="scss" scoped>
-.form-container{
+.form-container {
   width: 350px;
   position: relative;
   top: 50%;

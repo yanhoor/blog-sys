@@ -10,24 +10,25 @@ const app = new koa()
 
 // jwt 校验登录
 app.use(async (ctx, next) => {
-  return next().catch(err => {
+  return next().catch((err) => {
     if (401 == err.status) {
       defaultLogger.warn('jwt 鉴权失败')
-      ctx.status = 401;
-      ctx.body = '401 Unauthorized - Protected resource, use Authorization header to get access\n';
+      ctx.status = 401
+      ctx.body =
+        '401 Unauthorized - Protected resource, use Authorization header to get access\n'
     } else {
       defaultLogger.error('jwt 鉴权失败', err.message)
-      throw err;
+      throw err
     }
-  });
-});
+  })
+})
 
 // try{
 //     fs.mkdirSync(path.join(__dirname, config.uploadDir))
 // }catch(e){
 //     console.log(e)
 // }
-app.use(koaBody({multipart: true}))
+app.use(koaBody({ multipart: true }))
 // app.use(koaBody({
 //     // 支持文件格式
 //     multipart: true,
@@ -39,18 +40,20 @@ app.use(koaBody({multipart: true}))
 //     }
 // }))
 
-app.use(cors({
-  origin(ctx){
-    const { origin, Origin, referer, Referer } = ctx.request.headers;
-    const allowOrigin = origin || Origin || referer || Referer || '*';
-    // return 'http://localhost:3000';
-    return allowOrigin
-  },
-  credentials: true,
-  maxAge: 60 * 60 * 24,
-  allowMethods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-}))
+app.use(
+  cors({
+    origin(ctx) {
+      const { origin, Origin, referer, Referer } = ctx.request.headers
+      const allowOrigin = origin || Origin || referer || Referer || '*'
+      // return 'http://localhost:3000';
+      return allowOrigin
+    },
+    credentials: true,
+    maxAge: 60 * 60 * 24,
+    allowMethods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  })
+)
 
 // 处理 history 路由模式刷新404
 // app.use(async (ctx, next) => {

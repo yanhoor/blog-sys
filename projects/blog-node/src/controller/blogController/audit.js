@@ -1,14 +1,14 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
+module.exports = async function (ctx, next) {
   let { id, auditTip, type } = ctx.request.body
   id = Number(id)
   type = Number(type)
-  try{
-    if(!id) throw new Error('id不能为空')
-    if(type === 2 && !auditTip) throw new Error('审核意见不能为空')
-  }catch(e){
+  try {
+    if (!id) throw new Error('id不能为空')
+    if (type === 2 && !auditTip) throw new Error('审核意见不能为空')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -37,21 +37,24 @@ module.exports = async function(ctx, next) {
       blogId: blog.id,
       content: {
         auditStatusText: blog.auditStatus === 1 ? '审核通过' : '审核不通过',
-        auditTip: blog.auditTip,
+        auditTip: blog.auditTip
       }
     }
     const notification = await prisma.notification.create({
       data: nd
     })
-    this.websocket.sendWsMessage(blog.createById, JSON.stringify({
-      type: this.WEBSOCKET_MESSAGE_TYPE.notification,
-      id: notification.id
-    }))
+    this.websocket.sendWsMessage(
+      blog.createById,
+      JSON.stringify({
+        type: this.WEBSOCKET_MESSAGE_TYPE.notification,
+        id: notification.id
+      })
+    )
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('blog.audit--------->', e)
   }
 }

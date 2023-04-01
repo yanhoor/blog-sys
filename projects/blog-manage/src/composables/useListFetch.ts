@@ -1,5 +1,5 @@
-import {ref, reactive, watchEffect} from 'vue'
-import $http from "@/http"
+import { ref, reactive, watchEffect } from 'vue'
+import $http from '@/http'
 
 export default function useListFetch<T>(url: string, params: Object = {}) {
   const pageTotal = ref(0)
@@ -11,12 +11,12 @@ export default function useListFetch<T>(url: string, params: Object = {}) {
     ...params
   })
 
-  function handlePageChange(page: number){
+  function handlePageChange(page: number) {
     pageFetchParams.value.page = page
     getList()
   }
 
-  function handleChangeFetchParams(params: Object = []) {
+  function handleChangeFetchParams(params: Object = {}) {
     pageFetchParams.value = {
       ...pageFetchParams.value,
       ...params
@@ -27,13 +27,16 @@ export default function useListFetch<T>(url: string, params: Object = {}) {
   async function getList() {
     try {
       listLoading.value = true
-      const { result, msg, success } = await $http.post(url, pageFetchParams.value)
-      if(success){
+      const { result, msg, success } = await $http.post(
+        url,
+        pageFetchParams.value
+      )
+      if (success) {
         pageList.value = result.list
         pageTotal.value = result.total
       }
       listLoading.value = false
-    }catch (e) {
+    } catch (e) {
       listLoading.value = false
     }
   }

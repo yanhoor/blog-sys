@@ -1,7 +1,10 @@
 <template>
   <div>
     <n-card>
-      <UserList url="/user/friends" :search-params="{ relateType: 1, uid: myInfo?.id }"/>
+      <UserList
+        url="/user/friends"
+        :search-params="{ relateType: 1, uid: myInfo?.id }"
+      />
     </n-card>
   </div>
 </template>
@@ -15,7 +18,7 @@ import {
   NInputGroup,
   NTag,
   createDiscreteApi
-} from "naive-ui"
+} from 'naive-ui'
 import { User } from '@/types'
 
 const myInfo = useUserInfo()

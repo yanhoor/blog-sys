@@ -2,24 +2,24 @@ const { PrismaClient } = require('@prisma/client')
 const config = require('config-lite')(__dirname)
 
 const prisma = new PrismaClient({
-  log: ['info', 'warn', 'error'],
+  log: ['info', 'warn', 'error']
 })
 
 createAdmin()
 
 // 创建超级管理员
-async function createAdmin(){
+async function createAdmin() {
   try {
     const admin = await prisma.user.findUnique({
       where: { type: 1 }
     })
 
-    if(!admin){
+    if (!admin) {
       await prisma.user.create({
         data: config.adminUser
       })
     }
-  }catch (e) {
+  } catch (e) {
     console.log('==============', e)
   }
 }
@@ -32,8 +32,10 @@ prisma.$use(async (params, next) => {
 
   const after = Date.now()
 
-  if((after - before) > config.databaseRecordTime){
-    console.log(`查询 ${params.model}.${params.action} 时间----> ${after - before}ms`)
+  if (after - before > config.databaseRecordTime) {
+    console.log(
+      `查询 ${params.model}.${params.action} 时间----> ${after - before}ms`
+    )
   }
 
   return result
@@ -42,12 +44,12 @@ prisma.$use(async (params, next) => {
 // 拦截软删除数据的查询
 prisma.$use(async (params, next) => {
   let where
-  if(params.args?.where){
+  if (params.args?.where) {
     // 避免 findMany/count 使用相同的 where 查询时，ALL_DATA 被删除
     where = JSON.parse(JSON.stringify(params.args?.where))
   }
   // 有 ALL_DATA 说明不需要添加 deletedAt 参数，比如硬删除的不会有这个参数
-  if(params.args?.where?.ALL_DATA) {
+  if (params.args?.where?.ALL_DATA) {
     delete where.ALL_DATA
     params.args.where = where
     return next(params)
@@ -69,7 +71,7 @@ prisma.$use(async (params, next) => {
         params.args.where['deletedAt'] = null
       }
     } else {
-      params.args = {...params.args}
+      params.args = { ...params.args }
       params.args['where'] = { deletedAt: null }
     }
   }

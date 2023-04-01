@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-interface Props{
+interface Props {
   title: string
   count: string | number
 }

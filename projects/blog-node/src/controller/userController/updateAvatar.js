@@ -4,7 +4,7 @@ const redisClient = require('../../database/redis')
 module.exports = async function (ctx, next) {
   const { avatar } = ctx.request.body
   const id = ctx.state.user.id
-  try{
+  try {
     const user = await prisma.user.update({
       where: {
         id
@@ -13,10 +13,10 @@ module.exports = async function (ctx, next) {
         avatar
       }
     })
-    return ctx.body = {
+    return (ctx.body = {
       success: true
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.edit--------->', e)
   }
 }

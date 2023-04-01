@@ -1,8 +1,13 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  const {page = 1, pageSize = this.pageSize, blogId, topCommentId } = ctx.request.body
+module.exports = async function (ctx, next) {
+  const {
+    page = 1,
+    pageSize = this.pageSize,
+    blogId,
+    topCommentId
+  } = ctx.request.body
   const skip = pageSize * (page - 1)
   const filter = {
     blogId: Number(blogId),
@@ -29,7 +34,7 @@ module.exports = async function(ctx, next) {
               name: true,
               avatar: true
             }
-          },
+          }
         }
       }),
       prisma.comment.findMany({
@@ -58,7 +63,7 @@ module.exports = async function(ctx, next) {
                   name: true,
                   avatar: true
                 }
-              },
+              }
             }
           },
           createBy: {
@@ -72,24 +77,24 @@ module.exports = async function(ctx, next) {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           }
         },
         // 评论的回复是升序，旧的在前面
         orderBy: { createdAt: 'asc' }
       }),
-      prisma.comment.count({where: filter})
+      prisma.comment.count({ where: filter })
     ])
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         topComment,
         list,
         total
       }
-    }
+    })
   } catch (e) {
     this.errorLogger.error('comment.replyList--------->', e)
   }

@@ -1,8 +1,16 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  let {medias = [], content, id, address, addressName, latitude, longitude} = ctx.request.body
+module.exports = async function (ctx, next) {
+  let {
+    medias = [],
+    content,
+    id,
+    address,
+    addressName,
+    latitude,
+    longitude
+  } = ctx.request.body
   latitude = Number(latitude)
   longitude = Number(longitude)
   let userId = await this.getAuthUserId(ctx, next)
@@ -20,7 +28,7 @@ module.exports = async function(ctx, next) {
     content,
     updatedAt: new Date()
   }
-  if(latitude){
+  if (latitude) {
     newItem.address = address
     newItem.addressName = addressName
     newItem.latitude = latitude
@@ -28,13 +36,13 @@ module.exports = async function(ctx, next) {
   }
   if (id) {
     const blog = await prisma.blog.findUnique({
-      where: {id}
+      where: { id }
     })
     if (!blog) {
-      return ctx.body = {
+      return (ctx.body = {
         success: false,
         msg: '博客不存在'
-      }
+      })
     }
     try {
       const oldList = await prisma.media.findMany({
@@ -44,30 +52,34 @@ module.exports = async function(ctx, next) {
       })
       const editList = []
       const addList = []
-      medias.forEach(item => {
+      medias.forEach((item) => {
         item.id ? editList.push(item) : addList.push(item)
       })
-      const notList = editList.filter(item => oldList.every(old => old.id !== item.id))
-      if(notList.length){
-        const notIdList = notList.map(item => item.id)
-        return ctx.body = {
+      const notList = editList.filter((item) =>
+        oldList.every((old) => old.id !== item.id)
+      )
+      if (notList.length) {
+        const notIdList = notList.map((item) => item.id)
+        return (ctx.body = {
           success: false,
           msg: `以下媒体id不存在：${notIdList.toString()}`
-        }
+        })
       }
-      addList.forEach(item => {
+      addList.forEach((item) => {
         item.createById = userId
       })
-      const deleteList = oldList.filter(old => editList.every(item => item.id !== old.id))
+      const deleteList = oldList.filter((old) =>
+        editList.every((item) => item.id !== old.id)
+      )
       const res = await prisma.blog.update({
-        where: {id},
+        where: { id },
         data: {
           ...newItem,
           medias: {
             updateMany: {
               where: {
                 id: {
-                  in: deleteList.map(item => item.id)
+                  in: deleteList.map((item) => item.id)
                 }
               },
               data: {
@@ -77,16 +89,16 @@ module.exports = async function(ctx, next) {
           }
         }
       })
-      return ctx.body = {
+      return (ctx.body = {
         success: true,
         result: res
-      }
+      })
     } catch (e) {
       this.errorLogger.error('blog.update--------->', e)
     }
   } else {
     try {
-      medias.forEach(item => {
+      medias.forEach((item) => {
         item.createById = userId
       })
       newItem.createById = userId
@@ -133,11 +145,15 @@ module.exports = async function(ctx, next) {
         }
       })
       // 创建博客数递增
-      await redisClient.zIncrBy(this.REDIS_KEY_PREFIX.BLOG_CREATE_RANKING, 1, userId.toString())
-      return ctx.body = {
+      await redisClient.zIncrBy(
+        this.REDIS_KEY_PREFIX.BLOG_CREATE_RANKING,
+        1,
+        userId.toString()
+      )
+      return (ctx.body = {
         success: true,
         result: res
-      }
+      })
     } catch (e) {
       this.errorLogger.error('blog.create--------->', e)
     }

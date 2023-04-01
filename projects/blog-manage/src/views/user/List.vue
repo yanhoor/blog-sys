@@ -3,10 +3,23 @@
     <template #filter>
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-input placeholder="用户名" v-model="filterForm.name" clearable @clear="getList" @keyup.enter="getList"></el-input>
+          <el-input
+            placeholder="用户名"
+            v-model="filterForm.name"
+            clearable
+            @clear="getList"
+            @keyup.enter="getList"
+          ></el-input>
         </el-col>
         <el-col :span="8">
-          <el-input placeholder="手机号" maxlength="11" v-model="filterForm.mobile" clearable @clear="getList" @keyup.enter="getList"></el-input>
+          <el-input
+            placeholder="手机号"
+            maxlength="11"
+            v-model="filterForm.mobile"
+            clearable
+            @clear="getList"
+            @keyup.enter="getList"
+          ></el-input>
         </el-col>
       </el-row>
     </template>
@@ -16,7 +29,13 @@
     </template>
 
     <template #table>
-      <el-table border stripe :data="pageState.tableList" height="auto" v-loading="pageState.loading">
+      <el-table
+        border
+        stripe
+        :data="pageState.tableList"
+        height="auto"
+        v-loading="pageState.loading"
+      >
         <el-table-column type="index" width="60" label="#"></el-table-column>
         <el-table-column prop="name" label="用户名" min-width="100">
           <template #default="{ row }">
@@ -35,21 +54,38 @@
           </template>
         </el-table-column>
         <el-table-column prop="blogCount" label="博客数量"></el-table-column>
-        <el-table-column prop="likeBlogCount" label="点赞博客数量"></el-table-column>
+        <el-table-column
+          prop="likeBlogCount"
+          label="点赞博客数量"
+        ></el-table-column>
         <el-table-column label="创建时间">
           <template #default="{ row }">
-            <div>{{dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
+            <div>{{ dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
           </template>
         </el-table-column>
         <el-table-column label="最后活跃时间">
           <template #default="{ row }">
-            <div>{{dayjs(row.lastActiveAt).format('YYYY-MM-DD HH:mm:ss')}}</div>
+            <div>
+              {{ dayjs(row.lastActiveAt).format('YYYY-MM-DD HH:mm:ss') }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template #default="{ row }">
-            <el-button @click="operateItem(row.id, 1)" link type="warning" v-if="row.lock === 2">锁定</el-button>
-            <el-button @click="operateItem(row.id, 2)" link type="success" v-else>解锁</el-button>
+            <el-button
+              @click="operateItem(row.id, 1)"
+              link
+              type="warning"
+              v-if="row.lock === 2"
+              >锁定</el-button
+            >
+            <el-button
+              @click="operateItem(row.id, 2)"
+              link
+              type="success"
+              v-else
+              >解锁</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -74,9 +110,9 @@
 <script setup lang="ts">
 import ListWrapper from '@/layout/listWrapper.vue'
 import { reactive, ref } from 'vue'
-import $http, { urls, IMG_HOST } from "@/http"
-import {ElMessage, ElMessageBox} from "element-plus"
-import dayjs from "dayjs"
+import $http, { urls, IMG_HOST } from '@/http'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import dayjs from 'dayjs'
 
 const filterForm = reactive({
   name: '',
@@ -88,25 +124,28 @@ const pageState = reactive({
   loading: false,
   tableList: [],
   pageSizeList: [20, 50, 100, 200],
-  tableTotal: 0,
+  tableTotal: 0
 })
 
 getList()
 
 async function getList() {
-  try{
+  try {
     pageState.loading = true
-    const {success, result, msg} = await $http.post(urls.user_list, filterForm)
+    const { success, result, msg } = await $http.post(
+      urls.user_list,
+      filterForm
+    )
     pageState.loading = false
-    if(!success){
+    if (!success) {
       ElMessage.error({
         message: msg
       })
-    }else{
+    } else {
       pageState.tableList = result.list
       pageState.tableTotal = result.total
     }
-  }catch (e) {
+  } catch (e) {
     pageState.loading = false
   }
 }
@@ -118,24 +157,27 @@ async function operateItem(id: string, lock: number) {
     {
       confirmButtonText: lock === 2 ? '解锁' : '锁定',
       cancelButtonText: '取消',
-      type: 'warning',
+      type: 'warning'
     }
-  ).then( async () => {
-    try{
-      const {success, result, msg} = await $http.post( lock === 2 ? urls.user_unlock : urls.user_lock, { id, type: lock })
-      if(!success){
-        ElMessage.error({
-          message: msg
-        })
-      }else{
-        ElMessage.success({
-          message: '操作成功'
-        })
-        getList()
-      }
-    }catch (e) {
-
-    }
-  }).catch(() => {})
+  )
+    .then(async () => {
+      try {
+        const { success, result, msg } = await $http.post(
+          lock === 2 ? urls.user_unlock : urls.user_lock,
+          { id, type: lock }
+        )
+        if (!success) {
+          ElMessage.error({
+            message: msg
+          })
+        } else {
+          ElMessage.success({
+            message: '操作成功'
+          })
+          getList()
+        }
+      } catch (e) {}
+    })
+    .catch(() => {})
 }
 </script>

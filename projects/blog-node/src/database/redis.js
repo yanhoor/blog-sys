@@ -1,7 +1,7 @@
 const { createClient } = require('redis')
 const config = require('config-lite')(__dirname)
 
-class RedisClient{
+class RedisClient {
   redisClient = null
   async initRedis() {
     // this.redisClient = createClient(config.redis)
@@ -17,7 +17,9 @@ class RedisClient{
       url: `redis://${config.redis.host}:${config.redis.port}`
     })
 
-    this.redisClient.on('error', (err) => console.log('Redis Client Error', err))
+    this.redisClient.on('error', (err) =>
+      console.log('Redis Client Error', err)
+    )
 
     await this.redisClient.connect()
   }

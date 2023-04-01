@@ -17,10 +17,5 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NSkeleton,
-  NCard,
-  NSpace
-} from "naive-ui"
-
+import { NSkeleton, NCard, NSpace } from 'naive-ui'
 </script>

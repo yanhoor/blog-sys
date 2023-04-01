@@ -6,20 +6,21 @@ const WEBSOCKET_MESSAGE_TYPE = {
   like_blog: 'like_blog',
   heart_beat: 'heart_beat'
 }
-class WS{
+class WS {
   wss = null
   koaServer = null
   wsMap = new Map()
   init = (server) => {
     this.koaServer = server
-    this.wss = new Server({
-      server,
-      path: '/websocket/'
-      // port: 9000,
-      // clientTracking: true
-    }, (c) => {
-
-    })
+    this.wss = new Server(
+      {
+        server,
+        path: '/websocket/'
+        // port: 9000,
+        // clientTracking: true
+      },
+      (c) => {}
+    )
 
     // console.log('++++++++initSocketServer++++++++', [...this.wss.clients])
 
@@ -51,14 +52,16 @@ class WS{
       this.wsMap.set(uid.toString(), ws)
       // console.log('ws connection uid----->', uid, this.wsMap.get(uid))
 
-      ws.on('message', data => {
+      ws.on('message', (data) => {
         const msg = data.toString()
         console.log('ws message---->', msg)
         // 心跳检测
-        if(msg === '1'){
-          ws.send(JSON.stringify({
-            type: WEBSOCKET_MESSAGE_TYPE.heart_beat
-          }))
+        if (msg === '1') {
+          ws.send(
+            JSON.stringify({
+              type: WEBSOCKET_MESSAGE_TYPE.heart_beat
+            })
+          )
         }
       })
 
@@ -67,18 +70,18 @@ class WS{
       // 可以通过客户端发送的特定 uuid 记录其对应的 ws，后面再通过 uuid 找到 ws，给客户端发送消息
       // ws.send('something');
 
-      ws.on('error', function(data) {
-        console.log('ws error--->', data);
-      });
+      ws.on('error', function (data) {
+        console.log('ws error--->', data)
+      })
 
-      ws.on('close', function(data) {
-        console.log('ws close--->', data);
-      });
+      ws.on('close', function (data) {
+        console.log('ws close--->', data)
+      })
 
-      ws.on('open', function(data) {
-        console.log('ws open--->', data);
-      });
-    });
+      ws.on('open', function (data) {
+        console.log('ws open--->', data)
+      })
+    })
   }
 
   sendWsMessage = (uid, data) => {
@@ -86,10 +89,10 @@ class WS{
     // 通过客户端发送的特定 uuid 记录其对应的 ws，后面再通过 uuid 找到 ws，给客户端发送消息
     const ws = this.wsMap.get(uid.toString())
     try {
-      if(ws){
+      if (ws) {
         ws.send(data)
       }
-    }catch (e) {
+    } catch (e) {
       errorLogger.error('sendWsMessage------->', e.message)
     }
   }

@@ -3,12 +3,12 @@ const redisClient = require('../../database/redis')
 const config = require('config-lite')(__dirname)
 
 module.exports = async function (ctx, next) {
-  const {type, userId, page = 1, pageSize = this.pageSize } = ctx.request.body
+  const { type, userId, page = 1, pageSize = this.pageSize } = ctx.request.body
   const skip = pageSize * (page - 1)
   let filter = { createById: userId }
-  try{
-    if(!type || !userId) throw new Error('缺少参数')
-  }catch(e){
+  try {
+    if (!type || !userId) throw new Error('缺少参数')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -19,7 +19,7 @@ module.exports = async function (ctx, next) {
   switch (Number(type)) {
     // 图片
     case 1:
-      filter.OR = config.imgTypeList.map(t => ({
+      filter.OR = config.imgTypeList.map((t) => ({
         url: {
           endsWith: t
         }
@@ -27,7 +27,7 @@ module.exports = async function (ctx, next) {
       break
     // 视频
     case 2:
-      filter.OR = config.videoTypeList.map(t => ({
+      filter.OR = config.videoTypeList.map((t) => ({
         url: {
           endsWith: t
         }
@@ -59,14 +59,14 @@ module.exports = async function (ctx, next) {
       prisma.media.count({ where: filter })
     ])
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.getMediaList--------->', e)
   }
 }

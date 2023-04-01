@@ -1,5 +1,5 @@
 import { Media } from './media'
-export interface Blog{
+export interface Blog {
   id?: number | string
   createById?: number | string
   content: string

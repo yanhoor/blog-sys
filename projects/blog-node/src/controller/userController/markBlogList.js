@@ -4,9 +4,9 @@ const redisClient = require('../../database/redis')
 module.exports = async function (ctx, next) {
   // type: 1--点赞，2--收藏
   const { type, page = 1, pageSize = this.pageSize } = ctx.request.body
-  try{
-    if(!type) throw new Error('缺少参数')
-  }catch(e){
+  try {
+    if (!type) throw new Error('缺少参数')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -29,49 +29,52 @@ module.exports = async function (ctx, next) {
             needs: { comments: true },
             compute(blog) {
               // 计算获取这个新字段值的逻辑，即从何处来
-              const list = blog.comments.filter(item => !item.replyCommentId && !item.deletedAt)
+              const list = blog.comments.filter(
+                (item) => !item.replyCommentId && !item.deletedAt
+              )
               return list.length
-            },
+            }
           },
           likedByCount: {
             needs: { likedBy: true },
             compute(blog) {
               return blog.likedBy.length
-            },
+            }
           },
           isLike: {
             needs: { likedBy: true },
             compute(blog) {
-              return blog.likedBy.some(item => item.userId == userId)
-            },
+              return blog.likedBy.some((item) => item.userId == userId)
+            }
           },
           collectedByCount: {
             needs: { collectedBy: true },
             compute(blog) {
               return blog.collectedBy.length
-            },
+            }
           },
           isCollect: {
             needs: { collectedBy: true },
             compute(blog) {
-              return blog.collectedBy.some(item => item.userId == userId)
-            },
+              return blog.collectedBy.some((item) => item.userId == userId)
+            }
           }
-        },
-      },
+        }
+      }
     })
 
-    let refList = [], total = 0
+    let refList = [],
+      total = 0
 
-    if(Number(type) === 1){
-      [refList, total] = await prisma.$transaction([
+    if (Number(type) === 1) {
+      ;[refList, total] = await prisma.$transaction([
         xprisma.LikeBlogRelation.findMany({
           skip,
           take: pageSize,
           where: JSON.parse(JSON.stringify(filter)),
           select: {
             userId: true,
-            blogId: true,
+            blogId: true
           },
           orderBy: {
             assignedAt: 'desc'
@@ -81,15 +84,15 @@ module.exports = async function (ctx, next) {
       ])
     }
 
-    if(Number(type) === 2){
-      [refList, total] = await prisma.$transaction([
+    if (Number(type) === 2) {
+      ;[refList, total] = await prisma.$transaction([
         xprisma.userCollectBlogs.findMany({
           skip,
           take: pageSize,
           where: JSON.parse(JSON.stringify(filter)),
           select: {
             userId: true,
-            blogId: true,
+            blogId: true
           },
           orderBy: {
             assignedAt: 'desc'
@@ -102,7 +105,7 @@ module.exports = async function (ctx, next) {
     const list = await xprisma.blog.findMany({
       where: {
         id: {
-          in: refList.map(ref => ref.blogId)
+          in: refList.map((ref) => ref.blogId)
         }
       },
       select: {
@@ -140,14 +143,14 @@ module.exports = async function (ctx, next) {
       }
     })
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.markBlogList--------->', e)
   }
 }

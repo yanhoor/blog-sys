@@ -3,5 +3,5 @@ import { time } from './time'
 
 export default {
   loadMore,
-  time,
+  time
 }

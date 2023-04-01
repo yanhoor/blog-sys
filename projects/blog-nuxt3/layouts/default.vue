@@ -1,20 +1,29 @@
 <template>
-  <n-layout class="default-layout min-h-full pb-[20px] bg-page-light dark:bg-page-dark">
-    <n-layout-header class="sticky h-[60px] z-50 left-0 right-0 top-0 flex gap-[12px] py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark">
+  <n-layout
+    class="default-layout min-h-full pb-[20px] bg-page-light dark:bg-page-dark"
+  >
+    <n-layout-header
+      class="sticky h-[60px] z-50 left-0 right-0 top-0 flex gap-[12px] py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark"
+    >
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
-            <n-icon :size="28" :component="Home24Regular">
-            </n-icon>
+            <n-icon :size="28" :component="Home24Regular"> </n-icon>
           </template>
         </n-button>
       </div>
       <div class="flex items-center gap-[12px]">
         <LayoutSearch />
 
-        <LayoutUser/>
+        <LayoutUser />
 
-        <n-switch v-model:value="colorModel" @update:value="handleChange" size="large" checked-value="dark" unchecked-value="light">
+        <n-switch
+          v-model:value="colorModel"
+          @update:value="handleChange"
+          size="large"
+          checked-value="dark"
+          unchecked-value="light"
+        >
           <template #checked-icon>
             <n-icon :component="WeatherMoon16Regular" />
           </template>
@@ -24,7 +33,9 @@
         </n-switch>
       </div>
     </n-layout-header>
-    <n-layout-content class="mt-[20px] mx-auto overflow-visible w-auto lg:w-[1024px] bg-page-light dark:bg-page-dark">
+    <n-layout-content
+      class="mt-[20px] mx-auto overflow-visible w-auto lg:w-[1024px] bg-page-light dark:bg-page-dark"
+    >
       <!--<div class="main-left">
         <slot name="left"></slot>
       </div>-->
@@ -58,8 +69,13 @@ import {
   NLayoutHeader,
   NIconWrapper,
   createDiscreteApi
-} from "naive-ui"
-import { Search12Regular, WeatherSunny20Regular, WeatherMoon16Regular, Home24Regular } from '@vicons/fluent'
+} from 'naive-ui'
+import {
+  Search12Regular,
+  WeatherSunny20Regular,
+  WeatherMoon16Regular,
+  Home24Regular
+} from '@vicons/fluent'
 import { useColorMode } from '@vueuse/core'
 
 const config = useRuntimeConfig()
@@ -71,13 +87,12 @@ function handleChange(val: string) {
   // console.log('=======handleChange======', val)
   darkMode.value = val === 'dark'
 }
-
 </script>
 
 <style lang="scss" scoped>
-.n-layout.default-layout{
+.n-layout.default-layout {
   overflow: initial;
-  :deep(.n-layout-scroll-container){
+  :deep(.n-layout-scroll-container) {
     overflow-x: initial;
   }
 }

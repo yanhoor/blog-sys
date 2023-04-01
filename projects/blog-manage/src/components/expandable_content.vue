@@ -1,14 +1,20 @@
 <template>
   <div class="whitespace-pre-wrap break-words transition-all">
     {{ isExpanded ? content : getPostSummary(content) }}
-    <el-button text type="primary" @click.stop="handleExpand" v-if="showAction">{{ isExpanded ? '收起' : '展开' }}</el-button>
+    <el-button
+      text
+      type="primary"
+      @click.stop="handleExpand"
+      v-if="showAction"
+      >{{ isExpanded ? '收起' : '展开' }}</el-button
+    >
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 
-interface Props{
+interface Props {
   content: string
   maxLength?: number
   maxLine?: number
@@ -27,20 +33,19 @@ const lineContentList = computed(() => {
   return props.content.split('\n')
 })
 const showAction = computed(() => {
-  if(!props.showBtn) return false
+  if (!props.showBtn) return false
 
-  if(lineContentList.value.length > props.maxLine) return true
+  if (lineContentList.value.length > props.maxLine) return true
 
   return props.content?.length > props.maxLength
-
 })
 
 function getPostSummary(content: string) {
-  if(lineContentList.value.length > props.maxLine){
+  if (lineContentList.value.length > props.maxLine) {
     return lineContentList.value.slice(0, props.maxLine).join('\n') + '\n...'
-  }else if(content && content.length > props.maxLength){
+  } else if (content && content.length > props.maxLength) {
     return content.slice(0, props.maxLength) + '...'
-  }else{
+  } else {
     return content
   }
 }

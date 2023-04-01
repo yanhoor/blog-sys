@@ -3,15 +3,15 @@ const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
   let id
-  try{
+  try {
     id = await this.getAuthUserId(ctx, next)
     const t = await redisClient.get(this.REDIS_KEY_PREFIX.TOKEN + id)
-    if(!t){
-      return ctx.body = {
+    if (!t) {
+      return (ctx.body = {
         success: false,
         code: this.CODE.USER_NOT_LOGIN,
         msg: '登录信息已过期，请重新登录'
-      }
+      })
     }
 
     const xprisma = prisma.$extends({
@@ -48,7 +48,7 @@ module.exports = async function (ctx, next) {
         gender: true,
         birthday: true,
         followerCount: true,
-        followingCount: true,
+        followingCount: true
       }
     })
     await prisma.user.update({
@@ -57,24 +57,29 @@ module.exports = async function (ctx, next) {
         lastActiveAt: new Date()
       }
     })
-    if(user.lock === 1){
-      return ctx.body = {
+    if (user.lock === 1) {
+      return (ctx.body = {
         success: false,
         code: this.CODE.USER_LOCK,
         msg: '您的账号已经被锁定，请联系管理员解锁'
-      }
+      })
     }
 
     // 收到的点赞数
-    const likeList = await redisClient.hVals(this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id)
-    const likedCount = likeList.reduce((pre, cur) => Number(pre) + Number(cur), 0)
+    const likeList = await redisClient.hVals(
+      this.REDIS_KEY_PREFIX.EVERY_BLOG_LIKE_USER + user.id
+    )
+    const likedCount = likeList.reduce(
+      (pre, cur) => Number(pre) + Number(cur),
+      0
+    )
     user.likedCount = likedCount
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: user
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.info--------->', e)
   }
 }

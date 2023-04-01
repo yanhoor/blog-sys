@@ -22,7 +22,7 @@ router.get('/jsonp', async (ctx, next) => {
   const callback = ctx.request.query.callback
   // ctx.set('Content-Type', 'application/json; charset=utf-8')
   ctx.set('Content-Type', 'text/javascript')
-  ctx.body = `${callback}(${JSON.stringify({a: 12})})`
+  ctx.body = `${callback}(${JSON.stringify({ a: 12 })})`
 })
 
 module.exports = router

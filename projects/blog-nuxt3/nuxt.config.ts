@@ -8,11 +8,11 @@ export default defineNuxtConfig({
     transpile:
       process.env.NODE_ENV === 'production'
         ? [
-          'naive-ui',
-          'vueuc',
-          '@css-render/vue3-ssr',
-          '@juggle/resize-observer'
-        ]
+            'naive-ui',
+            'vueuc',
+            '@css-render/vue3-ssr',
+            '@juggle/resize-observer'
+          ]
         : ['@juggle/resize-observer']
   },
   runtimeConfig: {
@@ -25,15 +25,15 @@ export default defineNuxtConfig({
       imageBase: process.env.NUXT_IMAGE_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       wsHost: process.env.NUXT_WS_HOST,
       imageType: process.env.NUXT_IMAGE_TYPE,
-      videoType: process.env.NUXT_VIDEO_TYPE,
+      videoType: process.env.NUXT_VIDEO_TYPE
     }
   },
   app: {
     baseURL: '/blog/',
     head: {
-      titleTemplate: "%s - Nuxt3 | 博客",
-      title: "Ray",
-      charset: "utf-8",
+      titleTemplate: '%s - Nuxt3 | 博客',
+      title: 'Ray',
+      charset: 'utf-8',
       // meta: [
       //   { name: 'naive-ui-style' },
       // ],
@@ -46,11 +46,11 @@ export default defineNuxtConfig({
       link: [
         // { rel: 'stylesheet', href: './prism.css' },
         {
-          rel: "icon",
-          href: "https://nuxt.com/icon.png",
-        },
+          rel: 'icon',
+          href: 'https://nuxt.com/icon.png'
+        }
       ]
-    },
+    }
     // https://nuxt.com/docs/getting-started/transitions
     // pageTransition: {
     //   name: 'page',
@@ -65,11 +65,8 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server'
   },
-  modules: [
-    '@vueuse/nuxt',
-    '@nuxtjs/tailwindcss'
-  ],
-  css: ["@/assets/styles/global.scss"],
+  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss'],
+  css: ['@/assets/styles/global.scss'],
   vite: {
     css: {
       preprocessorOptions: {
@@ -86,5 +83,5 @@ export default defineNuxtConfig({
     }
   },
   // auto import components
-  components: true,
+  components: true
 })

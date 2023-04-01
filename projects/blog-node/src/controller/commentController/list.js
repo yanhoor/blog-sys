@@ -1,8 +1,13 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  const {page = 1, pageSize = this.pageSize, blogId, sort = 1} = ctx.request.body
+module.exports = async function (ctx, next) {
+  const {
+    page = 1,
+    pageSize = this.pageSize,
+    blogId,
+    sort = 1
+  } = ctx.request.body
   const skip = pageSize * (page - 1)
   const filter = {
     blogId: Number(blogId),
@@ -29,9 +34,9 @@ module.exports = async function(ctx, next) {
             needs: { childComments: true },
             compute(comment) {
               // 计算获取这个新字段值的逻辑，即从何处来
-              const list = comment.childComments.filter(c => !c.deletedAt)
+              const list = comment.childComments.filter((c) => !c.deletedAt)
               return list.length
-            },
+            }
           }
         }
       }
@@ -59,9 +64,9 @@ module.exports = async function(ctx, next) {
                   status: {
                     notIn: [3, 4]
                   }
-                },
+                }
               }
-            }, // 这个数量错误，包含了已删除的
+            } // 这个数量错误，包含了已删除的
           },
           childComments: {
             take: 2,
@@ -84,14 +89,14 @@ module.exports = async function(ctx, next) {
                 select: {
                   id: true,
                   name: true,
-                  avatar: true,
+                  avatar: true
                 }
               },
               replyTo: {
                 select: {
                   id: true,
                   name: true,
-                  avatar: true,
+                  avatar: true
                 }
               },
               replyComment: {
@@ -107,16 +112,16 @@ module.exports = async function(ctx, next) {
                     select: {
                       id: true,
                       name: true,
-                      avatar: true,
+                      avatar: true
                     }
                   },
                   replyTo: {
                     select: {
                       id: true,
                       name: true,
-                      avatar: true,
+                      avatar: true
                     }
-                  },
+                  }
                 }
               }
             }
@@ -125,34 +130,34 @@ module.exports = async function(ctx, next) {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           },
           replyTo: {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           }
         },
         orderBy
       }),
-      prisma.comment.count({where: filter})
+      prisma.comment.count({ where: filter })
     ])
 
-    list.forEach(item => {
+    list.forEach((item) => {
       item.childCommentsCount = item._count.childComments
       delete item._count
     })
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
+    })
   } catch (e) {
     this.errorLogger.error('comment.list--------->', e)
   }

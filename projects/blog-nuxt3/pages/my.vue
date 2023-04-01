@@ -23,7 +23,7 @@
     </n-layout-sider>
 
     <div class="flex-1">
-      <NuxtPage/>
+      <NuxtPage />
     </div>
   </div>
 </template>
@@ -34,18 +34,25 @@ import {
   NLayoutSider,
   NCard,
   NMenu,
-  NIcon, createDiscreteApi
-} from "naive-ui"
+  NIcon,
+  createDiscreteApi
+} from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import { People24Regular, PeopleCheckmark24Regular, Star48Filled, CaretDown24Regular, ThumbLike16Filled } from '@vicons/fluent'
+import {
+  People24Regular,
+  PeopleCheckmark24Regular,
+  Star48Filled,
+  CaretDown24Regular,
+  ThumbLike16Filled
+} from '@vicons/fluent'
 
 definePageMeta({
   redirect: '/my/follower',
   middleware: async (to, from) => {
-    const { message } = createDiscreteApi(["message"])
+    const { message } = createDiscreteApi(['message'])
     const token = useCookie('token')
     // console.log('=============', token, to.fullPath, from.fullPath)
-    if(!token.value){
+    if (!token.value) {
       message.error('请先登录')
       return navigateTo({ path: '/', replace: true })
     }
@@ -53,9 +60,12 @@ definePageMeta({
 })
 const route = useRoute()
 const activeMenuKey = ref(route.path || '/my/follower')
-watch(() => route.path, (val) => {
-  activeMenuKey.value = val
-})
+watch(
+  () => route.path,
+  (val) => {
+    activeMenuKey.value = val
+  }
+)
 const menuOptions: MenuOption[] = [
   {
     label: '我的关注',
@@ -76,11 +86,11 @@ const menuOptions: MenuOption[] = [
     label: '我的收藏',
     key: '/my/collection',
     icon: () => h(NIcon, null, { default: () => h(Star48Filled) })
-  },
+  }
 ]
 const collapsed = ref(false)
 
-function expandIcon () {
+function expandIcon() {
   return h(NIcon, null, { default: () => h(CaretDown24Regular) })
 }
 
@@ -88,5 +98,4 @@ function handleMenuSelectChange(key: string) {
   activeMenuKey.value = key
   navigateTo(key)
 }
-
 </script>

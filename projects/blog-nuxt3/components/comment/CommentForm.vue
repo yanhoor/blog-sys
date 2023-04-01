@@ -11,21 +11,21 @@
         maxRows: 5
       }"
     />
-    <n-button class="mt-[12px]" type="primary" @click="commitComment" :loading="commentCommitting">{{ btnText }}</n-button>
+    <n-button
+      class="mt-[12px]"
+      type="primary"
+      @click="commitComment"
+      :loading="commentCommitting"
+      >{{ btnText }}</n-button
+    >
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  NForm,
-  NFormItem,
-  createDiscreteApi,
-  NButton,
-  NInput
-} from "naive-ui"
+import { NForm, NFormItem, createDiscreteApi, NButton, NInput } from 'naive-ui'
 import { Comment } from '@/types'
 
-interface Props{
+interface Props {
   placeholder?: string
   btnText?: string
   blogId: string | number
@@ -43,15 +43,15 @@ const commentContent = ref('')
 const commentCommitting = ref(false)
 
 async function commitComment() {
-  const { message } = createDiscreteApi(["message"])
+  const { message } = createDiscreteApi(['message'])
   const content = commentContent.value.trim()
 
-  if(!content){
+  if (!content) {
     message.warning('请输入评论')
     return
   }
 
-  try{
+  try {
     commentCommitting.value = true
     const { result, success, msg } = await useFetchPost('/comment/commit', {
       blogId: props.blogId,
@@ -61,14 +61,14 @@ async function commitComment() {
       replyToId: props.comment?.createBy?.id
     })
     commentCommitting.value = false
-    if(success){
+    if (success) {
       emit('success', result)
-      commentContent.value=''
+      commentContent.value = ''
       message.success('发表成功')
-    }else{
+    } else {
       message.error(msg as string)
     }
-  }catch (e) {
+  } catch (e) {
     commentCommitting.value = false
     console.log('=====/comment/commit=======', e)
   }

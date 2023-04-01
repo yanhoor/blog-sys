@@ -1,32 +1,32 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
-module.exports = async function(ctx, next) {
-  const {page = 1, pageSize = this.pageSize, type, isRead} = ctx.request.body
+module.exports = async function (ctx, next) {
+  const { page = 1, pageSize = this.pageSize, type, isRead } = ctx.request.body
   const skip = pageSize * (page - 1)
   let userId = await this.getAuthUserId(ctx, next)
   try {
     if (!userId) throw new Error('未登录')
   } catch (e) {
-    return ctx.body = {
+    return (ctx.body = {
       code: this.CODE.USER_NOT_LOGIN,
       success: false,
       msg: e.message
-    }
+    })
   }
   const filter = { receiveUserId: userId }
-  if(type) {
+  if (type) {
     const typeList = type.split(',')
     filter.OR = []
-    for(let t of typeList){
+    for (let t of typeList) {
       filter.OR.push({
         type: this.NOTIFICATION_TYPE[t]
       })
     }
   }
-  if(Number(isRead) === 0 || Number(isRead) === 1) {
+  if (Number(isRead) === 0 || Number(isRead) === 1) {
     filter.isRead = isRead
-  }else{
+  } else {
     filter.isRead = undefined
   }
   try {
@@ -47,7 +47,7 @@ module.exports = async function(ctx, next) {
             select: {
               id: true,
               content: true,
-              deletedAt: true,
+              deletedAt: true
             }
           },
           commentId: true,
@@ -61,7 +61,7 @@ module.exports = async function(ctx, next) {
                   createdAt: true,
                   content: true,
                   blogId: true,
-                  topCommentId: true,
+                  topCommentId: true
                 }
               }
             }
@@ -70,30 +70,30 @@ module.exports = async function(ctx, next) {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           }
         },
-        orderBy: {createdAt: 'desc'}
+        orderBy: { createdAt: 'desc' }
       }),
-      prisma.notification.count({where: { ...filter, isRead: undefined }}),
-      prisma.notification.count({where: { ...filter, isRead: 0 }}),
+      prisma.notification.count({ where: { ...filter, isRead: undefined } }),
+      prisma.notification.count({ where: { ...filter, isRead: 0 } })
     ])
 
-    list = list.map(n => {
-      if(n.blog.deletedAt){
+    list = list.map((n) => {
+      if (n.blog.deletedAt) {
         n.blog = null
       }
       return n
     })
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total,
-        unreadTotal,
+        unreadTotal
       }
-    }
+    })
   } catch (e) {
     this.errorLogger.error('notification.list--------->', e)
   }

@@ -6,7 +6,7 @@ module.exports = async function (ctx, next) {
   let userId = await this.getAuthUserId(ctx, next)
   const skip = pageSize * (page - 1)
   let filter = {
-    createById: userId,
+    createById: userId
   }
 
   try {
@@ -28,7 +28,7 @@ module.exports = async function (ctx, next) {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           },
           replyToId: true,
@@ -36,29 +36,29 @@ module.exports = async function (ctx, next) {
             select: {
               id: true,
               name: true,
-              avatar: true,
+              avatar: true
             }
           },
           blog: {
             select: {
               id: true,
               content: true,
-              deletedAt: true,
+              deletedAt: true
             }
           }
         }
       }),
-      prisma.comment.count({where: filter})
+      prisma.comment.count({ where: filter })
     ])
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.myCommentList--------->', e)
   }
 }

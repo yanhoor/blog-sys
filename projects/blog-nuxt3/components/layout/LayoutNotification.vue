@@ -5,19 +5,15 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NIcon,
-  NBadge
-} from "naive-ui"
+import { NIcon, NBadge } from 'naive-ui'
 import { Chat24Regular } from '@vicons/fluent'
 
 const notificationUnreadCount = useNotificationUnreadCount()
 
 function toNotification() {
   navigateTo('/notification')
-  if(notificationUnreadCount.value){
+  if (notificationUnreadCount.value) {
     navigateTo('/notification')
   }
 }
-
 </script>

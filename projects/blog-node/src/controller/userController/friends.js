@@ -2,13 +2,13 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  let {relateType, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
+  let { relateType, uid, page = 1, pageSize = this.pageSize } = ctx.request.body
   const skip = pageSize * (page - 1)
   let filter = { ALL_DATA: true }
-  let orderBy = { }
-  try{
-    if(!relateType || !uid) throw new Error('缺少参数')
-  }catch(e){
+  let orderBy = {}
+  try {
+    if (!relateType || !uid) throw new Error('缺少参数')
+  } catch (e) {
     ctx.body = {
       success: false,
       msg: e.message
@@ -42,23 +42,25 @@ module.exports = async function (ctx, next) {
           isMutualFollowing: {
             needs: { followers: true, followings: true },
             compute(user) {
-              const isFollowing = user.followers.some(u => u.followById === uid)
-              const isFollowed = user.followings.some(u => u.userId === uid)
+              const isFollowing = user.followers.some(
+                (u) => u.followById === uid
+              )
+              const isFollowed = user.followings.some((u) => u.userId === uid)
               return isFollowed && isFollowing
             }
           },
           isFollowing: {
             needs: { followers: true },
-            compute(result){
-              return result.followers.some(u => u.followById === uid)
+            compute(result) {
+              return result.followers.some((u) => u.followById === uid)
             }
           },
           followersCount: {
             needs: { followers: true },
-            compute(result){
+            compute(result) {
               return result.followers.length
             }
-          },
+          }
         }
       }
     })
@@ -75,7 +77,7 @@ module.exports = async function (ctx, next) {
         select: {
           assignedAt: true,
           userId: true,
-          followById: true,
+          followById: true
         }
       }),
       prisma.followRelation.count({ where: filter })
@@ -85,7 +87,9 @@ module.exports = async function (ctx, next) {
     const list = await xprisma.user.findMany({
       where: {
         id: {
-          in: refList.map(ref => Number(relateType) === 1 ? ref.userId : ref.followById)
+          in: refList.map((ref) =>
+            Number(relateType) === 1 ? ref.userId : ref.followById
+          )
         }
       },
       select: {
@@ -95,18 +99,18 @@ module.exports = async function (ctx, next) {
         introduce: true,
         followersCount: true,
         isFollowing: true,
-        isMutualFollowing: true,
+        isMutualFollowing: true
       }
     })
 
-    return ctx.body = {
+    return (ctx.body = {
       success: true,
       result: {
         list,
         total
       }
-    }
-  }catch (e) {
+    })
+  } catch (e) {
     this.errorLogger.error('user.friends--------->', e)
   }
 }

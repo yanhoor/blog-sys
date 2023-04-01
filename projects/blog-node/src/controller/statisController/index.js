@@ -3,7 +3,7 @@ const weekDetail = require('./weekDetail')
 const totalCount = require('./totalCount')
 const user = require('./user')
 
-class StatisController extends BaseController{
+class StatisController extends BaseController {
   constructor() {
     super()
     this.weekDetail = weekDetail.bind(this)

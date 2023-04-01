@@ -9,7 +9,7 @@ module.exports = async function (ctx, next) {
       success: true,
       msg: '已退出登录'
     }
-  }catch (e) {
+  } catch (e) {
     this.errorLogger.error('user.logout--------->', e)
   }
 }

@@ -1,26 +1,61 @@
 <template>
   <div class="user-card">
-    <n-popover trigger="hover" @update:show="handleShow" class="max-w-[280px]" :disabled="disabled || currentUser?.id === userId">
+    <n-popover
+      trigger="hover"
+      @update:show="handleShow"
+      class="max-w-[280px]"
+      :disabled="disabled || currentUser?.id === userId"
+    >
       <template #trigger>
         <div>
           <slot name="trigger"></slot>
         </div>
       </template>
 
-      <n-spin size="small" v-if="loading"/>
+      <n-spin size="small" v-if="loading" />
 
-      <div class="p-[12px] flex flex-col items-start gap-[12px] overflow-hidden" v-else>
+      <div
+        class="p-[12px] flex flex-col items-start gap-[12px] overflow-hidden"
+        v-else
+      >
         <div class="flex items-center gap-[12px] max-w-full">
-          <UserAvatar :user="userInfo" :size="36" disabled/>
+          <UserAvatar :user="userInfo" :size="36" disabled />
           <div class="flex flex-col gap-[3px] items-start overflow-hidden">
-            <div class="text-green-700 text-[16px] cursor-pointer" @click="navigateTo({ path: '/user/' + userInfo.id })">{{ userInfo?.name }}</div>
+            <div
+              class="text-green-700 text-[16px] cursor-pointer"
+              @click="navigateTo({ path: '/user/' + userInfo.id })"
+            >
+              {{ userInfo?.name }}
+            </div>
           </div>
         </div>
-        <UserFollowDropdown v-if="userInfo.isFollowing" @unfollow="handleFollow(2)" class="w-full" :user="userInfo" @selectGroup="showGroupSelect = true">
-          <n-button type="tertiary" class="w-full" size="small" :loading="followLoading">已关注</n-button>
+        <UserFollowDropdown
+          v-if="userInfo.isFollowing"
+          @unfollow="handleFollow(2)"
+          class="w-full"
+          :user="userInfo"
+          @selectGroup="showGroupSelect = true"
+        >
+          <n-button
+            type="tertiary"
+            class="w-full"
+            size="small"
+            :loading="followLoading"
+            >已关注</n-button
+          >
         </UserFollowDropdown>
-        <n-button type="primary" class="w-full" size="small" @click="handleFollow(1)" :loading="followLoading" v-else>关注</n-button>
-        <div class="flex items-start justify-around w-full custom-border border-t pt-[6px]">
+        <n-button
+          type="primary"
+          class="w-full"
+          size="small"
+          @click="handleFollow(1)"
+          :loading="followLoading"
+          v-else
+          >关注</n-button
+        >
+        <div
+          class="flex items-start justify-around w-full custom-border border-t pt-[6px]"
+        >
           <div class="statis-item">
             <div class="statis-num">{{ userInfo.followingCount }}</div>
             <div class="statis-name">关注</div>
@@ -32,15 +67,25 @@
         </div>
       </div>
     </n-popover>
-    <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="userId" v-if="userInfo"/>
+    <UserFollowGroupSelect
+      v-model:show="showGroupSelect"
+      :userId="userId"
+      v-if="userInfo"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import {NPopover, NButton, NSpin, NDropdown, createDiscreteApi} from 'naive-ui'
-import {User} from "~/types"
+import {
+  NPopover,
+  NButton,
+  NSpin,
+  NDropdown,
+  createDiscreteApi
+} from 'naive-ui'
+import { User } from '~/types'
 
-interface Props{
+interface Props {
   userId: number
   disabled?: boolean
 }
@@ -55,50 +100,56 @@ const followLoading = ref(false)
 const showGroupSelect = ref(false)
 
 function handleShow(val: boolean) {
-  if(val){
+  if (val) {
     getUserInfo()
   }
 }
 async function getUserInfo() {
   loading.value = true
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result, success, code, msg } = await useFetchPost('/user/' + props.userId, { })
-    if(success){
+  const { message } = createDiscreteApi(['message'])
+  try {
+    const { result, success, code, msg } = await useFetchPost(
+      '/user/' + props.userId,
+      {}
+    )
+    if (success) {
       userInfo.value = result
-    }else{
+    } else {
       message.error(msg as string)
     }
     loading.value = false
-  }catch (e) {
+  } catch (e) {
     loading.value = false
   }
 }
 
 async function handleFollow(type: number) {
   followLoading.value = true
-  const { message } = createDiscreteApi(["message"])
-  try{
-    const { result, success, code, msg } = await useFetchPost('/user/follow', { id: props.userId, type })
-    if(success){
+  const { message } = createDiscreteApi(['message'])
+  try {
+    const { result, success, code, msg } = await useFetchPost('/user/follow', {
+      id: props.userId,
+      type
+    })
+    if (success) {
       getUserInfo()
-    }else{
+    } else {
       message.error(msg as string)
     }
     followLoading.value = false
-  }catch (e) {
+  } catch (e) {
     followLoading.value = false
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.statis-item{
+.statis-item {
   @apply flex flex-col items-center;
-  .statis-num{
+  .statis-num {
     @apply font-semibold;
   }
-  .statis-name{
+  .statis-name {
     @apply text-gray-400;
   }
 }

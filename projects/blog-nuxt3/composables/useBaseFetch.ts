@@ -1,4 +1,4 @@
-import {createDiscreteApi} from "naive-ui"
+import { createDiscreteApi } from 'naive-ui'
 
 interface HttpResponseType {
   success: boolean
@@ -7,15 +7,19 @@ interface HttpResponseType {
   msg?: string
 }
 
-export const useFetchPost = (url: string, data: any, formData: boolean = false): Promise<HttpResponseType> => {
+export const useFetchPost = (
+  url: string,
+  data: any,
+  formData = false
+): Promise<HttpResponseType> => {
   const runTimeConfig = useRuntimeConfig()
   const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
-  if(token.value) Authorization = 'Bearer ' + token.value
-  if(formData){
+  if (token.value) Authorization = 'Bearer ' + token.value
+  if (formData) {
     const fd = new FormData()
-    Object.keys(data).forEach(k => {
+    Object.keys(data).forEach((k) => {
       fd.append(k, data[k])
     })
     // headers['Content-Type'] = 'multipart/form-data'
@@ -27,7 +31,7 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
     baseURL: runTimeConfig.apiBase,
     // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     headers: {
-      'Authorization': Authorization
+      Authorization: Authorization
     },
     method: 'POST',
     body: data,
@@ -47,25 +51,33 @@ export const useFetchPost = (url: string, data: any, formData: boolean = false):
       // Log response
       // console.log('[fetch response]', response._data)
       const { code, success, msg } = response._data || {}
-      if(process.client && (code === 111 || code === 999)){
+      if (process.client && (code === 111 || code === 999)) {
         token.value = null
-        const { message } = createDiscreteApi(["message"])
+        const { message } = createDiscreteApi(['message'])
         message.error(msg)
       }
     },
     onResponseError({ request, response, options }) {
       // Log error
-      console.log('[fetch response error]', request, response.status, response.body)
+      console.log(
+        '[fetch response error]',
+        request,
+        response.status,
+        response.body
+      )
     }
   })
 }
 
-export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> => {
+export const useFetchGet = (
+  url: string,
+  data: any
+): Promise<HttpResponseType> => {
   const runTimeConfig = useRuntimeConfig()
   const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
-  if(token.value) Authorization = 'Bearer ' + token.value
+  if (token.value) Authorization = 'Bearer ' + token.value
   // console.log('=======useFetchPost.key======', url + json)
   // console.log('======useFetchGet====', url, process.client, process.server, token.value)
   return $fetch(url, {
@@ -76,7 +88,7 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
     // key: url + json,
     // initialCache: false,
     headers: {
-      'Authorization': Authorization
+      Authorization: Authorization
     },
     onRequestError({ request, options, error }) {
       // Log error
@@ -87,15 +99,20 @@ export const useFetchGet = (url: string, data: any): Promise<HttpResponseType> =
       // Log response
       // console.log('[fetch response]', response._data)
       const { code, success, msg } = response._data || {}
-      if(process.client && (code === 111 || code === 999)){
+      if (process.client && (code === 111 || code === 999)) {
         token.value = null
-        const { message } = createDiscreteApi(["message"])
+        const { message } = createDiscreteApi(['message'])
         message.error(msg)
       }
     },
     onResponseError({ request, response, options }) {
       // Log error
-      console.log('[fetch response error]', request, response.status, response.body)
+      console.log(
+        '[fetch response error]',
+        request,
+        response.status,
+        response.body
+      )
     }
   })
 }

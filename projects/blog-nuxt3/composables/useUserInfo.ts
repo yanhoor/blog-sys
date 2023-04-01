@@ -6,22 +6,22 @@ export const useUserInfo = () => {
 
 export const useRefreshUserInfo = async () => {
   const userInfo = useUserInfo()
-  const token = useCookie("token")
+  const token = useCookie('token')
   // console.log('==================', websocket.ws)
-  if(token.value && !userInfo.value) {
-    try{
-      const { result, success, code, msg } = await useFetchGet('/user/info', { })
-      if(success){
+  if (token.value && !userInfo.value) {
+    try {
+      const { result, success, code, msg } = await useFetchGet('/user/info', {})
+      if (success) {
         userInfo.value = result
         websocket.init()
       }
-      if(code === 111 || code === 999){
+      if (code === 111 || code === 999) {
         token.value = null
       }
-    }catch (e) {
+    } catch (e) {
       console.log('===============', e)
     }
-  } else if(userInfo.value && !websocket.ws){
+  } else if (userInfo.value && !websocket.ws) {
     websocket.init()
   }
 }

@@ -1,6 +1,5 @@
 <template>
-  <div class="h-full" ref="chartRef">
-  </div>
+  <div class="h-full" ref="chartRef"></div>
 </template>
 
 <script setup lang="ts">
@@ -8,7 +7,7 @@ import { reactive, ref, onMounted, watch, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import chalk from '@/assets/echartThemes/chalk.json'
 import macarons from '@/assets/echartThemes/macarons.json'
-import {useDarkStore} from "@/store/modules/darkStore"
+import { useDarkStore } from '@/store/modules/darkStore'
 import { storeToRefs } from 'pinia'
 
 export declare type LineChartProps = {
@@ -68,7 +67,7 @@ const option = {
 
 watch(isDark, (val) => {
   echart.dispose()
-  if(val){
+  if (val) {
     echart = echarts.init(chartRef.value, 'chalk')
   } else {
     echart = echarts.init(chartRef.value, 'macarons')
@@ -89,9 +88,6 @@ onUnmounted(() => {
 function handleResize() {
   echart.resize()
 }
-
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
