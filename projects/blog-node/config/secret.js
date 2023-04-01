@@ -1,13 +1,7 @@
 module.exports = {
   wechat: {
     appid: 'wx00a09e9676bb0927',
-    secret: '23ca458c9f3537908eae10a7e4a536b3',
-  },
-  redis: {
-    host: '127.0.0.1',
-    port: '6379',
-    username: 'default',
-    password: '1q2w3e4r'
+    secret: '23ca458c9f3537908eae10a7e4a536b3'
   },
   aliOss: {
     // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
@@ -17,5 +11,5 @@ module.exports = {
     accessKeySecret: 'NnJOIoFqphr54lTyHrnTgg1gtfe3t3',
     bucket: 'static-buck',
     endpoint: 'oss-cn-shenzhen.aliyuncs.com'
-  },
+  }
 }
