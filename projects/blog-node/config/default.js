@@ -13,7 +13,8 @@ module.exports = {
     '.svg'
   ], // 图片上传允许类型
   videoTypeList: ['.mp4', '.mov', '.avi', '.mkv'], // 视频上传允许类型
-  uploadMaxSize: 5, // 上传文件最大体积, M
+  uploadImgMaxSize: 1, // 上传图片最大体积, M
+  uploadVideoMaxSize: 200, // 上传视频最大体积, M
   uploadDir: './src/assets/upload/', // 上传目录
   jwtSecret: 'jwt-sec',
   jwtTokenExpired: 60 * 60 * 24 * 7, // 秒
