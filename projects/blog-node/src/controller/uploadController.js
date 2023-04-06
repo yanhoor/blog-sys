@@ -4,7 +4,7 @@ const config = require('config-lite')(__dirname)
 const OSS = require('ali-oss')
 
 class UploadController extends BaseController {
-  AliOssClient = new OSS(this.globalConfig.aliOss)
+  aliOssClient = new OSS(this.globalConfig.aliOss)
 
   fileCheck = async (file) => {
     return new Promise((r, j) => {
@@ -41,50 +41,15 @@ class UploadController extends BaseController {
     const req = ctx.request
     const { lastFilePath, md5 } = req.body
     const file = req.files.file
-    // console.log('======upload========', req, req.body)
+    // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
 
     try {
-      const extname = path.extname(file.originalFilename)
-
-      await this.fileCheck(file)
-
-      const hashName = (
-        new Date().getTime() + Math.ceil(Math.random() * 10000)
-      ).toString(16)
-      const fullName = '/blog-sys/' + hashName + extname
-
-      // 填写OSS文件完整路径和本地文件的完整路径。OSS文件完整路径中不能包含Bucket名称。
-      // 如果本地文件的完整路径中未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件。
-      await this.AliOssClient.put(
-        fullName,
-        file.filepath
-        // 自定义headers
-        //,{headers}
-      )
-
-      // 断点续传
-      // let checkpoint
-      //
-      // // 重试五次。
-      // for (let i = 0; i < 5; i++) {
-      //   try {
-      //     const result = await this.AliOssClient.multipartUpload(
-      //       fullName,
-      //       file.filepath,
-      //       {
-      //         checkpoint,
-      //         async progress(percentage, cpt) {
-      //           checkpoint = cpt
-      //           console.log('=====232323======', percentage, checkpoint)
-      //         }
-      //       }
-      //     )
-      //     console.log('////////', result)
-      //     break // 跳出当前循环。
-      //   } catch (e) {
-      //     console.log(e)
-      //   }
-      // }
+      let fullName
+      if (file.size < config.multiPartUploadSwitchSize * 1024 * 1024) {
+        fullName = await this.handleUpload(file)
+      } else {
+        fullName = await this.handleMultipartUpload(file)
+      }
 
       return (ctx.body = {
         success: true,
@@ -96,9 +61,97 @@ class UploadController extends BaseController {
       this.errorLogger.error('upload--------->', e)
       return (ctx.body = {
         success: false,
-        msg: e.message || '上传失败'
+        msg: e?.message || e || '上传失败'
       })
     }
+  }
+
+  // 整体上传
+  handleUpload = (file) => {
+    return new Promise(async (r, j) => {
+      try {
+        // console.log('handleUpload')
+        const extname = path.extname(file.originalFilename)
+
+        await this.fileCheck(file)
+
+        const hashName = (
+          new Date().getTime() + Math.ceil(Math.random() * 10000)
+        ).toString(16)
+        const fullName = '/blog-sys/' + hashName + extname
+
+        // 填写OSS文件完整路径和本地文件的完整路径。OSS文件完整路径中不能包含Bucket名称。
+        // 如果本地文件的完整路径中未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件。
+        await this.aliOssClient.put(
+          fullName,
+          file.filepath
+          // 自定义headers
+          //,{headers}
+        )
+        r(fullName)
+      } catch (e) {
+        j(e)
+      }
+    })
+  }
+
+  // 分片上传
+  handleMultipartUpload = (file) => {
+    return new Promise(async (r, j) => {
+      try {
+        // console.log('multipartUpload')
+        const extname = path.extname(file.originalFilename)
+
+        await this.fileCheck(file)
+
+        const hashName = (
+          new Date().getTime() + Math.ceil(Math.random() * 10000)
+        ).toString(16)
+        const fullName = '/blog-sys/' + hashName + extname
+
+        const result = await this.aliOssClient.initMultipartUpload(fullName)
+
+        const fileSize = file.size
+        const partSize = config.multiPartPerSize * 1024 * 1024
+        const partSum = Math.ceil(fileSize / partSize)
+        const partList = []
+        for (let i = 1; i <= partSum; i++) {
+          const start = partSize * (i - 1)
+          const end = Math.min(start + partSize, fileSize)
+          partList.push(
+            this.aliOssClient.uploadPart(
+              fullName,
+              result.uploadId,
+              i,
+              file.filepath,
+              start,
+              end,
+              {
+                timeout: 1000 * 60 * 10 // 10 min 超时
+              }
+            )
+          )
+        }
+
+        // console.log('======切片数量=======', partSum)
+        const done = await Promise.all(partList)
+        // console.log('======5555=======', done)
+
+        //complete
+        const completeData = await this.aliOssClient.completeMultipartUpload(
+          fullName,
+          result.uploadId,
+          done.map((p, i) => ({
+            number: i + 1,
+            etag: p.res.headers.etag
+          }))
+        )
+        // console.log('==========666666666', completeData)
+        r(fullName)
+      } catch (e) {
+        j(e)
+      }
+    })
   }
 }
 
