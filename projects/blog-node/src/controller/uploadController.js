@@ -24,36 +24,13 @@ class UploadController extends BaseController {
 
   upload = async (ctx, next) => {
     const req = ctx.request
-    const { lastFilePath } = req.body
+    const { lastFilePath, md5 } = req.body
+    const file = req.files.file
     // console.log('======upload========', req, req.body)
-    let res
+
     try {
-      res = await this.saveLocalFile(req.files.file)
-    } catch (e) {
-      this.errorLogger.error('upload--------->', e)
-      return (ctx.body = {
-        success: false,
-        msg: e || '上传失败'
-      })
-    }
-
-    if (lastFilePath) {
-      // await this.deleteFile(lastFilePath)
-      await this.deleteAliFile(lastFilePath)
-    }
-    ctx.body = {
-      success: true,
-      result: {
-        path: res
-      }
-    }
-  }
-
-  // 保存文件到本地目录
-  async saveLocalFile(file) {
-    return new Promise(async (resolve, reject) => {
       const extname = path.extname(file.originalFilename)
-      console.log('======file========', file)
+      // console.log('======file========', file)
       // if(!config.imgTypeList.includes(extname.toLowerCase())){
       //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
       // }
@@ -62,39 +39,35 @@ class UploadController extends BaseController {
         config.imgTypeList.includes(extname.toLowerCase()) &&
         file.size > config.uploadImgMaxSize * 1024 * 1024
       ) {
-        return reject(`图片最大不能超过${config.uploadImgMaxSize}M`)
+        throw new Error(`图片最大不能超过${config.uploadImgMaxSize}M`)
       }
 
       if (
         config.videoTypeList.includes(extname.toLowerCase()) &&
         file.size > config.uploadVideoMaxSize * 1024 * 1024
       ) {
-        return reject(`视频最大不能超过${config.uploadVideoMaxSize}M`)
+        throw new Error(`视频最大不能超过${config.uploadVideoMaxSize}M`)
       }
 
       const hashName = (
         new Date().getTime() + Math.ceil(Math.random() * 10000)
       ).toString(16)
       const fullName = '/blog-sys/' + hashName + extname
-      const savePath = config.uploadDir + fullName // 相对项目运行的根目录路径
-      try {
-        // fs.renameSync(file.filepath, savePath)
-        const r = await this.aliUpload(fullName, file.filepath)
-        // return resolve(savePath)
-        return resolve(fullName)
-      } catch (e) {
-        this.errorLogger.error('saveLocalFile--------->', e)
-        return reject('保存图片失败')
-      }
-    })
-  }
 
-  async deleteAliFile(path) {
-    try {
-      // 填写Object完整路径。Object完整路径中不能包含Bucket名称。
-      let result = await this.AliOssClient.delete(path)
+      await this.aliUpload(fullName, file.filepath)
+
+      return (ctx.body = {
+        success: true,
+        result: {
+          path: fullName
+        }
+      })
     } catch (e) {
-      this.errorLogger.error('deleteAliFile--------->', e)
+      this.errorLogger.error('upload--------->', e)
+      return (ctx.body = {
+        success: false,
+        msg: e.message || '上传失败'
+      })
     }
   }
 }
