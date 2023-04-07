@@ -162,10 +162,10 @@ function handleNextPreview(c: number) {
 
   if (c > 0 && currentPreviewIndex.value < props.list.length) {
     currentPreviewIndex.value++
-    currentPreviewItem.value = props.list[currentPreviewIndex.value]
+    currentPreviewItem.value = props.list[currentPreviewIndex.value].file
   } else if (c < 0 && currentPreviewIndex.value > 0) {
     currentPreviewIndex.value--
-    currentPreviewItem.value = props.list[currentPreviewIndex.value]
+    currentPreviewItem.value = props.list[currentPreviewIndex.value].file
   }
   // 切换不同照片时返回点击放大时的位置
   nextTick(() => {
