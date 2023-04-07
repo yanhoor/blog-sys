@@ -8,24 +8,24 @@
         <div
           class="pl-[6px] relative shrink-0"
           :style="`width: calc(100% / ${pageSize})`"
-          v-for="(file, index) of list"
-          :key="file.url"
+          v-for="(media, index) of list"
+          :key="media.file.url"
         >
           <div class="image-item-container">
             <MediaImgView
               alt="图像"
               class="image-item border-solid border-green-500"
-              :url="file.url"
+              :url="media.file.url"
               ratio="80"
             />
             <div
               class="list-item-mask border-2 border-green-500"
-              v-if="modelValue === file"
+              v-if="modelValue === media.file"
             ></div>
             <div
               class="list-item-mask bg-gray-600 opacity-30 cursor-pointer"
-              v-if="modelValue !== file"
-              @click="handlePreview(file, index)"
+              v-if="modelValue !== media.file"
+              @click="handlePreview(media.file, index)"
             ></div>
           </div>
         </div>
@@ -49,13 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from '@/types'
+import { Media, File } from '@/types'
 import { NIcon } from 'naive-ui'
 import { ChevronLeft24Regular, ChevronRight24Regular } from '@vicons/fluent'
 
 interface Props {
   list: Media[]
-  modelValue: Media | undefined
+  modelValue: File | undefined
   pageSize: number
 }
 
@@ -70,7 +70,7 @@ watch(
   (val) => {
     if (!val) return
 
-    currentIndex.value = props.list.findIndex((item) => item === val)
+    currentIndex.value = props.list.findIndex((item) => item.file === val)
     currentPage.value = Math.ceil((currentIndex.value + 1) / props.pageSize)
   },
   { immediate: true }

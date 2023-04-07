@@ -2,17 +2,17 @@
 	<view class="media-list" @click="$emit('space-click')">
 		<view class="media-item" v-for="(media, index) in displayImageList" :key="media.id" @click.stop>
 			<view class="media-image-container media-item-container" @click="handleClickImage(media)">
-				<YImage class="media-image" :url="media.url" ratio="70" mode="aspectFill"></YImage>
+				<YImage class="media-image" :url="media.file.url" ratio="70" mode="aspectFill"></YImage>
 			</view>
 			<view class="over-num" v-if="maxCount && index === maxCount - 1" @click.stop="handleToPostDetail(media)">
 				+{{ imageList.length - maxCount }}
 			</view>
-			<view class="image-tag" v-if="getFileExt(media.url) === 'gif'">
+			<view class="image-tag" v-if="getFileExt(media.file.url) === 'gif'">
 				Gif
 			</view>
 		</view>
 		<view class="media-video-container media-item-container" v-for="video in videoList" :key="video.id" @click.stop>
-			<video :src="imageHost + video.url" controls objectFit="contain"></video>
+			<video :src="imageHost + video.file.url" controls objectFit="contain"></video>
 		</view>
 	</view>
 </template>
@@ -50,13 +50,13 @@
 		},
 		computed: {
 			imageList() {
-				return this.list.filter(item => this.supportedImageType.includes(this.getFileExt(item.url)))
+				return this.list.filter(item => this.supportedImageType.includes(this.getFileExt(item.file.url)))
 			},
 			displayImageList() {
 				return this.maxCount ? this.imageList.slice(0, this.maxCount) : this.imageList
 			},
 			videoList() {
-				return this.list.filter(item => this.supportedVideoType.includes(this.getFileExt(item.url)))
+				return this.list.filter(item => this.supportedVideoType.includes(this.getFileExt(item.file.url)))
 			}
 		},
 		methods: {
@@ -67,8 +67,8 @@
 			handleClickImage(image) {
 				if (this.previewEnable) {
 					uni.previewImage({
-						urls: this.imageList.map(i => this.imageHost + i.url),
-						current: this.imageHost + image.url,
+						urls: this.imageList.map(i => this.imageHost + i.file.url),
+						current: this.imageHost + image.file.url,
 						indicator: 'number'
 					})
 				}

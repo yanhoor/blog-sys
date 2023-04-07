@@ -5,7 +5,7 @@
 			<view class="image-wrapper">
 				<view class="image-item" v-for="(image, idx) in pageList" :key="image.id" @click="handleClickImage(idx)">
 					<view class="image-item-container">
-						<YImage class="y-image" :url="image.url" ratio="70" mode="aspectFill"></YImage>
+						<YImage class="y-image" :url="image.file.url" ratio="70" mode="aspectFill"></YImage>
 					</view>
 				</view>
 			</view>

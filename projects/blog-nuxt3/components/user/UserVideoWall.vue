@@ -19,7 +19,7 @@
           <div class="img-container" @click="handlePreview(media)">
             <video
               class="media-item"
-              :src="config.imageBase + media.url"
+              :src="config.imageBase + media.file.url"
             ></video>
             <n-icon class="play-icon" :component="Play24Filled" size="48" />
           </div>
@@ -33,7 +33,11 @@
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
     </div>
-    <MediaPreview :media="curMedia" v-model:show="showPreview" />
+    <MediaPreview
+      :file="curMedia?.file"
+      v-model:show="showPreview"
+      v-if="curMedia"
+    />
   </div>
 </template>
 

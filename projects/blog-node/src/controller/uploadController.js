@@ -2,6 +2,8 @@ const BaseController = require('./baseController')
 const path = require('path')
 const config = require('config-lite')(__dirname)
 const OSS = require('ali-oss')
+const prisma = require('../database/prisma')
+const md5File = require('md5-file')
 
 class UploadController extends BaseController {
   aliOssClient = new OSS(this.globalConfig.aliOss)
@@ -39,23 +41,51 @@ class UploadController extends BaseController {
 
   upload = async (ctx, next) => {
     const req = ctx.request
-    const { lastFilePath, md5 } = req.body
+    // const { lastFilePath } = req.body
     const file = req.files.file
     // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
+    const m5 = await md5File(file.filepath)
+    let userId = await this.getAuthUserId(ctx, next)
+    let fileRes
 
     try {
       let fullName
-      if (file.size < config.multiPartUploadSwitchSize * 1024 * 1024) {
-        fullName = await this.handleUpload(file)
-      } else {
-        fullName = await this.handleMultipartUpload(file)
+      fileRes = await prisma.file.findUnique({
+        where: {
+          md5: m5,
+          createById: userId
+        },
+        select: {
+          id: true,
+          md5: true,
+          url: true,
+          createById: true
+        }
+      })
+      if (!fileRes) {
+        if (file.size < config.multiPartUploadSwitchSize * 1024 * 1024) {
+          fullName = await this.handleUpload(file, m5)
+        } else {
+          fullName = await this.handleMultipartUpload(file, m5)
+        }
+        fileRes = await prisma.file.create({
+          data: {
+            createById: userId,
+            md5: m5,
+            url: fullName
+          },
+          select: {
+            id: true,
+            md5: true,
+            url: true,
+            createById: true
+          }
+        })
       }
 
       return (ctx.body = {
         success: true,
-        result: {
-          path: fullName
-        }
+        result: fileRes
       })
     } catch (e) {
       this.errorLogger.error('upload--------->', e)
@@ -88,6 +118,7 @@ class UploadController extends BaseController {
           // 自定义headers
           //,{headers}
         )
+
         r(fullName)
       } catch (e) {
         j(e)
@@ -111,6 +142,7 @@ class UploadController extends BaseController {
 
         const result = await this.aliOssClient.initMultipartUpload(fullName)
 
+        console.log('=======handleMultipartUpload start=========')
         const fileSize = file.size
         const partSize = config.multiPartPerSize * 1024 * 1024
         const partSum = Math.ceil(fileSize / partSize)

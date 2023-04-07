@@ -6,12 +6,12 @@
   >
     <div class="w-full h-full pb-9/16 relative bg-black">
       <template v-if="isImg">
-        <MediaImgView class="media-item" :url="media.url" />
+        <MediaImgView class="media-item" :url="file.url" />
       </template>
       <template v-else>
         <video
           class="media-item"
-          :src="config.imageBase + media.url"
+          :src="config.imageBase + file.url"
           controls
         ></video>
       </template>
@@ -27,12 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from '@/types'
+import { File } from '@/types'
 import { NCard, NModal, NIcon, createDiscreteApi } from 'naive-ui'
 import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
 interface Props {
-  media: Media
+  file: File
   isImg?: boolean
   show: boolean
 }

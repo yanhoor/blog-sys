@@ -5,7 +5,7 @@
 				<swiper-item v-for="(page, idx) in pageList" :key="idx">
 					<view class="page-item">
 						<view class="image-container" v-for="image in page" :key="image.id">
-							<YImage class="y-image" :url="image.url" @tap="handleImagePreview(image)" ratio="70">
+							<YImage class="y-image" :url="image.file.url" @tap="handleImagePreview(image)" ratio="70">
 							</YImage>
 						</view>
 					</view>

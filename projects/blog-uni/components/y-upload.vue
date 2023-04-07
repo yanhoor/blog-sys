@@ -1,8 +1,8 @@
 <template>
 	<view class="y-upload">
 		<view class="image-list" v-if="uploadMode === 1">
-			<view class="image-item-container" v-for="(image, index) in modelValue" :key="image.url">
-				<YImage :url="image.url"></YImage>
+			<view class="image-item-container" v-for="(image, index) in modelValue" :key="image.file.url">
+				<YImage :url="image.file.url"></YImage>
 				<uni-icons class="close" type="clear" :size="32" color="#18a058" @click="handleRemove(index)">
 				</uni-icons>
 			</view>
@@ -16,9 +16,9 @@
 				<uni-icons type="spinner-cycle" size="42" color="#18a058" v-if="loading"></uni-icons>
 				<uni-icons type="plusempty" size="42" color="#18a058" v-else></uni-icons>
 			</view>
-			<view class="video-item-wrapper" v-for="(video, index) in modelValue" :key="video.url">
+			<view class="video-item-wrapper" v-for="(video, index) in modelValue" :key="video.file.url">
 				<view class="video-item-container">
-					<video class="video" :src="imageHost + video.url" controls objectFit="contain"></video>
+					<video class="video" :src="imageHost + video.file.url" controls objectFit="contain"></video>
 				</view>
 				<uni-icons class="close" type="clear" :size="32" color="#18a058" @click="handleRemove(index)">
 				</uni-icons>
@@ -58,15 +58,15 @@
 			// 1--图片，2--视频，3--混合
 			uploadMode() {
 				if (!this.modelValue.length) return 3
-				const t = this.getFileExtName(this.modelValue[0].url)
+				const t = this.getFileExtName(this.modelValue[0].file.url)
 				// console.log('++++++++++++++', t)
 				return supportedImageType.includes(t) ? 1 : 2
 			}
 		},
 		methods: {
 			chooseMedia() {
-				if(this.loading) return
-				
+				if (this.loading) return
+
 				let mediaType = ['image', 'video']
 				if (this.uploadMode === 1) mediaType = ['image']
 				if (this.uploadMode === 2) mediaType = ['video']
@@ -86,31 +86,41 @@
 				})
 			},
 			async handleUploadFile(tempFile) {
+						console.log('=======handleUploadFile===========', tempFile.tempFilePath);
 				this.loading = true
 				const uploadTask = uni.uploadFile({
-					url: baseUrl + urls.upload, //仅为示例，非真实的接口地址
+					url: baseUrl + urls.upload,
 					filePath: tempFile.tempFilePath,
 					name: 'file',
 					// formData: {
-					// 	'user': 'test'
+					// 	md5
 					// },
 					success: (uploadFileRes) => {
 						// console.log(uploadFileRes.data);
 						const {
-							result
+							result,
+							success
 						} = JSON.parse(uploadFileRes.data)
-						this.$emit('update:modelValue', this.modelValue.concat({
-							url: result.path
-						}))
+						if (success) {
+							this.$emit('update:modelValue', this.modelValue.concat({
+								fileId: result.id,
+								file: result
+							}))
+						} else {
+							uni.showToast({
+								title: '上传失败',
+								icon: 'error'
+							})
+						}
 					},
 					complete: () => {
 						this.loading = false
 					}
 				})
 				uploadTask.onProgressUpdate((res) => {
-				  console.log('上传进度', res.progress)
-				  console.log('已经上传的数据长度', res.totalBytesSent)
-				  console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+					console.log('上传进度', res.progress)
+					console.log('已经上传的数据长度', res.totalBytesSent)
+					console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
 				})
 			},
 			handleRemove(idx) {

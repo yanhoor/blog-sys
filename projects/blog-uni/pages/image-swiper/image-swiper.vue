@@ -3,7 +3,7 @@
 		<swiper-item v-for="image in imageList" :key="image.id">
 			<view class="page-item">
 				<view class="image-container">
-					<YImage class="y-image" :url="image.url" mode="aspectFit" @tap="handleClickImage(image)">
+					<YImage class="y-image" :url="image.file.url" mode="aspectFit" @tap="handleClickImage(image.file)">
 					</YImage>
 					<YExpandanleContent class="blog-content" :content="image.blog.content" :maxLength="80"
 						@tap="handleToPostDetail(image.blog)">

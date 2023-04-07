@@ -88,8 +88,14 @@ module.exports = async (ctx, next) => {
           medias: {
             select: {
               id: true,
-              url: true,
-              blogId: true
+              blogId: true,
+              file: {
+                select: {
+                  id: true,
+                  createById: true,
+                  url: true
+                }
+              }
             }
           }
         },

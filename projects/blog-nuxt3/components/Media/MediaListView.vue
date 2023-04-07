@@ -40,15 +40,15 @@
     >
       <div
         class="w-1/5 pt-[6px] pl-[6px] group relative cursor-zoom-in"
-        v-for="(file, index) of imageList"
-        :key="file.url"
-        @click="handlePreview(file, index, true)"
+        v-for="(media, index) of imageList"
+        :key="media.file.url"
+        @click="handlePreview(media.file, index, true)"
       >
         <div class="image-item-container" v-if="index < 10">
           <MediaImgView
             alt="图像"
             class="image-item"
-            :url="file.url"
+            :url="media.file.url"
             ratio="80"
           />
           <div
@@ -72,14 +72,14 @@
     <div class="w-full" v-else-if="videoList.length">
       <div
         class="w-full video-item-container"
-        v-for="(file, index) of videoList"
-        :key="file.url"
+        v-for="(media, index) of videoList"
+        :key="media.file.url"
       >
         <video
           ref="videoRef"
           class="video-item"
           controls
-          :src="config.imageBase + file.url"
+          :src="config.imageBase + media.file.url"
         ></video>
       </div>
     </div>
@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from '@/types'
+import { Media, File } from '@/types'
 import { NIcon, NModal } from 'naive-ui'
 import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
@@ -117,23 +117,27 @@ const config = useRuntimeConfig()
 const isPreview = ref(false)
 const showModal = ref(false)
 const videoRef = ref<HTMLVideoElement[] | null>(null)
-const currentPreviewItem = ref<Media>()
+const currentPreviewItem = ref<File>()
 const currentPreviewIndex = ref<number>()
 const scrollY = ref(0)
 
-const videoList = computed(() =>
-  props.list.filter((item) => config.videoType.includes(getFileExt(item.url)))
+const videoList = computed<Media[]>(() =>
+  props.list.filter((item) =>
+    config.videoType.includes(getFileExt(item.file.url))
+  )
 )
-const imageList = computed(() =>
-  props.list.filter((item) => config.imageType.includes(getFileExt(item.url)))
+const imageList = computed<Media[]>(() =>
+  props.list.filter((item) =>
+    config.imageType.includes(getFileExt(item.file.url))
+  )
 )
 
-function handlePreview(m: Media, idx: number, record?: boolean) {
+function handlePreview(f: File, idx: number, record?: boolean) {
   if (record) scrollY.value = window.scrollY
   // console.log('++++++232323++++++', scrollY.value)
   isPreview.value = true
   currentPreviewIndex.value = idx
-  currentPreviewItem.value = m
+  currentPreviewItem.value = f
   nextTick(() => {
     // console.log('++++++444333s++++++', scrollY.value)
     window.scrollTo(0, scrollY.value)

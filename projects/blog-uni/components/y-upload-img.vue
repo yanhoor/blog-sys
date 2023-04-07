@@ -64,23 +64,31 @@
 					filePath: tempFile.tempFilePath,
 					name: 'file',
 					// formData: {
-					// 	'user': 'test'
+					// 	md5
 					// },
 					success: (uploadFileRes) => {
 						// console.log(uploadFileRes.data);
 						const {
-							result
+							result,
+							success
 						} = JSON.parse(uploadFileRes.data)
-						this.$emit('update:modelValue', result.path)
+						if (success) {
+							this.$emit('update:modelValue', result.url)
+						} else {
+							uni.showToast({
+								title: '上传失败',
+								icon: 'error'
+							})
+						}
 					},
 					complete: () => {
 						this.loading = false
 					}
 				})
 				uploadTask.onProgressUpdate((res) => {
-				  console.log('上传进度', res.progress)
-				  console.log('已经上传的数据长度', res.totalBytesSent)
-				  console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+					console.log('上传进度', res.progress)
+					console.log('已经上传的数据长度', res.totalBytesSent)
+					console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
 				})
 			},
 		}
@@ -105,7 +113,7 @@
 		justify-content: center;
 		align-items: center;
 	}
-	
+
 	.close {
 		position: absolute;
 		top: -16px;

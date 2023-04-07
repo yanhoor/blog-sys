@@ -50,7 +50,6 @@ model User {
   createComments       Comment[]           @relation("CreateComment")
   auditComments        Comment[]           @relation("AuditComment")
   auditBlogs           Blog[]              @relation("AuditBlog")
-  blogCates            BlogCate[]
   replyComments        Comment[]           @relation("ReplyComment")
   medias               Media[]             @relation("Media")
   // 隐式多对多关系
@@ -62,6 +61,7 @@ model User {
   followGroups         FollowGroup[]       @relation("CreateFollowGroup")
   // 所在的关注分组
   inFollowGroups       FollowGroup[]       @relation("InFollowGroup")
+  File                 File[]
 
   @@index([createdAt])
 }
@@ -91,18 +91,6 @@ model FollowRelation {
   assignedAt DateTime @default(now())
 
   @@id([userId, followById])
-}
-
-model BlogCate {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  createBy   User     @relation(fields: [createById], references: [id])
-  createById Int
-  name       String   @db.VarChar(255)
-
-  deletedAt DateTime?
-  blogs     Blog[]
 }
 
 // 点赞博客关系表
@@ -150,11 +138,26 @@ model Media {
   createdAt  DateTime @default(now())
   createBy   User     @relation(name: "Media", fields: [createById], references: [id])
   createById Int
-  url        String   @unique
+  fileId     Int
+  file       File     @relation(fields: [fileId], references: [id])
   blogId     Int?
   blog       Blog?    @relation(fields: [blogId], references: [id])
 
   deletedAt DateTime?
+
+  @@index([createdAt])
+}
+
+model File {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(fields: [createById], references: [id])
+  createById Int
+  md5        String   @db.Text
+  url        String   @unique
+
+  deletedAt DateTime?
+  Media     Media[]
 
   @@index([createdAt])
 }
@@ -168,8 +171,6 @@ model Blog {
   collectedBy UserCollectBlogs[]
   readBy      ReadBlogsRelation[]
   updatedAt   DateTime
-  cate        BlogCate?           @relation(fields: [cateId], references: [id])
-  cateId      Int?
   auditBy     User?               @relation(name: "AuditBlog", fields: [auditById], references: [id])
   auditById   Int?
   auditTip    String?             @db.VarChar(255)

@@ -1,6 +1,5 @@
 <template>
   <div>
-    test
     <div class="flex items-start gap-[12px]">
       <n-card class="sticky top-[80px] max-w-[180px]" v-if="myInfo">
         <p

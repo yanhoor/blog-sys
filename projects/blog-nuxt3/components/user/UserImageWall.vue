@@ -17,7 +17,7 @@
       >
         <div class="img-wrapper" v-for="image of pageList" :key="image.id">
           <div class="img-container" @click="handlePreview(image)">
-            <MediaImgView class="media-item" :url="image.url" ratio="70" />
+            <MediaImgView class="media-item" :url="image.file.url" ratio="70" />
           </div>
         </div>
       </div>
@@ -30,7 +30,12 @@
       <ResultNoMore v-else-if="pageLoadedFinish" />
     </div>
     <n-back-top :right="50" />
-    <MediaPreview :media="curMedia" v-model:show="showPreview" is-img />
+    <MediaPreview
+      :file="curMedia?.file"
+      v-model:show="showPreview"
+      is-img
+      v-if="curMedia"
+    />
   </div>
 </template>
 

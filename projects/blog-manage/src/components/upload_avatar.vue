@@ -37,7 +37,7 @@ const handleUpload = async (options: UploadRequestOptions) => {
   try {
     const { success, result, msg } = await $http.post(
       urls.upload,
-      { file: options.file, lastFilePath: props.url },
+      { file: options.file },
       true
     )
     if (!success) {
@@ -45,7 +45,7 @@ const handleUpload = async (options: UploadRequestOptions) => {
         message: msg
       })
     } else {
-      emit('update:url', result.path)
+      emit('update:url', result.url)
       emit('change')
     }
   } catch (e) {}

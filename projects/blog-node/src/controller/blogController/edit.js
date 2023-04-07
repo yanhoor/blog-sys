@@ -106,7 +106,10 @@ module.exports = async function (ctx, next) {
         data: {
           ...newItem,
           medias: {
-            create: medias
+            create: medias.map((m) => ({
+              createById: userId,
+              fileId: m.fileId
+            }))
           }
         },
         select: {
@@ -120,12 +123,6 @@ module.exports = async function (ctx, next) {
           addressName: true,
           latitude: true,
           longitude: true,
-          cate: {
-            select: {
-              id: true,
-              name: true
-            }
-          },
           createBy: {
             select: {
               id: true,
@@ -139,7 +136,14 @@ module.exports = async function (ctx, next) {
             },
             select: {
               id: true,
-              url: true
+              fileId: true,
+              file: {
+                select: {
+                  id: true,
+                  createById: true,
+                  url: true
+                }
+              }
             }
           }
         }

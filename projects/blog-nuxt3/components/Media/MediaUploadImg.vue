@@ -88,7 +88,7 @@ const customRequest = async ({
     )
     if (success) {
       onFinish()
-      emits('update:modelValue', result.path)
+      emits('update:modelValue', result.url)
     } else {
       message.error(msg as string)
       onError()

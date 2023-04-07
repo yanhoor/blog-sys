@@ -20,16 +20,20 @@ module.exports = async function (ctx, next) {
     // 图片
     case 1:
       filter.OR = config.imgTypeList.map((t) => ({
-        url: {
-          endsWith: t
+        file: {
+          url: {
+            endsWith: t
+          }
         }
       }))
       break
     // 视频
     case 2:
       filter.OR = config.videoTypeList.map((t) => ({
-        url: {
-          endsWith: t
+        file: {
+          url: {
+            endsWith: t
+          }
         }
       }))
       break
@@ -46,12 +50,18 @@ module.exports = async function (ctx, next) {
         },
         select: {
           id: true,
-          url: true,
           blogId: true,
           blog: {
             select: {
               id: true,
               content: true
+            }
+          },
+          file: {
+            select: {
+              id: true,
+              createById: true,
+              url: true
             }
           }
         }

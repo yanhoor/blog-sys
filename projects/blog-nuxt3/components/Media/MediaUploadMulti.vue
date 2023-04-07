@@ -9,7 +9,7 @@
     :custom-request="customRequest"
   >
     <div class="flex flex-wrap gap-[12px]">
-      <template v-for="(file, index) of modelValue" :key="file.url">
+      <template v-for="(media, index) of modelValue" :key="media.file.url">
         <div
           class="flex justify-center items-center relative limit-size border border-dashed border-gray-300 hover:border-green-600"
           @click.stop
@@ -17,12 +17,12 @@
           <MediaImgView
             alt="图像"
             class="object-cover overflow-clip"
-            :url="file.url"
-            v-if="config.imageType.includes(getFileExt(file.url))"
+            :url="media.file.url"
+            v-if="config.imageType.includes(getFileExt(media.file.url))"
           />
           <video
-            :src="config.imageBase + file.url"
-            v-else-if="config.videoType.includes(getFileExt(file.url))"
+            :src="config.imageBase + media.file.url"
+            v-else-if="config.videoType.includes(getFileExt(media.file.url))"
             controls
           ></video>
           <n-icon :component="Document24Regular" size="48" v-else />
@@ -52,14 +52,11 @@
 <script setup lang="ts">
 import {
   Add24Regular,
-  ZoomIn24Regular,
-  Edit20Filled,
   Document24Regular,
   Delete24Regular
 } from '@vicons/fluent'
 import {
   NUpload,
-  NModal,
   NIcon,
   NUploadTrigger,
   NIconWrapper,
@@ -86,7 +83,7 @@ watch(
   (val) => {
     if (!val.length) return (uploadMode.value = 3)
 
-    setUploadMode(val[0].url)
+    setUploadMode(val[0].file.url)
   }
 )
 
@@ -140,7 +137,7 @@ const customRequest = async ({
   onProgress
 }: UploadCustomRequestOptions) => {
   const { message } = createDiscreteApi(['message'])
-  // console.log('==============', file, props.modelValue)
+  // console.log('==============', md5)
   try {
     if (uploadMode.value == 2 && props.modelValue.length === 1) {
       message.error('最多上传一个视频')
@@ -171,7 +168,10 @@ const customRequest = async ({
     )
     if (success) {
       onFinish()
-      emits('update:modelValue', [...props.modelValue, { url: result.path }])
+      emits('update:modelValue', [
+        ...props.modelValue,
+        { fileId: result.id, file: result }
+      ])
     } else {
       message.error(msg as string)
       onError()
