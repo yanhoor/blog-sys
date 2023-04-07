@@ -10,9 +10,7 @@
 
 ### 小程序
 
-[预览地址1](https://niubility.website/blog/post/60)
-
-[预览地址2](https://niubility.website/blog/post/61)
+[预览地址](https://niubility.website/blog/post/1)
 
 ## 项目运行
 
@@ -57,6 +55,8 @@
 - [x] `jwt` 鉴权管理，生成 `token`
 
 - [x] `Redis` 记录博客点赞/阅读/收藏/排行等数据，保存 `token`
+
+- [x] 支持分片上传/秒传
 
 #### blog-manage: 后台管理
 
@@ -110,7 +110,7 @@
 
 - [ ] 数据：每小时活跃用户数 
 
-- [ ] 关注用户
+- [x] 关注用户
 
 - [ ] 用户动态展示
 
