@@ -73,12 +73,6 @@ module.exports = async function (ctx, next) {
         addressName: true,
         latitude: true,
         longitude: true,
-        cate: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
         createById: true,
         createBy: {
           select: {
@@ -93,7 +87,13 @@ module.exports = async function (ctx, next) {
           },
           select: {
             id: true,
-            url: true
+            file: {
+              select: {
+                id: true,
+                createById: true,
+                url: true
+              }
+            }
           }
         }
       }
