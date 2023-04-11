@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/route/route_name.dart';
@@ -100,6 +98,7 @@ class _PostItemState extends State<PostItem>{
                                             ? Icons.thumb_up_alt
                                             : Icons.thumb_up_alt_outlined,
                                         size: 18,
+                                        color: post['isLike'] ? Theme.of(context).primaryColor : null,
                                       ),
                                       const SizedBox(
                                         width: 4,
@@ -112,13 +111,16 @@ class _PostItemState extends State<PostItem>{
                                 )),
                             Expanded(
                                 child: RawMaterialButton(
-                                  onPressed: () {  },
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(RouteName.post,
+                                        arguments: {'postId': post['id']});
+                                  },
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(
-                                        Icons.messenger_outline,
+                                      Icon(
+                                        post['commentsCount'] > 0 ? Icons.messenger : Icons.messenger_outline,
                                         size: 18,
                                       ),
                                       const SizedBox(
@@ -132,16 +134,17 @@ class _PostItemState extends State<PostItem>{
                                 )),
                             Expanded(
                                 child: RawMaterialButton(
-                                  onPressed: () {  },
+                                  onPressed: model.handleCollectPost,
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
                                         post['isCollect']
-                                            ? Icons.star
-                                            : Icons.star_border,
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
                                         size: 18,
+                                        color: post['isCollect'] ? Theme.of(context).primaryColor : null,
                                       ),
                                       const SizedBox(
                                         width: 4,
@@ -176,6 +179,21 @@ class PostItemNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.BLOG_LIKE, params: { 'id':  post['id'], 'isLike': post['isLike'] ? 0 : 1 });
       if(res['success']){
         post['isLike'] = !post['isLike'];
+        post['likedByCount'] = post['likedByCount'] + (post['isLike'] ? 1 : -1);
+        notifyListeners();
+      }
+    }catch(e){
+      // print('=========${jsonEncode(e)}');
+    }
+  }
+
+  handleCollectPost() async{
+    try{
+      var res = await $http.fetch(ApiUrl.BLOG_COLLECT, params: { 'id':  post['id'], 'isCollect': post['isCollect'] ? 0 : 1 });
+      if(res['success']){
+        post['isCollect'] = !post['isCollect'];
+        post['collectedByCount'] = post['collectedByCount'] + (post['isCollect'] ? 1 : -1);
+        notifyListeners();
       }
     }catch(e){
       // print('=========${jsonEncode(e)}');

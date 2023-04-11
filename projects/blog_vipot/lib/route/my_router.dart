@@ -12,6 +12,7 @@ class MyRouter{
 
   // 路由拦截器
   static Route<dynamic> generateRoute(RouteSettings settings){
+    // CupertinoPageRoute 需要传 settings，否则 popUntil 会黑屏
     switch(settings.name){
       case RouteName.root:
         return CupertinoPageRoute(settings: settings, builder: (_) => const HomePage());

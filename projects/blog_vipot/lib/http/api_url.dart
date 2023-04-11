@@ -7,4 +7,6 @@ class ApiUrl{
   static const String BLOG_INFO = '/blog/info';
   static const String BLOG_LIKE = '/blog/like';
   static const String BLOG_COLLECT = '/blog/collect';
+
+  static const String USER_INFO = '/user/info';
 }
