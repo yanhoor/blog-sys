@@ -140,7 +140,7 @@ const commentDeleting = ref(false)
 const { pageList, pageLoading, pageLoadedFinish, handleLoadNextPage } =
   useListAppendFetch<Comment>(
     '/comment/replyList',
-    { blogId: props.comment.blogId, topCommentId: props.comment.id },
+    { topCommentId: props.comment.id },
     {
       initList: allowLoadMore ? [] : props.comment.childComments,
       pageSize: 10,

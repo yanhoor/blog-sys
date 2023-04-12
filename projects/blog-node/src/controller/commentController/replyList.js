@@ -2,15 +2,9 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const {
-    page = 1,
-    pageSize = this.pageSize,
-    blogId,
-    topCommentId
-  } = ctx.request.body
+  const { page = 1, pageSize = this.pageSize, topCommentId } = ctx.request.body
   const skip = pageSize * (page - 1)
   const filter = {
-    blogId: Number(blogId),
     topCommentId: Number(topCommentId),
     status: {
       notIn: [3, 4]
