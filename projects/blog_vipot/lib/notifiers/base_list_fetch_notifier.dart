@@ -1,4 +1,3 @@
-
 import 'package:blog_vipot/notifiers/base_fetch_notifier.dart';
 
 abstract class BaseListFetchNotifier extends BaseFetchNotifier{
@@ -17,14 +16,15 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
   @override
   initData(){
     setInitializing();
-    refreshData();
+    refreshData(refresh: false);
   }
 
   @override
-  refreshData() async{
+  refreshData({bool refresh = true}) async{
     currentPage = 1;
     pageList.clear();
-    setRefreshing();
+    if(refresh) setRefreshing();
+    await getOtherData();
     var list = await getData();
     if(list.isEmpty && !isError) setEmpty();
     pageList.addAll(list);
@@ -66,4 +66,7 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
   }
 
   Future<List> getPageList();
+  Future<dynamic> getOtherData(){
+    return Future.value(true);
+  }
 }
