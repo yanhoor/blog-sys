@@ -58,17 +58,32 @@ class _MyAppState extends State<MyApp>{
             hideFooterWhenNotFull: true, // Viewport不满一屏时,禁用上拉加载更多功能
             child: Consumer<MyThemeNotifier>(
               builder: (context, themeModel, child){
-                return MaterialApp(
-                  theme: MyThemeNotifier.lightTheme,
-                  darkTheme: MyThemeNotifier.darkTheme,
-                  builder: BotToastInit(),
-                  // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-                  onGenerateRoute: MyRouter.generateRoute,
-                  themeMode: themeModel.themeMode,
-                  navigatorObservers: [
-                    BotToastNavigatorObserver(),
-                    MyRouter.routeObserver
-                  ],
+                return Listener(
+                  // behavior: HitTestBehavior.translucent,
+                  onPointerUp: (e) {
+                    // 收起键盘
+                    // FocusScope.of(context).requestFocus(FocusNode());
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+
+                    // if (!currentFocus.hasPrimaryFocus) {
+                    //   currentFocus.unfocus();
+                    // }
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.focusedChild?.unfocus();
+                    }
+                  },
+                  child: MaterialApp(
+                    theme: MyThemeNotifier.lightTheme,
+                    darkTheme: MyThemeNotifier.darkTheme,
+                    builder: BotToastInit(),
+                    // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+                    onGenerateRoute: MyRouter.generateRoute,
+                    themeMode: themeModel.themeMode,
+                    navigatorObservers: [
+                      BotToastNavigatorObserver(),
+                      MyRouter.routeObserver
+                    ],
+                  ),
                 );
               },
             )
