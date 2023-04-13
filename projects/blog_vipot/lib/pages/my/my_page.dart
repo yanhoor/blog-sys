@@ -22,7 +22,12 @@ class _MyPageState extends State<MyPage>{
         builder: (context, model, child){
           Widget result;
           if(model.myInfo == null){
-            result = Container();
+            result = ElevatedButton(
+                onPressed: (){
+                  Navigator.of(context).pushNamed(RouteName.login);
+                },
+                child: const Text('去登录')
+            );
           }else{
             Map<String, dynamic> myInfo = model.myInfo!;
             result = ListView(

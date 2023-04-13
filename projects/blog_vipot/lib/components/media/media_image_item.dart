@@ -17,8 +17,11 @@ class MediaImageItem extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: const CircularProgressIndicator()),
     ) : CachedNetworkImage(
+      width: double.infinity,
+      height: double.infinity,
       imageUrl: src,
       fit: BoxFit.cover,
+      cacheKey: src,
       progressIndicatorBuilder: (context, url, downloadProgress) =>
           Container(
             padding: const EdgeInsets.all(20),

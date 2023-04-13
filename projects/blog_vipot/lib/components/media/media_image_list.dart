@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../route/route_name.dart';
 import 'media_image_item.dart';
 
 class MediaImageList extends StatelessWidget{
@@ -31,8 +32,13 @@ class MediaImageList extends StatelessWidget{
               SizedBox(
                 width: double.infinity,
                 height: double.infinity,
-                child: MediaImageItem(
-                  url: image['url'],
+                child: RawMaterialButton(
+                  onPressed: (){
+                    Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': imageList.map((f) => f['url']).toList(), 'initPage': idx});
+                  },
+                  child: MediaImageItem(
+                    url: image['url'],
+                  ),
                 ),
               ),
               if(imageList.length > filterImageList.length && idx == filterImageList.length - 1) Container(

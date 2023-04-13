@@ -2,7 +2,7 @@ import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/home/home_notifier.dart';
 import 'package:blog_vipot/pages/index/index_page.dart';
 import 'package:blog_vipot/pages/my/my_page.dart';
-import 'package:blog_vipot/pages/newPost/new_post_page.dart';
+import 'package:blog_vipot/pages/new_post/new_post_page.dart';
 import 'package:blog_vipot/pages/notification/notification_page.dart';
 import 'package:blog_vipot/pages/search/search_page.dart';
 import 'package:flutter/material.dart';

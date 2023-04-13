@@ -1,5 +1,6 @@
 import 'package:blog_vipot/pages/comment_detail/comment_detail_page.dart';
 import 'package:blog_vipot/pages/home/home_page.dart';
+import 'package:blog_vipot/pages/image_preview/image_preview.dart';
 import 'package:blog_vipot/pages/login/login_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
@@ -25,6 +26,9 @@ class MyRouter{
       case RouteName.commentDetail:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => CommentDetailPage(commentId: param['commentId'].toString()));
+      case RouteName.imagePreview:
+        Map param = settings.arguments as Map ?? {};
+        return CupertinoPageRoute(settings: settings, builder: (_) => ImagePreview(imageList: param['imageList'], initPage: param['initPage'],));
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }

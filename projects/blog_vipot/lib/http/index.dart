@@ -1,4 +1,3 @@
-import 'dart:convert';
 export 'api_url.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:dio/dio.dart';
@@ -20,9 +19,9 @@ class Http{
           // Do something before request is sent
           String? token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN);
           if(token != null) options.headers['Authorization'] = 'Bearer $token';
-               print("请求url：${options.path}");
+               // print("请求url：${options.path}");
 //                print("请求方式：${options.method}");
-               print('请求头: ' + options.headers.toString());
+//                print('请求头: ' + options.headers.toString());
 //                print('请求参数: ' + options.data?.toString());
 //                print('GET请求参数: ' + options.queryParameters?.toString());
           // Do something before request is sent.
@@ -49,12 +48,28 @@ class Http{
     );
   }
 
-  Future fetch(url, { Map<String, dynamic>? params, String? method = 'post' }) async{
+  Future fetch(
+      url,
+      { Map<String, dynamic>? params,
+        String? method = 'post',
+        Function(int sent, int total)? onSendProgress,
+        bool isFormData = false
+      }) async{
     Response response;
     method = method?.toLowerCase();
     try{
-      print('+++++++fetch params+++++++${jsonEncode(params)}');
-      response = await dio.request(url, data: params, options: Options(method: method));
+      // print('+++++++fetch params+++++++${jsonEncode(params)}');
+      FormData? formData;
+      if(isFormData && params != null){
+        formData = FormData.fromMap(params);
+      }
+      response = await dio.request(
+          url,
+          data: formData ?? params,
+          onSendProgress: onSendProgress,
+          options: Options(method: method)
+      );
+      print('+++++++fetch success+++++++$url');
     }on DioError catch(e){
       print('+++++++fetch error+++++++${e.message}');
       return Future.error(e);
