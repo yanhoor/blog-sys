@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:blog_vipot/components/bot_toast_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -60,8 +59,13 @@ showCommentReplyBottomSheet(
                           'topCommentId': comment['topCommentId'] ?? comment['id'],
                         }
                       });
-                      if(ctx.mounted && res['success']) onSuccess?.call(ctx);
-                    }catch(e){}
+                      if(ctx.mounted && res['success']) {
+                        onSuccess?.call(ctx);
+                        ToastHelper.success('发表成功');
+                      }
+                    }catch(e){
+                      ToastHelper.error('操作失败');
+                    }
                   },
                 ))
               ],

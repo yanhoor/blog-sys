@@ -1,5 +1,6 @@
 import 'package:blog_vipot/route/my_router.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'notifiers/global_notifier.dart';
@@ -49,9 +50,14 @@ class _MyAppState extends State<MyApp>{
                 return MaterialApp(
                   theme: MyThemeNotifier.lightTheme,
                   darkTheme: MyThemeNotifier.darkTheme,
+                  builder: BotToastInit(),
                   // home: const MyHomePage(title: 'Flutter Demo Home Page'),
                   onGenerateRoute: MyRouter.generateRoute,
                   themeMode: themeModel.themeMode,
+                  navigatorObservers: [
+                    BotToastNavigatorObserver(),
+                    MyRouter.routeObserver
+                  ],
                 );
               },
             )
