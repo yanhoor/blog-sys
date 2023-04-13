@@ -1,4 +1,5 @@
 import 'package:blog_vipot/storage/storage_manager.dart';
+import 'package:blog_vipot/websocket.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class GlobalNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.USER_INFO, method: 'get');
       if(res['success']){
         myInfo = res['result'];
+        myWebSocket.init(myInfo!['id'].toString());
       }
     }catch(e){
       // print('=========${jsonEncode(e)}');

@@ -25,6 +25,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
+  bot_toast:
+    dependency: "direct main"
+    description:
+      name: bot_toast
+      sha256: "19306147033316a7873c5d261b874fca3f341c05e4e1c12be56153ad11187edd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.3"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -653,6 +661,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.1"
+  web_socket_channel:
+    dependency: "direct main"
+    description:
+      name: web_socket_channel
+      sha256: d88238e5eac9a42bb43ca4e721edba3c08c6354d4a53063afaa568516217621b
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.4.0"
   win32:
     dependency: transitive
     description:

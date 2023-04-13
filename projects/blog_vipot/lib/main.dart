@@ -1,5 +1,6 @@
 import 'package:blog_vipot/route/my_router.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
+import 'package:blog_vipot/websocket.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp>{
-  // This widget is the root of your application.
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    myWebSocket.dispose();
+  } // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
