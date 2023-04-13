@@ -46,6 +46,9 @@ dependencies:
   bot_toast: ^4.0.3 # toast
   web_socket_channel: ^2.4.0 # websocket
   shimmer: ^2.0.0 # 骨架屏
+  image_picker: ^0.8.7+2 # 选择图片/视频上传
+  permission_handler: ^10.2.0 # 申请权限
+  photo_view: ^0.14.0 # 图片查看
 
 dev_dependencies:
   flutter_test:
