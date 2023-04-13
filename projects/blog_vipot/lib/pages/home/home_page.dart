@@ -36,19 +36,21 @@ class _HomePageState extends State<HomePage>
         builder: (context, model, child) {
           return Scaffold(
             drawer: const HomeDrawer(),
-            body: PageView(
-              controller: globalNotifier.homePageController,
-              physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-              children: const [
-                IndexPage(),
-                SearchPage(),
-                NewPostPage(),
-                NotificationPage(),
-                MyPage(),
-              ],
-              onPageChanged: (index) {
+            body: SafeArea(
+              child: PageView(
+                controller: globalNotifier.homePageController,
+                physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                children: const [
+                  IndexPage(),
+                  SearchPage(),
+                  NewPostPage(),
+                  NotificationPage(),
+                  MyPage(),
+                ],
+                onPageChanged: (index) {
 
-              },
+                },
+              ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,

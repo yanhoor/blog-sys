@@ -1,4 +1,6 @@
+import 'package:blog_vipot/components/skeleton/skeleton_post_list.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
+import 'package:blog_vipot/pages/post/post_skeleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,68 +24,59 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-        child: ProviderWidget<IndexNotifier>(
-            model: IndexNotifier(),
-            onModelReady: (model){
-              model.initData();
-              model.initScrollController(controller: ScrollController());
-              Provider.of<HomeNotifier>(context).indexNotifier = model;
-            },
-            builder: (context, model, child){
-              if (model.isInitializing) {
-                return Column(
-                  children: [
-                    const Text('initializing'),
-                    ElevatedButton(onPressed: (){
-                      // print('========${controller.pageList.length}=====${controller.isMore}=====');
-                    }, child: const Text('test'))
-                  ],
-                );
-              } else if (model.isError) {
-                return Column(
-                  children: [
-                    const Text('error'),
-                    ElevatedButton(onPressed: (){
-                      model.refreshData();
-                    }, child: const Text('refresh'))
-                  ],
-                );
-              } else {
-                return RefreshConfiguration.copyAncestor(
-                    context: context,
-                    child: SmartRefresher(
-                      controller: model.refreshController,
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      onRefresh: model.refreshData,
-                      onLoading: model.handleLoadMore,
-                      child: CustomScrollView(
-                        controller: model.scrollController,
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    padding: const EdgeInsets.all(0),
-                                    physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                                    itemCount: model.pageList.length,
-                                    itemBuilder: (context, index) {
-                                      Map<String, dynamic> post = model.pageList[index];
-                                      return PostItem(key: Key(post['id'].toString()), post: post, scrollController: model.scrollController, onUpdatePost: (v){
-                                        post = v;
-                                      },);
-                                    })
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ));
-              }
-            }
-        )
+    return ProviderWidget<IndexNotifier>(
+        model: IndexNotifier(),
+        onModelReady: (model){
+          model.initData();
+          model.initScrollController(controller: ScrollController());
+          Provider.of<HomeNotifier>(context).indexNotifier = model;
+        },
+        builder: (context, model, child){
+          if (model.isInitializing) {
+            return const SkeletonPostList();
+          } else if (model.isError) {
+            return Column(
+              children: [
+                const Text('error'),
+                ElevatedButton(onPressed: (){
+                  model.refreshData();
+                }, child: const Text('refresh'))
+              ],
+            );
+          } else {
+            return RefreshConfiguration.copyAncestor(
+                context: context,
+                child: SmartRefresher(
+                  controller: model.refreshController,
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  onRefresh: model.refreshData,
+                  onLoading: model.handleLoadMore,
+                  child: CustomScrollView(
+                    controller: model.scrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            ListView.builder(
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.all(0),
+                                physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                                itemCount: model.pageList.length,
+                                itemBuilder: (context, index) {
+                                  Map<String, dynamic> post = model.pageList[index];
+                                  return PostItem(key: Key(post['id'].toString()), post: post, scrollController: model.scrollController, onUpdatePost: (v){
+                                    post = v;
+                                  },);
+                                })
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ));
+          }
+        }
     );
   }
 

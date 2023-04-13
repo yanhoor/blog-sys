@@ -45,6 +45,7 @@ dependencies:
   shared_preferences: ^2.1.0
   bot_toast: ^4.0.3 # toast
   web_socket_channel: ^2.4.0 # websocket
+  shimmer: ^2.0.0 # 骨架屏
 
 dev_dependencies:
   flutter_test:

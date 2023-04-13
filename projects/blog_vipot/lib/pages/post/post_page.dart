@@ -1,10 +1,9 @@
 import 'package:blog_vipot/components/user/user_item.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
-import 'package:blog_vipot/notifiers/global_notifier.dart';
 import 'package:blog_vipot/pages/post/post_comment_item.dart';
 import 'package:blog_vipot/pages/post/post_notifier.dart';
+import 'package:blog_vipot/pages/post/post_skeleton.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
@@ -33,34 +32,27 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
     super.build(context);
 
     return Scaffold(
-      body: ProviderWidget<PostNotifier>(
-          model: PostNotifier(postId: widget.postId),
-          onModelReady: (model) {
-            model.initScrollController(controller: ScrollController());
-            model.initData();
-          },
-          builder: (context, model, child) {
-            if (model.isInitializing) {
-              return Column(
-                children: [
-                  const Text('initializing'),
-                  ElevatedButton(onPressed: (){
-                    // print('========${controller.pageList.length}=====${controller.isMore}=====');
-                  }, child: const Text('test'))
-                ],
-              );
-            } else if (model.isError) {
-              return Column(
-                children: [
-                  const Text('error'),
-                  ElevatedButton(onPressed: (){
-                    model.refreshData();
-                  }, child: const Text('refresh'))
-                ],
-              );
-            }else{
-              return SafeArea(
-                child: RefreshConfiguration.copyAncestor(
+      body: SafeArea(
+        child: ProviderWidget<PostNotifier>(
+            model: PostNotifier(postId: widget.postId),
+            onModelReady: (model) {
+              model.initScrollController(controller: ScrollController());
+              model.initData();
+            },
+            builder: (context, model, child) {
+              if (model.isInitializing) {
+                return const PostSkeleton();
+              } else if (model.isError) {
+                return Column(
+                  children: [
+                    const Text('error'),
+                    ElevatedButton(onPressed: (){
+                      model.refreshData();
+                    }, child: const Text('refresh'))
+                  ],
+                );
+              }else{
+                return RefreshConfiguration.copyAncestor(
                   context: context,
                   child:  SmartRefresher(
                     controller: model.refreshController,
@@ -117,10 +109,10 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                               showCommentReplyBottomSheet(
                                                   pageContext: context,
                                                   postId: model.postDetail['id'].toString(),
-                                                onSuccess: (ctx){
+                                                  onSuccess: (ctx){
                                                     Navigator.pop(ctx);
                                                     model.refreshData();
-                                                }
+                                                  }
                                               );
                                             },
                                             child: const Icon(
@@ -147,51 +139,51 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                           ),
                         ),
                         SliverPersistentHeader(
-                          pinned: true,
+                            pinned: true,
                             floating: true,
                             delegate: SliverAppBarDelegate(
-                              maxHeight: 40,
-                              minHeight: 40,
-                              child: Card(
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)), side: BorderSide.none),
-                                margin: const EdgeInsets.only(bottom: 0, left: 5, right: 5),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
+                                maxHeight: 40,
+                                minHeight: 40,
+                                child: Card(
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)), side: BorderSide.none),
+                                  margin: const EdgeInsets.only(bottom: 0, left: 5, right: 5),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
                                           onTap: (){
                                             if(model.currentTab == 1) return;
 
                                             model.currentTab = 1;
                                             model.refreshData();
                                           },
-                                        child: Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),),
-                                      ),
-                                      const SizedBox(width: 10,),
-                                      GestureDetector(
-                                        onTap: (){
-                                          if(model.currentTab == 2) return;
+                                          child: Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        GestureDetector(
+                                          onTap: (){
+                                            if(model.currentTab == 2) return;
 
-                                          model.currentTab = 2;
-                                          model.refreshData();
-                                        },
-                                        child: Text('点赞 ${model.postDetail['likedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 2 ? Theme.of(context).colorScheme.primary : null)),
-                                      ),
-                                      const SizedBox(width: 10,),
-                                      GestureDetector(
-                                        onTap: (){
-                                          if(model.currentTab == 3) return;
+                                            model.currentTab = 2;
+                                            model.refreshData();
+                                          },
+                                          child: Text('点赞 ${model.postDetail['likedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 2 ? Theme.of(context).colorScheme.primary : null)),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        GestureDetector(
+                                          onTap: (){
+                                            if(model.currentTab == 3) return;
 
-                                          model.currentTab = 3;
-                                          model.refreshData();
-                                        },
-                                        child: Text('收藏 ${model.postDetail['collectedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 3 ? Theme.of(context).colorScheme.primary : null)),
-                                      ),
-                                    ],
+                                            model.currentTab = 3;
+                                            model.refreshData();
+                                          },
+                                          child: Text('收藏 ${model.postDetail['collectedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 3 ? Theme.of(context).colorScheme.primary : null)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
+                                )
                             )
                         ),
                         // SliverAnimatedList(
@@ -246,10 +238,10 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                       ],
                     ),
                   ),
-                ),
-              );
+                );
+              }
             }
-          }
+        ),
       ),
     );
   }
