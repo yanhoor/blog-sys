@@ -29,6 +29,7 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
     if(list.isEmpty && !isError) setEmpty();
     pageList.addAll(list);
     // update();
+    refreshTime = DateTime.now().millisecondsSinceEpoch;
     refreshController.refreshCompleted();
     notifyListeners();
   }

@@ -5,6 +5,7 @@ import 'page_control_notifier.dart';
 
 abstract class BaseFetchNotifier extends PageControlNotifier{
   RefreshController refreshController = RefreshController(initialRefresh: false);
+  late int refreshTime = 0;
 
   void onInit() async {
     // print('BaseFetchController init');
@@ -21,6 +22,7 @@ abstract class BaseFetchNotifier extends PageControlNotifier{
     try{
       await getData();
       setComplete();
+      refreshTime = DateTime.now().millisecondsSinceEpoch;
     }catch(e){
       setError();
     }

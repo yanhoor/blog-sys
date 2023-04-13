@@ -71,7 +71,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                     itemCount: model.pageList.length,
                                     itemBuilder: (context, index) {
                                       Map<String, dynamic> post = model.pageList[index];
-                                      return PostItem(key: Key(post['id'].toString()), post: post, scrollController: model.scrollController);
+                                      return PostItem(key: Key(post['id'].toString() + model.refreshTime.toString()), post: post, scrollController: model.scrollController);
                                     })
                               ],
                             ),
