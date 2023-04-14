@@ -19,6 +19,7 @@ showCommentReplyBottomSheet(
 
   showModalBottomSheet(
       context: pageContext,
+      isScrollControlled: true,
       builder: (BuildContext ctx) {
         return Container(
           padding: const EdgeInsets.all(10),
@@ -30,45 +31,52 @@ showCommentReplyBottomSheet(
             // )
           ),
           child: SafeArea(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                UserAvatar(user: myInfo),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: TextField(
-                  textInputAction: TextInputAction.send,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                      // hintText: '请输入内容',
-                      labelText: comment == null ? '发表评论' : '回复@${comment['createBy']['name']}',
-                      border: const OutlineInputBorder()),
-                  // onChanged: (val){
-                  //
-                  // },
-                  onSubmitted: (v) async {
-                    try{
-                      var res = await $http.fetch(ApiUrl.COMMENT_COMMIT, params: {
-                        'blogId': postId,
-                        'content': v.trim(),
-                        if(comment != null) ...{
-                          'replyCommentId': comment['id'],
-                          'replyToId': comment['createBy']['id'],
-                          'topCommentId': comment['topCommentId'] ?? comment['id'],
-                        }
-                      });
-                      if(ctx.mounted && res['success']) {
-                        onSuccess?.call(ctx);
-                        ToastHelper.success('发表成功');
-                      }
-                    }catch(e){
-                      ToastHelper.error('操作失败');
-                    }
-                  },
-                ))
-              ],
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(ctx).viewInsets.bottom
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserAvatar(user: myInfo),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: TextField(
+                        textInputAction: TextInputAction.send,
+                        maxLines: 3,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          // hintText: '请输入内容',
+                            labelText: comment == null ? '发表评论' : '回复@${comment['createBy']['name']}',
+                            border: const OutlineInputBorder()),
+                        // onChanged: (val){
+                        //
+                        // },
+                        onSubmitted: (v) async {
+                          try{
+                            var res = await $http.fetch(ApiUrl.COMMENT_COMMIT, params: {
+                              'blogId': postId,
+                              'content': v.trim(),
+                              if(comment != null) ...{
+                                'replyCommentId': comment['id'],
+                                'replyToId': comment['createBy']['id'],
+                                'topCommentId': comment['topCommentId'] ?? comment['id'],
+                              }
+                            });
+                            if(ctx.mounted && res['success']) {
+                              onSuccess?.call(ctx);
+                              ToastHelper.success('发表成功');
+                            }
+                          }catch(e){
+                            ToastHelper.error('操作失败');
+                          }
+                        },
+                      )
+                  )
+                ],
+              ),
             ),
           ),
         );
