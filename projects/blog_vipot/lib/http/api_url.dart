@@ -6,6 +6,7 @@ class ApiUrl{
   static const String UPLOAD = '/upload';
 
   static const String LOGIN = '/user/login';
+  static const String LOGOUT = '/user/logout';
   static const String BLOG_EDIT = '/blog/edit';
   static const String BLOG_LIST = '/blog/list';
   static const String BLOG_INFO = '/blog/info';

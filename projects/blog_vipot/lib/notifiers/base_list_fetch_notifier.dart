@@ -24,8 +24,13 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
     currentPage = 1;
     pageList.clear();
     if(refresh) setRefreshing();
-    await getOtherData();
-    var list = await getData();
+    List list = [];
+    try{
+      await getOtherData();
+      list = await getData();
+    }catch(e){
+      setError();
+    }
     if(list.isEmpty && !isError) setEmpty();
     pageList.addAll(list);
     // update();

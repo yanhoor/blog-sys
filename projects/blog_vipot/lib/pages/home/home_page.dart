@@ -5,10 +5,11 @@ import 'package:blog_vipot/pages/my/my_page.dart';
 import 'package:blog_vipot/pages/new_post/new_post_page.dart';
 import 'package:blog_vipot/pages/notification/notification_page.dart';
 import 'package:blog_vipot/pages/search/search_page.dart';
+import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
 import 'package:provider/provider.dart';
-
+import 'package:blog_vipot/notifiers/my_theme_notifier.dart';
 import 'home_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,11 +20,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin<HomePage> {
+    with AutomaticKeepAliveClientMixin<HomePage>, WidgetsBindingObserver {
   late GlobalNotifier globalNotifier;
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    context.read<MyThemeNotifier>().themeMode = WidgetsBinding.instance.window.platformBrightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +54,19 @@ class _HomePageState extends State<HomePage>
         builder: (context, model, child) {
           return Scaffold(
             drawer: const HomeDrawer(),
-            body: SafeArea(
-              child: PageView(
-                controller: globalNotifier.homePageController,
-                physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                children: const [
-                  IndexPage(),
-                  SearchPage(),
-                  NewPostPage(),
-                  NotificationPage(),
-                  MyPage(),
-                ],
-                onPageChanged: (index) {
+            body: PageView(
+              controller: globalNotifier.homePageController,
+              physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+              children: const [
+                IndexPage(),
+                SearchPage(),
+                NewPostPage(),
+                NotificationPage(),
+                MyPage(),
+              ],
+              onPageChanged: (index) {
 
-                },
-              ),
+              },
             ),
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -79,6 +95,10 @@ class _HomePageState extends State<HomePage>
                     label: '我的'),
               ],
               onTap: (index) {
+                if([2,3,4].contains(index) && globalNotifier.myInfo == null){
+                  Navigator.of(context).pushNamed(RouteName.login);
+                  return;
+                }
                 // 如果已经在当前tab就刷新，否则跳到点击的tab
                 if (model.currentTab == index) {
                   switch (index) {

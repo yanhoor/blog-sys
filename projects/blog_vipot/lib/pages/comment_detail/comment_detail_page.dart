@@ -1,14 +1,16 @@
 import 'package:blog_vipot/pages/comment_detail/comment_detail_notifier.dart';
+import 'package:blog_vipot/pages/comment_detail/comment_detail_skeleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '../../components/comment/comment_reply_modal.dart';
-import '../../components/expandable_content.dart';
-import '../../components/user/user_avatar.dart';
-import '../../components/user/user_name.dart';
-import '../../components/wrapper/provider_wrapper.dart';
-import '../../utils/time_util.dart';
+import 'package:blog_vipot/components/comment/comment_reply_modal.dart';
+import 'package:blog_vipot/components/expandable_content.dart';
+import 'package:blog_vipot/components/state/state_request_error.dart';
+import 'package:blog_vipot/components/state/state_request_empty.dart';
+import 'package:blog_vipot/components/user/user_avatar.dart';
+import 'package:blog_vipot/components/user/user_name.dart';
+import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
+import 'package:blog_vipot/utils/time_util.dart';
 
 class CommentDetailPage extends StatefulWidget {
   final String commentId;
@@ -32,27 +34,11 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
               },
               builder: (context, model, child) {
                 if (model.isInitializing) {
-                  return Column(
-                    children: [
-                      const Text('initializing'),
-                      ElevatedButton(
-                          onPressed: () {
-                            // print('========${controller.pageList.length}=====${controller.isMore}=====');
-                          },
-                          child: const Text('test'))
-                    ],
-                  );
+                  return const CommentDetailSkeleton();
+                } else if (model.isEmpty) {
+                  return StateRequestEmpty(size: 60, onPressed: model.initData,);
                 } else if (model.isError) {
-                  return Column(
-                    children: [
-                      const Text('error'),
-                      ElevatedButton(
-                          onPressed: () {
-                            model.refreshData();
-                          },
-                          child: const Text('refresh'))
-                    ],
-                  );
+                  return StateRequestError(size: 60, onPressed: model.initData);
                 } else {
                   return RefreshConfiguration.copyAncestor(
                       context: context,

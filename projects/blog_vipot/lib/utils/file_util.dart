@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:blog_vipot/config/index.dart';
 
-import '../components/bot_toast_helper.dart';
+import '../components/helper/bot_toast_helper.dart';
 
 class FileUtil{
   // 判断文件是否符合超出限制大小和类型

@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
 import 'package:chewie/chewie.dart';
@@ -19,17 +20,42 @@ class GlobalNotifier extends ChangeNotifier{
     chewieController = c;
   }
 
+  logout() async{
+    try{
+      String token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN) ?? '';
+      if(token.isEmpty) return false;
+
+      var res = await $http.fetch(ApiUrl.LOGOUT);
+      if(res['success']){
+        ToastHelper.success('已退出登录');
+        myWebSocket.dispose();
+        await MyStorageManager.sharedPreferences.setString(MyStorageManager.TOKEN, '');
+        myInfo = null;
+        return true;
+      }else{
+        ToastHelper.error(res['msg'] ?? '操作失败');
+        return false;
+      }
+    }catch(e){
+      return false;
+      // print('=========${jsonEncode(e)}');
+    }
+  }
+
   getUserInfo() async {
     try{
       String token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN) ?? '';
-      if(token.isEmpty) return;
+      if(token.isEmpty) return false;
 
       var res = await $http.fetch(ApiUrl.USER_INFO, method: 'get');
       if(res['success']){
         myInfo = res['result'];
         myWebSocket.init(myInfo!['id'].toString());
+        return true;
       }
+      return false;
     }catch(e){
+      return false;
       // print('=========${jsonEncode(e)}');
     }
   }

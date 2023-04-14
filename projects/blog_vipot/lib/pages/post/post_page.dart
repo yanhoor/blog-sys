@@ -1,3 +1,5 @@
+import 'package:blog_vipot/components/state/state_request_empty.dart';
+import 'package:blog_vipot/components/state/state_request_error.dart';
 import 'package:blog_vipot/components/user/user_item.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/post/post_comment_item.dart';
@@ -43,14 +45,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
               if (model.isInitializing) {
                 return const PostSkeleton();
               } else if (model.isError) {
-                return Column(
-                  children: [
-                    const Text('error'),
-                    ElevatedButton(onPressed: (){
-                      model.refreshData();
-                    }, child: const Text('refresh'))
-                  ],
-                );
+                return StateRequestError(size: 60, onPressed: model.initData);
               }else{
                 return RefreshConfiguration.copyAncestor(
                   context: context,
@@ -231,7 +226,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
 
                                   return result;
                                 },
-                              ) : const Text('暂无内容'),
+                              ) : StateRequestEmpty(onPressed: model.refreshData,),
                             ),
                           ),
                         )

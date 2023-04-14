@@ -5,8 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class MediaImageItem extends StatelessWidget {
   final String src;
+  final BoxFit fit;
 
-  const MediaImageItem({super.key, required String url})
+  const MediaImageItem({super.key, required String url, this.fit = BoxFit.cover})
       : src = ApiUrl.ASSET_BASE + url;
 
   @override
@@ -20,13 +21,14 @@ class MediaImageItem extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       imageUrl: src,
-      fit: BoxFit.cover,
+      fit: fit,
       cacheKey: src,
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: CircularProgressIndicator(value: downloadProgress.progress),
-          ),
+      // progressIndicatorBuilder: (context, url, downloadProgress) =>
+      //     SizedBox(
+      //       width: 30,
+      //       height: 30,
+      //       child: CircularProgressIndicator(value: downloadProgress.progress),
+      //     ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }

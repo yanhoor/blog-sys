@@ -12,7 +12,9 @@ import '../../storage/storage_manager.dart';
 class LoginNotifier extends StateNotifier{
   final BuildContext pageContext;
   GlobalKey<FormState> loginKey = GlobalKey<FormState>();
-  bool _hidePassword = false;
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController pwdController = TextEditingController();
+  bool _hidePassword = true;
   bool _rememberPassword = false;
   Map<String, String> loginForm = {
     'mobile': '',
@@ -23,6 +25,10 @@ class LoginNotifier extends StateNotifier{
     rememberPassword = MyStorageManager.sharedPreferences.getBool(MyStorageManager.REMEMBER_PASSWORD) ?? false;
     loginForm['mobile'] = MyStorageManager.sharedPreferences.getString(MyStorageManager.LOGIN_MOBILE) ?? '';
     loginForm['password'] = MyStorageManager.sharedPreferences.getString(MyStorageManager.LOGIN_PASSWORD) ?? '';
+    Future.delayed(const Duration()).then((value) {
+      userNameController.text = loginForm['mobile']!;
+      pwdController.text = loginForm['password']!;
+    });
   }
 
   doLogin() async{
@@ -39,7 +45,7 @@ class LoginNotifier extends StateNotifier{
             await MyStorageManager.sharedPreferences.setString(MyStorageManager.LOGIN_PASSWORD, loginForm['password'] ?? '');
           }
           if(pageContext.mounted) {
-            Provider.of<GlobalNotifier>(pageContext).getUserInfo();
+            Provider.of<GlobalNotifier>(pageContext, listen: false).getUserInfo();
             Navigator.of(pageContext).popUntil(ModalRoute.withName(RouteName.root));
           }
         }

@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage>{
                         const SizedBox(height: 10,),
                         TextFormField(
                           maxLength: 11,
-                          // controller: model.userNameController,
+                          controller: model.userNameController,
                           keyboardType: TextInputType.phone,
                           decoration: const InputDecoration(
                             fillColor: Colors.red,
@@ -64,9 +64,9 @@ class _LoginPageState extends State<LoginPage>{
                           // },
                         ),
                         TextFormField(
-                          maxLength: 15,
                           obscureText: model.hidePassword,
-                          // controller: model.pwdController,
+                          keyboardType: TextInputType.visiblePassword,
+                          controller: model.pwdController,
                           decoration: InputDecoration(
                             labelText: '密码',
                             hintText: '请输入密码',

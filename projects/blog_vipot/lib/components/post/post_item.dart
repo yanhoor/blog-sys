@@ -114,9 +114,7 @@ class PostItem extends StatelessWidget {
                                 const SizedBox(
                                   width: 4,
                                 ),
-                                Text(post['likedByCount'] > 0
-                                    ? post['likedByCount'].toString()
-                                    : '赞')
+                                Text(post['likedByCount'].toString())
                               ],
                             ),
                           )),
@@ -137,9 +135,7 @@ class PostItem extends StatelessWidget {
                                 const SizedBox(
                                   width: 4,
                                 ),
-                                Text(post['commentsCount'] > 0
-                                    ? post['commentsCount'].toString()
-                                    : '评论')
+                                Text(post['commentsCount'].toString())
                               ],
                             ),
                           )),
@@ -160,9 +156,7 @@ class PostItem extends StatelessWidget {
                                 const SizedBox(
                                   width: 4,
                                 ),
-                                Text(post['collectedByCount'] > 0
-                                    ? post['collectedByCount'].toString()
-                                    : '收藏')
+                                Text(post['collectedByCount'].toString())
                               ],
                             ),
                           ))

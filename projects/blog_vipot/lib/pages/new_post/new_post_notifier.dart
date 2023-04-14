@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:blog_vipot/components/bot_toast_helper.dart';
+import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
 import 'package:blog_vipot/http/index.dart';
 
 class NewPostNotifier extends StateNotifier{
@@ -62,11 +62,7 @@ class NewPostNotifier extends StateNotifier{
     }
 
     if (pickedFileList.isNotEmpty) {
-      List<Future> list = [];
-      for (var pickedFile in pickedFileList) {
-        list.add(uploadPic(pickedFile));
-      }
-      await Future.wait(list);
+      await Future.wait(pickedFileList.map((f) => uploadPic(f)).toList());
       selectMode = 1;
     } else {
       print('No image selected.');
@@ -81,11 +77,7 @@ class NewPostNotifier extends StateNotifier{
       return false;
     }
 
-    // final imageBytes = await pickedFile.readAsBytes();
-    MultipartFile imageFile = await MultipartFile.fromFile(
-      path,
-      // filename: fileName,
-    );
+    MultipartFile imageFile = await MultipartFile.fromFile(path);
     try{
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
@@ -122,10 +114,7 @@ class NewPostNotifier extends StateNotifier{
       return false;
     }
 
-    MultipartFile video = await MultipartFile.fromFile(
-      path,
-      // filename: fileName,
-    );
+    MultipartFile video = await MultipartFile.fromFile(path);
     try{
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': video }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
