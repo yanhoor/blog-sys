@@ -11,8 +11,11 @@ class IndexNotifier extends BaseListFetchNotifier{
 
   @override
   Future<List> getPageList() async {
+    String token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN) ?? '';
+    if(token.isEmpty) groupId = '';
+
     List list = [];
-    var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'gid': groupId ?? '', 'page': currentPage, 'pageSize': pageSize });
+    var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'gid': groupId, 'page': currentPage, 'pageSize': pageSize });
     list.addAll(res['result']['list']);
     // print('-----getPageList-------$list');
     return list;

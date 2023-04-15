@@ -7,10 +7,8 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
 
   @override
   void onInit() async {
-    // print('BaseListFetchController init 11111');
     super.onInit();
     initData();
-    // print('BaseListFetchController init 222222');
   }
 
   @override
@@ -22,7 +20,6 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
   @override
   refreshData({bool refresh = true}) async{
     currentPage = 1;
-    pageList.clear();
     if(refresh) setRefreshing();
     List list = [];
     try{
@@ -32,8 +29,8 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
       setError();
     }
     if(list.isEmpty && !isError) setEmpty();
+    pageList.clear();
     pageList.addAll(list);
-    // update();
     refreshTime = DateTime.now().millisecondsSinceEpoch;
     refreshController.refreshCompleted();
     notifyListeners();

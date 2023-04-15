@@ -46,35 +46,23 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
           } else if (model.isError) {
             content = StateRequestError(size: 60, onPressed: model.initData);
           } else {
-            content = RefreshConfiguration.copyAncestor(
-                context: context,
-                child: SmartRefresher(
-                  controller: model.refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: model.refreshData,
-                  onLoading: model.handleLoadMore,
-                  child: SingleChildScrollView(
-                    controller: model.scrollController,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.all(0),
-                        physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                        itemCount: model.pageList.length,
-                        itemBuilder: (context, index) {
-                          Map<String, dynamic> post = model.pageList[index];
-                          return PostItem(
-                            key: Key(post['id'].toString()),
-                            post: post,
-                            scrollController: model.scrollController!,
-                            onUpdatePost: (v){
-                              post = v;
-                              model.notifyListeners();
-                            },
-                          );
-                        }),
-                  ),
-                ));
+            content = ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                itemCount: model.pageList.length,
+                itemBuilder: (context, index) {
+                  Map<String, dynamic> post = model.pageList[index];
+                  return PostItem(
+                    key: Key(post['id'].toString()),
+                    post: post,
+                    scrollController: model.scrollController!,
+                    onUpdatePost: (v){
+                      post = v;
+                      model.notifyListeners();
+                    },
+                  );
+                });
           }
 
           return SafeArea(
@@ -83,7 +71,19 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                 Column(
                   children: [
                     Expanded(
-                        child: content
+                        child: RefreshConfiguration.copyAncestor(
+                            context: context,
+                            child: SmartRefresher(
+                              controller: model.refreshController,
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              onRefresh: model.refreshData,
+                              onLoading: model.handleLoadMore,
+                              child: SingleChildScrollView(
+                                controller: model.scrollController,
+                                child: content,
+                              ),
+                            ))
                     )
                   ],
                 ),
@@ -115,7 +115,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                         if(model.groupId.isEmpty) return;
 
                                         model.groupId = '';
-                                        model.refreshData();
+                                        model.refreshController.requestRefresh(needMove: false);
                                       },
                                       child: Text('全部关注', style: TextStyle(color: (model.groupId.isEmpty) ? Theme.of(context).primaryColor : null),),
                                     ),
@@ -127,7 +127,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                         if(model.groupId == g['id'].toString()) return;
 
                                         model.groupId = g['id'].toString();
-                                        model.refreshData();
+                                        model.refreshController.requestRefresh(needMove: false);
                                       },
                                       child: Text(g['name'], style: TextStyle(color: model.groupId == g['id'].toString() ? Theme.of(context).primaryColor : null)),
                                     ),

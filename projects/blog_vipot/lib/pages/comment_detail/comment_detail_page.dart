@@ -33,35 +33,108 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                 model.initScrollController(controller: ScrollController());
               },
               builder: (context, model, child) {
+                Widget content;
                 if (model.isInitializing) {
-                  return const CommentDetailSkeleton();
+                  content = const CommentDetailSkeleton();
                 } else if (model.isEmpty) {
-                  return StateRequestEmpty(size: 60, onPressed: model.initData,);
+                  content = StateRequestEmpty(size: 60, onPressed: model.initData,);
                 } else if (model.isError) {
-                  return StateRequestError(size: 60, onPressed: model.initData);
+                  content = StateRequestError(size: 60, onPressed: model.initData);
                 } else {
-                  return RefreshConfiguration.copyAncestor(
-                      context: context,
-                      child: SmartRefresher(
-                        controller: model.refreshController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        onRefresh: model.refreshData,
-                        onLoading: model.handleLoadMore,
-                        child: CustomScrollView(
-                          controller: model.scrollController,
-                          slivers: [
-                            SliverToBoxAdapter(
-                              child: Card(
-                                margin: const EdgeInsets.all(0),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
+                  content = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        margin: const EdgeInsets.all(0),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              UserAvatar(
+                                  user: model.topComment['createBy']),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      UserName(
+                                          user: model
+                                              .topComment['createBy']),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showCommentReplyBottomSheet(
+                                            pageContext: context,
+                                            postId: model
+                                                .topComment['blogId']
+                                                .toString(),
+                                            comment: model.topComment,
+                                            onSuccess: (ctx) {
+                                              Navigator.pop(ctx);
+                                              model.refreshData();
+                                            },
+                                          );
+                                        },
+                                        child: ExpandableContent(
+                                            content: model
+                                                .topComment['content'],
+                                            scrollController:
+                                            model.scrollController!),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(
+                                        TimeUtil.formatTime(model
+                                            .topComment['createdAt']),
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .hintColor),
+                                      )
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Card(
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: ListView.builder(
+                              physics:
+                              const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: model.pageList.length,
+                              itemBuilder: (_, index) {
+                                Map<String, dynamic> reply =
+                                model.pageList[index];
+
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12),
+                                  decoration: BoxDecoration(
+                                      border: index <
+                                          model.pageList.length -
+                                              1
+                                          ? Border(
+                                          bottom: BorderSide(
+                                              color: Theme.of(
+                                                  context)
+                                                  .highlightColor))
+                                          : null),
                                   child: Row(
                                     mainAxisAlignment:
                                     MainAxisAlignment.start,
                                     children: [
                                       UserAvatar(
-                                          user: model.topComment['createBy']),
+                                          user: reply['createBy']),
                                       const SizedBox(
                                         width: 12,
                                       ),
@@ -71,8 +144,8 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                                             CrossAxisAlignment.start,
                                             children: [
                                               UserName(
-                                                  user: model
-                                                      .topComment['createBy']),
+                                                  user:
+                                                  reply['createBy']),
                                               const SizedBox(
                                                 height: 6,
                                               ),
@@ -81,148 +154,77 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                                                   showCommentReplyBottomSheet(
                                                     pageContext: context,
                                                     postId: model
-                                                        .topComment['blogId']
+                                                        .topComment[
+                                                    'blogId']
                                                         .toString(),
-                                                    comment: model.topComment,
+                                                    comment: reply,
                                                     onSuccess: (ctx) {
                                                       Navigator.pop(ctx);
                                                       model.refreshData();
                                                     },
                                                   );
                                                 },
-                                                child: ExpandableContent(
-                                                    content: model
-                                                        .topComment['content'],
-                                                    scrollController:
-                                                    model.scrollController!),
+                                                child: Text.rich(TextSpan(
+                                                    children: [
+                                                      reply['replyComment']
+                                                      [
+                                                      'topCommentId'] ==
+                                                          null
+                                                          ? TextSpan(
+                                                          text: reply[
+                                                          'content'])
+                                                          : TextSpan(
+                                                          children: [
+                                                            const TextSpan(
+                                                                text:
+                                                                '回复'),
+                                                            TextSpan(
+                                                                text:
+                                                                '@${reply['replyComment']['createBy']['name']}: ',
+                                                                style:
+                                                                TextStyle(color: Theme.of(context).colorScheme.primary)),
+                                                            TextSpan(
+                                                                text:
+                                                                reply['content'])
+                                                          ])
+                                                    ])),
                                               ),
                                               const SizedBox(
                                                 height: 6,
                                               ),
                                               Text(
-                                                TimeUtil.formatTime(model
-                                                    .topComment['createdAt']),
+                                                TimeUtil.formatTime(
+                                                    reply['createdAt']),
                                                 style: TextStyle(
-                                                    color: Theme.of(context)
+                                                    color:
+                                                    Theme.of(context)
                                                         .hintColor),
                                               )
                                             ],
                                           ))
                                     ],
                                   ),
-                                ),
-                              ),
-                            ),
-                            SliverToBoxAdapter(
-                              child: Card(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: ListView.builder(
-                                      physics:
-                                      const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: model.pageList.length,
-                                      itemBuilder: (_, index) {
-                                        Map<String, dynamic> reply =
-                                        model.pageList[index];
-
-                                        return Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12),
-                                          decoration: BoxDecoration(
-                                              border: index <
-                                                  model.pageList.length -
-                                                      1
-                                                  ? Border(
-                                                  bottom: BorderSide(
-                                                      color: Theme.of(
-                                                          context)
-                                                          .highlightColor))
-                                                  : null),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: [
-                                              UserAvatar(
-                                                  user: reply['createBy']),
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                              Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                    children: [
-                                                      UserName(
-                                                          user:
-                                                          reply['createBy']),
-                                                      const SizedBox(
-                                                        height: 6,
-                                                      ),
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          showCommentReplyBottomSheet(
-                                                            pageContext: context,
-                                                            postId: model
-                                                                .topComment[
-                                                            'blogId']
-                                                                .toString(),
-                                                            comment: reply,
-                                                            onSuccess: (ctx) {
-                                                              Navigator.pop(ctx);
-                                                              model.refreshData();
-                                                            },
-                                                          );
-                                                        },
-                                                        child: Text.rich(TextSpan(
-                                                            children: [
-                                                              reply['replyComment']
-                                                              [
-                                                              'topCommentId'] ==
-                                                                  null
-                                                                  ? TextSpan(
-                                                                  text: reply[
-                                                                  'content'])
-                                                                  : TextSpan(
-                                                                  children: [
-                                                                    const TextSpan(
-                                                                        text:
-                                                                        '回复'),
-                                                                    TextSpan(
-                                                                        text:
-                                                                        '@${reply['replyComment']['createBy']['name']}: ',
-                                                                        style:
-                                                                        TextStyle(color: Theme.of(context).colorScheme.primary)),
-                                                                    TextSpan(
-                                                                        text:
-                                                                        reply['content'])
-                                                                  ])
-                                                            ])),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 6,
-                                                      ),
-                                                      Text(
-                                                        TimeUtil.formatTime(
-                                                            reply['createdAt']),
-                                                        style: TextStyle(
-                                                            color:
-                                                            Theme.of(context)
-                                                                .hintColor),
-                                                      )
-                                                    ],
-                                                  ))
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            )
-                          ],
+                                );
+                              }),
                         ),
-                      ));
+                      )
+                    ],
+                  );
                 }
+
+                return RefreshConfiguration.copyAncestor(
+                    context: context,
+                    child: SmartRefresher(
+                      controller: model.refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onRefresh: model.refreshData,
+                      onLoading: model.handleLoadMore,
+                      child: SingleChildScrollView(
+                        controller: model.scrollController,
+                        child: content,
+                      ),
+                    ));
               }),
         ));
   }

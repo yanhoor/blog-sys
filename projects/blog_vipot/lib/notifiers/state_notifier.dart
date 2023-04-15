@@ -24,34 +24,42 @@ class StateNotifier extends ChangeNotifier{
 
   void setInitializing(){
     _pageState = PageState.initializing;
+    notifyListeners();
   }
 
   void setLoading(){
     _pageState = PageState.loading;
+    notifyListeners();
   }
 
   void setRefreshing(){
     _pageState = PageState.refreshing;
+    notifyListeners();
   }
 
   void setBusy(){
     _pageState = PageState.busy;
+    notifyListeners();
   }
 
   void setComplete(){
     _pageState = PageState.complete;
+    notifyListeners();
   }
 
   void setMore(){
     _pageState = PageState.more;
+    notifyListeners();
   }
 
   void setEmpty(){
     _pageState = PageState.empty;
+    notifyListeners();
   }
 
   void setError(){
     _pageState = PageState.error;
+    notifyListeners();
   }
 
   bool get isInitializing => _pageState == PageState.initializing;

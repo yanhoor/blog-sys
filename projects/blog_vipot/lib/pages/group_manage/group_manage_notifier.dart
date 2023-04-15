@@ -72,7 +72,7 @@ class GroupManageNotifier extends BaseFetchNotifier{
 
   handleCommitSort() async{
     try{
-      var res = await $http.fetch(ApiUrl.GROUP_SORT, params: {'ids3': pageList.map((e) => e['id']).join(',')});
+      var res = await $http.fetch(ApiUrl.GROUP_SORT, params: {'ids': pageList.map((e) => e['id']).join(',')});
       if(res['success']){
       }else{
         ToastHelper.error(res['msg'] ?? '保存失败');
