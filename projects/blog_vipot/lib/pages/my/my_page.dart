@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../route/route_name.dart';
-import '../../storage/storage_manager.dart';
 
 class MyPage extends StatefulWidget{
   const MyPage({super.key});
@@ -204,7 +203,7 @@ class _MyPageState extends State<MyPage>{
                                         leading: const Icon(Icons.group, size: 24),
                                         trailing: const Icon(Icons.arrow_forward_ios, size: 24),
                                         onTap: (){
-                                          // Navigator.of(context).pushNamed(RouteName.customView);
+                                          Navigator.of(context).pushNamed(RouteName.groupManage);
                                         },
                                       ),
                                     ],

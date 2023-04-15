@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage>
                 if (model.currentTab == index) {
                   switch (index) {
                     case 0:
-                      if (model.indexNotifier.scrollController.offset < 50) {
+                      if (model.indexNotifier.scrollController!.offset < 50) {
                         if (!model.indexNotifier.isRefreshing) {
                           model.indexNotifier.setRefreshing();
                           model.indexNotifier.refreshController.requestRefresh();

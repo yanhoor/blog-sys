@@ -81,7 +81,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                     ],
                                   ),
                                   const SizedBox(height: 6,),
-                                  ExpandableContent(content: model.postDetail['content'], scrollController: model.scrollController),
+                                  ExpandableContent(content: model.postDetail['content'], scrollController: model.scrollController!),
                                   const SizedBox(height: 6,),
                                   MediaList(mediaList: model.postDetail['medias'].map((m) => m['file']).toList(), maxCount: -1,),
                                   const SizedBox(height: 6,),
@@ -220,7 +220,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                             Navigator.pop(ctx);
                                             model.refreshData();
                                           },
-                                          scrollController: model.scrollController
+                                          scrollController: model.scrollController!
                                       );
                                   }
 

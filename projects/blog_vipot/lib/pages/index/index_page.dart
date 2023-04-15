@@ -66,7 +66,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                       return PostItem(
                                         key: Key(post['id'].toString()),
                                         post: post,
-                                        scrollController: model.scrollController,
+                                        scrollController: model.scrollController!,
                                         onUpdatePost: (v){
                                           post = v;
                                           model.notifyListeners();

@@ -94,7 +94,7 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                                                     content: model
                                                         .topComment['content'],
                                                     scrollController:
-                                                    model.scrollController),
+                                                    model.scrollController!),
                                               ),
                                               const SizedBox(
                                                 height: 6,
