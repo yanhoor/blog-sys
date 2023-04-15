@@ -1,4 +1,5 @@
 import 'package:blog_vipot/pages/comment_detail/comment_detail_page.dart';
+import 'package:blog_vipot/pages/group_manage/group_manage_page.dart';
 import 'package:blog_vipot/pages/home/home_page.dart';
 import 'package:blog_vipot/pages/image_preview/image_preview.dart';
 import 'package:blog_vipot/pages/login/login_page.dart';
@@ -29,6 +30,8 @@ class MyRouter{
       case RouteName.imagePreview:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => ImagePreview(imageList: param['imageList'], initPage: param['initPage'],));
+      case RouteName.groupManage:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const GroupManagePage());
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }

@@ -59,7 +59,7 @@ class ProviderWidget2<A extends ChangeNotifier, B extends ChangeNotifier>
   builder; // 方法变量 返回类型/方法类型
   final A model1;
   final B model2;
-  final Widget child;
+  final Widget? child;
   final Function(A model1, B model2) onModelReady;
   final bool autoDispose;
 
@@ -69,7 +69,7 @@ class ProviderWidget2<A extends ChangeNotifier, B extends ChangeNotifier>
     required this.model2,
     required this.onModelReady,
     this.autoDispose = true,
-    required this.child,
+    this.child,
     required this.builder,
   });
 

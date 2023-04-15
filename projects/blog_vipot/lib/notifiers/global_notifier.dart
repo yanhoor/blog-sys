@@ -10,6 +10,8 @@ class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
   ChewieController? chewieController;
   Map<String, dynamic>? _myInfo;
+  List allGroupList = [];
+  List groupList = [];
 
   GlobalNotifier(): homePageController = PageController(){
     getUserInfo();
@@ -30,6 +32,7 @@ class GlobalNotifier extends ChangeNotifier{
         ToastHelper.success('已退出登录');
         myWebSocket.dispose();
         await MyStorageManager.sharedPreferences.setString(MyStorageManager.TOKEN, '');
+        await MyStorageManager.sharedPreferences.setString(MyStorageManager.INDEX_GROUP_ID, '');
         myInfo = null;
         return true;
       }else{
@@ -51,12 +54,30 @@ class GlobalNotifier extends ChangeNotifier{
       if(res['success']){
         myInfo = res['result'];
         myWebSocket.init(myInfo!['id'].toString());
+        getAllGroup();
         return true;
       }
       return false;
     }catch(e){
       return false;
       // print('=========${jsonEncode(e)}');
+    }
+  }
+
+  Future getAllGroup() async {
+    try{
+      var res = await $http.fetch(ApiUrl.GROUP_ALL);
+      if(res['success']){
+        groupList = res['result'];
+        allGroupList.clear();
+        allGroupList.addAll(groupList);
+        groupList.retainWhere((g) => g['system'] == 2);
+        notifyListeners();
+        return true;
+      }
+      return false;
+    }catch(e){
+      return false;
     }
   }
 

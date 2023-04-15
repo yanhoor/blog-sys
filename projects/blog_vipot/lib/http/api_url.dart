@@ -18,5 +18,10 @@ class ApiUrl{
   static const String COMMENT_COMMIT = '/comment/commit';
   static const String COMMENT_REPLY_LIST = '/comment/replyList';
 
+  static const String GROUP_ALL = '/followGroup/all';
+  static const String GROUP_DELETE = '/followGroup/delete';
+  static const String GROUP_EDIT = '/followGroup/edit';
+  static const String GROUP_SORT = '/followGroup/sort';
+
   static const String USER_INFO = '/user/info';
 }
