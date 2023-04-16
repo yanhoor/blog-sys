@@ -24,4 +24,6 @@ class ApiUrl{
   static const String GROUP_SORT = '/followGroup/sort';
 
   static const String USER_INFO = '/user/info';
+
+  static const String NOTIFICATION_LIST = '/notification/list';
 }
