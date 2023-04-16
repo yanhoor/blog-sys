@@ -26,7 +26,9 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
       await getOtherData();
       list = await getData();
     }catch(e){
-      setError();
+      setError(e.toString());
+      notifyListeners();
+      return;
     }
     if(list.isEmpty && !isError) setEmpty();
     pageList.clear();
@@ -62,14 +64,16 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
       return list;
     }catch(e){
       refreshController.loadFailed();
-      setError();
+      setError(e.toString());
       // print('=============${e.toString()}');
       return [];
     }
   }
 
   Future<List> getPageList();
-  Future<dynamic> getOtherData(){
+
+  // 返回 true 表示成功，否则返回 Future.error(msg)
+  Future<bool> getOtherData(){
     return Future.value(true);
   }
 }

@@ -5,6 +5,7 @@ class StateNotifier extends ChangeNotifier{
   PageState _pageState = PageState.initializing;
   /// 防止页面销毁后,异步任务才完成,导致报错
   bool _disposed = false;
+  String? stateErrorText;
 
   @override
   void notifyListeners() {
@@ -57,8 +58,9 @@ class StateNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setError(){
+  void setError([String? msg]){
     _pageState = PageState.error;
+    stateErrorText = msg;
     notifyListeners();
   }
 

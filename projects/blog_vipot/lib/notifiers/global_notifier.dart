@@ -74,10 +74,11 @@ class GlobalNotifier extends ChangeNotifier{
         groupList.retainWhere((g) => g['system'] == 2);
         notifyListeners();
         return true;
+      }else{
+        return Future.error(res['msg']);
       }
-      return false;
     }catch(e){
-      return false;
+      return Future.error(e);
     }
   }
 

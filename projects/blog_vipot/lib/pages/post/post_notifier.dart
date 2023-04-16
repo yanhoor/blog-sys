@@ -1,6 +1,7 @@
 import 'package:blog_vipot/notifiers/base_fetch_notifier.dart';
 import 'package:blog_vipot/notifiers/base_list_fetch_notifier.dart';
 
+import '../../components/helper/bot_toast_helper.dart';
 import '../../http/index.dart';
 
 class PostNotifier extends BaseListFetchNotifier{
@@ -28,10 +29,17 @@ class PostNotifier extends BaseListFetchNotifier{
   }
 
   @override
-  Future getOtherData() async{
+  Future<bool> getOtherData() async{
     var res = await $http.fetch(ApiUrl.BLOG_INFO, params: { 'id':  postId});
-    postDetail = res['result'];
-    notifyListeners();
+    if(res['success']){
+      postDetail = res['result'];
+      notifyListeners();
+      return Future.value(true);
+    }else{
+      setError(res['msg']);
+      ToastHelper.error(res['msg']);
+      return Future.error(res['msg']);
+    }
   }
 
   Future<List> getCommentList() async{

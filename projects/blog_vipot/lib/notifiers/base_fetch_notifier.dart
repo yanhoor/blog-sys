@@ -24,7 +24,7 @@ abstract class BaseFetchNotifier extends PageControlNotifier{
       setComplete();
       refreshTime = DateTime.now().millisecondsSinceEpoch;
     }catch(e){
-      setError();
+      setError(e.toString());
     }
     refreshController.refreshCompleted();
     notifyListeners();

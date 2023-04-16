@@ -12,10 +12,14 @@ class CommentDetailNotifier extends BaseListFetchNotifier{
   Future<List> getPageList() async{
     List list = [];
     var res = await $http.fetch(ApiUrl.COMMENT_REPLY_LIST, params: { 'topCommentId': commentId, 'page': currentPage, 'pageSize': pageSize });
-    list.addAll(res['result']['list']);
-    topComment = res['result']['topComment'];
-    // print('-----getPageList-------$list');
-    return list;
+    if(res['success']){
+      list.addAll(res['result']['list']);
+      topComment = res['result']['topComment'];
+      // print('-----getPageList-------$list');
+      return list;
+    }else{
+      return Future.error(res['msg']);
+    }
   }
 
   Map<String, dynamic> get topComment => _topComment;

@@ -4,9 +4,10 @@ class StateRequestBase extends StatelessWidget{
   final double size;
   final Function()? onPressed;
   final String tip;
+  final String? msg;
   final IconData iconData;
 
-  const StateRequestBase({super.key, this.size = 52, this.onPressed, required this.tip, required this.iconData});
+  const StateRequestBase({super.key, this.size = 52, this.onPressed, required this.tip, required this.iconData, this.msg});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,10 @@ class StateRequestBase extends StatelessWidget{
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(iconData, color: Theme.of(context).primaryColor, size: size,),
+          if(msg != null) ...[
+            const SizedBox(height: 12,),
+            Text(msg!)
+          ],
           const SizedBox(height: 12,),
           RawMaterialButton(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),

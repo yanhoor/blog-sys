@@ -12,7 +12,7 @@ import 'package:blog_vipot/components/user/user_avatar.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
 import 'package:blog_vipot/utils/time_util.dart';
 import 'package:blog_vipot/components/media/media_list.dart';
-import 'package:blog_vipot/components/wrapper/sliverAppBarDelegate.dart';
+import 'package:blog_vipot/components/wrapper/sliver_app_bar_delegate.dart';
 
 import '../../components/comment/comment_reply_modal.dart';
 
@@ -52,7 +52,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
               } else if (model.isError) {
                 slivers = [
                   SliverToBoxAdapter(
-                    child: StateRequestError(size: 60, onPressed: model.initData),
+                    child: StateRequestError(msg: model.stateErrorText, size: 60, onPressed: model.initData),
                   )
                 ];
               }else{
