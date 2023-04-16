@@ -1,14 +1,12 @@
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
-import 'package:blog_vipot/http/api_url.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/pages/notification/notification_tab_page_base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../route/route_name.dart';
-import '../../utils/time_util.dart';
+import 'package:blog_vipot/route/route_name.dart';
+import 'package:blog_vipot/utils/time_util.dart';
 
 class NotificationCollectPage extends StatefulWidget{
   const NotificationCollectPage({super.key});
@@ -27,7 +25,7 @@ class _NotificationCollectPageState extends State<NotificationCollectPage> with 
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(url: ApiUrl.NOTIFICATION_LIST, fetchParams: { 'type': "collect_blog", 'isRead': 3 }),
+        model: NotificationNotifier(fetchParams: { 'type': "collect_blog", 'isRead': 3 }),
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

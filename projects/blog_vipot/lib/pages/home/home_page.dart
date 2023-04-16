@@ -1,5 +1,3 @@
-import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
-import 'package:blog_vipot/pages/home/home_notifier.dart';
 import 'package:blog_vipot/pages/index/index_page.dart';
 import 'package:blog_vipot/pages/my/my_page.dart';
 import 'package:blog_vipot/pages/new_post/new_post_page.dart';
@@ -21,7 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin<HomePage>, WidgetsBindingObserver {
-  late GlobalNotifier globalNotifier;
 
   @override
   bool get wantKeepAlive => true;
@@ -46,16 +43,38 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    globalNotifier = Provider.of<GlobalNotifier>(context);
 
-    return ProviderWidget<HomeNotifier>(
-        model: HomeNotifier(),
-        onModelReady: (model) {},
+    return Consumer<GlobalNotifier>(
         builder: (context, model, child) {
+          Widget notificationBadge = Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                // borderRadius: BorderRadius.circular(6),
+                shape: BoxShape.circle
+              ),
+              // constraints: const BoxConstraints(
+              //   minWidth: 12,
+              //   minHeight: 12,
+              // ),
+              child: Text(
+                model.unreadTotal > 99 ? '99' : model.unreadTotal.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+
           return Scaffold(
             drawer: const HomeDrawer(),
             body: PageView(
-              controller: globalNotifier.homePageController,
+              controller: model.homePageController,
               physics: const NeverScrollableScrollPhysics(), // 禁止滑动
               children: const [
                 IndexPage(),
@@ -72,30 +91,40 @@ class _HomePageState extends State<HomePage>
               type: BottomNavigationBarType.fixed,
               currentIndex: model.currentTab,
               // selectedItemColor: Colors.green[700],
-              items: const [
-                BottomNavigationBarItem(
+              items: [
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
                     activeIcon: Icon(Icons.home_sharp),
                     label: '首页'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     activeIcon: Icon(Icons.search),
                     icon: Icon(Icons.search_outlined),
                     label: '搜索'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     activeIcon: Icon(Icons.add_circle_outlined),
                     icon: Icon(Icons.add_circle_outline),
                     label: '发布'),
                 BottomNavigationBarItem(
-                    activeIcon: Icon(Icons.pending),
-                    icon: Icon(Icons.pending_outlined),
+                    activeIcon: Stack(
+                      children: <Widget>[
+                        const Icon(Icons.notifications),
+                        if(model.unreadTotal > 0) notificationBadge
+                      ],
+                    ),
+                    icon: Stack(
+                      children: <Widget>[
+                        const Icon(Icons.notifications_none_outlined),
+                        if(model.unreadTotal > 0) notificationBadge
+                      ],
+                    ),
                     label: '通知'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     activeIcon: Icon(Icons.account_circle),
                     icon: Icon(Icons.account_circle_outlined),
                     label: '我的'),
               ],
               onTap: (index) {
-                if([2,3,4].contains(index) && globalNotifier.myInfo == null){
+                if([2,3,4].contains(index) && model.myInfo == null){
                   Navigator.of(context).pushNamed(RouteName.login);
                   return;
                 }
@@ -115,7 +144,7 @@ class _HomePageState extends State<HomePage>
                   }
                 } else {
                   model.setCurrentTab(index);
-                  globalNotifier.homePageController.jumpToPage(index);
+                  model.homePageController.jumpToPage(index);
                 }
               },
             ),

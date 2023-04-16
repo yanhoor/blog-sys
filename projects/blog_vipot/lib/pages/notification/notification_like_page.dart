@@ -27,7 +27,7 @@ class _NotificationLikePageState extends State<NotificationLikePage> with Automa
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(url: ApiUrl.NOTIFICATION_LIST, fetchParams: { 'type': "like_blog", 'isRead': 3 }),
+        model: NotificationNotifier(fetchParams: { 'type': "like_blog", 'isRead': 3 }),
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

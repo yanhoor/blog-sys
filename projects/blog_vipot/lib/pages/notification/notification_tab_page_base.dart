@@ -25,6 +25,7 @@ class _NotificationTabPageBaseState extends State<NotificationTabPageBase>{
         child: ProviderWidget<NotificationNotifier>(
           model: widget.model,
           onModelReady: (model){
+            model.pageContext = context;
             model.initData();
             model.initScrollController(controller: ScrollController());
           },

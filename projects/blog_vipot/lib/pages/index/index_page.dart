@@ -9,7 +9,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:blog_vipot/components/post/post_item.dart';
 import 'package:blog_vipot/components/state/state_request_error.dart';
 import 'package:blog_vipot/components/state/state_request_empty.dart';
-import '../home/home_notifier.dart';
 import 'index_notifier.dart';
 
 class IndexPage extends StatefulWidget{
@@ -27,6 +26,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: ProviderWidget2<GlobalNotifier, IndexNotifier>(
@@ -35,7 +35,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
         onModelReady: (_, model){
           model.initData();
           model.initScrollController(controller: ScrollController());
-          Provider.of<HomeNotifier>(context).indexNotifier = model;
+          Provider.of<GlobalNotifier>(context, listen: false).indexNotifier = model;
         },
         builder: (_, globalNotifier, model, child){
           Widget content;
@@ -95,9 +95,9 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.8
                     ),
-                    decoration: const BoxDecoration(
-                        color: Color.fromRGBO(200, 200, 200, 0.7),
-                        borderRadius: BorderRadius.all(Radius.circular(20))
+                    decoration: BoxDecoration(
+                        color: isDark ? const Color.fromRGBO(100, 100, 100, 0.8) : const Color.fromRGBO(240, 240, 240, 0.8),
+                        borderRadius: const BorderRadius.all(Radius.circular(20))
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +109,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                                     child: GestureDetector(
                                       onTap: (){
                                         if(model.groupId.isEmpty) return;
@@ -117,11 +117,11 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                         model.groupId = '';
                                         model.refreshController.requestRefresh(needMove: false);
                                       },
-                                      child: Text('全部关注', style: TextStyle(color: (model.groupId.isEmpty) ? Theme.of(context).primaryColor : null),),
+                                      child: Text('全部关注', style: TextStyle(color: (model.groupId.isEmpty) ? Theme.of(context).primaryColor : null, fontSize: 16),),
                                     ),
                                   ),
                                   ...globalNotifier.allGroupList.map((g) => Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                                     child: GestureDetector(
                                       onTap: (){
                                         if(model.groupId == g['id'].toString()) return;
@@ -129,7 +129,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                                         model.groupId = g['id'].toString();
                                         model.refreshController.requestRefresh(needMove: false);
                                       },
-                                      child: Text(g['name'], style: TextStyle(color: model.groupId == g['id'].toString() ? Theme.of(context).primaryColor : null)),
+                                      child: Text(g['name'], style: TextStyle(color: model.groupId == g['id'].toString() ? Theme.of(context).primaryColor : null, fontSize: 16)),
                                     ),
                                   )).toList()
                                 ],

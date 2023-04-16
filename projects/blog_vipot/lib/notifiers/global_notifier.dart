@@ -3,15 +3,22 @@ import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-
-import '../http/index.dart';
+import 'package:blog_vipot/http/index.dart';
+import 'package:blog_vipot/pages/index/index_notifier.dart';
 
 class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
+  int currentTab = 0;
+  late IndexNotifier indexNotifier;
   ChewieController? chewieController;
   Map<String, dynamic>? _myInfo;
   List allGroupList = [];
   List groupList = [];
+  int unreadTotal = 0;
+  int unreadAudit = 0;
+  int unreadCollect = 0;
+  int unreadComment = 0;
+  int unreadLike = 0;
 
   GlobalNotifier(): homePageController = PageController(){
     getUserInfo();
@@ -22,7 +29,12 @@ class GlobalNotifier extends ChangeNotifier{
     chewieController = c;
   }
 
-  logout() async{
+  setCurrentTab(int v){
+    currentTab = v;
+    notifyListeners();
+  }
+
+  Future<bool> logout() async{
     try{
       String token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN) ?? '';
       if(token.isEmpty) return false;
@@ -45,7 +57,7 @@ class GlobalNotifier extends ChangeNotifier{
     }
   }
 
-  getUserInfo() async {
+  getUserInfo([bool init = true]) async {
     try{
       String token = MyStorageManager.sharedPreferences.getString(MyStorageManager.TOKEN) ?? '';
       if(token.isEmpty) return false;
@@ -53,8 +65,9 @@ class GlobalNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.USER_INFO, method: 'get');
       if(res['success']){
         myInfo = res['result'];
-        myWebSocket.init(myInfo!['id'].toString());
+        if(init) myWebSocket.init(myInfo!['id'].toString());
         getAllGroup();
+        getNotificationCount();
         return true;
       }
       return false;
@@ -79,6 +92,25 @@ class GlobalNotifier extends ChangeNotifier{
       }
     }catch(e){
       return Future.error(e);
+    }
+  }
+
+  Future getNotificationCount() async {
+    try{
+      var res = await $http.fetch(ApiUrl.NOTIFICATION_COUNT);
+      if(res['success']){
+        // unreadTotal = 99;
+        unreadTotal = res['result']['unreadTotal'];
+        unreadAudit = res['result']['unreadAudit'];
+        unreadCollect = res['result']['unreadCollect'];
+        unreadComment = res['result']['unreadComment'];
+        unreadLike = res['result']['unreadLike'];
+        notifyListeners();
+      }else{
+        // return Future.error(res['msg']);
+      }
+    }catch(e){
+      // return Future.error(e);
     }
   }
 

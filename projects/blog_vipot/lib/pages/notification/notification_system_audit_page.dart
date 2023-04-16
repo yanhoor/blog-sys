@@ -28,7 +28,7 @@ class _NotificationSystemAuditPageState extends State<NotificationSystemAuditPag
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(url: ApiUrl.NOTIFICATION_LIST, fetchParams: { 'type': "system_audit", 'isRead': 3 }),
+        model: NotificationNotifier(fetchParams: { 'type': "system_audit", 'isRead': 3 }),
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

@@ -28,7 +28,7 @@ class _NotificationCommentPageState extends State<NotificationCommentPage> with 
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(url: ApiUrl.NOTIFICATION_LIST, fetchParams: { 'type': "comment,comment_reply", 'isRead': 3 }),
+        model: NotificationNotifier(fetchParams: { 'type': "comment,comment_reply", 'isRead': 3 }),
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

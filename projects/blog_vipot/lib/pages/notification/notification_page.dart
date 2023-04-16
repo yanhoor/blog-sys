@@ -5,6 +5,8 @@ import 'package:blog_vipot/pages/notification/notification_like_page.dart';
 import 'package:blog_vipot/pages/notification/notification_system_audit_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:blog_vipot/notifiers/global_notifier.dart';
 
 class NotificationPage extends StatefulWidget{
   const NotificationPage({super.key});
@@ -17,9 +19,11 @@ class _NotificationPageState extends State<NotificationPage>{
 
   @override
   Widget build(BuildContext context) {
+    GlobalNotifier globalNotifier = Provider.of<GlobalNotifier>(context);
+
     return Scaffold(
       body: SafeArea(
-        child: TabViewWrapper(
+        child: globalNotifier.myInfo == null ? Container() : TabViewWrapper(
           tabList: const ['评论', '点赞', '收藏', '系统审核'],
           pageBuilder: (BuildContext context, int index) {
             switch(index){
