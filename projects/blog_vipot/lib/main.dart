@@ -58,6 +58,8 @@ class _MyAppState extends State<MyApp>{
             hideFooterWhenNotFull: true, // Viewport不满一屏时,禁用上拉加载更多功能
             child: Consumer<MyThemeNotifier>(
               builder: (context, themeModel, child){
+                Provider.of<GlobalNotifier>(context, listen: false).setPageContext(context);
+
                 return Listener(
                   // behavior: HitTestBehavior.translucent,
                   onPointerUp: (e) {

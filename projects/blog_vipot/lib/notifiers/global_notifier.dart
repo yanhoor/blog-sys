@@ -8,6 +8,7 @@ import 'package:blog_vipot/pages/index/index_notifier.dart';
 
 class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
+  late BuildContext pageContext;
   int currentTab = 0;
   late IndexNotifier indexNotifier;
   ChewieController? chewieController;
@@ -22,6 +23,10 @@ class GlobalNotifier extends ChangeNotifier{
 
   GlobalNotifier(): homePageController = PageController(){
     getUserInfo();
+  }
+
+  setPageContext(BuildContext context){
+    pageContext = context;
   }
 
   setCurrentPlayController(ChewieController c){
@@ -65,7 +70,7 @@ class GlobalNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.USER_INFO, method: 'get');
       if(res['success']){
         myInfo = res['result'];
-        if(init) myWebSocket.init(myInfo!['id'].toString());
+        if(init && pageContext.mounted) myWebSocket.init(myInfo!['id'].toString(), context: pageContext);
         getAllGroup();
         getNotificationCount();
         return true;
@@ -83,6 +88,10 @@ class GlobalNotifier extends ChangeNotifier{
       if(res['success']){
         groupList = res['result'];
         allGroupList.clear();
+        allGroupList.add({
+          'id': '',
+          'name': '全部'
+        });
         allGroupList.addAll(groupList);
         groupList.retainWhere((g) => g['system'] == 2);
         notifyListeners();
