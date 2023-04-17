@@ -13,8 +13,7 @@ import 'package:blog_vipot/components/user/user_name.dart';
 import 'package:blog_vipot/utils/time_util.dart';
 import 'package:blog_vipot/components/media/media_list.dart';
 import 'package:blog_vipot/components/wrapper/sliver_app_bar_delegate.dart';
-
-import '../../components/comment/comment_reply_modal.dart';
+import 'package:blog_vipot/components/comment/comment_reply_modal.dart';
 
 class PostPage extends StatefulWidget{
   final String postId;
@@ -94,7 +93,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                             ? Icons.thumb_up_alt
                                             : Icons.thumb_up_alt_outlined,
                                         size: 18,
-                                        color: model.postDetail['isLike'] ? Theme.of(context).primaryColor : null,
+                                        color: model.postDetail['isLike'] ? Theme.of(context).colorScheme.primary : null,
                                       ),
                                     )),
                                 Expanded(
@@ -122,7 +121,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                             ? Icons.favorite
                                             : Icons.favorite_border,
                                         size: 18,
-                                        color: model.postDetail['isCollect'] ? Theme.of(context).primaryColor : null,
+                                        color: model.postDetail['isCollect'] ? Theme.of(context).colorScheme.primary : null,
                                       ),
                                     ))
                               ],

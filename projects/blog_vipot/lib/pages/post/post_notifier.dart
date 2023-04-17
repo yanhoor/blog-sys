@@ -14,18 +14,22 @@ class PostNotifier extends BaseListFetchNotifier{
   @override
   Future<List> getPageList() async{
     List list = [];
-    switch(currentTab){
-      case 1:
-        list = await getCommentList();
-        break;
-      case 2:
-        list = await getLikeUserList();
-        break;
-      case 3:
-        list = await getCollectUserList();
-        break;
+    try{
+      switch(currentTab){
+        case 1:
+          list = await getCommentList();
+          break;
+        case 2:
+          list = await getLikeUserList();
+          break;
+        case 3:
+          list = await getCollectUserList();
+          break;
+      }
+      return list;
+    }catch(e){
+      return Future.error(e.toString());
     }
-    return list;
   }
 
   @override
@@ -45,22 +49,34 @@ class PostNotifier extends BaseListFetchNotifier{
   Future<List> getCommentList() async{
     List list = [];
     var res = await $http.fetch(ApiUrl.COMMENT_LIST, params: { 'blogId': postId, 'page': currentPage, 'pageSize': pageSize });
-    list.addAll(res['result']['list']);
-    return list;
+    if(res['success']){
+      list.addAll(res['result']['list']);
+      return list;
+    }else{
+      return Future.error(res['msg']);
+    }
   }
 
   Future<List> getLikeUserList() async{
     List list = [];
     var res = await $http.fetch('${ApiUrl.BLOG_ACTION_USER}/1', params: { 'blogId': postId, 'page': currentPage, 'pageSize': pageSize });
-    list.addAll(res['result']['list']);
-    return list;
+    if(res['success']){
+      list.addAll(res['result']['list']);
+      return list;
+    }else{
+      return Future.error(res['msg']);
+    }
   }
 
   Future<List> getCollectUserList() async{
     List list = [];
     var res = await $http.fetch('${ApiUrl.BLOG_ACTION_USER}/2', params: { 'blogId': postId, 'page': currentPage, 'pageSize': pageSize });
-    list.addAll(res['result']['list']);
-    return list;
+    if(res['success']){
+      list.addAll(res['result']['list']);
+      return list;
+    }else{
+      return Future.error(res['msg']);
+    }
   }
 
   handleLikePost() async{

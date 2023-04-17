@@ -39,7 +39,7 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                 } else if (model.isEmpty) {
                   content = StateRequestEmpty(size: 60, onPressed: model.initData,);
                 } else if (model.isError) {
-                  content = StateRequestError(size: 60, onPressed: model.initData);
+                  content = StateRequestError(size: 60, onPressed: model.initData, msg: model.stateErrorText,);
                 } else {
                   content = Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

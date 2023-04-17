@@ -7,17 +7,20 @@ import '../../http/index.dart';
 class NotificationNotifier extends BaseListFetchNotifier{
   Map<String, dynamic> fetchParams;
 
-  NotificationNotifier({required this.fetchParams}){
-    handleSetAllRead();
-  }
+  NotificationNotifier({required this.fetchParams});
 
   @override
   Future<List> getPageList() async {
     List list = [];
     var res = await $http.fetch(ApiUrl.NOTIFICATION_LIST, params: { 'page': currentPage, 'pageSize': pageSize, ...fetchParams });
-    list.addAll(res['result']['list']);
-    // print('-----getPageList-------$list');
-    return list;
+    if(res['success']){
+      list.addAll(res['result']['list']);
+      handleSetAllRead();
+      // print('-----getPageList-------$list');
+      return list;
+    }else{
+      return Future.error(res['msg']);
+    }
   }
 
   handleSetAllRead() async{
