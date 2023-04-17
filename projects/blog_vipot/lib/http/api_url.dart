@@ -26,4 +26,6 @@ class ApiUrl{
   static const String USER_INFO = '/user/info';
 
   static const String NOTIFICATION_LIST = '/notification/list';
+  static const String NOTIFICATION_COUNT = '/notification/count';
+  static const String NOTIFICATION_READ = '/notification/read';
 }
