@@ -33,73 +33,71 @@ class _IndexTabPageState extends State<IndexTabPage> with AutomaticKeepAliveClie
     super.build(context);
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      body: Consumer<GlobalNotifier>(
-        builder: (_, globalNotifier, child){
-          return ProviderWidget<IndexNotifier>(
-            model: IndexNotifier(groupId: widget.gid),
-            onModelReady: (model){
-              model.initData();
-              model.initScrollController(controller: ScrollController());
-              widget.onModelReady(model);
-            },
-            builder: (_, model, child){
-              Widget content;
-              if (model.isInitializing) {
-                content = const SkeletonPostList();
-              } else if (model.isEmpty) {
-                content = StateRequestEmpty(size: 60, onPressed: model.initData,);
-              } else if (model.isError) {
-                content = StateRequestError(size: 60, onPressed: model.initData);
-              } else {
-                content = ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(0),
-                    physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                    itemCount: model.pageList.length,
-                    itemBuilder: (context, index) {
-                      Map<String, dynamic> post = model.pageList[index];
-                      return PostItem(
-                        key: Key(post['id'].toString()),
-                        post: post,
-                        scrollController: model.scrollController!,
-                        onUpdatePost: (v){
-                          post = v;
-                          model.notifyListeners();
-                        },
-                      );
-                    });
-              }
+    return Consumer<GlobalNotifier>(
+      builder: (_, globalNotifier, child){
+        return ProviderWidget<IndexNotifier>(
+          model: IndexNotifier(groupId: widget.gid),
+          onModelReady: (model){
+            model.initData();
+            model.initScrollController(controller: ScrollController());
+            widget.onModelReady(model);
+          },
+          builder: (_, model, child){
+            Widget content;
+            if (model.isInitializing) {
+              content = const SkeletonPostList();
+            } else if (model.isEmpty) {
+              content = StateRequestEmpty(size: 60, onPressed: model.initData,);
+            } else if (model.isError) {
+              content = StateRequestError(size: 60, onPressed: model.initData);
+            } else {
+              content = ListView.builder(
+                  shrinkWrap: true,
+                  // primary: false,
+                  controller: model.scrollController,
+                  padding: const EdgeInsets.all(0),
+                  // physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                  itemCount: model.pageList.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> post = model.pageList[index];
+                    return PostItem(
+                      key: Key(post['id'].toString()),
+                      post: post,
+                      scrollController: model.scrollController!,
+                      onUpdatePost: (v){
+                        post = v;
+                        model.notifyListeners();
+                      },
+                    );
+                  });
+            }
 
-              return SafeArea(
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Expanded(
-                            child: RefreshConfiguration.copyAncestor(
-                                context: context,
-                                child: SmartRefresher(
-                                  controller: model.refreshController,
-                                  enablePullDown: true,
-                                  enablePullUp: true,
-                                  onRefresh: model.refreshData,
-                                  onLoading: model.handleLoadMore,
-                                  child: SingleChildScrollView(
-                                    controller: model.scrollController,
-                                    child: content,
-                                  ),
-                                ))
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+            return SafeArea(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                          child: RefreshConfiguration.copyAncestor(
+                              context: context,
+                              child: SmartRefresher(
+                                controller: model.refreshController,
+                                enablePullDown: true,
+                                enablePullUp: true,
+                                onRefresh: model.refreshData,
+                                onLoading: model.handleLoadMore,
+                                child: content,
+                              )
+                          )
+                      )
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

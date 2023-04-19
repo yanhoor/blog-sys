@@ -20,51 +20,45 @@ class _NotificationTabPageBaseState extends State<NotificationTabPageBase>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ProviderWidget<NotificationNotifier>(
-          model: widget.model,
-          onModelReady: (model){
-            model.pageContext = context;
-            model.initData();
-            model.initScrollController(controller: ScrollController());
-          },
-          builder: (_, model, child){
-            Widget content;
-            if (model.isInitializing) {
-              content = Container();
-            } else if (model.isEmpty) {
-              content = StateRequestEmpty(size: 60, onPressed: model.initData,);
-            } else if (model.isError) {
-              content = StateRequestError(size: 60, onPressed: model.initData);
-            } else {
-              content = ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(0),
-                  physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                  itemCount: model.pageList.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> item = model.pageList[index];
-                    return widget.itemBuilder(context, index, item, model);
-                  });
-            }
+    return ProviderWidget<NotificationNotifier>(
+      model: widget.model,
+      onModelReady: (model){
+        model.pageContext = context;
+        model.initData();
+        model.initScrollController(controller: ScrollController());
+      },
+      builder: (_, model, child){
+        Widget content;
+        if (model.isInitializing) {
+          content = Container();
+        } else if (model.isEmpty) {
+          content = StateRequestEmpty(size: 60, onPressed: model.initData,);
+        } else if (model.isError) {
+          content = StateRequestError(size: 60, onPressed: model.initData);
+        } else {
+          content = ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(0),
+              // physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+              controller: model.scrollController,
+              itemCount: model.pageList.length,
+              itemBuilder: (context, index) {
+                Map<String, dynamic> item = model.pageList[index];
+                return widget.itemBuilder(context, index, item, model);
+              });
+        }
 
-            return RefreshConfiguration.copyAncestor(
-                context: context,
-                child: SmartRefresher(
-                  controller: model.refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: model.refreshData,
-                  onLoading: model.handleLoadMore,
-                  child: SingleChildScrollView(
-                    controller: model.scrollController,
-                    child: content,
-                  ),
-                ));
-          },
-        ),
-      ),
+        return RefreshConfiguration.copyAncestor(
+            context: context,
+            child: SmartRefresher(
+              controller: model.refreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: model.refreshData,
+              onLoading: model.handleLoadMore,
+              child: content,
+            ));
+      },
     );
   }
 }

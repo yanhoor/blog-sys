@@ -11,13 +11,22 @@ import '../../route/route_name.dart';
 import '../../utils/time_util.dart';
 
 class NotificationLikePage extends StatefulWidget{
-  const NotificationLikePage({super.key});
+  final Function(NotificationNotifier model) onModelReady;
+
+  const NotificationLikePage({super.key, required this.onModelReady});
 
   @override
   State<NotificationLikePage> createState() => _NotificationLikePageState();
 }
 
 class _NotificationLikePageState extends State<NotificationLikePage> with AutomaticKeepAliveClientMixin{
+  NotificationNotifier model = NotificationNotifier(fetchParams: { 'type': "like_blog", 'isRead': 3 });
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onModelReady(model);
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -27,7 +36,7 @@ class _NotificationLikePageState extends State<NotificationLikePage> with Automa
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(fetchParams: { 'type': "like_blog", 'isRead': 3 }),
+        model: model,
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

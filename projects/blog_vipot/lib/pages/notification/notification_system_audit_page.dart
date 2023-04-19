@@ -1,8 +1,5 @@
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/state/state_tag.dart';
-import 'package:blog_vipot/components/user/user_avatar.dart';
-import 'package:blog_vipot/components/user/user_name.dart';
-import 'package:blog_vipot/http/api_url.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/pages/notification/notification_tab_page_base.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,23 +9,32 @@ import '../../route/route_name.dart';
 import '../../utils/time_util.dart';
 
 class NotificationSystemAuditPage extends StatefulWidget{
-  const NotificationSystemAuditPage({super.key});
+  final Function(NotificationNotifier model) onModelReady;
+
+  const NotificationSystemAuditPage({super.key, required this.onModelReady});
 
   @override
   State<NotificationSystemAuditPage> createState() => _NotificationSystemAuditPageState();
 }
 
 class _NotificationSystemAuditPageState extends State<NotificationSystemAuditPage> with AutomaticKeepAliveClientMixin{
+  NotificationNotifier model = NotificationNotifier(fetchParams: { 'type': "system_audit", 'isRead': 3 });
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onModelReady(model);
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(fetchParams: { 'type': "system_audit", 'isRead': 3 }),
+        model: model,
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

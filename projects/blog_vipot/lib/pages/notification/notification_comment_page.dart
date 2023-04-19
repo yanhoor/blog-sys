@@ -12,23 +12,32 @@ import '../../route/route_name.dart';
 import '../../utils/time_util.dart';
 
 class NotificationCommentPage extends StatefulWidget{
-  const NotificationCommentPage({super.key});
+  final Function(NotificationNotifier model) onModelReady;
+
+  const NotificationCommentPage({super.key, required this.onModelReady});
 
   @override
   State<NotificationCommentPage> createState() => _NotificationCommentPageState();
 }
 
 class _NotificationCommentPageState extends State<NotificationCommentPage> with AutomaticKeepAliveClientMixin{
+  NotificationNotifier model = NotificationNotifier(fetchParams: { 'type': "comment,comment_reply", 'isRead': 3 });
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onModelReady(model);
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(fetchParams: { 'type': "comment,comment_reply", 'isRead': 3 }),
+        model: model,
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

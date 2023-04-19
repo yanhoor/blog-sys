@@ -9,7 +9,9 @@ import 'package:blog_vipot/route/route_name.dart';
 import 'package:blog_vipot/utils/time_util.dart';
 
 class NotificationCollectPage extends StatefulWidget{
-  const NotificationCollectPage({super.key});
+  final Function(NotificationNotifier model) onModelReady;
+
+  const NotificationCollectPage({super.key, required this.onModelReady});
 
   @override
   State<NotificationCollectPage> createState() => _NotificationCollectPageState();
@@ -17,15 +19,23 @@ class NotificationCollectPage extends StatefulWidget{
 
 class _NotificationCollectPageState extends State<NotificationCollectPage> with AutomaticKeepAliveClientMixin{
 
+  NotificationNotifier model = NotificationNotifier(fetchParams: { 'type': "collect_blog", 'isRead': 3 });
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onModelReady(model);
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     return NotificationTabPageBase(
-        model: NotificationNotifier(fetchParams: { 'type': "collect_blog", 'isRead': 3 }),
+        model: model,
         itemBuilder: (_, index, item, model){
           return Card(
             key: ValueKey(item['id'].toString()),

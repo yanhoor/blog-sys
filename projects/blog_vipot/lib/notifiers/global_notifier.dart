@@ -1,4 +1,5 @@
 import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
+import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
 import 'package:chewie/chewie.dart';
@@ -11,6 +12,7 @@ class GlobalNotifier extends ChangeNotifier{
   late BuildContext pageContext;
   int currentTab = 0;
   late IndexNotifier indexNotifier;
+  late NotificationNotifier notificationNotifier;
   ChewieController? chewieController;
   Map<String, dynamic>? _myInfo;
   List allGroupList = [];

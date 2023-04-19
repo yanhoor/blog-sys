@@ -141,6 +141,16 @@ class _HomePageState extends State<HomePage>
                         model.indexNotifier.scrollToOffset();
                       }
                       break;
+                    case 3:
+                      if (model.notificationNotifier.scrollController!.offset < 50) {
+                        if (!model.notificationNotifier.isRefreshing) {
+                          model.notificationNotifier.setRefreshing();
+                          model.notificationNotifier.refreshController.requestRefresh();
+                        }
+                      } else {
+                        model.notificationNotifier.scrollToOffset();
+                      }
+                      break;
                   }
                 } else {
                   model.setCurrentTab(index);
