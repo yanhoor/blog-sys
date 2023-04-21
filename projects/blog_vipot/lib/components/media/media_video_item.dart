@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../http/api_url.dart';
 import '../../notifiers/global_notifier.dart';
@@ -19,6 +20,7 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
   late GlobalNotifier globalNotifier;
   VideoPlayerController? videoPlayerController;
   ChewieController? chewieController;
+  bool isAutoPause = false;
 
   @override
   void initState() {
@@ -37,7 +39,7 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
 
   @override
   Widget build(BuildContext context) {
-    globalNotifier = Provider.of<GlobalNotifier>(context);
+    globalNotifier = Provider.of<GlobalNotifier>(context, listen: false);
     // print('+++++++++++++++$url');
 
     return SizedBox(
@@ -47,8 +49,40 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
         color: Colors.black,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Chewie(
-            controller: chewieController!,
+          child: VisibilityDetector(
+              key: ValueKey(widget.url),
+              onVisibilityChanged: (visibilityInfo) {
+                double visiblePercentage = visibilityInfo.visibleFraction * 100;
+                // debugPrint('Widget ${visibilityInfo.key} is $visiblePercentage% visible');
+                VideoPlayerValue value = videoPlayerController!.value;
+                // debugPrint('================${value.position.compareTo(value.duration)}');
+                if(visiblePercentage < 80 && videoPlayerController!.value.isPlaying){
+                  videoPlayerController!.pause();
+                  isAutoPause = true;
+                }else if(visiblePercentage >= 80 && isAutoPause && !value.isPlaying && value.position.compareTo(value.duration) < 0){
+                  // 重新进入视野 + 暂停 + 未播放完
+                  videoPlayerController!.play();
+                  isAutoPause = false;
+                }
+              },
+              child: Listener(
+                behavior: HitTestBehavior.translucent,
+                onPointerDown: (_){
+                  if(globalNotifier.videoPlayerController != null && globalNotifier.videoPlayerController!.value.isPlaying) {
+                    globalNotifier.videoPlayerController!.pause();
+                  }
+
+                  Future.delayed(const Duration(milliseconds: 500)).then((value){
+                    // debugPrint('========GestureDetector onPointerUp==========${videoPlayerController!.value.isPlaying}');
+                    if(videoPlayerController!.value.isPlaying){
+                      globalNotifier.videoPlayerController = videoPlayerController;
+                    }
+                  });
+                },
+                child: Chewie(
+                  controller: chewieController!,
+                ),
+              )
           ),
         ),
       ),
