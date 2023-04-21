@@ -67,14 +67,13 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
               },
               child: Listener(
                 behavior: HitTestBehavior.translucent,
-                onPointerDown: (_){
-                  if(globalNotifier.videoPlayerController != null && globalNotifier.videoPlayerController!.value.isPlaying) {
-                    globalNotifier.videoPlayerController!.pause();
-                  }
-
+                onPointerUp: (_){
                   Future.delayed(const Duration(milliseconds: 500)).then((value){
                     // debugPrint('========GestureDetector onPointerUp==========${videoPlayerController!.value.isPlaying}');
                     if(videoPlayerController!.value.isPlaying){
+                      if(globalNotifier.videoPlayerController != null && globalNotifier.videoPlayerController !=videoPlayerController && globalNotifier.videoPlayerController!.value.isPlaying) {
+                        globalNotifier.videoPlayerController!.pause();
+                      }
                       globalNotifier.videoPlayerController = videoPlayerController;
                     }
                   });
