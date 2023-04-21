@@ -5,9 +5,9 @@ class ProviderWidget<T extends ChangeNotifier> extends StatefulWidget{
   final T model;
   Widget? child;
   final Widget Function(BuildContext context, T value, Widget? child) builder;
-  final Function(T model) onModelReady;
+  final Function(T model)? onModelReady;
 
-  ProviderWidget({super.key, required this.model, required this.onModelReady, this.child, required this.builder, });
+  ProviderWidget({super.key, required this.model, this.onModelReady, this.child, required this.builder, });
 
   @override
   State<ProviderWidget<T>> createState() => _ProviderWidgetState<T>();
@@ -21,7 +21,7 @@ class _ProviderWidgetState<T extends ChangeNotifier> extends State<ProviderWidge
     super.initState();
     print('-------------_ProviderWidgetState initState------------------');
     model = widget.model;
-    widget.onModelReady.call(model);
+    widget.onModelReady?.call(model);
   }
 
   @override
