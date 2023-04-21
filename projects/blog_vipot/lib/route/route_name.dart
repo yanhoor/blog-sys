@@ -5,4 +5,5 @@ class RouteName{
   static const String commentDetail = '/commentDetail';
   static const String imagePreview = '/imagePreview';
   static const String groupManage = '/groupManage';
+  static const String searchResult = '/searchResult';
 }

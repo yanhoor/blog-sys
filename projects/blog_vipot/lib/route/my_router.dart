@@ -5,6 +5,7 @@ import 'package:blog_vipot/pages/image_preview/image_preview.dart';
 import 'package:blog_vipot/pages/login/login_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
+import 'package:blog_vipot/pages/search_result/search_result_page.dart';
 import 'package:blog_vipot/route/animate_page_route.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,6 +33,9 @@ class MyRouter{
         return CupertinoPageRoute(settings: settings, builder: (_) => ImagePreview(imageList: param['imageList'], initPage: param['initPage'],));
       case RouteName.groupManage:
         return CupertinoPageRoute(settings: settings, builder: (_) => const GroupManagePage());
+      case RouteName.searchResult:
+        Map param = settings.arguments as Map ?? {};
+        return CupertinoPageRoute(settings: settings, builder: (_) => SearchResultPage(keyword: param['keyword'].toString()));
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }

@@ -8,6 +8,7 @@ class MyStorageManager{
   static String REMEMBER_PASSWORD = 'remember-password';
   static String LOGIN_MOBILE = 'login-mobile';
   static String LOGIN_PASSWORD = 'login-password';
+  static String SEARCH_HISTORY = 'search-history';
 
   static init() async {
     sharedPreferences = await SharedPreferences.getInstance();
