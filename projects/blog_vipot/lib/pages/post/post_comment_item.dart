@@ -12,7 +12,6 @@ import '../../route/route_name.dart';
 class PostCommentItem extends StatelessWidget {
   final Map<String, dynamic> comment;
   final Map<String, dynamic> post;
-  final int index;
   final int total;
   final ScrollController scrollController;
   Function(BuildContext ctx)? onSuccess;
@@ -21,7 +20,6 @@ class PostCommentItem extends StatelessWidget {
       {super.key,
       required this.post,
       required this.comment,
-      required this.index,
       required this.total,
       this.onSuccess,
       required this.scrollController});
@@ -30,11 +28,6 @@ class PostCommentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-          border: index < total - 1
-              ? Border(
-                  bottom: BorderSide(color: Theme.of(context).highlightColor))
-              : null),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -99,6 +92,7 @@ class PostCommentItem extends StatelessWidget {
                               comment['childComments'][index];
 
                               return Container(
+                                key: ValueKey(reply['id'].toString()),
                                 padding: const EdgeInsets.only(bottom: 4),
                                 child: Text.rich(TextSpan(children: [
                                   reply['replyComment']['topCommentId'] != null

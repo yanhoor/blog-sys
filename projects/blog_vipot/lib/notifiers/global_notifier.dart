@@ -2,10 +2,10 @@ import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/http/index.dart';
 import 'package:blog_vipot/pages/index/index_notifier.dart';
+import 'package:video_player/video_player.dart';
 
 class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
@@ -13,7 +13,7 @@ class GlobalNotifier extends ChangeNotifier{
   int currentTab = 0;
   late IndexNotifier indexNotifier;
   late NotificationNotifier notificationNotifier;
-  ChewieController? chewieController;
+  VideoPlayerController? videoPlayerController;
   Map<String, dynamic>? _myInfo;
   List allGroupList = [];
   List groupList = [];
@@ -29,11 +29,6 @@ class GlobalNotifier extends ChangeNotifier{
 
   setPageContext(BuildContext context){
     pageContext = context;
-  }
-
-  setCurrentPlayController(ChewieController c){
-    if(chewieController != null && chewieController!.isPlaying) chewieController!.pause();
-    chewieController = c;
   }
 
   setCurrentTab(int v){

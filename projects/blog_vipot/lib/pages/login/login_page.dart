@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage>{
                             suffixIcon: IconButton(
                                 icon: Icon(
                                   Icons.remove_red_eye,
-                                  color: model.hidePassword ? Colors.grey : Theme.of(context).primaryColor,
+                                  color: model.hidePassword ? Colors.grey : Theme.of(context).colorScheme.primary,
                                 ),
                                 onPressed: (){
                                   model.hidePassword = !model.hidePassword;

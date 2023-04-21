@@ -54,7 +54,7 @@ class _MyPageState extends State<MyPage>{
               Map<String, dynamic> myInfo = model.myInfo!;
               slivers = [
                 SliverAppBar(
-                  // backgroundColor: Theme.of(context).primaryColor,
+                  // backgroundColor: Theme.of(context).colorScheme.primary,
                   // title: const Text('我的'),
                   floating: true, // 当有下滑手势的时候，就会显示 AppBar
                   pinned: true, // Appbar 折叠后不消失
@@ -159,49 +159,55 @@ class _MyPageState extends State<MyPage>{
                       const SizedBox(height: 4,),
                       Card(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                minLeadingWidth: 0,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                title: const Text('我的收藏', style: TextStyle(fontSize: 14),),
-                                leading: const Icon(Icons.favorite, size: 24,),
-                                trailing: const Icon(Icons.arrow_forward_ios, size: 24),
-                                onTap: (){
-                                  // Navigator.of(context).pushNamed(RouteName.customView);
-                                },
-                              ),
-                              ListTile(
-                                minLeadingWidth: 0,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                title: const Text('我的点赞', style: TextStyle(fontSize: 14)),
-                                leading: const Icon(Icons.thumb_up, size: 24),
-                                trailing: const Icon(Icons.arrow_forward_ios, size: 24),
-                                onTap: (){
-                                  // Navigator.of(context).pushNamed(RouteName.customView);
-                                },
-                              ),
-                              ListTile(
-                                minLeadingWidth: 0,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                title: const Text('我的评论', style: TextStyle(fontSize: 14)),
-                                leading: const Icon(Icons.messenger, size: 24),
-                                trailing: const Icon(Icons.arrow_forward_ios, size: 24),
-                                onTap: (){
-                                  // Navigator.of(context).pushNamed(RouteName.customView);
-                                },
-                              ),
-                              ListTile(
-                                minLeadingWidth: 0,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                title: const Text('我的分组', style: TextStyle(fontSize: 14)),
-                                leading: const Icon(Icons.group, size: 24),
-                                trailing: const Icon(Icons.arrow_forward_ios, size: 24),
-                                onTap: (){
-                                  Navigator.of(context).pushNamed(RouteName.groupManage);
-                                },
-                              ),
-                            ],
+                          child: ListView(
+                            padding: const EdgeInsets.all(0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            children: ListTile.divideTiles(
+                              context: context,
+                              tiles: [
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的收藏', style: TextStyle(fontSize: 14),),
+                                  leading: const Icon(Icons.favorite, size: 24,),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                  },
+                                ),
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的点赞', style: TextStyle(fontSize: 14)),
+                                  leading: const Icon(Icons.thumb_up, size: 24),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                  },
+                                ),
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的评论', style: TextStyle(fontSize: 14)),
+                                  leading: const Icon(Icons.messenger, size: 24),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                  },
+                                ),
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的分组', style: TextStyle(fontSize: 14)),
+                                  leading: const Icon(Icons.group, size: 24),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    Navigator.of(context).pushNamed(RouteName.groupManage);
+                                  },
+                                ),
+                              ],
+                            ).toList(),
                           )
                       )
                     ],

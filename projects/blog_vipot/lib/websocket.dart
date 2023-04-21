@@ -38,15 +38,17 @@ class MyWebSocket {
     websocketChannel!.stream.listen((event) async{
       var msg = jsonDecode(event);
       String msgType = msg['type'];
-      print('======websocketChannel onMessage=======${Platform.operatingSystem}');
-      if(msgType == WebSocketMessageType.NOTIFICATION) Provider.of<GlobalNotifier>(pageContext!, listen: false).getNotificationCount();
-      // try{
-      //   await MySystemNotification.flutterLocalNotificationsPlugin.show(
-      //       MySystemNotification.notificationId++, 'plain title', 'plain body', MySystemNotification.notificationDetails,
-      //       payload: 'item x');
-      // }catch(e){
-      //   print('===================$e');
-      // }
+      // print('======websocketChannel onMessage=======${Platform.operatingSystem}');
+      if(msgType == WebSocketMessageType.NOTIFICATION) {
+        Provider.of<GlobalNotifier>(pageContext!, listen: false).getNotificationCount();
+        try{
+          await MySystemNotification.flutterLocalNotificationsPlugin.show(
+              MySystemNotification.notificationId++, 'plain title', 'plain body', MySystemNotification.notificationDetails,
+              payload: 'item x');
+        }catch(e){
+          print('===================$e');
+        }
+      }
     }, onDone: () {
       print('======websocketChannel onDone=======');
       reconnect();

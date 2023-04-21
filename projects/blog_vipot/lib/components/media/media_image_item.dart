@@ -4,11 +4,16 @@ import '../../http/api_url.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MediaImageItem extends StatelessWidget {
-  final String src;
+  late String src;
   final BoxFit fit;
+  int? ratio;
 
-  const MediaImageItem({super.key, required String url, this.fit = BoxFit.cover})
-      : src = ApiUrl.ASSET_BASE + url;
+  MediaImageItem({super.key, required String url, this.fit = BoxFit.cover, this.ratio}){
+    src = ApiUrl.ASSET_BASE + url;
+    if(getFileExt(src) != 'svg' && ratio != null){
+      src = '${ApiUrl.ASSET_BASE}$url?x-oss-process=image/resize,p_${ratio.toString()}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

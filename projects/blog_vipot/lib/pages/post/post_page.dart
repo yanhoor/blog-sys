@@ -197,9 +197,12 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                       margin: const EdgeInsets.only(top: 0, left: 5, right: 5),
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        child: model.pageList.isNotEmpty ? ListView.builder(
+                        child: model.pageList.isNotEmpty ? ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
+                          separatorBuilder: (_, index){
+                            return const Divider();
+                          },
                           itemCount: model.pageList.length,
                           itemBuilder: (context, index){
 
@@ -216,7 +219,6 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                 result = PostCommentItem(
                                     post: model.postDetail,
                                     comment: comment,
-                                    index: index,
                                     total: model.pageList.length,
                                     onSuccess: (ctx){
                                       Navigator.pop(ctx);

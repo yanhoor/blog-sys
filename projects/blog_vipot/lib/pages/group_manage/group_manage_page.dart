@@ -51,7 +51,7 @@ class _GroupManagePageState extends State<GroupManagePage>{
                       children: model.pageList.map((group){
                         return ListTile(
                           key: ValueKey(group['id']),
-                          tileColor: model.selectedGroup != null && model.selectedGroup!['id'] == group['id'] ? Theme.of(context).primaryColor : null,
+                          tileColor: model.selectedGroup != null && model.selectedGroup!['id'] == group['id'] ? Theme.of(context).colorScheme.primary : null,
                           minLeadingWidth: 0,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                           title: Text(

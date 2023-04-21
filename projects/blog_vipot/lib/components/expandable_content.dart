@@ -5,11 +5,12 @@ class ExpandableContent extends StatefulWidget{
   final int maxLength;
   final int maxLines;
   final String content;
+  TextStyle? style;
   final ScrollController scrollController;
-  const ExpandableContent({super.key, this.maxLength = 180, this.maxLines = 3, required this.content, required this.scrollController});
+  ExpandableContent({super.key, this.maxLength = 180, this.maxLines = 3, required this.content, required this.scrollController, this.style});
 
   @override
-  _ExpandableContentState createState() => _ExpandableContentState();
+  State<ExpandableContent> createState() => _ExpandableContentState();
 }
 
 class _ExpandableContentState extends State<ExpandableContent>{
@@ -28,7 +29,10 @@ class _ExpandableContentState extends State<ExpandableContent>{
         setState(() {
           isExpanded = !isExpanded;
           if(isExpanded){
+            // scrollOffset = Scrollable.of(context).position.pixels;
+            // print('=====PrimaryScrollController=======${PrimaryScrollController.of(context).offset}');
             scrollOffset = widget.scrollController.offset;
+            print('=========scrollOffset=========$scrollOffset');
           }else{
             widget.scrollController.animateTo(scrollOffset, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
           }
@@ -54,12 +58,15 @@ class _ExpandableContentState extends State<ExpandableContent>{
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-          children: [
-            TextSpan(text: isExpanded ? widget.content : briefContent),
-            if(showAction) TextSpan(text: isExpanded ? '收起' : '展开', style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
-          ]
+    return SizedBox(
+      width: double.infinity,
+      child: Text.rich(
+        TextSpan(
+            children: [
+              TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style),
+              if(showAction) TextSpan(text: isExpanded ? '收起' : '展开', style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
+            ]
+        ),
       ),
     );
   }

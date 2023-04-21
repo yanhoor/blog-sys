@@ -8,7 +8,7 @@ class TabViewWrapper extends StatefulWidget{
   final bool showDropdown;
   final List<String> tabList;
   final IndexedWidgetBuilder pageBuilder;
-  final Function(TabController tabController)? onTabChange;
+  final Function(int index)? onTabChange;
 
   const TabViewWrapper({super.key, required this.tabList, required this.pageBuilder, this.onTabChange, this.initTab = 0, this.isScrollable = false, this.showDropdown = false});
 
@@ -24,6 +24,7 @@ class _TabViewWrapperState extends State<TabViewWrapper> with SingleTickerProvid
   @override
   void initState() {
     tabNotifier = ValueNotifier(widget.initTab);
+    // print('----------_TabViewWrapperState initState------------${widget.tabList.length}');
     tabController = TabController(initialIndex: widget.initTab, length: widget.tabList.length, vsync: this);
     tabController.addListener(tabChange);
     super.initState();
@@ -38,11 +39,11 @@ class _TabViewWrapperState extends State<TabViewWrapper> with SingleTickerProvid
   }
 
   tabChange(){
-    print('-------------------------TabViewWrapper Tab Changed---------${tabController.index}--------${tabController.previousIndex}----------${tabController.indexIsChanging}');
+    // print('-------------------------TabViewWrapper Tab Changed---------${tabController.index}--------${tabController.previousIndex}----------${tabController.indexIsChanging}');
     tabNotifier.value = tabController.index;
     // if(tabController.indexIsChanging) return; // 避免点击间隔tab时也会执行
 
-    widget.onTabChange?.call(tabController);
+    widget.onTabChange?.call(tabController.index);
   }
 
   @override
@@ -67,7 +68,7 @@ class _TabViewWrapperState extends State<TabViewWrapper> with SingleTickerProvid
                       fontSize: 15,
                       fontWeight: FontWeight.bold
                   ),
-                  labelColor: Theme.of(context).primaryColor, // 选中的标签
+                  labelColor: Theme.of(context).colorScheme.primary, // 选中的标签
                   unselectedLabelColor: isDark ? Colors.white : Colors.black, // 未选中的标签
                   unselectedLabelStyle: const TextStyle(
                       fontSize: 13,
@@ -75,7 +76,7 @@ class _TabViewWrapperState extends State<TabViewWrapper> with SingleTickerProvid
                   ),
                   indicator: UnderlineTabIndicator(
                     insets: const EdgeInsets.only(left: 15, right: 15),
-                    borderSide: BorderSide(width: 2, color: Theme.of(context).primaryColor)
+                    borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.primary)
                   ),
                   onTap: (index){
                   },
@@ -87,9 +88,6 @@ class _TabViewWrapperState extends State<TabViewWrapper> with SingleTickerProvid
           Expanded(child: TabBarView(
             controller: tabController,
             children: List.generate(widget.tabList.length, (index) {
-              print('-------------------------TabViewWrapper build tab view---------------$index------------${tabController.indexIsChanging}');
-              // todo: 问题：当点击某个tab时，前一个相邻tab的页面会先初始化，然后再销毁。如当前在0，点击4，3的页面会初始化；或者当前在4， 点击2， 3也会初始化
-
               return widget.pageBuilder(context, index);
             }),
           ))
@@ -114,7 +112,7 @@ class DropdownTabs extends StatelessWidget{
       alignment: Alignment.topRight,
       child: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: Theme.of(context).primaryColor,
+          canvasColor: Theme.of(context).colorScheme.primary,
         ),
         child: DropdownButtonHideUnderline(
             child: DropdownButton(
@@ -144,7 +142,7 @@ class DropdownTabs extends StatelessWidget{
               isExpanded: true,
               icon: Icon(
                 Icons.keyboard_arrow_down,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             )),
       ),

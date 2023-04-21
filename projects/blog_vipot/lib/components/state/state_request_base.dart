@@ -18,7 +18,7 @@ class StateRequestBase extends StatelessWidget{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(iconData, color: Theme.of(context).primaryColor, size: size,),
+          Icon(iconData, color: Theme.of(context).colorScheme.primary, size: size,),
           if(msg != null) ...[
             const SizedBox(height: 12,),
             Text(msg!)

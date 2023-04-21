@@ -12,9 +12,18 @@ class UserAvatar extends StatelessWidget{
     return SizedBox(
       width: size,
       height: size,
-      child: ClipRRect(
+      child: avatar == null || (avatar as String).isEmpty
+          ? Container(
+        // padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).hintColor),
+            shape: BoxShape.circle
+        ),
+        child: const Icon(Icons.person),
+      )
+          : ClipRRect(
         borderRadius: BorderRadius.circular(size),
-        child: avatar == null || (avatar as String).isEmpty ? const Icon(Icons.person) : MediaImageItem(url: user['avatar'],),
+        child: MediaImageItem(url: user['avatar'],),
       ),
     );
   }

@@ -33,6 +33,7 @@ class NewPostNotifier extends StateNotifier{
         if(res['success']){
           ToastHelper.success('发布成功');
           form.reset();
+          selectMode = 3;
           editForm['medias'] = [];
         }else{
           ToastHelper.error(res['msg'] ?? '发布失败');
@@ -86,6 +87,7 @@ class NewPostNotifier extends StateNotifier{
           'file': res['result'],
           'fileId': res['result']['id']
         });
+        print('=========uploadPic completed===========');
         notifyListeners();
       }else{
         ToastHelper.error(res['msg']);

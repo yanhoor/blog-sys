@@ -16,7 +16,6 @@ class PostItem extends StatelessWidget {
   const PostItem(
       {super.key, required this.post, required this.scrollController, required this.onUpdatePost});
 
-
   handleLikePost() async{
     try{
       var res = await $http.fetch(ApiUrl.BLOG_LIKE, params: { 'id':  post['id'], 'isLike': post['isLike'] ? 0 : 1 });
@@ -109,7 +108,7 @@ class PostItem extends StatelessWidget {
                                       ? Icons.thumb_up_alt
                                       : Icons.thumb_up_alt_outlined,
                                   size: 18,
-                                  color: post['isLike'] ? Theme.of(context).primaryColor : null,
+                                  color: post['isLike'] ? Theme.of(context).colorScheme.primary : null,
                                 ),
                                 const SizedBox(
                                   width: 4,
@@ -151,7 +150,7 @@ class PostItem extends StatelessWidget {
                                       ? Icons.favorite
                                       : Icons.favorite_border,
                                   size: 18,
-                                  color: post['isCollect'] ? Theme.of(context).primaryColor : null,
+                                  color: post['isCollect'] ? Theme.of(context).colorScheme.primary : null,
                                 ),
                                 const SizedBox(
                                   width: 4,
