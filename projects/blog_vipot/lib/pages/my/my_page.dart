@@ -173,7 +173,7 @@ class _MyPageState extends State<MyPage>{
                                   leading: const Icon(Icons.favorite, size: 24,),
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 24),
                                   onTap: (){
-                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                    Navigator.of(context).pushNamed(RouteName.myCollections);
                                   },
                                 ),
                                 ListTile(
@@ -183,7 +183,7 @@ class _MyPageState extends State<MyPage>{
                                   leading: const Icon(Icons.thumb_up, size: 24),
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 24),
                                   onTap: (){
-                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                    Navigator.of(context).pushNamed(RouteName.myLike);
                                   },
                                 ),
                                 ListTile(
@@ -193,7 +193,7 @@ class _MyPageState extends State<MyPage>{
                                   leading: const Icon(Icons.messenger, size: 24),
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 24),
                                   onTap: (){
-                                    // Navigator.of(context).pushNamed(RouteName.customView);
+                                    Navigator.of(context).pushNamed(RouteName.myComments);
                                   },
                                 ),
                                 ListTile(

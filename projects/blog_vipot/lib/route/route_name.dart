@@ -6,4 +6,7 @@ class RouteName{
   static const String imagePreview = '/imagePreview';
   static const String groupManage = '/groupManage';
   static const String searchResult = '/searchResult';
+  static const String myCollections = '/myCollections';
+  static const String myLike = '/myLike';
+  static const String myComments = '/myComments';
 }

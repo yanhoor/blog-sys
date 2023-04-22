@@ -2,7 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DialogHelper {
-  static showIOSAlertDialog({required BuildContext context, required String message, required Future Function() onConfirm, Function? onCancel}) async{
+  static showIOSAlertDialog({
+    required BuildContext context,
+    required String message,
+    required Future Function() onConfirm,
+    Function? onCancel,
+    Color cancelBtnColor = Colors.black54,
+    String confirmBtnText = '确定',
+    Color? confirmBtnColor,
+  }) async{
+    confirmBtnColor = confirmBtnColor ?? Theme.of(context).primaryColor;
+
     return await showCupertinoDialog(
       context: context,
       builder: (dialogContext) {
@@ -13,7 +23,7 @@ class DialogHelper {
                 onPressed: () {
                   onCancel == null ? Navigator.of(dialogContext).pop(false) : onCancel();
                 },
-                textStyle: const TextStyle(color: Colors.red),
+                textStyle: TextStyle(color: cancelBtnColor),
                 child: const Text('取消')
             ),
             CupertinoDialogAction(
@@ -21,7 +31,8 @@ class DialogHelper {
                   Navigator.of(dialogContext).pop(true);
                   onConfirm();
                 },
-                child: const Text('确定')
+                textStyle: TextStyle(color: confirmBtnColor),
+                child: Text(confirmBtnText)
             ),
           ],
         );

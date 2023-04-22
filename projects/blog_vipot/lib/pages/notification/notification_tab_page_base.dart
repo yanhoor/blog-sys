@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/skeleton/skeleton_activity_common_list.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +31,7 @@ class _NotificationTabPageBaseState extends State<NotificationTabPageBase>{
       builder: (_, model, child){
         Widget content;
         if (model.isInitializing) {
-          content = Container();
+          content = const SkeletonActivityCommonList();
         } else if (model.isEmpty) {
           content = StateRequestEmpty(size: 60, onPressed: model.initData,);
         } else if (model.isError) {

@@ -3,6 +3,9 @@ import 'package:blog_vipot/pages/group_manage/group_manage_page.dart';
 import 'package:blog_vipot/pages/home/home_page.dart';
 import 'package:blog_vipot/pages/image_preview/image_preview.dart';
 import 'package:blog_vipot/pages/login/login_page.dart';
+import 'package:blog_vipot/pages/my_collections/my_collections_page.dart';
+import 'package:blog_vipot/pages/my_comments/my_comments_page.dart';
+import 'package:blog_vipot/pages/my_like/my_like_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
 import 'package:blog_vipot/pages/search_result/search_result_page.dart';
@@ -36,6 +39,12 @@ class MyRouter{
       case RouteName.searchResult:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => SearchResultPage(keyword: param['keyword'].toString()));
+      case RouteName.myCollections:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const MyCollectionsPage());
+      case RouteName.myLike:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const MyLikePage());
+      case RouteName.myComments:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const MyCommentsPage());
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }
