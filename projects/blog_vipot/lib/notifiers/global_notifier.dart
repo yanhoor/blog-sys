@@ -72,9 +72,9 @@ class GlobalNotifier extends ChangeNotifier{
         getNotificationCount();
         return true;
       }
-      return false;
+      return Future.error(res['msg']);
     }catch(e){
-      return false;
+      return Future.error(e.toString());
       // print('=========${jsonEncode(e)}');
     }
   }

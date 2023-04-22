@@ -32,7 +32,7 @@ class _PostListState extends State<PostList>{
             } else if (model.isEmpty) {
               content = StateRequestEmpty(size: 60, onPressed: model.initData,);
             } else if (model.isError) {
-              content = StateRequestError(size: 60, onPressed: model.initData);
+              content = StateRequestError(size: 60, onPressed: model.initData, msg: model.stateErrorText,);
             } else {
               content = ListView.builder(
                   shrinkWrap: true,

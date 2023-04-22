@@ -13,14 +13,18 @@ class IndexNotifier extends BaseListFetchNotifier{
     if(token.isEmpty) groupId = '';
 
     List list = [];
-    var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'gid': groupId, 'page': currentPage, 'pageSize': pageSize });
+    try{
+      var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'gid': groupId, 'page': currentPage, 'pageSize': pageSize });
 
-    if(res['success']){
-      list.addAll(res['result']['list']);
-      // print('-----getPageList-------$list');
-      return list;
-    }else{
-      return Future.error(res['msg']);
+      if(res['success']){
+        list.addAll(res['result']['list']);
+        // print('-----getPageList-------$list');
+        return list;
+      }else{
+        return Future.error(res['msg']);
+      }
+    }catch(e){
+      return Future.error(e.toString());
     }
   }
 }

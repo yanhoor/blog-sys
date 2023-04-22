@@ -26,6 +26,7 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
+          bottom: false,
           child: ProviderWidget<CommentDetailNotifier>(
               model: CommentDetailNotifier(commentId: widget.commentId),
               onModelReady: (model) {

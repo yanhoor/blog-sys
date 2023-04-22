@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:blog_vipot/my_system_notification.dart';
 import 'package:blog_vipot/route/my_router.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'notifiers/global_notifier.dart';
 import 'notifiers/my_theme_notifier.dart';

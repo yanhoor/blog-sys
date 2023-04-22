@@ -34,6 +34,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
 
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: ProviderWidget<PostNotifier>(
             model: PostNotifier(postId: widget.postId),
             onModelReady: (model) {
@@ -198,6 +199,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         child: model.pageList.isNotEmpty ? ListView.separated(
+                          padding: const EdgeInsets.all(0),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           separatorBuilder: (_, index){

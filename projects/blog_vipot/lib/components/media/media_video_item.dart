@@ -3,9 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
-import '../../http/api_url.dart';
-import '../../notifiers/global_notifier.dart';
+import 'package:blog_vipot/http/api_url.dart';
+import 'package:blog_vipot/notifiers/global_notifier.dart';
 
 class MediaVideoItem extends StatefulWidget {
   final String url;
@@ -25,6 +24,7 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
   @override
   void initState() {
     super.initState();
+    globalNotifier = Provider.of<GlobalNotifier>(context, listen: false);
     // context.read<GlobalNotifier>().initVideoPlayController(widget.url);
     videoPlayerController = VideoPlayerController.network( ApiUrl.ASSET_BASE + widget.url);
     videoPlayerController!.initialize();
@@ -37,9 +37,14 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
     );
   }
 
+  void pauseVideo(){
+    if(globalNotifier.videoPlayerController != null && globalNotifier.videoPlayerController != videoPlayerController && globalNotifier.videoPlayerController!.value.isPlaying) {
+      globalNotifier.videoPlayerController!.pause();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    globalNotifier = Provider.of<GlobalNotifier>(context, listen: false);
     // print('+++++++++++++++$url');
 
     return SizedBox(
@@ -62,6 +67,8 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
                 }else if(visiblePercentage >= 80 && isAutoPause && !value.isPlaying && value.position.compareTo(value.duration) < 0){
                   // 重新进入视野 + 暂停 + 未播放完
                   videoPlayerController!.play();
+                  pauseVideo();
+                  globalNotifier.videoPlayerController = videoPlayerController;
                   isAutoPause = false;
                 }
               },
@@ -71,9 +78,7 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
                   Future.delayed(const Duration(milliseconds: 500)).then((value){
                     // debugPrint('========GestureDetector onPointerUp==========${videoPlayerController!.value.isPlaying}');
                     if(videoPlayerController!.value.isPlaying){
-                      if(globalNotifier.videoPlayerController != null && globalNotifier.videoPlayerController !=videoPlayerController && globalNotifier.videoPlayerController!.value.isPlaying) {
-                        globalNotifier.videoPlayerController!.pause();
-                      }
+                      pauseVideo();
                       globalNotifier.videoPlayerController = videoPlayerController;
                     }
                   });

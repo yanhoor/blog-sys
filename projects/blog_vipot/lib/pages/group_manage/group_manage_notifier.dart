@@ -3,6 +3,7 @@ import 'package:blog_vipot/components/helper/dialog_helper.dart';
 import 'package:blog_vipot/notifiers/base_fetch_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:blog_vipot/http/index.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../notifiers/global_notifier.dart';
@@ -53,7 +54,9 @@ class GroupManageNotifier extends BaseFetchNotifier{
   handleDeleteGroup() async{
     DialogHelper.showIOSAlertDialog(
         context: pageContext!,
-        message: '确定删除吗？',
+        message: '确定删除吗？${selectedGroup!['memberCount'] > 0 ? '该分组有 ${selectedGroup!['memberCount']} 个成员' : ''}',
+        confirmBtnColor: Colors.red,
+        confirmBtnText: '删除',
         onConfirm: () async {
           try{
             var res = await $http.fetch(ApiUrl.GROUP_DELETE, params: { 'id': editForm['id'] });

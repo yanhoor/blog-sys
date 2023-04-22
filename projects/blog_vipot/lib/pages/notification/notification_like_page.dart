@@ -42,35 +42,46 @@ class _NotificationLikePageState extends State<NotificationLikePage> with Automa
             key: ValueKey(item['id'].toString()),
             child: Container(
               padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UserAvatar(user: item['createBy']),
-                      const SizedBox(width: 3,),
-                      UserName(user: item['createBy']),
-                      const SizedBox(width: 3,),
-                      const Text('点赞了您的博客: ')
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          UserAvatar(user: item['createBy']),
+                          const SizedBox(width: 3,),
+                          UserName(user: item['createBy']),
+                          const SizedBox(width: 3,),
+                          const Text('点赞了您的博客: ')
+                        ],
+                      ),
+                      const Divider(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(RouteName.post,
+                              arguments: {'postId': item['blog']['id']});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
+                        ),
+                      ),
+                      const Divider(),
+                      Text(TimeUtil.formatTime(item['createdAt']), style: TextStyle(color: Theme.of(context).hintColor),)
                     ],
                   ),
-                  const Divider(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(RouteName.post,
-                          arguments: {'postId': item['blog']['id']});
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
+                  if(item['isRead'] == 0) Align(
+                    alignment: const Alignment(1, -1),
+                    child: Transform.rotate(
+                      angle: 0.55,
+                      child: const Icon(Icons.fiber_new_outlined, color: Colors.red, size: 36,),
                     ),
-                  ),
-                  const Divider(),
-                  Text(TimeUtil.formatTime(item['createdAt']), style: TextStyle(color: Theme.of(context).hintColor),)
+                  )
                 ],
               ),
             ),

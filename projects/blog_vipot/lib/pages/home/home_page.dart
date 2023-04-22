@@ -6,6 +6,7 @@ import 'package:blog_vipot/pages/search/search_page.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:blog_vipot/notifiers/my_theme_notifier.dart';
 import 'home_drawer.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin<HomePage>, WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin<HomePage> {
 
   @override
   bool get wantKeepAlive => true;
@@ -26,18 +27,14 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    context.read<MyThemeNotifier>().themeMode = WidgetsBinding.instance.window.platformBrightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
+    var window = WidgetsBinding.instance.window;
+    window.onPlatformBrightnessChanged = () {
+      WidgetsBinding.instance.handlePlatformBrightnessChanged();
+      // This callback is called every time the brightness changes.
+      Brightness brightness = window.platformBrightness;
+      context.read<MyThemeNotifier>().themeMode = brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
+      SystemChrome.setSystemUIOverlayStyle(brightness == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    };
   }
 
   @override

@@ -27,47 +27,40 @@ class _SearchPageState extends State<SearchPage>{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: TextField(
-                            controller: model.textEditingController,
-                            keyboardType: TextInputType.text,
-                            maxLength: 30,
-                            decoration: InputDecoration(
-                              counter: const Offstage(),
-                              prefixIcon: Icon(
-                                CupertinoIcons.search,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              fillColor: Colors.red,
-                              // filled: true,
-                              hintText: '请输入搜索内容',
-                              // constraints: const BoxConstraints(
-                              //   minHeight: 0
-                              // ),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12), // 填充
-                              border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(50)),
-                              ),
-                            ),
-                            onChanged: (val){
-                              model.keyword = val.trim();
-                            },
-                          )
-                      ),
-                      const SizedBox(width: 12,),
-                      TextButton(
-                          onPressed: (){
-                            model.addHistoryItem();
-                            Navigator.of(context).pushNamed(RouteName.searchResult,
-                                arguments: {'keyword': model.keyword});
-                            model.textEditingController.text = '';
-                          },
-                          child: const Text('搜索')
-                      )
-                    ],
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    child: TextField(
+                        textInputAction: TextInputAction.search,
+                        controller: model.textEditingController,
+                        keyboardType: TextInputType.text,
+                        maxLength: 30,
+                        decoration: InputDecoration(
+                          counter: const Offstage(),
+                          prefixIcon: Icon(
+                            CupertinoIcons.search,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          fillColor: Colors.red,
+                          // filled: true,
+                          hintText: '请输入搜索内容',
+                          // constraints: const BoxConstraints(
+                          //   minHeight: 0
+                          // ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12), // 填充
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                          ),
+                        ),
+                        onSubmitted: (v){
+                          model.addHistoryItem();
+                          Navigator.of(context).pushNamed(RouteName.searchResult,
+                              arguments: {'keyword': model.keyword});
+                          model.textEditingController.text = '';
+                        },
+                        onChanged: (val){
+                          model.keyword = val.trim();
+                        }
+                    ),
                   ),
                   if(model.historyList.isNotEmpty) Expanded(child: SingleChildScrollView(
                     child: Column(

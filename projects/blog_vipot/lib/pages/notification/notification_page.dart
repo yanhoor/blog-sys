@@ -25,7 +25,12 @@ class _NotificationPageState extends State<NotificationPage>{
         child: Consumer<GlobalNotifier>(
           builder: (context, model, child){
             return model.myInfo == null ? Container() : TabViewWrapper(
-              tabList: const ['评论', '点赞', '收藏', '系统审核'],
+              tabList: [
+                model.unreadComment > 0 ? '评论(${model.unreadComment})' : '评论',
+                model.unreadLike > 0 ? '点赞(${model.unreadLike})' : '点赞',
+                model.unreadCollect > 0 ? '收藏(${model.unreadCollect})' : '收藏',
+                model.unreadAudit > 0 ? '系统审核(${model.unreadAudit})' : '系统审核',
+              ],
               onTabChange: (index) async{
                 int idx = tabModelList.indexWhere((m) => m['index'] == index);
                 if(idx > -1) model.notificationNotifier = tabModelList[idx]['model'];

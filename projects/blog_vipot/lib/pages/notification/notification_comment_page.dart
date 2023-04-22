@@ -43,48 +43,59 @@ class _NotificationCommentPageState extends State<NotificationCommentPage> with 
             key: ValueKey(item['id'].toString()),
             child: Container(
               padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UserAvatar(user: item['createBy']),
-                      const SizedBox(width: 3,),
-                      UserName(user: item['createBy']),
-                      const SizedBox(width: 3,),
-                      if(item['comment']['replyComment'] == null) const Text('评论了您: ')
-                      else const Text('回复了您的评论: ')
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          UserAvatar(user: item['createBy']),
+                          const SizedBox(width: 3,),
+                          UserName(user: item['createBy']),
+                          const SizedBox(width: 3,),
+                          if(item['comment']['replyComment'] == null) const Text('评论了您: ')
+                          else const Text('回复了您的评论: ')
+                        ],
+                      ),
+                      const Divider(),
+                      if(item['comment']['replyComment'] != null) ...[
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: ExpandableContent(content: item['comment']['replyComment']['content'], scrollController: model.scrollController!,),
+                        ),
+                        const SizedBox(height: 4,)
+                      ],
+                      ExpandableContent(content: item['comment']['content'], style: TextStyle(color: item['isRead'] == 1 ? Theme.of(context).hintColor : null), scrollController: model.scrollController!),
+                      const Divider(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(RouteName.post,
+                              arguments: {'postId': item['blog']['id']});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
+                        ),
+                      ),
+                      const Divider(),
+                      Text(TimeUtil.formatTime(item['createdAt']), style: TextStyle(color: Theme.of(context).hintColor),)
                     ],
                   ),
-                  const Divider(),
-                  if(item['comment']['replyComment'] != null) ...[
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: ExpandableContent(content: item['comment']['replyComment']['content'], scrollController: model.scrollController!,),
+                  if(item['isRead'] == 0) Align(
+                    alignment: const Alignment(1, -1),
+                    child: Transform.rotate(
+                        angle: 0.55,
+                      child: const Icon(Icons.fiber_new_outlined, color: Colors.red, size: 36,),
                     ),
-                    const SizedBox(height: 4,)
-                  ],
-                  ExpandableContent(content: item['comment']['content'], style: TextStyle(color: item['isRead'] == 1 ? Theme.of(context).hintColor : null), scrollController: model.scrollController!),
-                  const Divider(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(RouteName.post,
-                          arguments: {'postId': item['blog']['id']});
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
-                    ),
-                  ),
-                  const Divider(),
-                  Text(TimeUtil.formatTime(item['createdAt']), style: TextStyle(color: Theme.of(context).hintColor),)
+                  )
                 ],
               ),
             ),

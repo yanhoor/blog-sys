@@ -2,11 +2,8 @@ import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/group_manage/group_manage_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:reorderables/reorderables.dart';
-
-import '../../components/state/state_request_empty.dart';
 import '../../components/state/state_request_error.dart';
 
 class GroupManagePage extends StatefulWidget{
@@ -20,7 +17,11 @@ class _GroupManagePageState extends State<GroupManagePage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('我的分组'),
+      ),
       body: SafeArea(
+        bottom: false,
         child: ProviderWidget<GroupManageNotifier>(
           model: GroupManageNotifier(),
           onModelReady: (model){

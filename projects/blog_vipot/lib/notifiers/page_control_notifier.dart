@@ -23,6 +23,10 @@ class PageControlNotifier extends StateNotifier{
     scrollCallBack.call(scrollController!.offset);
   }
 
+  setPageContext(BuildContext context){
+    pageContext = context;
+  }
+
   @override
   void dispose() {
     super.dispose();
