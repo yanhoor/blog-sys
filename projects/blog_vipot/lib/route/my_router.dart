@@ -14,6 +14,7 @@ import 'package:blog_vipot/route/animate_page_route.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:blog_vipot/pages/user/user_page.dart';
 
 class MyRouter{
   static final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>(); // 页面路由监听
@@ -24,30 +25,45 @@ class MyRouter{
     switch(settings.name){
       case RouteName.root:
         return CupertinoPageRoute(settings: settings, builder: (_) => const HomePage());
+
       case RouteName.login:
         return CupertinoPageRoute(settings: settings, builder: (_) => const LoginPage());
+
+      case RouteName.user:
+        Map param = settings.arguments as Map ?? {};
+        return CupertinoPageRoute(settings: settings, builder: (_) => UserPage(userId: param['userId'].toString()));
+
       case RouteName.post:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => PostPage(postId: param['postId'].toString()));
+
       case RouteName.commentDetail:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => CommentDetailPage(commentId: param['commentId'].toString()));
+
       case RouteName.imagePreview:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => ImagePreview(imageList: param['imageList'], initPage: param['initPage'],));
+
       case RouteName.groupManage:
         return CupertinoPageRoute(settings: settings, builder: (_) => const GroupManagePage());
+
       case RouteName.searchResult:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => SearchResultPage(keyword: param['keyword'].toString()));
+
       case RouteName.myCollections:
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyCollectionsPage());
+
       case RouteName.myLike:
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyLikePage());
+
       case RouteName.myComments:
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyCommentsPage());
+
       case RouteName.myProfile:
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyProfilePage());
+
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }

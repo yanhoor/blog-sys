@@ -81,7 +81,10 @@ class _MyPageState extends State<MyPage>{
                           children: [
                             RawMaterialButton(
                               padding: const EdgeInsets.all(12),
-                              onPressed: (){},
+                              onPressed: (){
+                                Navigator.of(context).pushNamed(RouteName.user,
+                                    arguments: {'userId': myInfo['id']});
+                              },
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
