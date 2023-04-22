@@ -1,18 +1,24 @@
-import 'package:blog_vipot/components/multi_upload.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../config/index.dart';
+import '../http/index.dart';
 import '../route/route_name.dart';
+import '../utils/file_util.dart';
 import '../utils/permission_util.dart';
+import 'helper/bot_toast_helper.dart';
 import 'media/media_image_item.dart';
 
 class UploadImg extends StatefulWidget{
-  final Function(List<Map<String, dynamic>> mediaList) onUploadCompleted;
+  final Function(String url) onUploadCompleted;
   double size;
+  final String url;
 
-  UploadImg({super.key, required this.onUploadCompleted, this.size = 178});
+  UploadImg({super.key, required this.onUploadCompleted, this.size = 178, required this.url});
 
   @override
   State<UploadImg> createState() => _UploadImgState();
@@ -21,13 +27,14 @@ class UploadImg extends StatefulWidget{
 class _UploadImgState extends State<UploadImg>{
   @override
   Widget build(BuildContext context) {
+    // print('++++++_UploadImgState++++++++${widget.url}');
     return SizedBox(
       width: widget.size,
       height: widget.size,
-      child: ProviderWidget<MultiUploadNotifier>(
-        model: MultiUploadNotifier(initMode: 1, onUploadCompleted: widget.onUploadCompleted),
+      child: ProviderWidget<UploadImgNotifier>(
+        model: UploadImgNotifier(onUploadCompleted: widget.onUploadCompleted, imgUrl: widget.url),
         builder: (_, model, child){
-          if(model.mediaList.isEmpty){
+          if(model.imgUrl.isEmpty){
             return Container(
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
@@ -49,7 +56,7 @@ class _UploadImgState extends State<UploadImg>{
                               actions: [
                                 CupertinoActionSheetAction(
                                     onPressed: (){
-                                      model.getImage(1, multi: false);
+                                      model.getImage(1);
                                       Navigator.pop(modalContext, true);
                                     },
                                     child: const Text('选取图片')
@@ -91,8 +98,6 @@ class _UploadImgState extends State<UploadImg>{
               ),
             );
           } else{
-            var media = model.mediaList[0];
-
             return RawMaterialButton(
               onPressed: (){
                 showCupertinoModalPopup(
@@ -103,14 +108,14 @@ class _UploadImgState extends State<UploadImg>{
                           CupertinoActionSheetAction(
                               onPressed: (){
                                 Navigator.pop(modalContext, true);
-                                Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((m) => m['file']['url']).toList(), 'initPage': 0});
+                                Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': [model.imgUrl], 'initPage': 0});
                               },
                               child: const Text('预览')
                           ),
                           CupertinoActionSheetAction(
                               onPressed: (){
                                 Navigator.pop(modalContext, true);
-                                model.removeMedia(media);
+                                model.removeImg();
                               },
                               child: const Text('删除')
                           )
@@ -118,11 +123,74 @@ class _UploadImgState extends State<UploadImg>{
                       );
                     });
               },
-              child: MediaImageItem(url: media['file']['url'],),
+              child: MediaImageItem(url: model.imgUrl,),
             );
           }
         },
       ),
     );
+  }
+}
+
+class UploadImgNotifier extends ChangeNotifier{
+  final Function(String url) onUploadCompleted;
+  double _uploadPercent = 1;
+  String imgUrl;
+
+  UploadImgNotifier({required this.onUploadCompleted, required this.imgUrl});
+
+  removeImg(){
+    onUploadCompleted('');
+    notifyListeners();
+  }
+
+  // 打开图库选择图片
+  Future getImage(int type) async {
+    final picker = ImagePicker();
+    XFile? uploadFile;
+
+    if(type == 1){
+      uploadFile = await picker.pickImage(source: ImageSource.gallery);
+    } else if(type == 2){
+      uploadFile = await picker.pickImage(source: ImageSource.camera);
+    }
+
+    if (uploadFile != null) {
+      await uploadPic(uploadFile);
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  // 上传图片
+  Future uploadPic(XFile pickedFile) async{
+    String path = pickedFile.path;
+    int size = FileUtil.isFileUnavailable(filePath: path, maxSize: 5, typeList: MyConfig.imageType.split(','));
+    if(size == -1){
+      return false;
+    }
+
+    MultipartFile imageFile = await MultipartFile.fromFile(path);
+    try{
+      var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
+
+      if(res['success']){
+        onUploadCompleted( res['result']['url']);
+        print('=========uploadPic completed===========${res['result']['url']}');
+        notifyListeners();
+      }else{
+        ToastHelper.error(res['msg']);
+      }
+    }catch(e){
+      print('=========uploadPic error===========${e.toString()}');
+    }
+
+  }
+
+  double get uploadPercent => _uploadPercent;
+
+  set uploadPercent(double value) {
+    _uploadPercent = value;
+    notifyListeners();
   }
 }
