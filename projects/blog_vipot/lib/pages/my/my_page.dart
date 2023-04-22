@@ -115,7 +115,9 @@ class _MyPageState extends State<MyPage>{
                               child: Row(
                                 children: [
                                   Expanded(child: RawMaterialButton(
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      Navigator.of(context).pushNamed(RouteName.myProfile);
+                                    },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,

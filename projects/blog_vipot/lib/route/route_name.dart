@@ -9,4 +9,5 @@ class RouteName{
   static const String myCollections = '/myCollections';
   static const String myLike = '/myLike';
   static const String myComments = '/myComments';
+  static const String myProfile = '/myProfile';
 }

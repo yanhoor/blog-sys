@@ -6,6 +6,7 @@ import 'package:blog_vipot/pages/login/login_page.dart';
 import 'package:blog_vipot/pages/my_collections/my_collections_page.dart';
 import 'package:blog_vipot/pages/my_comments/my_comments_page.dart';
 import 'package:blog_vipot/pages/my_like/my_like_page.dart';
+import 'package:blog_vipot/pages/my_profile/my_profile_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
 import 'package:blog_vipot/pages/search_result/search_result_page.dart';
@@ -45,6 +46,8 @@ class MyRouter{
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyLikePage());
       case RouteName.myComments:
         return CupertinoPageRoute(settings: settings, builder: (_) => const MyCommentsPage());
+      case RouteName.myProfile:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const MyProfilePage());
       default:
         return SizeRoute(PageNotFoundPage(routeName: settings.name,));
     }
