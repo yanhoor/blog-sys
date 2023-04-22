@@ -86,12 +86,18 @@
 				})
 			},
 			async handleUploadFile(tempFile) {
-						console.log('=======handleUploadFile===========', tempFile.tempFilePath);
+				// console.log('=======handleUploadFile===========', tempFile.tempFilePath);
+				const token = uni.getStorageSync('token')
+				let Authorization = ""
+				if (token) Authorization = 'Bearer ' + token
 				this.loading = true
 				const uploadTask = uni.uploadFile({
 					url: baseUrl + urls.upload,
 					filePath: tempFile.tempFilePath,
 					name: 'file',
+					header: {
+						Authorization
+					},
 					// formData: {
 					// 	md5
 					// },

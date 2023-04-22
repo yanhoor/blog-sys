@@ -59,10 +59,16 @@
 			},
 			async handleUploadFile(tempFile) {
 				this.loading = true
+				const token = uni.getStorageSync('token')
+				let Authorization = ""
+				if (token) Authorization = 'Bearer ' + token
 				const uploadTask = uni.uploadFile({
 					url: baseUrl + urls.upload, //仅为示例，非真实的接口地址
 					filePath: tempFile.tempFilePath,
 					name: 'file',
+					header: {
+						Authorization
+					},
 					// formData: {
 					// 	md5
 					// },

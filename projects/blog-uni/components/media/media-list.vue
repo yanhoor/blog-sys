@@ -3,6 +3,9 @@
 		<view class="media-item" v-for="(media, index) in displayImageList" :key="media.id" @click.stop>
 			<view class="media-image-container media-item-container" @click="handleClickImage(media)">
 				<YImage class="media-image" :url="media.file.url" ratio="70" mode="aspectFill"></YImage>
+				<view class="media-modal" v-if="maxCount && index === maxCount - 1">
+
+				</view>
 			</view>
 			<view class="over-num" v-if="maxCount && index === maxCount - 1" @click.stop="handleToPostDetail(media)">
 				+{{ imageList.length - maxCount }}
@@ -147,6 +150,16 @@
 				top: 0;
 				width: 100%;
 			}
+		}
+
+		.media-modal {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 100%;
+			width: 100%;
+			border-radius: inherit;
+			background: rgba(0, 0, 0, 0.3);
 		}
 	}
 
