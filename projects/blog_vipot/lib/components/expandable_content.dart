@@ -5,9 +5,11 @@ class ExpandableContent extends StatefulWidget{
   final int maxLength;
   final int maxLines;
   final String content;
+  final String expandedBtnText;
+  final Function()? onTapExpanded;
   TextStyle? style;
-  final ScrollController scrollController;
-  ExpandableContent({super.key, this.maxLength = 180, this.maxLines = 3, required this.content, required this.scrollController, this.style});
+  ScrollController? scrollController;
+  ExpandableContent({super.key, this.maxLength = 180, this.maxLines = 3, required this.content, this.scrollController, this.style, this.expandedBtnText = '展开', this.onTapExpanded});
 
   @override
   State<ExpandableContent> createState() => _ExpandableContentState();
@@ -26,18 +28,26 @@ class _ExpandableContentState extends State<ExpandableContent>{
     super.initState();
     _tapGestureRecognizer = TapGestureRecognizer()
       ..onTap = () {
+        if(widget.onTapExpanded != null){
+          widget.onTapExpanded!();
+          return;
+        }
+
         setState(() {
           isExpanded = !isExpanded;
+          if(widget.scrollController == null) return;
+
           if(isExpanded){
             // scrollOffset = Scrollable.of(context).position.pixels;
             // print('=====PrimaryScrollController=======${PrimaryScrollController.of(context).offset}');
-            scrollOffset = widget.scrollController.offset;
+            scrollOffset = widget.scrollController!.offset;
             print('=========scrollOffset=========$scrollOffset');
           }else{
-            widget.scrollController.animateTo(scrollOffset, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
+            widget.scrollController!.animateTo(scrollOffset, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
           }
         });
       };
+
     lineList = widget.content.split('\n');
     if(lineList.length > widget.maxLines){
       briefContent = '${lineList.take( widget.maxLines).toList().join('\n')}\n...\n';
@@ -64,7 +74,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
         TextSpan(
             children: [
               TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style),
-              if(showAction) TextSpan(text: isExpanded ? '收起' : '展开', style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
+              if(showAction) TextSpan(text: isExpanded ? '收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
             ]
         ),
       ),

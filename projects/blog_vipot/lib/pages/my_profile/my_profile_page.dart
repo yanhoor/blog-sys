@@ -85,6 +85,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                     children: [
                                       Radio<int>(
                                           value: 0,
+                                          activeColor: Theme.of(context).colorScheme.primary,
                                           groupValue: model.editForm['gender'],
                                           onChanged: (v){
                                             model.onChangeGender(v);
@@ -95,6 +96,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
 
                                       Radio<int>(
                                           value: 1,
+                                          activeColor: Theme.of(context).colorScheme.primary,
                                           groupValue: model.editForm['gender'],
                                           onChanged: (v){
                                             model.onChangeGender(v);
@@ -105,6 +107,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                       const SizedBox(width: 12,),
                                       Radio<int>(
                                           value: 2,
+                                          activeColor: Theme.of(context).colorScheme.primary,
                                           groupValue: model.editForm['gender'],
                                           onChanged: (v){
                                             model.onChangeGender(v);
@@ -140,8 +143,8 @@ class _MyProfilePageState extends State<MyProfilePage>{
                               ),
                               const SizedBox(height: 12,),
                               TextFormField(
-                                // maxLength: 8,
-                                maxLines: 3,
+                                maxLength: 80,
+                                maxLines: 5,
                                 initialValue: model.editForm['introduce'],
                                 // controller: model.userNameController,
                                 keyboardType: TextInputType.text,
@@ -154,9 +157,9 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                 onChanged: (val){
                                   model.editForm['introduce'] = val.trim();
                                 },
-                                // validator: (val){
-                                //   return val != null && val.trim().isNotEmpty ? null : '用户名不能为空';
-                                // },
+                                validator: (val){
+                                  return val != null && val.trim().length > 80 ? '个人简介不能超过80个字符' : null;
+                                },
                               ),
                               const SizedBox(height: 12,),
                               Column(

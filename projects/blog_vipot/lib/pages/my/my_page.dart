@@ -96,13 +96,14 @@ class _MyPageState extends State<MyPage>{
                                     children: [
                                       UserName(user: myInfo),
                                       const SizedBox(height: 4,),
-                                      Row(
+                                      Text.rich(TextSpan(
                                         children: [
-                                          Text('${myInfo['followerCount']} 粉丝', style: TextStyle(color: Theme.of(context).hintColor),),
-                                          const SizedBox(width: 4,),
-                                          Text('${myInfo['followingCount']} 关注', style: TextStyle(color: Theme.of(context).hintColor)),
+                                          TextSpan(text: myInfo['followerCount'].toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),),
+                                          TextSpan(text: ' 粉丝 ', style: TextStyle(color: Theme.of(context).hintColor),),
+                                          TextSpan(text: myInfo['followingCount'].toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),),
+                                          TextSpan(text: ' 关注', style: TextStyle(color: Theme.of(context).hintColor),),
                                         ],
-                                      ),
+                                      )),
                                     ],
                                   )),
                                   const Icon(Icons.arrow_forward_ios)

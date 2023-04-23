@@ -34,8 +34,8 @@ class MediaDetailPage extends StatelessWidget{
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: RawMaterialButton(
-                    onPressed: (){
+                  child: GestureDetector(
+                    onTap: (){
                       Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': imageList.map((f) => f['url']).toList(), 'initPage': index});
                     },
                     child: MediaImageItem(url: media['file']['url'], fit: BoxFit.contain,),
@@ -49,11 +49,13 @@ class MediaDetailPage extends StatelessWidget{
                           arguments: {'postId': media['blog']['id']});
                     },
                     child: Container(
-                      color: const Color.fromRGBO(250, 250, 250, 0.5),
+                      color: const Color.fromRGBO(250, 250, 250, 0.3),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       child: SafeArea(
                         child: ExpandableContent(
-                          style: const TextStyle(color: Colors.black87),
+                          maxLength: 30,
+                          maxLines: 1,
+                          style: const TextStyle(color: Colors.white),
                           content: media['blog']['content'],
                           expandedBtnText: '全文',
                           onTapExpanded: (){

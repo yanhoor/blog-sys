@@ -21,7 +21,7 @@ class UserItem extends StatelessWidget{
               children: [
                 UserName(user: user, fontSize: 14,),
                 const SizedBox(height: 2,),
-                Text(user['introduce'] ?? '暂无介绍', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),),
+                Text(user['introduce'] ?? '暂无介绍', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12, overflow: TextOverflow.ellipsis), maxLines: 1,),
                 const SizedBox(height: 2,),
                 Text('粉丝 ${user['followersCount']}', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),),
               ],

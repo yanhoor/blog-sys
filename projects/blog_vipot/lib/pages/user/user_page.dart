@@ -22,9 +22,14 @@ class UserPage extends StatefulWidget{
   State<UserPage> createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage>{
+class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: ProviderWidget<UserNotifier>(
         model: UserNotifier(userId: widget.userId),
@@ -114,26 +119,32 @@ class _UserPageState extends State<UserPage>{
                                             )
                                           ],
                                         ),
-                                        const SizedBox(height: 6,),
+                                        const SizedBox(height: 12,),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Text(model.userInfo['followingCount'].toString(), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),),
-                                                const SizedBox(height: 6,),
-                                                Text('关注', style: TextStyle(color: Theme.of(context).hintColor),),
-                                              ],
+                                            GestureDetector(
+                                                onTap: (){},
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(model.userInfo['followingCount'].toString(), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),),
+                                                  const SizedBox(height: 6,),
+                                                  Text('关注', style: TextStyle(color: Theme.of(context).hintColor),),
+                                                ],
+                                              ),
                                             ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Text(model.userInfo['followerCount'].toString(), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),),
-                                                const SizedBox(height: 6,),
-                                                Text('粉丝', style: TextStyle(color: Theme.of(context).hintColor),),
-                                              ],
+                                            GestureDetector(
+                                                onTap: (){},
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(model.userInfo['followerCount'].toString(), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),),
+                                                  const SizedBox(height: 6,),
+                                                  Text('粉丝', style: TextStyle(color: Theme.of(context).hintColor),),
+                                                ],
+                                              ),
                                             ),
                                             Column(
                                               crossAxisAlignment: CrossAxisAlignment.center,

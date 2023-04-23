@@ -86,6 +86,7 @@ class PostCommentItem extends StatelessWidget {
                         ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
+                            padding: EdgeInsets.zero,
                             itemCount: comment['childComments'].length,
                             itemBuilder: (_, index) {
                               Map<String, dynamic> reply =

@@ -1,8 +1,7 @@
-import 'package:blog_vipot/notifiers/base_fetch_notifier.dart';
 import 'package:blog_vipot/notifiers/base_list_fetch_notifier.dart';
 
-import '../../components/helper/bot_toast_helper.dart';
-import '../../http/index.dart';
+import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
+import 'package:blog_vipot/http/index.dart';
 
 class PostNotifier extends BaseListFetchNotifier{
   final String postId;
@@ -33,16 +32,20 @@ class PostNotifier extends BaseListFetchNotifier{
   }
 
   @override
-  Future<bool> getOtherData() async{
-    var res = await $http.fetch(ApiUrl.BLOG_INFO, params: { 'id':  postId});
-    if(res['success']){
-      postDetail = res['result'];
-      notifyListeners();
-      return Future.value(true);
-    }else{
-      setError(res['msg']);
-      ToastHelper.error(res['msg']);
-      return Future.error(res['msg']);
+  Future getOtherData() async{
+    try{
+      var res = await $http.fetch(ApiUrl.BLOG_INFO, params: { 'id':  postId});
+      if(res['success']){
+        postDetail = res['result'];
+        notifyListeners();
+        return Future.value(true);
+      }else{
+        setError(res['msg']);
+        ToastHelper.error(res['msg']);
+        return Future.error(res['msg']);
+      }
+    }catch(e){
+      return Future.error(e.toString());
     }
   }
 

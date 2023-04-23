@@ -84,14 +84,13 @@ class PostItem extends StatelessWidget {
                   ExpandableContent(
                       content: post['content'],
                       scrollController: scrollController),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  MediaList(
-                      mediaList: post['medias'].map((m) => m['file']).toList()),
-                  const SizedBox(
-                    height: 6,
-                  ),
+                  if(post['medias'].isNotEmpty) ...[
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    MediaList(
+                        mediaList: post['medias'].map((m) => m['file']).toList()),
+                  ],
                   Row(
                     children: [
                       Expanded(

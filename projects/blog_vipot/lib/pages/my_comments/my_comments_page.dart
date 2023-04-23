@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/custom/custom_icon_button.dart';
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/helper/dialog_helper.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
@@ -94,11 +95,7 @@ class _MyCommentsPageState extends State<MyCommentsPage>{
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(TimeUtil.formatTime(comment['createdAt'])),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(
-                                      minHeight: 0
-                                    ),
+                                CustomIconButton(
                                     onPressed: (){
                                       DialogHelper.showIOSAlertDialog(
                                           context: context,

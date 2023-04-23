@@ -11,10 +11,10 @@ class StateRequestBase extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return Center(
+      // width: double.infinity,
       // height: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      // padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
