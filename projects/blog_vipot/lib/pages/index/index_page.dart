@@ -32,33 +32,34 @@ class _IndexPageState extends State<IndexPage>{
       body: SafeArea(
         child: Consumer<GlobalNotifier>(
           builder: (_, model, child){
-            initTab = model.allGroupList.indexWhere((g){
+            initTab = model.indexGroupList.indexWhere((g){
               return g['id'].toString() == groupId;
             });
 
-            return model.allGroupList.isEmpty ? IndexTabPage(
-                key: const ValueKey(''),
+            return model.indexGroupList.isEmpty ? IndexTabPage(
+                key: const PageStorageKey(''),
                 gid: '',
                 onModelReady: (indexModel){
                   model.indexNotifier = indexModel;
                 }
             ) : TabViewWrapper(
+              key: ValueKey<int>(model.groupRefreshTime), // 在新增分组后重建
               isScrollable: true,
               initTab: initTab > -1 ? initTab : 0,
-              tabList: model.allGroupList.map((g) {
+              tabList: model.indexGroupList.map((g) {
                 return g['name'] as String;
               }).toList(),
               onTabChange: (index) async{
-                String id = model.allGroupList[index]['id'].toString();
+                String id = model.indexGroupList[index]['id'].toString();
                 int idx = tabModelList.indexWhere((m) => m['id'] == id);
                 if(idx > -1) model.indexNotifier = tabModelList[idx]['model'];
                 MyStorageManager.sharedPreferences.setString(MyStorageManager.INDEX_GROUP_ID, id);
               },
               pageBuilder: (BuildContext context, int index) {
-                var group = model.allGroupList[index];
+                var group = model.indexGroupList[index];
 
                 return IndexTabPage(
-                  key: ValueKey(group['id'].toString()),
+                  key: PageStorageKey(group['id'].toString()), // PageStorageKey 保存滚动位置
                   gid: group['id'].toString(),
                   onModelReady: (indexModel){
                     model.indexNotifier = indexModel;

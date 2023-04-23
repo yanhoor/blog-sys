@@ -15,8 +15,10 @@ class GlobalNotifier extends ChangeNotifier{
   late NotificationNotifier notificationNotifier;
   VideoPlayerController? videoPlayerController;
   Map<String, dynamic>? _myInfo;
-  List allGroupList = [];
-  List groupList = [];
+  List allGroupList = []; // 所有分组
+  List indexGroupList = []; // 首页的分组，所有分组 + “全部”分组
+  List groupList = []; // 所有分组 - 系统分组
+  late int groupRefreshTime;
   int unreadTotal = 0;
   int unreadAudit = 0;
   int unreadCollect = 0;
@@ -85,12 +87,15 @@ class GlobalNotifier extends ChangeNotifier{
       if(res['success']){
         groupList = res['result'];
         allGroupList.clear();
-        allGroupList.add({
+        indexGroupList.clear();
+        indexGroupList.add({
           'id': '',
           'name': '全部'
         });
         allGroupList.addAll(groupList);
+        indexGroupList.addAll(groupList);
         groupList.retainWhere((g) => g['system'] == 2);
+        groupRefreshTime = DateTime.now().millisecondsSinceEpoch;
         notifyListeners();
         return true;
       }else{
