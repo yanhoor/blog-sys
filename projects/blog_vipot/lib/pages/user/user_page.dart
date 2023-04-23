@@ -7,12 +7,11 @@ import 'package:blog_vipot/pages/user/user_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '../../components/custom/custom_icon_button.dart';
-import '../../components/media/media_image_item.dart';
-import '../../components/post/post_item.dart';
-import '../../components/state/state_request_error.dart';
-import '../../route/route_name.dart';
+import 'package:blog_vipot/components/custom/custom_icon_button.dart';
+import 'package:blog_vipot/components/media/media_image_item.dart';
+import 'package:blog_vipot/components/post/post_item.dart';
+import 'package:blog_vipot/components/state/state_request_error.dart';
+import 'package:blog_vipot/route/route_name.dart';
 
 class UserPage extends StatefulWidget{
   final String userId;
@@ -175,7 +174,10 @@ class _UserPageState extends State<UserPage>{
                                 ]
                             ), textAlign: TextAlign.center,),
                             GestureDetector(
-                              onTap: (){},
+                              onTap: (){
+                                Navigator.of(context).pushNamed(RouteName.userImageWall,
+                                    arguments: {'userId': model.userInfo['id']});
+                              },
                               child: const Text('全部'),
                             )
                           ],
@@ -195,7 +197,9 @@ class _UserPageState extends State<UserPage>{
                               width: MediaQuery.of(context).size.width / 5,
                               child: RawMaterialButton(
                                 onPressed: (){
-                                  Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((f) => f['file']['url']).toList(), 'initPage': index});
+                                  Navigator.of(context).pushNamed(RouteName.mediaDetail, arguments: { 'mediaList': model.mediaList, 'initIndex': index});
+
+                                  // Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((f) => f['file']['url']).toList(), 'initPage': index});
                                 },
                                 child: MediaImageItem(url: media['file']['url']),
                               ),
