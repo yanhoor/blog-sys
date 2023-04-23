@@ -11,6 +11,8 @@ class RouteName{
   static const String myComments = '/myComments';
   static const String myProfile = '/myProfile';
   static const String user = '/user';
+  static const String userFollowings = '/userFollowings';
+  static const String userFollowers = '/userFollowers';
   static const String userImageWall = '/userImageWall';
   static const String mediaDetail = '/mediaDetail';
 }

@@ -11,6 +11,8 @@ import 'package:blog_vipot/pages/my_profile/my_profile_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
 import 'package:blog_vipot/pages/search_result/search_result_page.dart';
+import 'package:blog_vipot/pages/user_followers/user_followers_page.dart';
+import 'package:blog_vipot/pages/user_followings/user_followings_page.dart';
 import 'package:blog_vipot/pages/user_image_wall/user_image_wall_page.dart';
 import 'package:blog_vipot/route/animate_page_route.dart';
 import 'package:blog_vipot/route/route_name.dart';
@@ -34,6 +36,14 @@ class MyRouter{
       case RouteName.user:
         Map param = settings.arguments as Map ?? {};
         return CupertinoPageRoute(settings: settings, builder: (_) => UserPage(userId: param['userId'].toString()));
+
+      case RouteName.userFollowings:
+        Map param = settings.arguments as Map ?? {};
+        return CupertinoPageRoute(settings: settings, builder: (_) => UserFollowingsPage(userId: param['userId'].toString()));
+
+      case RouteName.userFollowers:
+        Map param = settings.arguments as Map ?? {};
+        return CupertinoPageRoute(settings: settings, builder: (_) => UserFollowersPage(userId: param['userId'].toString()));
 
       case RouteName.userImageWall:
         Map param = settings.arguments as Map ?? {};

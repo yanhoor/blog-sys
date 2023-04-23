@@ -125,7 +125,13 @@ class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             GestureDetector(
-                                                onTap: (){},
+                                              behavior: HitTestBehavior.opaque,
+                                                onTap: (){
+                                                  if(model.userInfo['followingCount'] == 0) return;
+
+                                                  Navigator.of(context).pushNamed(RouteName.userFollowings,
+                                                      arguments: {'userId': model.userInfo['id'].toString()});
+                                                },
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
@@ -136,7 +142,13 @@ class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
                                               ),
                                             ),
                                             GestureDetector(
-                                                onTap: (){},
+                                              behavior: HitTestBehavior.opaque,
+                                                onTap: (){
+                                                  if(model.userInfo['followerCount'] == 0) return;
+
+                                                  Navigator.of(context).pushNamed(RouteName.userFollowers,
+                                                      arguments: {'userId': model.userInfo['id'].toString()});
+                                                },
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [

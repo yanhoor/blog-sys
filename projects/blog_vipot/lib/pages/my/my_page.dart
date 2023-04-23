@@ -175,6 +175,28 @@ class _MyPageState extends State<MyPage>{
                                 ListTile(
                                   minLeadingWidth: 0,
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的关注', style: TextStyle(fontSize: 14),),
+                                  leading: const Icon(Icons.group, size: 24,),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    Navigator.of(context).pushNamed(RouteName.userFollowings,
+                                        arguments: {'userId': model.myInfo!['id'].toString()});
+                                  },
+                                ),
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                  title: const Text('我的粉丝', style: TextStyle(fontSize: 14),),
+                                  leading: const Icon(Icons.group_outlined, size: 24,),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 24),
+                                  onTap: (){
+                                    Navigator.of(context).pushNamed(RouteName.userFollowers,
+                                        arguments: {'userId': model.myInfo!['id'].toString()});
+                                  },
+                                ),
+                                ListTile(
+                                  minLeadingWidth: 0,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                   title: const Text('我的收藏', style: TextStyle(fontSize: 14),),
                                   leading: const Icon(Icons.favorite, size: 24,),
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 24),

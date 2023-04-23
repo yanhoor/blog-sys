@@ -7,10 +7,13 @@ class ApiUrl{
 
   static const String LOGIN = '/user/login';
   static const String LOGOUT = '/user/logout';
+  static const String USER_ID_INFO = '/user';
   static const String USER_INFO = '/user/info';
   static const String USER_MARK_BLOG_LIST = '/user/markBlogList';
   static const String USER_MY_COMMENT_LIST = '/user/myCommentList';
   static const String USER_UPDATE = '/user/update';
+  static const String USER_MEDIA_LIST = '/user/getMediaList';
+  static const String USER_FRIENDS = '/user/friends';
 
   static const String BLOG_EDIT = '/blog/edit';
   static const String BLOG_LIST = '/blog/list';
@@ -32,4 +35,6 @@ class ApiUrl{
   static const String NOTIFICATION_LIST = '/notification/list';
   static const String NOTIFICATION_COUNT = '/notification/count';
   static const String NOTIFICATION_READ = '/notification/read';
+
+  static const String STATIS_USER = '/statis/user';
 }
