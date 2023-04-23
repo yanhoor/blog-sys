@@ -126,4 +126,10 @@
 
 - [x] 其他功能同步 `blog-nuxt3`
 
-#### blog-flutter: Flutter 端博客
+#### blog-vipot: Flutter 端博客
+
+- [x] 使用 `flutter` + `provider`
+
+- [ ] 录音并发布
+
+- [x] 其他功能同步 `blog-nuxt3`
