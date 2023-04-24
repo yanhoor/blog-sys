@@ -62,19 +62,22 @@ class _MyAppState extends State<MyApp>{
               builder: (context, themeModel, child){
                 Provider.of<GlobalNotifier>(context, listen: false).setPageContext(context);
 
-                return Listener(
+                return GestureDetector(
                   // behavior: HitTestBehavior.translucent,
-                  onPointerUp: (e) {
-                    // 收起键盘
-                    // FocusScope.of(context).requestFocus(FocusNode());
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-
-                    // if (!currentFocus.hasPrimaryFocus) {
-                    //   currentFocus.unfocus();
-                    // }
-                    if (!currentFocus.hasPrimaryFocus) {
-                      currentFocus.focusedChild?.unfocus();
-                    }
+                  // onPointerUp: (e) {
+                  //   // 收起键盘
+                  //   // FocusScope.of(context).requestFocus(FocusNode());
+                  //   FocusScopeNode currentFocus = FocusScope.of(context);
+                  //
+                  //   // if (!currentFocus.hasPrimaryFocus) {
+                  //   //   currentFocus.unfocus();
+                  //   // }
+                  //   if (!currentFocus.hasPrimaryFocus) {
+                  //     currentFocus.focusedChild?.unfocus();
+                  //   }
+                  // },
+                  onTap: (){
+                    FocusManager.instance.primaryFocus?.unfocus();
                   },
                   child: MaterialApp(
                     theme: MyThemeNotifier.lightTheme,
