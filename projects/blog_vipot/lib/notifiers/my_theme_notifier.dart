@@ -5,7 +5,7 @@ class MyThemeNotifier extends ChangeNotifier {
 
   static ThemeData lightTheme = ThemeData.from(
       colorScheme: const ColorScheme.light(
-          background: Color(0xffe0e2e3)
+          background: Color(0xfff3f3f3)
       )
   );
   static ThemeData darkTheme = ThemeData.dark();

@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/y-card.dart';
 import 'package:blog_vipot/pages/comment_detail/comment_detail_notifier.dart';
 import 'package:blog_vipot/pages/comment_detail/comment_detail_skeleton.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,7 +67,9 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                                 const SizedBox(
                                   height: 6,
                                 ),
-                                GestureDetector(
+                                ExpandableContent(
+                                  content: model.topComment['content'],
+                                  scrollController: model.scrollController!,
                                   onTap: () {
                                     showCommentReplyBottomSheet(
                                       pageContext: context,
@@ -80,11 +83,6 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                                       },
                                     );
                                   },
-                                  child: ExpandableContent(
-                                      content: model
-                                          .topComment['content'],
-                                      scrollController:
-                                      model.scrollController!),
                                 ),
                                 const SizedBox(
                                   height: 6,
@@ -102,109 +100,106 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                     ),
                   ),
                 ),
-                Card(
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: ListView.builder(
-                        physics:
-                        const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: model.pageList.length,
-                        itemBuilder: (_, index) {
-                          Map<String, dynamic> reply =
-                          model.pageList[index];
+                YCard(
+                  child: ListView.builder(
+                      physics:
+                      const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: model.pageList.length,
+                      itemBuilder: (_, index) {
+                        Map<String, dynamic> reply =
+                        model.pageList[index];
 
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12),
-                            decoration: BoxDecoration(
-                                border: index <
-                                    model.pageList.length -
-                                        1
-                                    ? Border(
-                                    bottom: BorderSide(
-                                        color: Theme.of(
-                                            context)
-                                            .highlightColor))
-                                    : null),
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                UserAvatar(
-                                    user: reply['createBy']),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        UserName(
-                                            user:
-                                            reply['createBy']),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            showCommentReplyBottomSheet(
-                                              pageContext: context,
-                                              postId: model
-                                                  .topComment[
-                                              'blogId']
-                                                  .toString(),
-                                              comment: reply,
-                                              onSuccess: (ctx) {
-                                                Navigator.pop(ctx);
-                                                model.refreshData();
-                                              },
-                                            );
-                                          },
-                                          child: Text.rich(TextSpan(
-                                              children: [
-                                                reply['replyComment']
-                                                [
-                                                'topCommentId'] ==
-                                                    null
-                                                    ? TextSpan(
-                                                    text: reply[
-                                                    'content'])
-                                                    : TextSpan(
-                                                    children: [
-                                                      const TextSpan(
-                                                          text:
-                                                          '回复'),
-                                                      TextSpan(
-                                                          text:
-                                                          '@${reply['replyComment']['createBy']['name']}: ',
-                                                          style:
-                                                          TextStyle(color: Theme.of(context).colorScheme.primary)),
-                                                      TextSpan(
-                                                          text:
-                                                          reply['content'])
-                                                    ])
-                                              ])),
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        Text(
-                                          TimeUtil.formatTime(
-                                              reply['createdAt']),
-                                          style: TextStyle(
-                                              color:
-                                              Theme.of(context)
-                                                  .hintColor),
-                                        )
-                                      ],
-                                    ))
-                              ],
-                            ),
-                          );
-                        }),
-                  ),
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12),
+                          decoration: BoxDecoration(
+                              border: index <
+                                  model.pageList.length -
+                                      1
+                                  ? Border(
+                                  bottom: BorderSide(
+                                      color: Theme.of(
+                                          context)
+                                          .highlightColor))
+                                  : null),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              UserAvatar(
+                                  user: reply['createBy']),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      UserName(
+                                          user:
+                                          reply['createBy']),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showCommentReplyBottomSheet(
+                                            pageContext: context,
+                                            postId: model
+                                                .topComment[
+                                            'blogId']
+                                                .toString(),
+                                            comment: reply,
+                                            onSuccess: (ctx) {
+                                              Navigator.pop(ctx);
+                                              model.refreshData();
+                                            },
+                                          );
+                                        },
+                                        child: Text.rich(TextSpan(
+                                            children: [
+                                              reply['replyComment']
+                                              [
+                                              'topCommentId'] ==
+                                                  null
+                                                  ? TextSpan(
+                                                  text: reply[
+                                                  'content'])
+                                                  : TextSpan(
+                                                  children: [
+                                                    const TextSpan(
+                                                        text:
+                                                        '回复'),
+                                                    TextSpan(
+                                                        text:
+                                                        '@${reply['replyComment']['createBy']['name']}: ',
+                                                        style:
+                                                        TextStyle(color: Theme.of(context).colorScheme.primary)),
+                                                    TextSpan(
+                                                        text:
+                                                        reply['content'])
+                                                  ])
+                                            ])),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(
+                                        TimeUtil.formatTime(
+                                            reply['createdAt']),
+                                        style: TextStyle(
+                                            color:
+                                            Theme.of(context)
+                                                .hintColor),
+                                      )
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        );
+                      }),
                 )
               ],
             );

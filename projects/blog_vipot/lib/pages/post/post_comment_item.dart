@@ -46,7 +46,9 @@ class PostCommentItem extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              GestureDetector(
+              ExpandableContent(
+                content: comment['content'],
+                scrollController: scrollController,
                 onTap: (){
                   showCommentReplyBottomSheet(
                       pageContext: context,
@@ -55,9 +57,6 @@ class PostCommentItem extends StatelessWidget {
                       onSuccess: onSuccess
                   );
                 },
-                child: ExpandableContent(
-                    content: comment['content'],
-                    scrollController: scrollController),
               ),
               const SizedBox(
                 height: 8,

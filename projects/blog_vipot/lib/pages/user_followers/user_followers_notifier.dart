@@ -1,6 +1,5 @@
 import 'package:blog_vipot/notifiers/base_list_fetch_notifier.dart';
-
-import '../../http/index.dart';
+import 'package:blog_vipot/http/index.dart';
 
 class UserFollowersNotifier extends BaseListFetchNotifier{
   final String userId;
@@ -12,7 +11,7 @@ class UserFollowersNotifier extends BaseListFetchNotifier{
   Future<List> getPageList() async{
     List list = [];
     try{
-      var res = await $http.fetch(ApiUrl.USER_FRIENDS, params: { 'uid': userId, 'relateType': 1, 'page': currentPage, 'pageSize': pageSize });
+      var res = await $http.fetch(ApiUrl.USER_FRIENDS, params: { 'uid': userId, 'relateType': 2, 'page': currentPage, 'pageSize': pageSize });
 
       if(res['success']){
         list.addAll(res['result']['list']);

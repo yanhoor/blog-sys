@@ -13,10 +13,13 @@ class IndexPage extends StatefulWidget{
   State<IndexPage> createState() => _IndexPageState();
 }
 
-class _IndexPageState extends State<IndexPage>{
+class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixin{
   int initTab = 0;
   String groupId = '';
   List<Map<String, dynamic>> tabModelList = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -26,6 +29,7 @@ class _IndexPageState extends State<IndexPage>{
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -63,6 +67,7 @@ class _IndexPageState extends State<IndexPage>{
                   gid: group['id'].toString(),
                   onModelReady: (indexModel){
                     model.indexNotifier = indexModel;
+                    tabModelList.removeWhere((m) => m['id'] == group['id'].toString());
                     tabModelList.add({
                       'id': group['id'].toString(),
                       'model': indexModel

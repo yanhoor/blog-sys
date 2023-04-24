@@ -1,5 +1,4 @@
 import 'package:blog_vipot/components/multi_upload.dart';
-import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/new_post/new_post_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,9 +39,10 @@ class _NewPostPageState extends State<NewPostPage> with AutomaticKeepAliveClient
                       children: <Widget>[
                         const SizedBox(height: 10,),
                         TextFormField(
-                          maxLines: 5,
-                          // controller: model.userNameController,
-                          keyboardType: TextInputType.text,
+                          minLines: 1,
+                          maxLines: 10,
+                          // controller: model.textEditController,
+                          keyboardType: TextInputType.multiline,
                           decoration: const InputDecoration(
                             fillColor: Colors.red,
                             labelText: '发布内容',

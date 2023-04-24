@@ -169,7 +169,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                   const SizedBox(height: 4,),
                                   UploadImg(
                                       key: ValueKey(model.editForm['avatar']),
-                                      url: model.editForm['avatar'],
+                                      url: model.editForm['avatar'] ?? '',
                                       onUploadCompleted: (url){
                                         model.editForm['avatar'] = url;
                                         model.notifyListeners();
@@ -185,7 +185,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                   const SizedBox(height: 4,),
                                   UploadImg(
                                       key: ValueKey(model.editForm['profileCardBg']),
-                                      url: model.editForm['profileCardBg'],
+                                      url: model.editForm['profileCardBg'] ?? '',
                                       onUploadCompleted: (url){
                                         model.editForm['profileCardBg'] = url;
                                         model.notifyListeners();

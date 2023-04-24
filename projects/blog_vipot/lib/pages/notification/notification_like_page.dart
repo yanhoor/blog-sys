@@ -68,7 +68,7 @@ class _NotificationLikePageState extends State<NotificationLikePage> with Automa
                           decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(5)),
-                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
+                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!, isSelectable: false),
                         ),
                       ),
                       const Divider(),

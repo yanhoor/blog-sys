@@ -74,7 +74,7 @@ abstract class BaseListFetchNotifier extends BaseFetchNotifier{
   Future<List> getPageList();
 
   // 返回 true 表示成功，否则返回 Future.error(msg)
-  Future<bool> getOtherData(){
+  Future getOtherData(){
     return Future.value(true);
   }
 }

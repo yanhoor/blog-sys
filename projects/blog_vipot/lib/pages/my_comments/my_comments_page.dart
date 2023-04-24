@@ -86,7 +86,7 @@ class _MyCommentsPageState extends State<MyCommentsPage>{
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).scaffoldBackgroundColor,
                                     borderRadius: BorderRadius.circular(5)),
-                                child: ExpandableContent(content: comment['blog']['content'], scrollController: model.scrollController!,),
+                                child: ExpandableContent(content: comment['blog']['content'], scrollController: model.scrollController!, isSelectable: false,),
                               ),
                             ),
                             const SizedBox(height: 4,),

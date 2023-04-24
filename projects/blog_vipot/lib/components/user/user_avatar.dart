@@ -30,7 +30,7 @@ class UserAvatar extends StatelessWidget{
               border: Border.all(color: Theme.of(context).hintColor),
               shape: BoxShape.circle
           ),
-          child: Icon(Icons.person, size: size * 0.8,),
+          child: Icon(Icons.no_accounts, size: size * 0.8,),
         )
             : ClipRRect(
           borderRadius: BorderRadius.circular(size),

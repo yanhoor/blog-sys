@@ -7,9 +7,22 @@ class ExpandableContent extends StatefulWidget{
   final String content;
   final String expandedBtnText;
   final Function()? onTapExpanded;
+  final Function()? onTap;
+  bool isSelectable;
   TextStyle? style;
   ScrollController? scrollController;
-  ExpandableContent({super.key, this.maxLength = 180, this.maxLines = 3, required this.content, this.scrollController, this.style, this.expandedBtnText = '展开', this.onTapExpanded});
+  ExpandableContent({
+    super.key,
+    this.maxLength = 180,
+    this.maxLines = 3,
+    required this.content,
+    this.scrollController,
+    this.style,
+    this.expandedBtnText = '展开',
+    this.onTapExpanded,
+    this.onTap,
+    this.isSelectable = true
+  });
 
   @override
   State<ExpandableContent> createState() => _ExpandableContentState();
@@ -18,6 +31,7 @@ class ExpandableContent extends StatefulWidget{
 class _ExpandableContentState extends State<ExpandableContent>{
   bool showAction = false;
   bool isExpanded = false;
+  bool multiLines = false;
   double scrollOffset = 0;
   late String briefContent;
   List<String> lineList = [];
@@ -52,6 +66,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
     if(lineList.length > widget.maxLines){
       briefContent = '${lineList.take( widget.maxLines).toList().join('\n')}\n...\n';
       showAction = true;
+      multiLines = true;
     }else if(widget.maxLength < widget.content.length){
       briefContent = '${widget.content.substring(0, widget.maxLength - 1)}...';
       showAction = true;
@@ -68,15 +83,24 @@ class _ExpandableContentState extends State<ExpandableContent>{
 
   @override
   Widget build(BuildContext context) {
+    TextSpan textSpan = TextSpan(
+        children: [
+          TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style),
+          if(showAction) TextSpan(text: isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
+        ]
+    );
+
     return SizedBox(
       width: double.infinity,
-      child: Text.rich(
-        TextSpan(
-            children: [
-              TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style),
-              if(showAction) TextSpan(text: isExpanded ? '收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: _tapGestureRecognizer),
-            ]
-        ),
+      child: widget.isSelectable
+          ? SelectableText.rich(
+        textSpan,
+        onTap: widget.onTap,
+        // scrollPhysics: const NeverScrollableScrollPhysics(),
+      )
+          : GestureDetector(
+        onTap: widget.onTap,
+        child: Text.rich(textSpan),
       ),
     );
   }

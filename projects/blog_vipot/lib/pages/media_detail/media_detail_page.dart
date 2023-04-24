@@ -55,6 +55,7 @@ class MediaDetailPage extends StatelessWidget{
                         child: ExpandableContent(
                           maxLength: 30,
                           maxLines: 1,
+                          isSelectable: false,
                           style: const TextStyle(color: Colors.white),
                           content: media['blog']['content'],
                           expandedBtnText: '全文',

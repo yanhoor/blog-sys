@@ -1,8 +1,6 @@
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
-import 'package:blog_vipot/notifiers/global_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:blog_vipot/components/post/post_list.dart';
 import 'index_notifier.dart';
 
@@ -11,7 +9,7 @@ class IndexTabPage extends StatefulWidget{
   final Function(IndexNotifier model) onModelReady;
 
   IndexTabPage({super.key, required this.gid, required this.onModelReady}){
-    print('--------IndexTabPage--------$key');
+    // print('--------IndexTabPage--------$key');
   }
 
   @override
@@ -28,21 +26,18 @@ class _IndexTabPageState extends State<IndexTabPage> with AutomaticKeepAliveClie
     super.build(context);
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Consumer<GlobalNotifier>(
-      builder: (_, globalNotifier, child){
-        return ProviderWidget<IndexNotifier>(
-          model: IndexNotifier(groupId: widget.gid),
-          onModelReady: (model){
-            model.initData();
-            model.initScrollController(controller: ScrollController());
-            widget.onModelReady(model);
-          },
-          builder: (_, model, child){
+    return ProviderWidget<IndexNotifier>(
+      key: ValueKey(widget.gid),
+      model: IndexNotifier(groupId: widget.gid),
+      onModelReady: (model){
+        model.initData();
+        model.initScrollController(controller: ScrollController());
+        widget.onModelReady(model);
+      },
+      builder: (_, model, child){
 
-            return SafeArea(
-              child: PostList(model: model,),
-            );
-          },
+        return SafeArea(
+          child: PostList(model: model,),
         );
       },
     );

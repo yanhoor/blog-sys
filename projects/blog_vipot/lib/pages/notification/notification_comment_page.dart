@@ -1,12 +1,10 @@
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
-import 'package:blog_vipot/http/api_url.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/pages/notification/notification_tab_page_base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 
 import '../../route/route_name.dart';
 import '../../utils/time_util.dart';

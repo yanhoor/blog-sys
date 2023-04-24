@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/y-card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -35,8 +36,7 @@ class _LoginPageState extends State<LoginPage>{
               ],
             ),
             body: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 30),
+              child: YCard(
                 child: Form(
                     key: model.loginKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage>{
                             hintText: '请输入密码',
                             suffixIcon: IconButton(
                                 icon: Icon(
-                                  Icons.remove_red_eye,
+                                  Icons.remove_red_eye_outlined,
                                   color: model.hidePassword ? Colors.grey : Theme.of(context).colorScheme.primary,
                                 ),
                                 onPressed: (){
@@ -97,13 +97,24 @@ class _LoginPageState extends State<LoginPage>{
                           },
                           title: const Text('记住密码'),
                         ),
-                        Container(
+                        const SizedBox(height: 12,),
+                        SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.symmetric(vertical: 20),
                           child: ElevatedButton(
                             onPressed: model.isBusy ? null : model.doLogin,
                             // color: Theme.of(context).colorScheme.secondary,
                             child: model.isBusy ? const StateButtonBusy() : const Text('登录'),
+                          ),
+                        ),
+                        const SizedBox(height: 12,),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: OutlinedButton(
+                            onPressed: (){
+                              Navigator.of(context).pushNamed(RouteName.register);
+                            },
+                            // color: Theme.of(context).colorScheme.secondary,
+                            child: const Text('没有账号，去注册'),
                           ),
                         ),
                       ],
