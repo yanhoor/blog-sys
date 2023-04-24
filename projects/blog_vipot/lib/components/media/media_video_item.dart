@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/media/media_image_item.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:provider/provider.dart';
@@ -11,18 +12,23 @@ import '../helper/bot_toast_helper.dart';
 
 class MediaVideoItem extends StatefulWidget {
   final String url;
+  String coverUrl;
 
-  const MediaVideoItem({super.key, required this.url});
+  MediaVideoItem({super.key, required this.url, this.coverUrl = ''});
 
   @override
   State<MediaVideoItem> createState() => _MediaVideoItemState();
 }
 
-class _MediaVideoItemState extends State<MediaVideoItem>{
+class _MediaVideoItemState extends State<MediaVideoItem> with AutomaticKeepAliveClientMixin{
   late GlobalNotifier globalNotifier;
   VideoPlayerController? videoPlayerController;
   ChewieController? chewieController;
   bool isAutoPause = false;
+  bool showCover = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -62,7 +68,8 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
 
   @override
   Widget build(BuildContext context) {
-    // print('+++++++++++++++$url');
+    super.build(context);
+    // print('+++++++coverUrl++++++++${widget.coverUrl}');
 
     return SizedBox(
       width: MediaQuery.of(context).size.width,
@@ -70,40 +77,71 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
       child: Container(
         color: Colors.black,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
+          // borderRadius: BorderRadius.circular(15),
           child: VisibilityDetector(
-              key: ValueKey(widget.url),
-              onVisibilityChanged: (visibilityInfo) {
-                double visiblePercentage = visibilityInfo.visibleFraction * 100;
-                // debugPrint('Widget ${visibilityInfo.key} is $visiblePercentage% visible');
-                VideoPlayerValue value = videoPlayerController!.value;
-                // debugPrint('================${value.position.compareTo(value.duration)}');
-                if(visiblePercentage < 80 && videoPlayerController!.value.isPlaying){
-                  videoPlayerController!.pause();
+            key: ValueKey(widget.url),
+            onVisibilityChanged: (visibilityInfo) {
+              double visiblePercentage = visibilityInfo.visibleFraction * 100;
+              // debugPrint('Widget ${visibilityInfo.key} is $visiblePercentage% visible');
+              VideoPlayerValue value = videoPlayerController!.value;
+              // debugPrint('================${value.position.compareTo(value.duration)}');
+              if(visiblePercentage < 80 && videoPlayerController!.value.isPlaying){
+                videoPlayerController!.pause();
+                setState(() {
                   isAutoPause = true;
-                }else if(visiblePercentage >= 80 && isAutoPause && !value.isPlaying && value.position.compareTo(value.duration) < 0){
-                  // 重新进入视野 + 暂停 + 未播放完
-                  videoPlayerController!.play();
-                  pauseVideo();
-                  globalNotifier.videoPlayerController = videoPlayerController;
+                });
+              }else if(visiblePercentage >= 80 && isAutoPause && !value.isPlaying && value.position.compareTo(value.duration) < 0){
+                // 重新进入视野 + 暂停 + 未播放完
+                videoPlayerController!.play();
+                pauseVideo();
+                globalNotifier.videoPlayerController = videoPlayerController;
+                setState(() {
                   isAutoPause = false;
-                }
-              },
-              child: Listener(
-                behavior: HitTestBehavior.translucent,
-                onPointerUp: (_){
-                  Future.delayed(const Duration(milliseconds: 500)).then((value){
-                    // debugPrint('========GestureDetector onPointerUp==========${videoPlayerController!.value.isPlaying}');
-                    if(videoPlayerController!.value.isPlaying){
-                      pauseVideo();
-                      globalNotifier.videoPlayerController = videoPlayerController;
-                    }
-                  });
-                },
-                child: Chewie(
-                  controller: chewieController!,
+                });
+              }
+            },
+            child: Stack(
+              children: [
+                Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerUp: (_){
+                    Future.delayed(const Duration(milliseconds: 500)).then((value){
+                      // debugPrint('========GestureDetector onPointerUp==========${videoPlayerController!.value.isPlaying}');
+                      if(videoPlayerController!.value.isPlaying){
+                        pauseVideo();
+                        globalNotifier.videoPlayerController = videoPlayerController;
+                      }
+                    });
+                  },
+                  child: Chewie(
+                    controller: chewieController!,
+                  ),
                 ),
-              )
+                if(widget.coverUrl.isNotEmpty && showCover) Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: RawMaterialButton(
+                      onPressed: (){
+                        setState(() {
+                          showCover = false;
+                          videoPlayerController!.play();
+                        });
+                      },
+                      child: Stack(
+                        children: [
+                          MediaImageItem(url: widget.coverUrl,),
+                          const Align(
+                            alignment: Alignment.center,
+                            child: Icon(Icons.play_circle, size: 80, color: Colors.white,),
+                          )
+                        ],
+                      ),
+                    )
+                )
+              ],
+            ),
           ),
         ),
       ),

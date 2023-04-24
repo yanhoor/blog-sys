@@ -39,8 +39,8 @@ class _NewPostPageState extends State<NewPostPage> with AutomaticKeepAliveClient
                       children: <Widget>[
                         const SizedBox(height: 10,),
                         TextFormField(
-                          minLines: 1,
-                          maxLines: 10,
+                          minLines: 6,
+                          maxLines: 15,
                           // controller: model.textEditController,
                           keyboardType: TextInputType.multiline,
                           decoration: const InputDecoration(

@@ -30,6 +30,7 @@ class NewPostNotifier extends StateNotifier{
           form.reset();
           editForm['medias'] = [];
           uploadKey = DateTime.now().millisecondsSinceEpoch;
+          notifyListeners();
         }else{
           ToastHelper.error(res['msg'] ?? '发布失败');
         }

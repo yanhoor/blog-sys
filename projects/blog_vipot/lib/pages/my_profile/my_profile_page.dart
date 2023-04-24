@@ -170,7 +170,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                   UploadImg(
                                       key: ValueKey(model.editForm['avatar']),
                                       url: model.editForm['avatar'] ?? '',
-                                      onUploadCompleted: (url){
+                                      onUploadCompleted: (url, _){
                                         model.editForm['avatar'] = url;
                                         model.notifyListeners();
                                       }
@@ -186,7 +186,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
                                   UploadImg(
                                       key: ValueKey(model.editForm['profileCardBg']),
                                       url: model.editForm['profileCardBg'] ?? '',
-                                      onUploadCompleted: (url){
+                                      onUploadCompleted: (url, _){
                                         model.editForm['profileCardBg'] = url;
                                         model.notifyListeners();
                                       }

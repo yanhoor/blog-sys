@@ -103,7 +103,8 @@ class PostItem extends StatelessWidget {
                     height: 6,
                   ),
                   MediaList(
-                      mediaList: post['medias'].map((m) => m['file']).toList()),
+                      mediaList: post['medias']
+                  ),
                 ],
                 Row(
                   children: [
