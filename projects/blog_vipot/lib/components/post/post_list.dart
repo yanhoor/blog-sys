@@ -55,6 +55,10 @@ class _PostListState extends State<PostList>{
                           model.notifyListeners();
                         }
                       },
+                      onDelete: (){
+                        model.pageList.removeWhere((p) => p['id'] == post['id']);
+                        model.notifyListeners();
+                      },
                     );
                   });
             }

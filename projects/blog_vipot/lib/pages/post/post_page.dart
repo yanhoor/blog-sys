@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/post/post_item_dropdown.dart';
 import 'package:blog_vipot/components/state/state_request_empty.dart';
 import 'package:blog_vipot/components/state/state_request_error.dart';
 import 'package:blog_vipot/components/user/user_item.dart';
@@ -124,7 +125,17 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                         size: 18,
                                         color: model.postDetail['isCollect'] ? Theme.of(context).colorScheme.primary : null,
                                       ),
-                                    ))
+                                    )
+                                ),
+                                Expanded(
+                                    child: PostItemDropdown(
+                                      trigger: const Icon(Icons.more_horiz),
+                                      post: model.postDetail,
+                                      onDelete: (){
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                )
                               ],
                             )
                           ],

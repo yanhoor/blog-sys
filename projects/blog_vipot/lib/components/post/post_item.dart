@@ -1,4 +1,4 @@
-import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
+import 'package:blog_vipot/components/post/post_item_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import '../../http/index.dart';
@@ -7,14 +7,16 @@ import '../user/user_name.dart';
 import '../media/media_list.dart';
 import '../expandable_content.dart';
 import '../../utils/time_util.dart';
+import '../y-card.dart';
 
 class PostItem extends StatelessWidget {
   final Map<String, dynamic> post;
   final ScrollController scrollController;
   final Function(Map<String, dynamic>) onUpdatePost;
+  Function()? onDelete;
 
-  const PostItem(
-      {super.key, required this.post, required this.scrollController, required this.onUpdatePost});
+  PostItem(
+      {super.key, required this.post, required this.scrollController, required this.onUpdatePost, this.onDelete});
 
   handleLikePost() async{
     try{
@@ -44,127 +46,138 @@ class PostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return YCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      UserAvatar(user: post['createBy']),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          UserName(user: post['createBy']),
+                          Text(
+                            TimeUtil.formatTime(post['createdAt']),
+                            style: TextStyle(color: Theme.of(context).hintColor),
+                          )
+                        ],
+                      )
+                    ],
+                  )
+              ),
+              PostItemDropdown(post: post, onDelete: onDelete,)
+            ],
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(RouteName.post,
+                  arguments: {'postId': post['id']});
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                UserAvatar(user: post['createBy']),
                 const SizedBox(
-                  width: 6,
+                  height: 6,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                ExpandableContent(
+                  content: post['content'],
+                  scrollController: scrollController,
+                  onTap: () {
+                    Navigator.of(context).pushNamed(RouteName.post,
+                        arguments: {'postId': post['id']});
+                  },
+                ),
+                if(post['medias'].isNotEmpty) ...[
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  MediaList(
+                      mediaList: post['medias'].map((m) => m['file']).toList()),
+                ],
+                Row(
                   children: [
-                    UserName(user: post['createBy']),
-                    Text(
-                      TimeUtil.formatTime(post['createdAt']),
-                      style: TextStyle(color: Theme.of(context).hintColor),
-                    )
+                    Expanded(
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            handleLikePost();
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                post['isLike']
+                                    ? Icons.thumb_up_alt
+                                    : Icons.thumb_up_alt_outlined,
+                                size: 18,
+                                color: post['isLike'] ? Theme.of(context).colorScheme.primary : null,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(post['likedByCount'].toString())
+                            ],
+                          ),
+                        )),
+                    Expanded(
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(RouteName.post,
+                                arguments: {'postId': post['id']});
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                post['commentsCount'] > 0 ? Icons.messenger : Icons.messenger_outline,
+                                size: 18,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(post['commentsCount'].toString())
+                            ],
+                          ),
+                        )),
+                    Expanded(
+                        child: RawMaterialButton(
+                          onPressed: handleCollectPost,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                post['isCollect']
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                size: 18,
+                                color: post['isCollect'] ? Theme.of(context).colorScheme.primary : null,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(post['collectedByCount'].toString())
+                            ],
+                          ),
+                        ))
                   ],
                 )
               ],
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(RouteName.post,
-                    arguments: {'postId': post['id']});
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  ExpandableContent(
-                      content: post['content'],
-                      scrollController: scrollController),
-                  if(post['medias'].isNotEmpty) ...[
-                    const SizedBox(
-                      height: 6,
-                    ),
-                    MediaList(
-                        mediaList: post['medias'].map((m) => m['file']).toList()),
-                  ],
-                  Row(
-                    children: [
-                      Expanded(
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              handleLikePost();
-                            },
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  post['isLike']
-                                      ? Icons.thumb_up_alt
-                                      : Icons.thumb_up_alt_outlined,
-                                  size: 18,
-                                  color: post['isLike'] ? Theme.of(context).colorScheme.primary : null,
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(post['likedByCount'].toString())
-                              ],
-                            ),
-                          )),
-                      Expanded(
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(RouteName.post,
-                                  arguments: {'postId': post['id']});
-                            },
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  post['commentsCount'] > 0 ? Icons.messenger : Icons.messenger_outline,
-                                  size: 18,
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(post['commentsCount'].toString())
-                              ],
-                            ),
-                          )),
-                      Expanded(
-                          child: RawMaterialButton(
-                            onPressed: handleCollectPost,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  post['isCollect']
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  size: 18,
-                                  color: post['isCollect'] ? Theme.of(context).colorScheme.primary : null,
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(post['collectedByCount'].toString())
-                              ],
-                            ),
-                          ))
-                    ],
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
