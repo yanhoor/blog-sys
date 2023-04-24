@@ -10,6 +10,7 @@ import 'package:blog_vipot/pages/my_like/my_like_page.dart';
 import 'package:blog_vipot/pages/my_profile/my_profile_page.dart';
 import 'package:blog_vipot/pages/page_not_found.dart';
 import 'package:blog_vipot/pages/post/post_page.dart';
+import 'package:blog_vipot/pages/register/register_page.dart';
 import 'package:blog_vipot/pages/search_result/search_result_page.dart';
 import 'package:blog_vipot/pages/user_followers/user_followers_page.dart';
 import 'package:blog_vipot/pages/user_followings/user_followings_page.dart';
@@ -32,6 +33,9 @@ class MyRouter{
 
       case RouteName.login:
         return CupertinoPageRoute(settings: settings, builder: (_) => const LoginPage());
+
+      case RouteName.register:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const RegisterPage());
 
       case RouteName.user:
         Map param = settings.arguments as Map ?? {};
