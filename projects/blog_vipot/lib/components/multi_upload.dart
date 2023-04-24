@@ -1,9 +1,11 @@
+import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../config/index.dart';
 import '../http/index.dart';
@@ -16,9 +18,8 @@ import 'media/media_video_item.dart';
 
 class MultiUpload extends StatefulWidget{
   final Function(List<Map<String, dynamic>> mediaList) onUploadCompleted;
-  int initMode;
 
-  MultiUpload({super.key, required this.onUploadCompleted, this.initMode = 3});
+  MultiUpload({super.key, required this.onUploadCompleted});
 
   @override
   State<MultiUpload> createState() => _MultiUploadState();
@@ -28,14 +29,90 @@ class _MultiUploadState extends State<MultiUpload>{
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<MultiUploadNotifier>(
-        model: MultiUploadNotifier(onUploadCompleted: widget.onUploadCompleted, initMode: widget.initMode),
+        model: MultiUploadNotifier(onUploadCompleted: widget.onUploadCompleted),
         builder: (_, model, child){
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if(model.selectMode == 2 && model.mediaList.isNotEmpty) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  ModeChip(
+                    value: 2,
+                    avatar: Icons.image,
+                    label: Text('图片'),
+                  ),
+                  SizedBox(width: 6,),
+                  ModeChip(
+                    value: 3,
+                    avatar: Icons.video_collection,
+                    label: Text('视频'),
+                  ),
+                  SizedBox(width: 6,),
+                  ModeChip(
+                    value: 4,
+                    avatar: Icons.audiotrack,
+                    label: Text('录音'),
+                  )
+                ],
+              ),
+              if(model.selectMode == 2 && model.mediaList.isNotEmpty) GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
+                crossAxisCount: 3,
+                childAspectRatio: 1,
+                children: model.mediaList.map((media) => Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(3),
+                      border: Border.all()
+                  ),
+                  child: RawMaterialButton(
+                    onPressed: (){
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (modalContext){
+                            return CupertinoActionSheet(
+                              actions: [
+                                CupertinoActionSheetAction(
+                                    onPressed: (){
+                                      Navigator.pop(modalContext, true);
+                                      int index = model.mediaList.indexOf(media);
+                                      Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((m) => m['file']['url']).toList(), 'initPage': index});
+                                    },
+                                    child: const Text('预览')
+                                ),
+                                CupertinoActionSheetAction(
+                                    onPressed: (){
+                                      Navigator.pop(modalContext, true);
+                                      model.removeMedia(media);
+                                    },
+                                    child: const Text('删除')
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    child: MediaImageItem(url: media['file']['url'],),
+                  ),
+                )).toList(),
+              ),
+              if(model.selectMode == 3 && model.mediaList.isNotEmpty) ...[
+                UploadImg(
+                  key: ValueKey<String>(model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url']),
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.width * 0.7 * 9 / 16,
+                  uploadText: '上传视频封面',
+                  onUploadCompleted: (url, file){
+                    model.setCover(file);
+                  },
+                  url: model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url'],
+                ),
+                const SizedBox(height: 10,),
                 MediaVideoItem(url: model.mediaList[0]['file']['url']),
                 const SizedBox(height: 10,),
                 SizedBox(
@@ -48,130 +125,8 @@ class _MultiUploadState extends State<MultiUpload>{
                     child: const Text('删除视频', style: TextStyle(color: Colors.white),),
                   ),
                 )
-              ]
-              else GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-                children: [
-                  if(model.selectMode != 2 ) Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all()
-                    ),
-                    child: RawMaterialButton(
-                      onPressed: () async{
-                        if(model.uploadPercent != 1) return;
-
-                        await PermissionUtil.requestPermission(permissionList: [ Permission.camera, Permission.photos ], denyTip: '权限不足，您已永久禁止本应用图片或拍摄权限').then((result) {
-                          if(result){
-                            showCupertinoModalPopup(
-                                context: context,
-                                builder: (modalContext){
-                                  return CupertinoActionSheet(
-                                    title: const Text('选择操作'),
-                                    message: const Text('选择需要的操作'),
-                                    actions: [
-                                      if(model.selectMode != 2) CupertinoActionSheetAction(
-                                          onPressed: (){
-                                            model.getImage(1);
-                                            Navigator.pop(modalContext, true);
-                                          },
-                                          child: const Text('选取图片')
-                                      ),
-                                      if(model.selectMode != 2) CupertinoActionSheetAction(
-                                          onPressed: (){
-                                            model.getImage(2);
-                                            Navigator.pop(modalContext, true);
-                                          },
-                                          child: const Text('拍摄图片')
-                                      ),
-                                      if(model.selectMode != 1) CupertinoActionSheetAction(
-                                          onPressed: (){
-                                            model.getVideo(1);
-                                            Navigator.pop(modalContext, true);
-                                          },
-                                          child: const Text('选取视频')
-                                      ),
-                                      if(model.selectMode != 1) CupertinoActionSheetAction(
-                                          onPressed: (){
-                                            model.getVideo(2);
-                                            Navigator.pop(modalContext, true);
-                                          },
-                                          child: const Text('拍摄视频')
-                                      ),
-                                    ],
-                                    cancelButton: CupertinoActionSheetAction(
-                                      isDefaultAction: true,
-                                      onPressed: ((){
-                                        Navigator.pop(modalContext, false);
-                                      }),
-                                      child: const Text("取消"),
-                                    ),
-                                  );
-                                }
-                            );
-                          }
-                        });
-                      },
-                      padding: const EdgeInsets.all(20),
-                      child: model.uploadPercent != 1 ? CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
-                      ) : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.cloud_upload, size: 42,),
-                          SizedBox(height: 10,),
-                          Text('点击选择', style: TextStyle(fontSize: 14),)
-                        ],
-                      ),
-                    ),
-                  ),
-                  if(model.selectMode == 1) ...model.mediaList.map((media) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all()
-                      ),
-                      child: RawMaterialButton(
-                        onPressed: (){
-                          showCupertinoModalPopup(
-                              context: context,
-                              builder: (modalContext){
-                                return CupertinoActionSheet(
-                                  actions: [
-                                    CupertinoActionSheetAction(
-                                        onPressed: (){
-                                          Navigator.pop(modalContext, true);
-                                          int index = model.mediaList.indexOf(media);
-                                          Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((m) => m['file']['url']).toList(), 'initPage': index});
-                                        },
-                                        child: const Text('预览')
-                                    ),
-                                    CupertinoActionSheetAction(
-                                        onPressed: (){
-                                          Navigator.pop(modalContext, true);
-                                          model.removeMedia(media);
-                                        },
-                                        child: const Text('删除')
-                                    )
-                                  ],
-                                );
-                              });
-                        },
-                        child: MediaImageItem(url: media['file']['url'],),
-                      ),
-                    );
-                  }).toList()
-                ],
-              ),
+              ],
+              if(model.selectMode == 4) const Text('test')
             ],
           );
         }
@@ -181,19 +136,25 @@ class _MultiUploadState extends State<MultiUpload>{
 
 class MultiUploadNotifier extends ChangeNotifier{
   final Function(List<Map<String, dynamic>> mediaList) onUploadCompleted;
-  int _selectMode = 3; // 选择模式，1--图片，2--视频，3--都可以
-  int initMode;
+  int _selectMode = 1; // 选择模式，1--都可以，2--图片，3--视频，4--音频
+  bool _lockChangeMode = false; // 锁定模式，不能选择
   double _uploadPercent = 1;
   List<Map<String, dynamic>> mediaList = [];
 
-  MultiUploadNotifier({required this.onUploadCompleted, this.initMode = 3}){
-    selectMode = initMode;
-  }
+  MultiUploadNotifier({required this.onUploadCompleted});
 
   removeMedia(media){
     mediaList.remove(media);
     onUploadCompleted(mediaList);
-    if(mediaList.isEmpty) selectMode = 3;
+    if(mediaList.isEmpty) lockChangeMode = false;
+    notifyListeners();
+  }
+
+  setCover(file){
+    if(mediaList.isEmpty) return;
+
+    var media = mediaList[0];
+    media['cover'] = file;
     notifyListeners();
   }
 
@@ -216,7 +177,6 @@ class MultiUploadNotifier extends ChangeNotifier{
 
     if (pickedFileList.isNotEmpty) {
       await Future.wait(pickedFileList.map((f) => uploadPic(f)).toList());
-      selectMode = 1;
     } else {
       print('No image selected.');
     }
@@ -235,6 +195,7 @@ class MultiUploadNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
       if(res['success']){
+        lockChangeMode = true;
         mediaList.add({
           'file': res['result'],
           'fileId': res['result']['id']
@@ -256,7 +217,6 @@ class MultiUploadNotifier extends ChangeNotifier{
 
     if (pickedFile != null) {
       await uploadVideo(pickedFile);
-      selectMode = 2;
     } else {
       print('No image selected.');
     }
@@ -274,6 +234,7 @@ class MultiUploadNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': video }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
       if(res['success']){
+        lockChangeMode = true;
         mediaList.add({
           'file': res['result'],
           'fileId': res['result']['id']
@@ -298,5 +259,91 @@ class MultiUploadNotifier extends ChangeNotifier{
   set uploadPercent(double value) {
     _uploadPercent = value;
     notifyListeners();
+  }
+
+  bool get lockChangeMode => _lockChangeMode;
+
+  set lockChangeMode(bool value) {
+    _lockChangeMode = value;
+    notifyListeners();
+  }
+}
+
+class ModeChip extends StatelessWidget{
+  final IconData avatar;
+  final Widget label;
+  final int value;
+
+  const ModeChip({super.key, required this.avatar, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MultiUploadNotifier>(
+      builder: (_, model, child){
+        return ActionChip(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          onPressed: model.uploadPercent < 1 || (model.lockChangeMode && model.selectMode != value) ? null : () async{
+            model.selectMode = value;
+
+            if([3,4].contains(model.selectMode) && model.mediaList.isNotEmpty) return;
+
+            await PermissionUtil.requestPermission(permissionList: [ Permission.camera, Permission.photos ], denyTip: '权限不足，您已永久禁止本应用图片或拍摄权限').then((result) {
+              if(result){
+                showCupertinoModalPopup(
+                    context: context,
+                    builder: (modalContext){
+                      return CupertinoActionSheet(
+                        title: const Text('选择操作'),
+                        message: const Text('选择需要的操作'),
+                        actions: [
+                          if(model.selectMode == 2) CupertinoActionSheetAction(
+                              onPressed: (){
+                                model.getImage(1);
+                                Navigator.pop(modalContext, true);
+                              },
+                              child: const Text('选取图片')
+                          ),
+                          if(model.selectMode == 2) CupertinoActionSheetAction(
+                              onPressed: (){
+                                model.getImage(2);
+                                Navigator.pop(modalContext, true);
+                              },
+                              child: const Text('拍摄图片')
+                          ),
+                          if(model.selectMode == 3) CupertinoActionSheetAction(
+                              onPressed: (){
+                                model.getVideo(1);
+                                Navigator.pop(modalContext, true);
+                              },
+                              child: const Text('选取视频')
+                          ),
+                          if(model.selectMode == 3) CupertinoActionSheetAction(
+                              onPressed: (){
+                                model.getVideo(2);
+                                Navigator.pop(modalContext, true);
+                              },
+                              child: const Text('拍摄视频')
+                          ),
+                        ],
+                        cancelButton: CupertinoActionSheetAction(
+                          isDefaultAction: true,
+                          onPressed: ((){
+                            Navigator.pop(modalContext, false);
+                          }),
+                          child: const Text("取消"),
+                        ),
+                      );
+                    }
+                );
+              }
+            });
+          },
+          backgroundColor: model.selectMode == value ? Theme.of(context).colorScheme.primary : null,
+          avatar: Icon(avatar, color: model.selectMode == value ? Colors.white : Colors.black87, size: 18,),
+          labelStyle: TextStyle(color: model.selectMode == value ? Colors.white : Colors.black87),
+          label: label,
+        );
+      },
+    );
   }
 }

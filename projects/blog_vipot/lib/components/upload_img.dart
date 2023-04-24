@@ -14,11 +14,14 @@ import 'helper/bot_toast_helper.dart';
 import 'media/media_image_item.dart';
 
 class UploadImg extends StatefulWidget{
-  final Function(String url) onUploadCompleted;
-  double size;
+  final Function(String url, dynamic file) onUploadCompleted;
+  double width;
+  double height;
   final String url;
+  Widget? preview;
+  String uploadText;
 
-  UploadImg({super.key, required this.onUploadCompleted, this.size = 178, required this.url});
+  UploadImg({super.key, required this.onUploadCompleted, this.width = 178, this.height = 178, required this.url, this.preview, this.uploadText = '点击选择'});
 
   @override
   State<UploadImg> createState() => _UploadImgState();
@@ -29,8 +32,8 @@ class _UploadImgState extends State<UploadImg>{
   Widget build(BuildContext context) {
     // print('++++++_UploadImgState++++++++${widget.url}');
     return SizedBox(
-      width: widget.size,
-      height: widget.size,
+      width: widget.width,
+      height: widget.height,
       child: ProviderWidget<UploadImgNotifier>(
         model: UploadImgNotifier(onUploadCompleted: widget.onUploadCompleted, imgUrl: widget.url),
         builder: (_, model, child){
@@ -89,10 +92,10 @@ class _UploadImgState extends State<UploadImg>{
                 ) : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.cloud_upload, size: 42,),
-                    SizedBox(height: 10,),
-                    Text('点击选择', style: TextStyle(fontSize: 14),)
+                  children: [
+                    const Icon(Icons.cloud_upload, size: 42,),
+                    const SizedBox(height: 10,),
+                    Text(widget.uploadText, style: const TextStyle(fontSize: 14),)
                   ],
                 ),
               ),
@@ -123,7 +126,7 @@ class _UploadImgState extends State<UploadImg>{
                       );
                     });
               },
-              child: MediaImageItem(url: model.imgUrl,),
+              child: widget.preview ?? MediaImageItem(url: model.imgUrl,),
             );
           }
         },
@@ -133,14 +136,14 @@ class _UploadImgState extends State<UploadImg>{
 }
 
 class UploadImgNotifier extends ChangeNotifier{
-  final Function(String url) onUploadCompleted;
+  final Function(String url, dynamic file) onUploadCompleted;
   double _uploadPercent = 1;
   String imgUrl;
 
   UploadImgNotifier({required this.onUploadCompleted, required this.imgUrl});
 
   removeImg(){
-    onUploadCompleted('');
+    onUploadCompleted('', null);
     notifyListeners();
   }
 
@@ -175,7 +178,7 @@ class UploadImgNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
       if(res['success']){
-        onUploadCompleted( res['result']['url']);
+        onUploadCompleted( res['result']['url'], res['result']);
         print('=========uploadPic completed===========${res['result']['url']}');
         notifyListeners();
       }else{
