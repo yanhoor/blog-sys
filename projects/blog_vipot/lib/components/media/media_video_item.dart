@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:blog_vipot/http/api_url.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
+
+import '../helper/bot_toast_helper.dart';
 
 class MediaVideoItem extends StatefulWidget {
   final String url;
@@ -29,6 +32,20 @@ class _MediaVideoItemState extends State<MediaVideoItem>{
     videoPlayerController = VideoPlayerController.network( ApiUrl.ASSET_BASE + widget.url);
     videoPlayerController!.initialize();
     chewieController = ChewieController(
+      additionalOptions: (context) {
+        return <OptionItem>[
+          OptionItem(
+            onTap: () {
+              GallerySaver.saveVideo(ApiUrl.ASSET_BASE + widget.url).then((success) {
+                ToastHelper.success('保存成功');
+                Navigator.of(context).pop();
+              });
+            },
+            iconData: Icons.save_alt,
+            title: '保存',
+          ),
+        ];
+      },
       aspectRatio: 9 / 16,
       // showControlsOnInitialize: false,
       videoPlayerController: videoPlayerController!,

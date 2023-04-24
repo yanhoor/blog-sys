@@ -58,6 +58,8 @@ dependencies:
   just_audio: ^0.9.32 # 播放音频，多种功能，可制作播放器
   liquid_swipe: ^3.1.0 # 流式 Swiper
   card_swiper: ^2.0.4 # Swiper
+  url_launcher: ^6.1.10 # 打开浏览器、电话、短信、文件等
+  gallery_saver: ^2.3.2 # 保存图片、视频到图库
 #  dropdown_button2 # 下拉框
 
 dev_dependencies:
