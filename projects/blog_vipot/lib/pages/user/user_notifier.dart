@@ -2,14 +2,20 @@ import 'package:blog_vipot/notifiers/base_list_fetch_notifier.dart';
 
 import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
 import 'package:blog_vipot/http/index.dart';
+import 'package:flutter/cupertino.dart';
 
 class UserNotifier extends BaseListFetchNotifier{
+  TextEditingController searchEditingController = TextEditingController();
   final String userId;
   late Map<String, dynamic> userInfo;
   late Map<String, dynamic> statisInfo;
   List mediaList = [];
   int imageTotal = 0;
   int postTotal = 0;
+  String _keyword = '';
+  String mediaType = '';
+  String sort = '';
+  bool _showSearch = false;
 
   UserNotifier({required this.userId});
 
@@ -17,7 +23,7 @@ class UserNotifier extends BaseListFetchNotifier{
   Future<List> getPageList() async {
     List list = [];
     try{
-      var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'uid': userId, 'page': currentPage, 'pageSize': pageSize });
+      var res = await $http.fetch(ApiUrl.BLOG_LIST, params: { 'uid': userId, 'sort': sort, 'mediaType': mediaType, 'keyword': keyword, 'page': currentPage, 'pageSize': pageSize });
 
       if(res['success']){
         list.addAll(res['result']['list']);
@@ -34,7 +40,7 @@ class UserNotifier extends BaseListFetchNotifier{
 
   @override
   Future getOtherData() async{
-    getUserStatisInfo();
+    // getUserStatisInfo();
     getUserMediaList();
     return getUserInfo();
   }
@@ -85,5 +91,19 @@ class UserNotifier extends BaseListFetchNotifier{
     }catch(e){
       return Future.error(e.toString());
     }
+  }
+
+  String get keyword => _keyword;
+
+  set keyword(String value) {
+    _keyword = value;
+    notifyListeners();
+  }
+
+  bool get showSearch => _showSearch;
+
+  set showSearch(bool value) {
+    _showSearch = value;
+    notifyListeners();
   }
 }
