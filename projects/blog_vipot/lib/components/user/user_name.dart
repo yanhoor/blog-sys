@@ -6,7 +6,7 @@ class UserName extends StatelessWidget{
   double fontSize;
   bool showAt;
 
-  UserName({super.key, required this.user, this.fontSize = 16, this.showAt = false});
+  UserName({super.key, required this.user, this.fontSize = 14, this.showAt = false});
 
   @override
   Widget build(BuildContext context) {

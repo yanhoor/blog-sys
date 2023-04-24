@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/user/user_actions_dropdown.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,8 +14,8 @@ class UserItem extends StatelessWidget{
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        UserAvatar(user: user),
-        const SizedBox(width: 10,),
+        UserAvatar(user: user, size: 56,),
+        const SizedBox(width: 12,),
         Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +27,9 @@ class UserItem extends StatelessWidget{
                 Text('粉丝 ${user['followersCount']}', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),),
               ],
             )
-        )
+        ),
+        const SizedBox(width: 12,),
+        UserActionsDropdown(user: user)
       ],
     );
   }
