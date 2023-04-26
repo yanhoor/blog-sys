@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:blog_vipot/components/wrapper/tab_view_wrapper.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
+import 'package:blog_vipot/pages/index/index_notifier.dart';
 import 'package:blog_vipot/pages/index/index_tab_page.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +22,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
   int initTab = 0;
   String groupId = '';
   List<Map<String, dynamic>> tabModelList = [];
+  late StreamSubscription<ConnectivityResult> networkSubscription;
 
   @override
   bool get wantKeepAlive => true;
@@ -25,7 +30,22 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
   @override
   void initState() {
     super.initState();
+    networkSubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      print('========网络状态改变=======${result}');
+      IndexNotifier indexNotifier = Provider.of<GlobalNotifier>(context, listen: false).indexNotifier;
+      bool isError = indexNotifier.isError;
+      // 刚进入应用时，网络授权变化
+      if(isError && [ConnectivityResult.mobile, ConnectivityResult.wifi].contains(result) ){
+        indexNotifier.refreshController.requestRefresh();
+      }
+    });
     groupId = MyStorageManager.sharedPreferences.getString(MyStorageManager.INDEX_GROUP_ID) ?? '';
+  }
+
+  @override
+  dispose() {
+    networkSubscription.cancel();
+    super.dispose();
   }
 
   @override

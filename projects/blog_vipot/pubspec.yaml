@@ -60,6 +60,7 @@ dependencies:
   card_swiper: ^2.0.4 # Swiper
   url_launcher: ^6.1.10 # 打开浏览器、电话、短信、文件等
   gallery_saver: ^2.3.2 # 保存图片、视频到图库
+  connectivity_plus: ^3.0.4 # 获取/监听网络状态/变化
 #  dropdown_button2 # 下拉框
 
 dev_dependencies:
