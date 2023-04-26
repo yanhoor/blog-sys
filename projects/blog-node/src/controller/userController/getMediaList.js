@@ -3,8 +3,9 @@ const redisClient = require('../../database/redis')
 const config = require('config-lite')(__dirname)
 
 module.exports = async function (ctx, next) {
-  const { type, userId, page = 1, pageSize = this.pageSize } = ctx.request.body
+  let { type, userId, page = 1, pageSize = this.pageSize } = ctx.request.body
   const skip = pageSize * (page - 1)
+  userId = Number(userId)
   let filter = { createById: userId }
   try {
     if (!type || !userId) throw new Error('缺少参数')
@@ -57,10 +58,21 @@ module.exports = async function (ctx, next) {
               content: true
             }
           },
+          fileId: true,
           file: {
             select: {
               id: true,
               createById: true,
+              type: true,
+              url: true
+            }
+          },
+          coverId: true,
+          cover: {
+            select: {
+              id: true,
+              createById: true,
+              type: true,
               url: true
             }
           }

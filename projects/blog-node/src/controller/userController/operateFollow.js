@@ -18,6 +18,23 @@ module.exports = async function (ctx, next) {
   try {
     // 关注
     if (Number(type) === 1) {
+      const rel = await prisma.followRelation.findUnique({
+        where: {
+          ALL_DATA: true,
+          userId_followById: {
+            userId: Number(id),
+            followById: userId
+          }
+        }
+      })
+
+      if (rel) {
+        return (ctx.body = {
+          success: true,
+          msg: '已关注'
+        })
+      }
+
       const user = await prisma.user.update({
         where: {
           id: userId
@@ -40,6 +57,23 @@ module.exports = async function (ctx, next) {
 
     // 取消关注
     if (Number(type) === 2) {
+      const rel = await prisma.followRelation.findUnique({
+        where: {
+          ALL_DATA: true,
+          userId_followById: {
+            userId: Number(id),
+            followById: userId
+          }
+        }
+      })
+
+      if (!rel) {
+        return (ctx.body = {
+          success: true,
+          msg: '已取消关注'
+        })
+      }
+
       const gList = await prisma.followGroup.findMany({
         where: {
           createById: userId

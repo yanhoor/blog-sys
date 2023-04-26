@@ -19,6 +19,13 @@ enum NotificationType {
   system_audit // 评论/博客审核
 }
 
+// 文件类型
+enum FileType {
+  video
+  audio
+  image
+}
+
 // 模型，对应数据库的表
 model User {
   // 字段名----字段类型（又分为标量类型，如 Int/String 等，或模型类型，如 Blog[]）----属性，如 @id
@@ -138,8 +145,11 @@ model Media {
   createdAt  DateTime @default(now())
   createBy   User     @relation(name: "Media", fields: [createById], references: [id])
   createById Int
+  title      String?  @db.Text
   fileId     Int
-  file       File     @relation(fields: [fileId], references: [id])
+  file       File     @relation(name: "MediaFile", fields: [fileId], references: [id])
+  coverId    Int?
+  cover      File?    @relation(name: "CoverMedia", fields: [coverId], references: [id])
   blogId     Int?
   blog       Blog?    @relation(fields: [blogId], references: [id])
 
@@ -155,9 +165,11 @@ model File {
   createById Int
   md5        String   @db.Text
   url        String   @unique
+  type       FileType
 
-  deletedAt DateTime?
-  Media     Media[]
+  deletedAt  DateTime?
+  media      Media[]   @relation("MediaFile")
+  coverMedia Media[]   @relation("CoverMedia")
 
   @@index([createdAt])
 }

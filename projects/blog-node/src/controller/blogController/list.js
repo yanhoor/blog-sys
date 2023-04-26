@@ -1,5 +1,6 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
+const { FileType } = require('@prisma/client')
 
 module.exports = async function (ctx, next) {
   try {
@@ -13,6 +14,7 @@ module.exports = async function (ctx, next) {
       sort,
       uid,
       gid,
+      mediaType,
       page = 1,
       pageSize = this.pageSize
     } = requestBody
@@ -38,6 +40,44 @@ module.exports = async function (ctx, next) {
     filter.createdAt = {}
     if (startTime) filter.createdAt.gte = new Date(startTime)
     if (endTime) filter.createdAt.lte = new Date(endTime)
+    if (mediaType) {
+      switch (mediaType) {
+        case FileType.image:
+          filter.medias = {
+            every: {
+              file: {
+                is: {
+                  type: FileType.image
+                }
+              }
+            }
+          }
+          break
+        case FileType.video:
+          filter.medias = {
+            every: {
+              file: {
+                is: {
+                  type: FileType.video
+                }
+              }
+            }
+          }
+          break
+        case FileType.audio:
+          filter.medias = {
+            every: {
+              file: {
+                is: {
+                  type: FileType.audio
+                }
+              }
+            }
+          }
+          break
+      }
+    }
+    console.log('=======filter=======', filter)
     let orderBy = []
     if (sort) {
       switch (sort) {
@@ -170,10 +210,21 @@ module.exports = async function (ctx, next) {
             select: {
               id: true,
               blogId: true,
+              fileId: true,
               file: {
                 select: {
                   id: true,
                   createById: true,
+                  type: true,
+                  url: true
+                }
+              },
+              coverId: true,
+              cover: {
+                select: {
+                  id: true,
+                  createById: true,
+                  type: true,
                   url: true
                 }
               }

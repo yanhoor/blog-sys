@@ -137,7 +137,25 @@ module.exports = async function (ctx, next) {
           },
           select: {
             id: true,
-            url: true
+            blogId: true,
+            fileId: true,
+            file: {
+              select: {
+                id: true,
+                createById: true,
+                type: true,
+                url: true
+              }
+            },
+            coverId: true,
+            cover: {
+              select: {
+                id: true,
+                createById: true,
+                type: true,
+                url: true
+              }
+            }
           }
         }
       }

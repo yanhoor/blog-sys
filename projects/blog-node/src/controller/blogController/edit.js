@@ -106,10 +106,16 @@ module.exports = async function (ctx, next) {
         data: {
           ...newItem,
           medias: {
-            create: medias.map((m) => ({
-              createById: userId,
-              fileId: m.fileId
-            }))
+            create: medias.map((m) => {
+              const med = {
+                createById: userId,
+                fileId: m.fileId
+              }
+              if (m.cover) {
+                med.coverId = m.cover.id
+              }
+              return med
+            })
           }
         },
         select: {
@@ -141,6 +147,16 @@ module.exports = async function (ctx, next) {
                 select: {
                   id: true,
                   createById: true,
+                  type: true,
+                  url: true
+                }
+              },
+              coverId: true,
+              cover: {
+                select: {
+                  id: true,
+                  createById: true,
+                  type: true,
                   url: true
                 }
               }

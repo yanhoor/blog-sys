@@ -4,20 +4,38 @@ const config = require('config-lite')(__dirname)
 const OSS = require('ali-oss')
 const prisma = require('../database/prisma')
 const md5File = require('md5-file')
+const { FileType } = require('@prisma/client')
 
 class UploadController extends BaseController {
   aliOssClient = new OSS(this.globalConfig.aliOss)
 
+  getFileType = (url) => {
+    const extname = path.extname(url)
+    if (config.imgTypeList.includes(extname.toLowerCase())) {
+      return FileType.image
+    } else if (config.videoTypeList.includes(extname.toLowerCase())) {
+      return FileType.video
+    } else if (config.audioTypeList.includes(extname.toLowerCase())) {
+      return FileType.audio
+    }
+  }
+
   fileCheck = async (file) => {
     return new Promise((r, j) => {
       const extname = path.extname(file.originalFilename)
+      const fileType = this.getFileType(file.originalFilename)
+      if (!fileType) {
+        j({
+          message: `不支持的文件格式`
+        })
+      }
       // console.log('======file========', file)
       // if(!config.imgTypeList.includes(extname.toLowerCase())){
       //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
       // }
 
       if (
-        config.imgTypeList.includes(extname.toLowerCase()) &&
+        fileType === FileType.image &&
         file.size > config.uploadImgMaxSize * 1024 * 1024
       ) {
         j({
@@ -26,7 +44,7 @@ class UploadController extends BaseController {
       }
 
       if (
-        config.videoTypeList.includes(extname.toLowerCase()) &&
+        fileType === FileType.video &&
         file.size > config.uploadVideoMaxSize * 1024 * 1024
       ) {
         j({
@@ -49,6 +67,16 @@ class UploadController extends BaseController {
     let fileRes
 
     try {
+      if (!userId) throw new Error('未登录')
+    } catch (e) {
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
       let fullName
       fileRes = await prisma.file.findUnique({
         where: {
@@ -68,11 +96,13 @@ class UploadController extends BaseController {
         } else {
           fullName = await this.handleMultipartUpload(file, m5)
         }
+        const fileType = this.getFileType(fullName)
         fileRes = await prisma.file.create({
           data: {
             createById: userId,
             md5: m5,
-            url: fullName
+            url: fullName,
+            type: fileType
           },
           select: {
             id: true,

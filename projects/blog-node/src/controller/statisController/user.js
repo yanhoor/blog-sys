@@ -2,7 +2,8 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const { id } = ctx.request.body
+  let { id } = ctx.request.body
+  id = Number(id)
   try {
     const u = await prisma.user.findUnique({
       where: { id }
