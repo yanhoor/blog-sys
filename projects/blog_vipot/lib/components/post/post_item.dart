@@ -69,7 +69,7 @@ class PostItem extends StatelessWidget {
                           UserName(user: post['createBy']),
                           Text(
                             TimeUtil.formatTime(post['createdAt']),
-                            style: TextStyle(color: Theme.of(context).hintColor),
+                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),
                           )
                         ],
                       )

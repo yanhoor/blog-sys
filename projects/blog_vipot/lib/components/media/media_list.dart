@@ -1,5 +1,5 @@
+import 'package:blog_vipot/components/media/media_audio_player.dart';
 import 'package:blog_vipot/components/state/state_unknown_media.dart';
-import 'package:blog_vipot/utils/file_util.dart';
 import 'package:flutter/material.dart';
 import 'media_video_item.dart';
 import 'media_image_list.dart';
@@ -30,7 +30,11 @@ class MediaList extends StatelessWidget{
         result = MediaVideoItem(url: mediaList[0]['file']['url'], coverUrl: mediaList[0]['cover'] == null ? '' : mediaList[0]['cover']['url'],);
         break;
       case 'audio':
-        result = const Text('audio');
+        if(mediaList[0]['cover'] == null){
+          result = MediaAudioPlayer(path: mediaList[0]['file']['url'], size: MediaAudioPlayerType.small,);
+        }else{
+          result = MediaAudioPlayer(size: MediaAudioPlayerType.large, path: mediaList[0]['file']['url'], coverUrl: mediaList[0]['cover'] == null ? '' : mediaList[0]['cover']['url']);
+        }
         break;
       default:
         result = const StateUnknownMedia();

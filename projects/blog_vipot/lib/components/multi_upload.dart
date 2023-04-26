@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:blog_vipot/components/media/media_audio_record.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:record/record.dart';
+import 'package:blog_vipot/components/press_ripple.dart';
 import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
+import 'package:blog_vipot/utils/time_util.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +20,7 @@ import '../route/route_name.dart';
 import '../utils/file_util.dart';
 import '../utils/permission_util.dart';
 import 'helper/bot_toast_helper.dart';
+import 'media/media_audio_player.dart';
 import 'media/media_image_item.dart';
 import 'media/media_video_item.dart';
 
@@ -33,7 +41,7 @@ class _MultiUploadState extends State<MultiUpload>{
         builder: (_, model, child){
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
@@ -53,7 +61,7 @@ class _MultiUploadState extends State<MultiUpload>{
                   SizedBox(width: 6,),
                   ModeChip(
                     value: 4,
-                    avatar: Icons.audiotrack,
+                    avatar: Icons.keyboard_voice_outlined,
                     label: Text('录音'),
                   )
                 ],
@@ -126,7 +134,68 @@ class _MultiUploadState extends State<MultiUpload>{
                   ),
                 )
               ],
-              if(model.selectMode == 4) const Text('test')
+              if(model.selectMode == 4) ...[
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      MediaAudioRecord(onComplete: (p){
+                        model.audioFilePath = p;
+                      }),
+                      if(model.audioFilePath != null) ...[
+                        const SizedBox(height: 12,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text('点击播放：'),
+                            MediaAudioPlayer(
+                              key: ValueKey<String>(model.audioFilePath!),
+                              isAbsolutePath: true,
+                              path: model.audioFilePath!,
+                              size: MediaAudioPlayerType.mini,
+                            )
+                          ],
+                        ),
+                        if(model.uploadedAudioFilePath != model.audioFilePath) ...[
+                          const SizedBox(height: 12,),
+                          OutlinedButton(
+                              onPressed: (){
+                                model.handleAudioFile();
+                              },
+                              child: const Text('点击上传')
+                          )
+                        ]
+                      ]
+                    ],
+                  ),
+                ),
+                if(model.mediaList.isNotEmpty) ...[
+                  const SizedBox(height: 12,),
+                  UploadImg(
+                    key: ValueKey<String>(model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url']),
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.width * 0.7 * 9 / 16,
+                    uploadText: '上传展示封面',
+                    onUploadCompleted: (url, file){
+                      model.setCover(file);
+                    },
+                    url: model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url'],
+                  ),
+                  const SizedBox(height: 12,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: RawMaterialButton(
+                      fillColor: Colors.red,
+                      onPressed: (){
+                        model.audioFilePath = null;
+                        model.removeMedia(model.mediaList[0]);
+                      },
+                      child: const Text('删除录音', style: TextStyle(color: Colors.white),),
+                    ),
+                  )
+                ]
+              ]
             ],
           );
         }
@@ -139,6 +208,8 @@ class MultiUploadNotifier extends ChangeNotifier{
   int _selectMode = 1; // 选择模式，1--都可以，2--图片，3--视频，4--音频
   bool _lockChangeMode = false; // 锁定模式，不能选择
   double _uploadPercent = 1;
+  String? _audioFilePath; // 录音的地址
+  String? _uploadedAudioFilePath; // 上传完成的录音的 _audioFilePath
   List<Map<String, dynamic>> mediaList = [];
 
   MultiUploadNotifier({required this.onUploadCompleted});
@@ -176,38 +247,15 @@ class MultiUploadNotifier extends ChangeNotifier{
     }
 
     if (pickedFileList.isNotEmpty) {
-      await Future.wait(pickedFileList.map((f) => uploadPic(f)).toList());
+      int total = pickedFileList.length;
+      pickedFileList.retainWhere((pickedFile) => FileUtil.isFileUnavailable(filePath: pickedFile.path, maxSize: MyConfig.maxImageSize, typeList: MyConfig.imageType.split(',')) != -1);
+
+      if(total != pickedFileList.length) ToastHelper.warning('已过滤超过 ${MyConfig.maxImageSize}M 的图片');
+
+      await Future.wait(pickedFileList.map((f) => uploadFile(f.path)).toList());
     } else {
       print('No image selected.');
     }
-  }
-
-  // 上传图片
-  Future uploadPic(XFile pickedFile) async{
-    String path = pickedFile.path;
-    int size = FileUtil.isFileUnavailable(filePath: path, maxSize: 5, typeList: MyConfig.imageType.split(','));
-    if(size == -1){
-      return false;
-    }
-
-    MultipartFile imageFile = await MultipartFile.fromFile(path);
-    try{
-      var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
-
-      if(res['success']){
-        lockChangeMode = true;
-        mediaList.add({
-          'file': res['result'],
-          'fileId': res['result']['id']
-        });
-        onUploadCompleted(mediaList);
-        print('=========uploadPic completed===========');
-        notifyListeners();
-      }else{
-        ToastHelper.error(res['msg']);
-      }
-    }catch(e){}
-
   }
 
   // 选择视频
@@ -216,22 +264,31 @@ class MultiUploadNotifier extends ChangeNotifier{
     final pickedFile = await picker.pickVideo(source: type == 1 ? ImageSource.gallery : ImageSource.camera);
 
     if (pickedFile != null) {
-      await uploadVideo(pickedFile);
+      String path = pickedFile.path;
+      if(FileUtil.isFileUnavailable(filePath: path, typeList: MyConfig.videoType.split(',')) == -1){
+        ToastHelper.error('不支持的文件类型');
+        return false;
+      }
+      await uploadFile(pickedFile.path);
     } else {
       print('No image selected.');
     }
   }
 
-  // 上传视频
-  Future uploadVideo(XFile pickedFile) async{
-    String path = pickedFile.path;
-    if(FileUtil.isFileUnavailable(filePath: path, typeList: MyConfig.videoType.split(',')) == -1){
-      return false;
-    }
+  Future handleAudioFile() async{
+    if(audioFilePath == null) return;
 
-    MultipartFile video = await MultipartFile.fromFile(path);
+    await uploadFile(audioFilePath!.replaceAll('file://', ''));
+
+    uploadedAudioFilePath = audioFilePath;
+  }
+
+  // 上传文件
+  Future uploadFile(String path) async{
+
+    MultipartFile multipartFile = await MultipartFile.fromFile(path);
     try{
-      var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': video }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
+      var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': multipartFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
       if(res['success']){
         lockChangeMode = true;
@@ -267,6 +324,20 @@ class MultiUploadNotifier extends ChangeNotifier{
     _lockChangeMode = value;
     notifyListeners();
   }
+
+  String? get audioFilePath => _audioFilePath;
+
+  set audioFilePath(String? value) {
+    _audioFilePath = value;
+    notifyListeners();
+  }
+
+  String? get uploadedAudioFilePath => _uploadedAudioFilePath;
+
+  set uploadedAudioFilePath(String? value) {
+    _uploadedAudioFilePath = value;
+    notifyListeners();
+  }
 }
 
 class ModeChip extends StatelessWidget{
@@ -285,7 +356,9 @@ class ModeChip extends StatelessWidget{
           onPressed: model.uploadPercent < 1 || (model.lockChangeMode && model.selectMode != value) ? null : () async{
             model.selectMode = value;
 
-            if([3,4].contains(model.selectMode) && model.mediaList.isNotEmpty) return;
+            if(value == 4) return;
+
+            if([3].contains(model.selectMode) && model.mediaList.isNotEmpty) return;
 
             await PermissionUtil.requestPermission(permissionList: [ Permission.camera, Permission.photos ], denyTip: '权限不足，您已永久禁止本应用图片或拍摄权限').then((result) {
               if(result){

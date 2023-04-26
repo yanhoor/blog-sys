@@ -7,6 +7,7 @@ import 'package:blog_vipot/pages/post/post_comment_item.dart';
 import 'package:blog_vipot/pages/post/post_notifier.dart';
 import 'package:blog_vipot/pages/post/post_skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
@@ -75,7 +76,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     UserName(user: model.postDetail['createBy']),
-                                    Text(TimeUtil.formatTime(model.postDetail['createdAt']), style: TextStyle(color: Theme.of(context).hintColor),)
+                                    Text(TimeUtil.toLocalTime(model.postDetail['createdAt']), style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),)
                                   ],
                                 )
                               ],

@@ -18,9 +18,15 @@ class PostList extends StatefulWidget{
   State<PostList> createState() => _PostListState();
 }
 
-class _PostListState extends State<PostList>{
+class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       body: ChangeNotifierProvider.value(
         value: widget.model,
