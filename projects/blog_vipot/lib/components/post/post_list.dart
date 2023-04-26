@@ -40,33 +40,36 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin{
             } else if (model.isError) {
               content = StateRequestError(size: 60, onPressed: model.initData, msg: model.stateErrorText,);
             } else {
-              content = ListView.builder(
-                  shrinkWrap: true,
-                  // primary: false,
-                  controller: model.scrollController,
-                  padding: const EdgeInsets.all(0),
-                  // physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-                  itemCount: model.pageList.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> post = model.pageList[index];
-                    return PostItem(
-                      key: Key(post['id'].toString()),
-                      post: post,
-                      scrollController: model.scrollController!,
-                      onUpdatePost: (v){
-                        if(widget.needRefresh){
-                          model.refreshData();
-                        }else{
-                          post = v;
+              content = SingleChildScrollView(
+                controller: model.scrollController,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    // primary: false,
+                    controller: model.scrollController,
+                    padding: const EdgeInsets.all(0),
+                    physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                    itemCount: model.pageList.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> post = model.pageList[index];
+                      return PostItem(
+                        key: Key(post['id'].toString()),
+                        post: post,
+                        scrollController: model.scrollController!,
+                        onUpdatePost: (v){
+                          if(widget.needRefresh){
+                            model.refreshData();
+                          }else{
+                            post = v;
+                            model.notifyListeners();
+                          }
+                        },
+                        onDelete: (){
+                          model.pageList.removeWhere((p) => p['id'] == post['id']);
                           model.notifyListeners();
-                        }
-                      },
-                      onDelete: (){
-                        model.pageList.removeWhere((p) => p['id'] == post['id']);
-                        model.notifyListeners();
-                      },
-                    );
-                  });
+                        },
+                      );
+                    }),
+              );
             }
 
             return RefreshConfiguration.copyAncestor(
