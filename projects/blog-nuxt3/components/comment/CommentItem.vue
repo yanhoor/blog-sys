@@ -13,7 +13,16 @@
         </div>
       </div>
 
-      <ExpandableContent :content="comment.content" :max-length="160" />
+      <ExpandableContent
+        :content="comment.content || '图片评论'"
+        :max-length="160"
+      />
+
+      <MediaImgView
+        :url="comment.image.url"
+        v-if="comment.image"
+        class="max-w-[180px] max-h-[135px] object-contain"
+      />
 
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center flex-1">

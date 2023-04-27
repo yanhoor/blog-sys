@@ -34,7 +34,16 @@
           </template>
         </div>
 
-        <ExpandableContent :content="reply.content" :max-length="160" />
+        <ExpandableContent
+          :content="reply.content || '图片回复'"
+          :max-length="160"
+        />
+
+        <MediaImgView
+          :url="reply.image.url"
+          v-if="reply.image"
+          class="max-w-[120px] max-h-[90px] object-contain"
+        />
 
         <div
           class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300"
