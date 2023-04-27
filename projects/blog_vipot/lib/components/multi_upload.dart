@@ -1,12 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:blog_vipot/components/media/media_audio_record.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:record/record.dart';
-import 'package:blog_vipot/components/press_ripple.dart';
 import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
-import 'package:blog_vipot/utils/time_util.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +61,14 @@ class _MultiUploadState extends State<MultiUpload>{
                   )
                 ],
               ),
+              // if(model.uploadPercent < 1) LinearProgressIndicator(
+              //   value: model.uploadPercent,
+              // ),
+              if(model.isUploading) const SizedBox(
+                width: 42,
+                height: 42,
+                child: CupertinoActivityIndicator(),
+              ),
               if(model.selectMode == 2 && model.mediaList.isNotEmpty) GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -99,13 +102,13 @@ class _MultiUploadState extends State<MultiUpload>{
                                       Navigator.pop(modalContext, true);
                                       model.removeMedia(media);
                                     },
-                                    child: const Text('删除')
+                                    child: const Text('删除', style: TextStyle(color: Colors.red),)
                                 )
                               ],
                             );
                           });
                     },
-                    child: MediaImageItem(url: media['file']['url'],),
+                    child: MediaImageItem(url: media['file']['url'], width: double.infinity, height: double.infinity,),
                   ),
                 )).toList(),
               ),
@@ -188,7 +191,6 @@ class _MultiUploadState extends State<MultiUpload>{
                     child: RawMaterialButton(
                       fillColor: Colors.red,
                       onPressed: (){
-                        model.audioFilePath = null;
                         model.removeMedia(model.mediaList[0]);
                       },
                       child: const Text('删除录音', style: TextStyle(color: Colors.white),),
@@ -208,6 +210,7 @@ class MultiUploadNotifier extends ChangeNotifier{
   int _selectMode = 1; // 选择模式，1--都可以，2--图片，3--视频，4--音频
   bool _lockChangeMode = false; // 锁定模式，不能选择
   double _uploadPercent = 1;
+  bool _isUploading = false;
   String? _audioFilePath; // 录音的地址
   String? _uploadedAudioFilePath; // 上传完成的录音的 _audioFilePath
   List<Map<String, dynamic>> mediaList = [];
@@ -215,6 +218,7 @@ class MultiUploadNotifier extends ChangeNotifier{
   MultiUploadNotifier({required this.onUploadCompleted});
 
   removeMedia(media){
+    audioFilePath = null;
     mediaList.remove(media);
     onUploadCompleted(mediaList);
     if(mediaList.isEmpty) lockChangeMode = false;
@@ -252,9 +256,11 @@ class MultiUploadNotifier extends ChangeNotifier{
 
       if(total != pickedFileList.length) ToastHelper.warning('已过滤超过 ${MyConfig.maxImageSize}M 的图片');
 
+      isUploading = true;
       await Future.wait(pickedFileList.map((f) => uploadFile(f.path)).toList());
+      isUploading = false;
     } else {
-      print('No image selected.');
+      debugPrint('No image selected.');
     }
   }
 
@@ -269,16 +275,20 @@ class MultiUploadNotifier extends ChangeNotifier{
         ToastHelper.error('不支持的文件类型');
         return false;
       }
+      isUploading = true;
       await uploadFile(pickedFile.path);
+      isUploading = false;
     } else {
-      print('No image selected.');
+      debugPrint('No image selected.');
     }
   }
 
   Future handleAudioFile() async{
     if(audioFilePath == null) return;
 
+    isUploading = true;
     await uploadFile(audioFilePath!.replaceAll('file://', ''));
+    isUploading = false;
 
     uploadedAudioFilePath = audioFilePath;
   }
@@ -288,7 +298,16 @@ class MultiUploadNotifier extends ChangeNotifier{
 
     MultipartFile multipartFile = await MultipartFile.fromFile(path);
     try{
-      var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': multipartFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
+      var res = await $http.fetch(
+          ApiUrl.UPLOAD,
+          params: { 'file': multipartFile },
+          isFormData: true,
+          onSendProgress: (int sent, int total) {
+            uploadPercent = sent / total;
+            // debugPrint('==========上传进度=====$uploadPercent=====');
+            notifyListeners();
+          }
+      );
 
       if(res['success']){
         lockChangeMode = true;
@@ -336,6 +355,13 @@ class MultiUploadNotifier extends ChangeNotifier{
 
   set uploadedAudioFilePath(String? value) {
     _uploadedAudioFilePath = value;
+    notifyListeners();
+  }
+
+  bool get isUploading => _isUploading;
+
+  set isUploading(bool value) {
+    _isUploading = value;
     notifyListeners();
   }
 }

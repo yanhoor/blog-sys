@@ -15,23 +15,23 @@ class MyLikePage extends StatefulWidget{
 class _MyLikePageState extends State<MyLikePage>{
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('我的点赞'),
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: ProviderWidget<MyLikeNotifier>(
-          model: MyLikeNotifier(),
-          onModelReady: (model){
-            model.initData();
-            model.initScrollController(controller: ScrollController());
-          },
-          builder: (_, model, child){
-            return PostList(model: model);
-          },
-        ),
-      ),
+    return ProviderWidget<MyLikeNotifier>(
+      model: MyLikeNotifier(),
+      onModelReady: (model){
+        model.initData();
+        model.initScrollController(controller: ScrollController());
+      },
+      builder: (_, model, child){
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(model.total > 0 ? '我的点赞(${model.total})' : '我的点赞'),
+          ),
+          body: SafeArea(
+            bottom: false,
+            child: PostList(model: model),
+          ),
+        );
+      },
     );
   }
 }

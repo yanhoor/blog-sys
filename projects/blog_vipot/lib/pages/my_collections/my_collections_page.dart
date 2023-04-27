@@ -16,23 +16,23 @@ class MyCollectionsPage extends StatefulWidget{
 class _MyCollectionsPageState extends State<MyCollectionsPage>{
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('我的收藏'),
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: ProviderWidget<MyCollectionsNotifier>(
-          model: MyCollectionsNotifier(),
-          onModelReady: (model){
-            model.initData();
-            model.initScrollController(controller: ScrollController());
-          },
-          builder: (_, model, child){
-            return PostList(model: model);
-          },
-        ),
-      ),
+    return ProviderWidget<MyCollectionsNotifier>(
+      model: MyCollectionsNotifier(),
+      onModelReady: (model){
+        model.initData();
+        model.initScrollController(controller: ScrollController());
+      },
+      builder: (_, model, child){
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(model.total > 0 ? '我的收藏(${model.total})' : '我的收藏'),
+          ),
+          body: SafeArea(
+            bottom: false,
+            child: PostList(model: model),
+          ),
+        );
+      },
     );
   }
 }

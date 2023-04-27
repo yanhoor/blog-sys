@@ -402,7 +402,7 @@ class LargeControlButtons extends StatelessWidget{
             child: Stack(
               alignment: Alignment.center,
               children: [
-                MediaImageItem(url: coverUrl,),
+                MediaImageItem(url: coverUrl, ratio: 70, width: double.infinity, height: double.infinity,),
                 content
               ],
             ),

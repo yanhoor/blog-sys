@@ -68,19 +68,35 @@ class _NotificationCommentPageState extends State<NotificationCommentPage> with 
                         ),
                         const SizedBox(height: 4,)
                       ],
-                      ExpandableContent(content: item['comment']['content'], style: TextStyle(color: item['isRead'] == 1 ? Theme.of(context).hintColor : null), scrollController: model.scrollController!),
+                      ExpandableContent(
+                          content: item['comment']['content'] ?? '',
+                          imageUrl: item['comment']['image'] == null ? null : item['comment']['image']['url'],
+                          style: TextStyle(color: item['isRead'] == 1 ? Theme.of(context).hintColor : null),
+                          scrollController: model.scrollController!
+                      ),
                       const Divider(),
                       GestureDetector(
                         onTap: () {
+                          if(item['blog'] == null) return;
+
                           Navigator.of(context).pushNamed(RouteName.post,
-                              arguments: {'postId': item['blog']['id']});
+                              arguments: {'postId': item['blogId']});
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
+                          constraints: const BoxConstraints(
+                            minWidth: double.infinity
+                          ),
                           decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(5)),
-                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!,),
+                          child: item['blog'] == null ? const Text('博客不存在', style: TextStyle(color: Colors.red),) : ExpandableContent(
+                            content: item['blog']['content'],
+                            scrollController: model.scrollController!,
+                            onTap: () {
+                              Navigator.of(context).pushNamed(RouteName.post,
+                                  arguments: {'postId': item['blogId']});
+                            },),
                         ),
                       ),
                       const Divider(),

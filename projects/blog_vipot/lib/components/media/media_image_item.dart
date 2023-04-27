@@ -7,8 +7,10 @@ class MediaImageItem extends StatelessWidget {
   late String src;
   final BoxFit fit;
   int? ratio;
+  double? width;
+  double? height;
 
-  MediaImageItem({super.key, required String url, this.fit = BoxFit.cover, this.ratio}){
+  MediaImageItem({super.key, required String url, this.fit = BoxFit.cover, this.ratio, this.width, this.height}){
     src = ApiUrl.ASSET_BASE + url;
     if(getFileExt(src) != 'svg' && ratio != null){
       src = '${ApiUrl.ASSET_BASE}$url?x-oss-process=image/resize,p_${ratio.toString()}';
@@ -23,8 +25,8 @@ class MediaImageItem extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: const CircularProgressIndicator()),
     ) : CachedNetworkImage(
-      width: double.infinity,
-      height: double.infinity,
+      width: width,
+      height: height,
       imageUrl: src,
       fit: fit,
       cacheKey: src,

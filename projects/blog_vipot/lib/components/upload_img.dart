@@ -20,8 +20,11 @@ class UploadImg extends StatefulWidget{
   final String url;
   Widget? preview;
   String uploadText;
+  String size;
 
-  UploadImg({super.key, required this.onUploadCompleted, this.width = 178, this.height = 178, required this.url, this.preview, this.uploadText = '点击选择'});
+  UploadImg({super.key, required this.onUploadCompleted, this.width = 178, this.height = 178, required this.url, this.preview, this.uploadText = '点击选择', this.size = 'normal'}){
+    debugPrint('===========UploadImg====$key===$preview===');
+  }
 
   @override
   State<UploadImg> createState() => _UploadImgState();
@@ -30,7 +33,7 @@ class UploadImg extends StatefulWidget{
 class _UploadImgState extends State<UploadImg>{
   @override
   Widget build(BuildContext context) {
-    // print('++++++_UploadImgState++++++++${widget.url}');
+    debugPrint('++++++_UploadImgState++++++++${widget.url}');
     return SizedBox(
       width: widget.width,
       height: widget.height,
@@ -39,11 +42,11 @@ class _UploadImgState extends State<UploadImg>{
         builder: (_, model, child){
           if(model.imgUrl.isEmpty){
             return Container(
-              decoration: BoxDecoration(
+              decoration: widget.size == 'normal' ? BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(3),
                   border: Border.all()
-              ),
+              ) : null,
               child: RawMaterialButton(
                 onPressed: () async{
                   if(model.uploadPercent != 1) return;
@@ -85,18 +88,22 @@ class _UploadImgState extends State<UploadImg>{
                     }
                   });
                 },
-                padding: const EdgeInsets.all(20),
-                child: model.uploadPercent != 1 ? CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
-                ) : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.cloud_upload, size: 42,),
-                    const SizedBox(height: 10,),
-                    Text(widget.uploadText, style: const TextStyle(fontSize: 14),)
-                  ],
+                child: widget.size == 'normal' ? Container(
+                  padding: const EdgeInsets.all(20),
+                  child: model.isUploading ? CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                  ) : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.cloud_upload, size: 42,),
+                      const SizedBox(height: 10,),
+                      Text(widget.uploadText, style: const TextStyle(fontSize: 14),)
+                    ],
+                  ),
+                ) : Container(
+                  child: model.isUploading ? CupertinoActivityIndicator(color: Theme.of(context).colorScheme.primary,) : Icon(Icons.image,size: 32, color: Theme.of(context).colorScheme.primary,),
                 ),
               ),
             );
@@ -138,6 +145,7 @@ class _UploadImgState extends State<UploadImg>{
 class UploadImgNotifier extends ChangeNotifier{
   final Function(String url, dynamic file) onUploadCompleted;
   double _uploadPercent = 1;
+  bool _isUploading = false;
   String imgUrl;
 
   UploadImgNotifier({required this.onUploadCompleted, required this.imgUrl});
@@ -161,7 +169,7 @@ class UploadImgNotifier extends ChangeNotifier{
     if (uploadFile != null) {
       await uploadPic(uploadFile);
     } else {
-      print('No image selected.');
+      debugPrint('No image selected.');
     }
   }
 
@@ -175,17 +183,20 @@ class UploadImgNotifier extends ChangeNotifier{
 
     MultipartFile imageFile = await MultipartFile.fromFile(path);
     try{
+      isUploading = true;
       var res = await $http.fetch(ApiUrl.UPLOAD, params: { 'file': imageFile }, isFormData: true, onSendProgress: (int sent, int total) => uploadPercent = sent / total);
 
+      isUploading = false;
       if(res['success']){
         onUploadCompleted( res['result']['url'], res['result']);
-        print('=========uploadPic completed===========${res['result']['url']}');
+        debugPrint('=========uploadPic completed===========${res['result']['url']}');
         notifyListeners();
       }else{
         ToastHelper.error(res['msg']);
       }
     }catch(e){
-      print('=========uploadPic error===========${e.toString()}');
+      isUploading = false;
+      debugPrint('=========uploadPic error===========${e.toString()}');
     }
 
   }
@@ -194,6 +205,13 @@ class UploadImgNotifier extends ChangeNotifier{
 
   set uploadPercent(double value) {
     _uploadPercent = value;
+    notifyListeners();
+  }
+
+  bool get isUploading => _isUploading;
+
+  set isUploading(bool value) {
+    _isUploading = value;
     notifyListeners();
   }
 }

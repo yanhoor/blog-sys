@@ -108,8 +108,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                             showCommentReplyBottomSheet(
                                                 pageContext: context,
                                                 postId: model.postDetail['id'].toString(),
-                                                onSuccess: (ctx){
-                                                  Navigator.pop(ctx);
+                                                onSuccess: (){
                                                   model.refreshData();
                                                 }
                                             );
@@ -234,11 +233,10 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                   default:
                                     Map<String, dynamic> comment = model.pageList[index];
                                     result = PostCommentItem(
+                                        key: ValueKey<int>(comment['id']),
                                         post: model.postDetail,
                                         comment: comment,
-                                        total: model.pageList.length,
-                                        onSuccess: (ctx){
-                                          Navigator.pop(ctx);
+                                        onSuccess: (){
                                           model.refreshData();
                                         },
                                         scrollController: model.scrollController!

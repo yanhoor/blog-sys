@@ -52,6 +52,8 @@ class MediaImageList extends StatelessWidget{
                   child: MediaImageItem(
                     url: image['url'],
                     ratio: 80,
+                    width: double.infinity,
+                    height: double.infinity,
                   ),
                 ),
               ),

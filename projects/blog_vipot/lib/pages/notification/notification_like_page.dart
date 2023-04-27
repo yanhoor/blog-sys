@@ -60,15 +60,26 @@ class _NotificationLikePageState extends State<NotificationLikePage> with Automa
                       const Divider(),
                       GestureDetector(
                         onTap: () {
+                          if(item['blog'] == null) return;
+
                           Navigator.of(context).pushNamed(RouteName.post,
-                              arguments: {'postId': item['blog']['id']});
+                              arguments: {'postId': item['blogId']});
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
+                          constraints: const BoxConstraints(
+                              minWidth: double.infinity
+                          ),
                           decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(5)),
-                          child: ExpandableContent(content: item['blog']['content'], scrollController: model.scrollController!, isSelectable: false),
+                          child: item['blog'] == null ? const Text('博客不存在', style: TextStyle(color: Colors.red),) : ExpandableContent(
+                            content: item['blog']['content'],
+                            scrollController: model.scrollController!,
+                            onTap: () {
+                              Navigator.of(context).pushNamed(RouteName.post,
+                                  arguments: {'postId': item['blogId']});
+                            },),
                         ),
                       ),
                       const Divider(),

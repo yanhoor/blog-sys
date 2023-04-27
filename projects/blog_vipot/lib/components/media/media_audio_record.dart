@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:blog_vipot/components/media/media_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,9 @@ class _MediaAudioRecordState extends State<MediaAudioRecord>{
 
   @override
   void initState() {
+    debugPrint('========_MediaAudioRecordState===initState======');
     _recordSub = _audioRecorder.onStateChanged().listen((recordState) {
+      debugPrint('=====_recordState========$_recordState');
       setState(() => _recordState = recordState);
     });
 
@@ -40,6 +41,7 @@ class _MediaAudioRecordState extends State<MediaAudioRecord>{
 
   @override
   void dispose() {
+    debugPrint('========_MediaAudioRecordState===dispose======');
     _recordTimer?.cancel();
     _recordSub?.cancel();
     _amplitudeSub?.cancel();
@@ -97,7 +99,9 @@ class _MediaAudioRecordState extends State<MediaAudioRecord>{
 
   Future<void> _stop() async {
     _recordTimer?.cancel();
-    _recordDuration = 0;
+    setState(() {
+      _recordDuration = 0;
+    });
 
     String? path = await _audioRecorder.stop();
 

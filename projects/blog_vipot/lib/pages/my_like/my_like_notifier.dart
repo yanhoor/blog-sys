@@ -3,6 +3,7 @@ import 'package:blog_vipot/notifiers/base_list_fetch_notifier.dart';
 import 'package:blog_vipot/http/index.dart';
 
 class MyLikeNotifier extends BaseListFetchNotifier{
+  int total = 0;
 
   @override
   Future<List> getPageList() async{
@@ -12,6 +13,7 @@ class MyLikeNotifier extends BaseListFetchNotifier{
 
       if(res['success']){
         list.addAll(res['result']['list']);
+        total = res['result']['total'];
         // print('-----getPageList-------$list');
         return list;
       }else{
