@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    Provider.of<GlobalNotifier>(context, listen: false).setPageContext(context);
     super.initState();
   }
 
@@ -79,9 +80,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           noDataText: '已全部加载完成',
         ),
         hideFooterWhenNotFull: true, // Viewport不满一屏时,禁用上拉加载更多功能
-        child: Consumer<MyThemeNotifier>(
-          builder: (context, themeModel, child){
-            Provider.of<GlobalNotifier>(context, listen: false).setPageContext(context);
+        child: Consumer2<MyThemeNotifier, GlobalNotifier>(
+          builder: (context, themeModel, globalModel, child){
 
             return GestureDetector(
               // behavior: HitTestBehavior.translucent,
@@ -104,7 +104,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
                 theme: MyThemeNotifier.lightTheme,
                 darkTheme: MyThemeNotifier.darkTheme,
                 builder: BotToastInit(),
-                // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+                // home: const HomePage(),
+                initialRoute: globalModel.initRouteName,
                 onGenerateRoute: MyRouter.generateRoute,
                 themeMode: themeModel.themeMode,
                 navigatorObservers: [

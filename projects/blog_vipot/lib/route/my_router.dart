@@ -1,3 +1,4 @@
+import 'package:blog_vipot/pages/advertise/advertise_page.dart';
 import 'package:blog_vipot/pages/comment_detail/comment_detail_page.dart';
 import 'package:blog_vipot/pages/group_manage/group_manage_page.dart';
 import 'package:blog_vipot/pages/home/home_page.dart';
@@ -15,6 +16,7 @@ import 'package:blog_vipot/pages/search_result/search_result_page.dart';
 import 'package:blog_vipot/pages/user_followers/user_followers_page.dart';
 import 'package:blog_vipot/pages/user_followings/user_followings_page.dart';
 import 'package:blog_vipot/pages/user_image_wall/user_image_wall_page.dart';
+import 'package:blog_vipot/pages/welcome/welcome_page.dart';
 import 'package:blog_vipot/route/animate_page_route.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,10 +28,17 @@ class MyRouter{
 
   // 路由拦截器
   static Route<dynamic> generateRoute(RouteSettings settings){
+    debugPrint('===========路由===========${settings.name}');
     // CupertinoPageRoute 需要传 settings，否则 popUntil 会黑屏
     switch(settings.name){
       case RouteName.root:
         return CupertinoPageRoute(settings: settings, builder: (_) => const HomePage());
+
+      case RouteName.welcome:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const WelcomePage());
+
+      case RouteName.advertise:
+        return CupertinoPageRoute(settings: settings, builder: (_) => const AdvertisePage());
 
       case RouteName.login:
         return CupertinoPageRoute(settings: settings, builder: (_) => const LoginPage());

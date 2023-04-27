@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyStorageManager{
   static late SharedPreferences sharedPreferences;
 
+  static String VERSION = 'version';
   static String TOKEN = 'token';
   static String INDEX_GROUP_ID = 'index_group_id';
   static String REMEMBER_PASSWORD = 'remember-password';
