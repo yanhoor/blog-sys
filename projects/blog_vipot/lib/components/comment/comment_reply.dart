@@ -29,6 +29,18 @@ class _CommentReplyState extends State<CommentReply>{
   Map<String, dynamic>? replyImage;
   String content = '';
 
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('========_CommentReplyState initState========${widget.comment!['id']}');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('========_CommentReplyState dispose========${widget.comment!['id']}');
+  }
+
   void handleSubmit() async{
     if(content.isEmpty && replyImage == null) return;
 
@@ -56,73 +68,61 @@ class _CommentReplyState extends State<CommentReply>{
   Widget build(BuildContext context) {
     return Consumer<GlobalNotifier>(
         builder: (_, model, child){
-          return Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              // borderRadius: const BorderRadius.only(
-              //     topLeft: Radius.circular(10),
-              //     topRight: Radius.circular(10)
-              // )
-            ),
-            child: SafeArea(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  UserAvatar(user: model.myInfo!),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserAvatar(user: model.myInfo!),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        textInputAction: TextInputAction.send,
+                        maxLines: 3,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          // hintText: '请输入内容',
+                            labelText: widget.comment == null ? '发表评论' : '回复@${widget.comment!['createBy']['name']}',
+                            border: const OutlineInputBorder()),
+                        onChanged: (v){
+                          content = v.trim();
+                        },
+                        onSubmitted: (v) async {
+                          content = v.trim();
+                          handleSubmit();
+                        },
+                      ),
+                      // const SizedBox(height: 6,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextField(
-                            textInputAction: TextInputAction.send,
-                            maxLines: 3,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              // hintText: '请输入内容',
-                                labelText: widget.comment == null ? '发表评论' : '回复@${widget.comment!['createBy']['name']}',
-                                border: const OutlineInputBorder()),
-                            onChanged: (v){
-                              content = v.trim();
-                            },
-                            onSubmitted: (v) async {
-                              content = v.trim();
-                              handleSubmit();
+                          UploadImg(
+                            key: ValueKey<String>(replyImage == null ? '' : replyImage!['url']),
+                            width: 32,
+                            height: 32,
+                            size: 'mini',
+                            url: replyImage == null ? '' : replyImage!['url'],
+                            preview: replyImage == null ? null : MediaImageItem(url: replyImage!['url']),
+                            onUploadCompleted: (path, file){
+                              setState(() {
+                                replyImage = file;
+                              });
                             },
                           ),
-                          // const SizedBox(height: 6,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              UploadImg(
-                                key: ValueKey<String>(replyImage == null ? '' : replyImage!['url']),
-                                width: 32,
-                                height: 32,
-                                size: 'mini',
-                                url: replyImage == null ? '' : replyImage!['url'],
-                                preview: replyImage == null ? null : MediaImageItem(url: replyImage!['url']),
-                                onUploadCompleted: (path, file){
-                                  setState(() {
-                                    replyImage = file;
-                                  });
-                                },
-                              ),
-                              CupertinoButton(
-                                  onPressed: handleSubmit,
-                                  child: const Text('发送')
-                              )
-                            ],
+                          CupertinoButton(
+                              onPressed: handleSubmit,
+                              child: const Text('发送')
                           )
                         ],
                       )
+                    ],
                   )
-                ],
-              ),
-            ),
+              )
+            ],
           );
         }
     );
