@@ -2,12 +2,18 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const { content, blogId, replyToId, topCommentId, replyCommentId } =
+  let { content, blogId, replyToId, imageId, topCommentId, replyCommentId } =
     ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
+  imageId = imageId ? Number(imageId) : null
+  blogId = Number(blogId)
+  replyToId = Number(replyToId)
+  topCommentId = Number(topCommentId)
+  replyCommentId = Number(replyCommentId)
+  content = content ? content.trim() : null
 
   try {
-    if (!content) throw new Error('评论不能为空')
+    if (!content && !imageId) throw new Error('评论不能为空')
     if (!userId) throw new Error('用户未登录')
     if (!blogId) throw new Error('博客id不能为空')
     if (replyToId) {
@@ -39,13 +45,14 @@ module.exports = async function (ctx, next) {
   try {
     const data = {
       createById: Number(userId),
-      blogId: Number(blogId),
-      content
+      blogId,
+      content,
+      imageId
     }
     if (replyToId) {
-      data.replyToId = Number(replyToId)
-      data.topCommentId = Number(topCommentId)
-      data.replyCommentId = Number(replyCommentId)
+      data.replyToId = replyToId
+      data.topCommentId = topCommentId
+      data.replyCommentId = replyCommentId
     }
     const res = await prisma.comment.create({
       data,
@@ -62,6 +69,15 @@ module.exports = async function (ctx, next) {
             id: true,
             name: true,
             avatar: true
+          }
+        },
+        imageId: true,
+        image: {
+          select: {
+            id: true,
+            createById: true,
+            type: true,
+            url: true
           }
         },
         replyTo: {
@@ -83,6 +99,15 @@ module.exports = async function (ctx, next) {
                 id: true,
                 name: true,
                 avatar: true
+              }
+            },
+            imageId: true,
+            image: {
+              select: {
+                id: true,
+                createById: true,
+                type: true,
+                url: true
               }
             },
             replyTo: {

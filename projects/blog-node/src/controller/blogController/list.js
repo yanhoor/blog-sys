@@ -41,40 +41,14 @@ module.exports = async function (ctx, next) {
     if (startTime) filter.createdAt.gte = new Date(startTime)
     if (endTime) filter.createdAt.lte = new Date(endTime)
     if (mediaType) {
-      switch (mediaType) {
-        case FileType.image:
-          filter.medias = {
-            every: {
-              file: {
-                is: {
-                  type: FileType.image
-                }
-              }
+      filter.medias = {
+        every: {
+          file: {
+            is: {
+              type: mediaType
             }
           }
-          break
-        case FileType.video:
-          filter.medias = {
-            every: {
-              file: {
-                is: {
-                  type: FileType.video
-                }
-              }
-            }
-          }
-          break
-        case FileType.audio:
-          filter.medias = {
-            every: {
-              file: {
-                is: {
-                  type: FileType.audio
-                }
-              }
-            }
-          }
-          break
+        }
       }
     }
     console.log('=======filter=======', filter)

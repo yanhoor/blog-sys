@@ -80,6 +80,15 @@ module.exports = async function (ctx, next) {
               name: true,
               avatar: true
             }
+          },
+          imageId: true,
+          image: {
+            select: {
+              id: true,
+              createById: true,
+              type: true,
+              url: true
+            }
           }
         },
         orderBy: { createdAt: 'desc' }

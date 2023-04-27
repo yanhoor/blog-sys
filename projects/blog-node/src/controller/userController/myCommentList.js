@@ -31,6 +31,15 @@ module.exports = async function (ctx, next) {
               avatar: true
             }
           },
+          imageId: true,
+          image: {
+            select: {
+              id: true,
+              createById: true,
+              type: true,
+              url: true
+            }
+          },
           replyToId: true,
           replyTo: {
             select: {

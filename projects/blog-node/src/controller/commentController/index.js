@@ -5,6 +5,7 @@ const commentList = require('./list')
 const replyList = require('./replyList')
 const deleteComment = require('./delete')
 const audit = require('./audit')
+const like = require('./like')
 
 class CommentController extends BaseController {
   constructor() {
@@ -15,6 +16,7 @@ class CommentController extends BaseController {
     this.replyList = replyList.bind(this)
     this.delete = deleteComment.bind(this)
     this.audit = audit.bind(this)
+    this.like = like.bind(this)
   }
 }
 

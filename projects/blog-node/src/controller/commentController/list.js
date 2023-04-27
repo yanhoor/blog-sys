@@ -8,6 +8,7 @@ module.exports = async function (ctx, next) {
     blogId,
     sort = 1
   } = ctx.request.body
+  let userId = await this.getAuthUserId(ctx, next)
   const skip = pageSize * (page - 1)
   const filter = {
     blogId: Number(blogId),
@@ -29,13 +30,25 @@ module.exports = async function (ctx, next) {
     const xprisma = prisma.$extends({
       result: {
         comment: {
-          childCommentsCount: {
-            // 计算这个新字段值需要依赖的真实字段
-            needs: { childComments: true },
+          // childCommentsCount: {
+          //   // 计算这个新字段值需要依赖的真实字段
+          //   needs: { childComments: true },
+          //   compute(comment) {
+          //     // 计算获取这个新字段值的逻辑，即从何处来
+          //     const list = comment.childComments.filter((c) => !c.deletedAt)
+          //     return list.length
+          //   }
+          // },
+          likedByCount: {
+            needs: { likedBy: true },
             compute(comment) {
-              // 计算获取这个新字段值的逻辑，即从何处来
-              const list = comment.childComments.filter((c) => !c.deletedAt)
-              return list.length
+              return comment.likedBy.length
+            }
+          },
+          isLike: {
+            needs: { likedBy: true },
+            compute(comment) {
+              return comment.likedBy.some((item) => item.userId == userId)
             }
           }
         }
@@ -43,7 +56,7 @@ module.exports = async function (ctx, next) {
     })
     const [list, total] = await prisma.$transaction([
       // todo: 为毛用了 xprisma 下面的 childComments select 就无效
-      prisma.comment.findMany({
+      xprisma.comment.findMany({
         skip,
         take: pageSize,
         where: filter,
@@ -54,6 +67,8 @@ module.exports = async function (ctx, next) {
           blogId: true,
           topCommentId: true,
           createById: true,
+          isLike: true,
+          likedByCount: true,
           // childCommentsCount: true, // 会使 childComments select 无效
           _count: {
             select: {
@@ -92,6 +107,15 @@ module.exports = async function (ctx, next) {
                   avatar: true
                 }
               },
+              imageId: true,
+              image: {
+                select: {
+                  id: true,
+                  createById: true,
+                  type: true,
+                  url: true
+                }
+              },
               replyTo: {
                 select: {
                   id: true,
@@ -115,6 +139,15 @@ module.exports = async function (ctx, next) {
                       avatar: true
                     }
                   },
+                  imageId: true,
+                  image: {
+                    select: {
+                      id: true,
+                      createById: true,
+                      type: true,
+                      url: true
+                    }
+                  },
                   replyTo: {
                     select: {
                       id: true,
@@ -131,6 +164,15 @@ module.exports = async function (ctx, next) {
               id: true,
               name: true,
               avatar: true
+            }
+          },
+          imageId: true,
+          image: {
+            select: {
+              id: true,
+              createById: true,
+              type: true,
+              url: true
             }
           },
           replyTo: {

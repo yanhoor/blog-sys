@@ -55,13 +55,31 @@ module.exports = async function (ctx, next) {
             select: {
               id: true,
               content: true,
+              imageId: true,
+              image: {
+                select: {
+                  id: true,
+                  createById: true,
+                  type: true,
+                  url: true
+                }
+              },
               replyComment: {
                 select: {
                   id: true,
                   createdAt: true,
                   content: true,
                   blogId: true,
-                  topCommentId: true
+                  topCommentId: true,
+                  imageId: true,
+                  image: {
+                    select: {
+                      id: true,
+                      createById: true,
+                      type: true,
+                      url: true
+                    }
+                  }
                 }
               }
             }
