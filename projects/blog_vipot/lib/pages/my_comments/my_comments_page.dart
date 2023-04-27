@@ -1,6 +1,7 @@
 import 'package:blog_vipot/components/custom/custom_icon_button.dart';
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/helper/dialog_helper.dart';
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/my_comments/my_comments_notifier.dart';
@@ -122,16 +123,19 @@ class _MyCommentsPageState extends State<MyCommentsPage>{
           ),
           body: SafeArea(
             bottom: false,
-            child: RefreshConfiguration.copyAncestor(
-                context: context,
-                child: SmartRefresher(
-                  controller: model.refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: model.refreshData,
-                  onLoading: model.handleLoadMore,
-                  child: content,
-                )
+            child: ScrollConfiguration(
+              behavior: NoShadowScrollBehavior(),
+              child: RefreshConfiguration.copyAncestor(
+                  context: context,
+                  child: SmartRefresher(
+                    controller: model.refreshController,
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: model.refreshData,
+                    onLoading: model.handleLoadMore,
+                    child: content,
+                  )
+              ),
             ),
           ),
         );

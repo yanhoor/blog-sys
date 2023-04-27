@@ -1,14 +1,14 @@
 import 'package:blog_vipot/components/media/media_image_item.dart';
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/skeleton/skeleton_media_list.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/user_image_wall/user_image_wall_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '../../components/state/state_request_empty.dart';
-import '../../components/state/state_request_error.dart';
-import '../../route/route_name.dart';
+import 'package:blog_vipot/components/state/state_request_empty.dart';
+import 'package:blog_vipot/components/state/state_request_error.dart';
+import 'package:blog_vipot/route/route_name.dart';
 
 class UserImageWallPage extends StatefulWidget{
   final String userId;
@@ -50,7 +50,7 @@ class _UserImageWallPageState extends State<UserImageWallPage>{
 
                   Navigator.of(context).pushNamed(RouteName.mediaDetail, arguments: { 'mediaList': model.pageList, 'initIndex': idx});
                 },
-                child: MediaImageItem(url: media['file']['url']),
+                child: MediaImageItem(url: media['file']['url'], width: double.infinity, height: double.infinity),
               )).toList(),
             );
           }
@@ -61,16 +61,19 @@ class _UserImageWallPageState extends State<UserImageWallPage>{
             ),
             body: SafeArea(
               bottom: false,
-              child: RefreshConfiguration.copyAncestor(
-                  context: context,
-                  child: SmartRefresher(
-                    controller: model.refreshController,
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    onRefresh: model.refreshData,
-                    onLoading: model.handleLoadMore,
-                    child: content,
-                  )
+              child: ScrollConfiguration(
+                behavior: NoShadowScrollBehavior(),
+                child: RefreshConfiguration.copyAncestor(
+                    context: context,
+                    child: SmartRefresher(
+                      controller: model.refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onRefresh: model.refreshData,
+                      onLoading: model.handleLoadMore,
+                      child: content,
+                    )
+                ),
               ),
             ),
           );

@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/skeleton/skeleton_user_page.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/user/components/user_card_section.dart';
@@ -49,46 +50,49 @@ class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
                 Column(
                   children: [
                     Expanded(
-                        child: RefreshConfiguration.copyAncestor(
-                          context: context,
-                          child:  SmartRefresher(
-                            controller: model.refreshController,
-                            enablePullDown: true,
-                            enablePullUp: true,
-                            onRefresh: model.refreshData,
-                            onLoading: model.handleLoadMore,
-                            child: SingleChildScrollView(
-                              controller: model.scrollController,
-                                child: Stack(
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: MediaQuery.of(context).size.width * 9/16,
-                                      child: model.userInfo['profileCardBg'] == null
-                                          ? Image.asset('lib/assets/images/profile_card_default_bg.jpeg', fit: BoxFit.cover,)
-                                          : MediaImageItem(
-                                        url: model.userInfo['profileCardBg'],
-                                        // fit: BoxFit.scaleDown,
+                        child: ScrollConfiguration(
+                          behavior: NoShadowScrollBehavior(),
+                          child: RefreshConfiguration.copyAncestor(
+                            context: context,
+                            child:  SmartRefresher(
+                              controller: model.refreshController,
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              onRefresh: model.refreshData,
+                              onLoading: model.handleLoadMore,
+                              child: SingleChildScrollView(
+                                  controller: model.scrollController,
+                                  child: Stack(
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.width * 9/16,
+                                        child: model.userInfo['profileCardBg'] == null
+                                            ? Image.asset('lib/assets/images/profile_card_default_bg.jpeg', fit: BoxFit.cover,)
+                                            : MediaImageItem(
+                                          url: model.userInfo['profileCardBg'],
+                                          // fit: BoxFit.scaleDown,
+                                        ),
                                       ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 9/16 - 35),
-                                      child: ListView(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
-                                        primary: false,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        children: [
-                                          const UserCardSection(),
-                                          const SizedBox(height: 12,),
-                                          if(model.mediaList.isNotEmpty) const UserImageSection(),
-                                          const SizedBox(height: 12,),
-                                          const UserPostSection()
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
+                                      Container(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 9/16 - 35),
+                                        child: ListView(
+                                          padding: EdgeInsets.zero,
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          children: [
+                                            const UserCardSection(),
+                                            const SizedBox(height: 12,),
+                                            if(model.mediaList.isNotEmpty) const UserImageSection(),
+                                            const SizedBox(height: 12,),
+                                            const UserPostSection()
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                              ),
                             ),
                           ),
                         )

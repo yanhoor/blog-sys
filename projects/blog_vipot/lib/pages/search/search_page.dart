@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/search/search_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,19 +33,31 @@ class _SearchPageState extends State<SearchPage>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 12,),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 5),
+                        height: 38,
                         child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
                             textInputAction: TextInputAction.search,
                             controller: model.textEditingController,
                             keyboardType: TextInputType.text,
-                            maxLength: 30,
+                            style: const TextStyle(fontSize: 14),
+                            // maxLength: 30,
+                            maxLines: 1,
                             decoration: InputDecoration(
-                              counter: const Offstage(),
+                              isDense: true,
                               prefixIcon: Icon(
                                 CupertinoIcons.search,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
+                              suffix: model.keyword.isNotEmpty ? GestureDetector(
+                                onTap: (){
+                                  model.keyword = '';
+                                  model.textEditingController.text = '';
+                                },
+                                child: const Text('清除'),
+                              ) : null,
                               fillColor: Colors.red,
                               // filled: true,
                               hintText: '请输入搜索内容',
@@ -67,70 +80,75 @@ class _SearchPageState extends State<SearchPage>{
                             }
                         ),
                       ),
-                      if(model.historyList.isNotEmpty) Expanded(child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(height: 12,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text('搜索历史'),
-                                TextButton(
-                                    onPressed: (){
-                                      model.clearHistory();
-                                    },
-                                    child: const Text('全部清空')
-                                )
-                              ],
-                            ),
-                            Flexible(
-                                fit: FlexFit.loose,
-                                child: Card(
-                                  margin: const EdgeInsets.all(0),
-                                  child: ListView.separated(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    separatorBuilder: (_, index){
-                                      return const Divider(thickness: 0, height: 0,);
-                                    },
-                                    itemCount: model.historyList.length,
-                                    itemBuilder: (_, index){
-                                      String item = model.historyList[index];
-                                      return GestureDetector(
-                                        behavior: HitTestBehavior.opaque,
-                                        onTap: (){
-                                          model.addHistoryItem(item);
-                                          Navigator.of(context).pushNamed(RouteName.searchResult,
-                                              arguments: {'keyword': item});
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          // color: Colors.red,
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(child: Text(item, maxLines: 1, overflow: TextOverflow.ellipsis,)),
-                                              const SizedBox(width: 6,),
-                                              GestureDetector(
-                                                onTap: (){
-                                                  model.removeHistoryItem(item);
-                                                },
-                                                child: Icon(Icons.close_outlined, color: Theme.of(context).hintColor, size: 18,),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
+                      if(model.historyList.isNotEmpty) Expanded(
+                          child: ScrollConfiguration(
+                            behavior: NoShadowScrollBehavior(),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: 12,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Text('搜索历史'),
+                                      TextButton(
+                                          onPressed: (){
+                                            model.clearHistory();
+                                          },
+                                          child: const Text('全部清空')
+                                      )
+                                    ],
                                   ),
-                                )
-                            )
-                          ],
-                        ),
-                      ))
+                                  Flexible(
+                                      fit: FlexFit.loose,
+                                      child: Card(
+                                        margin: const EdgeInsets.all(0),
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          separatorBuilder: (_, index){
+                                            return const Divider(thickness: 0, height: 0,);
+                                          },
+                                          itemCount: model.historyList.length,
+                                          itemBuilder: (_, index){
+                                            String item = model.historyList[index];
+                                            return GestureDetector(
+                                              behavior: HitTestBehavior.opaque,
+                                              onTap: (){
+                                                model.addHistoryItem(item);
+                                                Navigator.of(context).pushNamed(RouteName.searchResult,
+                                                    arguments: {'keyword': item});
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(12),
+                                                // color: Colors.red,
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(child: Text(item, maxLines: 1, overflow: TextOverflow.ellipsis,)),
+                                                    const SizedBox(width: 6,),
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        model.removeHistoryItem(item);
+                                                      },
+                                                      child: Icon(Icons.close_outlined, color: Theme.of(context).hintColor, size: 18,),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                      )
                     ],
                   ),
                 );

@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/state/state_button_busy.dart';
 import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
@@ -211,13 +212,16 @@ class _MyProfilePageState extends State<MyProfilePage>{
                   );
                 }
 
-                return RefreshConfiguration.copyAncestor(
-                    context: context,
-                    child: SmartRefresher(
-                      controller: model.refreshController,
-                      enablePullDown: true,
-                      onRefresh: model.refreshData,
-                      child: content,
+                return ScrollConfiguration(
+                    behavior: NoShadowScrollBehavior(),
+                    child: RefreshConfiguration.copyAncestor(
+                        context: context,
+                        child: SmartRefresher(
+                          controller: model.refreshController,
+                          enablePullDown: true,
+                          onRefresh: model.refreshData,
+                          child: content,
+                        )
                     )
                 );
               },

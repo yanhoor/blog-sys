@@ -1,4 +1,5 @@
 import 'package:blog_vipot/components/comment/comment_item.dart';
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/y-card.dart';
 import 'package:blog_vipot/pages/comment_detail/comment_detail_notifier.dart';
 import 'package:blog_vipot/pages/comment_detail/comment_detail_skeleton.dart';
@@ -85,19 +86,23 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
             ),
             body: SafeArea(
               bottom: false,
-              child: RefreshConfiguration.copyAncestor(
-                  context: context,
-                  child: SmartRefresher(
-                    controller: model.refreshController,
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    onRefresh: model.refreshData,
-                    onLoading: model.handleLoadMore,
-                    child: SingleChildScrollView(
-                      controller: model.scrollController,
-                      child: content,
-                    ),
-                  )),
+              child: ScrollConfiguration(
+                behavior: NoShadowScrollBehavior(),
+                child: RefreshConfiguration.copyAncestor(
+                    context: context,
+                    child: SmartRefresher(
+                      controller: model.refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onRefresh: model.refreshData,
+                      onLoading: model.handleLoadMore,
+                      child: SingleChildScrollView(
+                        controller: model.scrollController,
+                        child: content,
+                      ),
+                    )
+                ),
+              ),
             ),
           );
         });

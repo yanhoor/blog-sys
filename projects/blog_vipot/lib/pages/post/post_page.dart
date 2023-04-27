@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/post/post_item_dropdown.dart';
 import 'package:blog_vipot/components/state/state_request_empty.dart';
 import 'package:blog_vipot/components/state/state_request_error.dart';
@@ -252,19 +253,22 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                     ];
                   }
 
-                  return RefreshConfiguration.copyAncestor(
-                    context: context,
-                    child:  SmartRefresher(
-                      controller: model.refreshController,
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      onRefresh: model.refreshData,
-                      onLoading: model.handleLoadMore,
-                      child: CustomScrollView(
-                        controller: model.scrollController,
-                        slivers: slivers,
-                      ),
-                    ),
+                  return ScrollConfiguration(
+                      behavior: NoShadowScrollBehavior(),
+                      child: RefreshConfiguration.copyAncestor(
+                        context: context,
+                        child:  SmartRefresher(
+                          controller: model.refreshController,
+                          enablePullDown: true,
+                          enablePullUp: true,
+                          onRefresh: model.refreshData,
+                          onLoading: model.handleLoadMore,
+                          child: CustomScrollView(
+                            controller: model.scrollController,
+                            slivers: slivers,
+                          ),
+                        ),
+                      )
                   );
                 }
             ),

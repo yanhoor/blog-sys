@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/group_manage/group_manage_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -129,20 +130,23 @@ class _GroupManagePageState extends State<GroupManagePage>{
               );
             }
 
-            return RefreshConfiguration.copyAncestor(
-              context: context,
-              child: SmartRefresher(
-                controller: model.refreshController,
-                enablePullDown: true,
-                onRefresh: () async{
-                  bool res = await model.getData();
-                  res ? model.refreshController.refreshCompleted() : model.refreshController.refreshFailed();
-                },
-                child: SingleChildScrollView(
-                  controller: model.scrollController,
-                  child: content,
-                ),
-              ),
+            return ScrollConfiguration(
+                behavior: NoShadowScrollBehavior(),
+                child: RefreshConfiguration.copyAncestor(
+                  context: context,
+                  child: SmartRefresher(
+                    controller: model.refreshController,
+                    enablePullDown: true,
+                    onRefresh: () async{
+                      bool res = await model.getData();
+                      res ? model.refreshController.refreshCompleted() : model.refreshController.refreshFailed();
+                    },
+                    child: SingleChildScrollView(
+                      controller: model.scrollController,
+                      child: content,
+                    ),
+                  ),
+                )
             );
           },
         ),

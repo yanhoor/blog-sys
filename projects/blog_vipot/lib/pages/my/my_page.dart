@@ -1,5 +1,6 @@
 import 'package:blog_vipot/components/helper/dialog_helper.dart';
 import 'package:blog_vipot/components/media/media_image_item.dart';
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
 import 'package:blog_vipot/components/user/user_name.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
@@ -137,6 +138,8 @@ class _MyPageState extends State<MyPage>{
                                       DialogHelper.showIOSAlertDialog(
                                           context: context,
                                           message: '确定退出登录？',
+                                          confirmBtnColor: Colors.red,
+                                          confirmBtnText: '退出登录',
                                           onConfirm: ()async {
                                             bool r = await model.logout();
                                             if(r) {
@@ -243,22 +246,25 @@ class _MyPageState extends State<MyPage>{
                 )
               ];
             }
-            return model.myInfo == null ? Container() : RefreshConfiguration.copyAncestor(
-                context: context,
-                child: SmartRefresher(
-                  controller: refreshController,
-                  enablePullDown: true,
-                  onRefresh: ()async{
-                    bool res = await model.getUserInfo(false);
-                    if(res){
-                      refreshController.refreshCompleted();
-                    }else{
-                      refreshController.refreshFailed();
-                    }
-                  },
-                  child: CustomScrollView(
-                    slivers: slivers,
-                  ),
+            return model.myInfo == null ? Container() : ScrollConfiguration(
+                behavior: NoShadowScrollBehavior(),
+                child: RefreshConfiguration.copyAncestor(
+                    context: context,
+                    child: SmartRefresher(
+                      controller: refreshController,
+                      enablePullDown: true,
+                      onRefresh: ()async{
+                        bool res = await model.getUserInfo(false);
+                        if(res){
+                          refreshController.refreshCompleted();
+                        }else{
+                          refreshController.refreshFailed();
+                        }
+                      },
+                      child: CustomScrollView(
+                        slivers: slivers,
+                      ),
+                    )
                 )
             );
           }

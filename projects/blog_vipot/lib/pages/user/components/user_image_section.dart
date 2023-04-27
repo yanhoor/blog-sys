@@ -61,7 +61,7 @@ class _UserImageSectionState extends State<UserImageSection>{
 
                           // Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': model.mediaList.map((f) => f['file']['url']).toList(), 'initPage': index});
                         },
-                        child: MediaImageItem(url: media['file']['url']),
+                        child: MediaImageItem(url: media['file']['url'], width: double.infinity, height: double.infinity,),
                       ),
                     );
                   },

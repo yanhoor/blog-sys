@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/skeleton/skeleton_user_list.dart';
 import 'package:blog_vipot/components/user/user_item.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
@@ -56,18 +57,21 @@ class _UserFollowingsPageState extends State<UserFollowingsPage>{
           ),
           body: SafeArea(
             bottom: false,
-            child: RefreshConfiguration.copyAncestor(
-                context: context,
-                child: SmartRefresher(
-                  controller: model.refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: model.refreshData,
-                  onLoading: model.handleLoadMore,
-                  child: SingleChildScrollView(
-                    child: content,
-                  ),
-                )
+            child: ScrollConfiguration(
+              behavior: NoShadowScrollBehavior(),
+              child: RefreshConfiguration.copyAncestor(
+                  context: context,
+                  child: SmartRefresher(
+                    controller: model.refreshController,
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: model.refreshData,
+                    onLoading: model.handleLoadMore,
+                    child: SingleChildScrollView(
+                      child: content,
+                    ),
+                  )
+              ),
             ),
           ),
         );

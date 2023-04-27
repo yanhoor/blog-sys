@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/skeleton/skeleton_activity_common_list.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
@@ -49,16 +50,20 @@ class _NotificationTabPageBaseState extends State<NotificationTabPageBase>{
               });
         }
 
-        return RefreshConfiguration.copyAncestor(
-            context: context,
-            child: SmartRefresher(
-              controller: model.refreshController,
-              enablePullDown: true,
-              enablePullUp: true,
-              onRefresh: model.refreshData,
-              onLoading: model.handleLoadMore,
-              child: content,
-            ));
+        return ScrollConfiguration(
+            behavior: NoShadowScrollBehavior(),
+            child: RefreshConfiguration.copyAncestor(
+                context: context,
+                child: SmartRefresher(
+                  controller: model.refreshController,
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  onRefresh: model.refreshData,
+                  onLoading: model.handleLoadMore,
+                  child: content,
+                )
+            )
+        );
       },
     );
   }
