@@ -101,11 +101,11 @@ class _ExpandableContentState extends State<ExpandableContent>{
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(Icons.photo, size: 14, color: Theme.of(context).colorScheme.primary),
-                    Text('查看图片 ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize ?? 12))
+                    Text('查看图片 ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize))
                   ],
                 ),
               )
-          )),
+          ), alignment: PlaceholderAlignment.middle,),
 
           // 展开/收起
           // if(showAction) TextSpan(text: isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: tapExpandRecognizer),
@@ -130,8 +130,8 @@ class _ExpandableContentState extends State<ExpandableContent>{
                 }
               });
             },
-            child: Text(isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize ?? 12)),
-          ))),
+            child: Text(isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize)),
+          )), alignment: PlaceholderAlignment.middle,),
         ]
     );
 
