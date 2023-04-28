@@ -1,10 +1,10 @@
+import 'package:blog_vipot/components/comment/comment_filter_dropdown.dart';
 import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
 import 'package:blog_vipot/components/post/post_item_dropdown.dart';
 import 'package:blog_vipot/components/state/state_request_empty.dart';
 import 'package:blog_vipot/components/state/state_request_error.dart';
 import 'package:blog_vipot/components/user/user_item.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
-import 'package:blog_vipot/pages/post/post_comment_item.dart';
 import 'package:blog_vipot/pages/post/post_notifier.dart';
 import 'package:blog_vipot/pages/post/post_skeleton.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,8 @@ import 'package:blog_vipot/utils/time_util.dart';
 import 'package:blog_vipot/components/media/media_list.dart';
 import 'package:blog_vipot/components/wrapper/sliver_app_bar_delegate.dart';
 import 'package:blog_vipot/components/comment/comment_reply_modal.dart';
+
+import '../../components/comment/comment_item.dart';
 
 class PostPage extends StatefulWidget{
   final String postId;
@@ -169,7 +171,25 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                           model.notifyListeners();
                                           model.refreshData();
                                         },
-                                        child: Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 14, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),),
+                                        child: CommentFilterDropdown(
+                                          value: model.commentSortType,
+                                          enabled: model.currentTab == 1,
+                                          onSelected: (int value) {
+                                            if(model.commentSortType == value) return;
+
+                                            model.commentSortType = value;
+                                            model.refreshData();
+                                          },
+                                          trigger: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              if(model.commentSortType == 1) Icon(Icons.timer_outlined, size: 18, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),
+                                              if(model.commentSortType == 2) Icon(Icons.thermostat_outlined, size: 18, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),
+                                              const SizedBox(width: 4,),
+                                              Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 14, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),)
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                       const SizedBox(width: 10,),
                                       GestureDetector(
@@ -233,12 +253,15 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                     break;
                                   default:
                                     Map<String, dynamic> comment = model.pageList[index];
-                                    result = PostCommentItem(
+                                    result = CommentItem(
                                         key: ValueKey<int>(comment['id']),
-                                        post: model.postDetail,
                                         comment: comment,
-                                        onSuccess: (){
+                                        onReplySuccess: (){
                                           model.refreshData();
+                                        },
+                                        onDelete: (){
+                                          model.pageList.removeAt(index);
+                                          model.notifyListeners();
                                         },
                                         scrollController: model.scrollController!
                                     );

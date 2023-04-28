@@ -67,6 +67,8 @@ class _CommentReplyState extends State<CommentReply>{
       if(res['success']) {
         widget.onSuccess?.call();
         ToastHelper.success('发表成功');
+      }else{
+        ToastHelper.error(res['msg'] ?? '发送失败');
       }
     }catch(e){
       setState(() {

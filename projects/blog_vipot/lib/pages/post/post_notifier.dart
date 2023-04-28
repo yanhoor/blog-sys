@@ -7,6 +7,7 @@ class PostNotifier extends BaseListFetchNotifier{
   final String postId;
   int _currentTab = 1;
   late Map<String, dynamic> postDetail;
+  int _commentSortType = 1; // 评论排序，1--时间降序，2--热度降序
 
   PostNotifier({required this.postId});
 
@@ -51,7 +52,7 @@ class PostNotifier extends BaseListFetchNotifier{
 
   Future<List> getCommentList() async{
     List list = [];
-    var res = await $http.fetch(ApiUrl.COMMENT_LIST, params: { 'blogId': postId, 'page': currentPage, 'pageSize': pageSize });
+    var res = await $http.fetch(ApiUrl.COMMENT_LIST, params: { 'blogId': postId, 'sort': commentSortType, 'page': currentPage, 'pageSize': pageSize });
     if(res['success']){
       list.addAll(res['result']['list']);
       return list;
@@ -108,6 +109,13 @@ class PostNotifier extends BaseListFetchNotifier{
 
   set currentTab(int value) {
     _currentTab = value;
+    notifyListeners();
+  }
+
+  int get commentSortType => _commentSortType;
+
+  set commentSortType(int value) {
+    _commentSortType = value;
     notifyListeners();
   }
 }

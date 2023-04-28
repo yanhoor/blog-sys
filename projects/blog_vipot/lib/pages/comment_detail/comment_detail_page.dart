@@ -10,6 +10,8 @@ import 'package:blog_vipot/components/state/state_request_error.dart';
 import 'package:blog_vipot/components/state/state_request_empty.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 
+import '../../components/comment/comment_filter_dropdown.dart';
+
 class CommentDetailPage extends StatefulWidget {
   final String commentId;
 
@@ -38,7 +40,7 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
             content = StateRequestError(size: 60, onPressed: model.initData, msg: model.stateErrorText,);
           } else {
             content = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Card(
                   margin: const EdgeInsets.all(0),
@@ -50,9 +52,26 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                       onReplySuccess: (){
                         model.refreshData();
                       },
+                      onDelete: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
                 ),
+                const SizedBox(height: 12,),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  child: CommentFilterDropdown(
+                    value: model.commentSortType,
+                    onSelected: (int value) {
+                      if(model.commentSortType == value) return;
+
+                      model.commentSortType = value;
+                      model.refreshData();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12,),
                 YCard(
                   child: ListView.separated(
                       padding: EdgeInsets.zero,
@@ -72,6 +91,10 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
                           scrollController: model.scrollController!,
                           onReplySuccess: (){
                             model.refreshData();
+                          },
+                          onDelete: () {
+                            model.pageList.removeAt(index);
+                            model.notifyListeners();
                           },
                         );
                       }),
