@@ -53,6 +53,7 @@ class _UserFollowingsPageState extends State<UserFollowingsPage>{
 
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(model.followingsTotal > 0 ? '全部关注(${model.followingsTotal})' : '全部关注'),
           ),
           body: SafeArea(

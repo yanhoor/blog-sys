@@ -53,6 +53,7 @@ class _UserFollowersPageState extends State<UserFollowersPage>{
 
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(model.followersTotal > 0 ? '全部粉丝(${model.followersTotal})' : '全部粉丝'),
           ),
           body: SafeArea(

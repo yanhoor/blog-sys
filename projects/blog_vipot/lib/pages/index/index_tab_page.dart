@@ -9,7 +9,7 @@ class IndexTabPage extends StatefulWidget{
   final Function(IndexNotifier model) onModelReady;
 
   IndexTabPage({super.key, required this.gid, required this.onModelReady}){
-    // print('--------IndexTabPage--------$key');
+    print('--------IndexTabPage--------$key');
   }
 
   @override
@@ -31,6 +31,7 @@ class _IndexTabPageState extends State<IndexTabPage> with AutomaticKeepAliveClie
       model: IndexNotifier(groupId: widget.gid),
       onModelReady: (model){
         model.initData();
+        debugPrint('========initScrollController==${widget.key}==${widget.gid}====');
         model.initScrollController(controller: ScrollController());
         widget.onModelReady(model);
       },

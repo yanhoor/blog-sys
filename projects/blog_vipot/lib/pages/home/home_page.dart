@@ -18,8 +18,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
+  PageController pageController = PageController();
 
   @override
   bool get wantKeepAlive => true;
@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    Provider.of<GlobalNotifier>(context, listen: false).setHomePageController(pageController);
+
     var window = WidgetsBinding.instance.window;
     window.onPlatformBrightnessChanged = () {
       WidgetsBinding.instance.handlePlatformBrightnessChanged();
@@ -71,7 +73,7 @@ class _HomePageState extends State<HomePage>
           return Scaffold(
             drawer: const HomeDrawer(),
             body: PageView(
-              controller: model.homePageController,
+              controller: pageController,
               physics: const NeverScrollableScrollPhysics(), // 禁止滑动
               children: const [
                 IndexPage(),
@@ -151,7 +153,7 @@ class _HomePageState extends State<HomePage>
                   }
                 } else {
                   model.setCurrentTab(index);
-                  model.homePageController.jumpToPage(index);
+                  pageController.jumpToPage(index);
                 }
               },
             ),

@@ -1,4 +1,5 @@
 import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
+import 'package:blog_vipot/components/state/state_button_busy.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/group_manage/group_manage_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,7 @@ class _GroupManagePageState extends State<GroupManagePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('我的分组'),
       ),
       body: SafeArea(
@@ -118,8 +120,12 @@ class _GroupManagePageState extends State<GroupManagePage>{
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: model.handleEditGroup,
-                              child: const Text('保存'),
+                              onPressed: (){
+                                if(model.isBusy) return;
+
+                                model.handleEditGroup();
+                              },
+                              child: model.isBusy ? const StateButtonBusy() : const Text('保存'),
                             ),
                           )
                         ],

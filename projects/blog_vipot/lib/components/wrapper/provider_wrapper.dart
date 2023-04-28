@@ -19,15 +19,15 @@ class _ProviderWidgetState<T extends ChangeNotifier> extends State<ProviderWidge
   @override
   void initState() {
     super.initState();
-    print('-------------_ProviderWidgetState initState------------------');
     model = widget.model;
     widget.onModelReady?.call(model);
+    debugPrint('-------------_ProviderWidgetState initState-------${model.runtimeType}-----------');
   }
 
   @override
   void dispose() {
     super.dispose();
-    print('-------------_ProviderWidgetState dispose------------------');
+    debugPrint('-------------_ProviderWidgetState dispose----${model.runtimeType}--------------');
     model.dispose();
   }
 

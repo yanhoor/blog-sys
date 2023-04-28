@@ -38,7 +38,9 @@ class GroupManageNotifier extends BaseFetchNotifier{
     }
 
     try{
+      setBusy();
       var res = await $http.fetch(ApiUrl.GROUP_EDIT, params: editForm);
+      setComplete();
       if(res['success']){
         getData();
         selectedGroup = null;
@@ -47,7 +49,7 @@ class GroupManageNotifier extends BaseFetchNotifier{
         ToastHelper.error(res['msg'] ?? '保存失败');
       }
     }catch(e){
-
+      setComplete();
     }
   }
 

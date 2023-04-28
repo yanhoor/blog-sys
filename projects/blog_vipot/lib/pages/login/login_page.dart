@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage>{
         builder: (context, model, child){
           return Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: const Text('登录'),
               actions: <Widget>[
                 IconButton(
@@ -101,7 +102,11 @@ class _LoginPageState extends State<LoginPage>{
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: ElevatedButton(
-                            onPressed: model.isBusy ? null : model.doLogin,
+                            onPressed: (){
+                              if(model.isBusy) return;
+
+                              model.doLogin();
+                            },
                             // color: Theme.of(context).colorScheme.secondary,
                             child: model.isBusy ? const StateButtonBusy() : const Text('登录'),
                           ),

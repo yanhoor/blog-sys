@@ -49,7 +49,7 @@ class _NewPostPageState extends State<NewPostPage> with AutomaticKeepAliveClient
                                 TextFormField(
                                   minLines: 6,
                                   maxLines: 15,
-                                  // controller: model.textEditController,
+                                  controller: model.textEditController,
                                   keyboardType: TextInputType.multiline,
                                   decoration: const InputDecoration(
                                     fillColor: Colors.red,
@@ -72,7 +72,12 @@ class _NewPostPageState extends State<NewPostPage> with AutomaticKeepAliveClient
                                   width: MediaQuery.of(context).size.width,
                                   margin: const EdgeInsets.symmetric(vertical: 20),
                                   child: ElevatedButton(
-                                    onPressed: model.isBusy ? null : model.handleSubmitForm,
+                                    onPressed: () async{
+                                      if(model.isBusy) return;
+
+                                      bool result = await model.handleSubmitForm();
+                                      if(result && context.mounted) FocusScope.of(context).unfocus();
+                                    },
                                     // color: Theme.of(context).colorScheme.secondary,
                                     child: model.isBusy ? const StateButtonBusy() : const Text('发布'),
                                   ),

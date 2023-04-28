@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/state/state_button_busy.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class UserGroupSelect extends StatefulWidget{
 
 class _UserGroupSelectState extends State<UserGroupSelect>{
   List<int> checkedList = [];
-
+  bool loading = false;
 
   @override
   void initState() {
@@ -27,9 +28,17 @@ class _UserGroupSelectState extends State<UserGroupSelect>{
   }
 
   getContainList() async{
+    if(loading) return;
+
     try{
+      setState(() {
+        loading = true;
+      });
       var res = await $http.fetch(ApiUrl.GROUP_CONTAIN_LIST, params: { 'userId': widget.user['id'] });
 
+      setState(() {
+        loading = false;
+      });
       if(res['success']){
         List list = res['result'];
         setState(() {
@@ -40,6 +49,9 @@ class _UserGroupSelectState extends State<UserGroupSelect>{
         return false;
       }
     }catch(e){
+      setState(() {
+        loading = false;
+      });
       return false;
     }
   }
@@ -73,36 +85,30 @@ class _UserGroupSelectState extends State<UserGroupSelect>{
                 children: [
                   const Text('设置分组', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
                   Expanded(
-                      child: ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder: (_, index){
-                            var group = model.allGroupList[index];
-                            return CheckboxListTile(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                                value: checkedList.contains(group['id']),
-                                title: Text(group['name']),
-                                onChanged: (v){
-                                  if(v == null) return;
+                      child:
+                      Wrap(
+                        spacing: 15,
+                        runSpacing: 5,
+                        children: model.allGroupList.map((group) => FilterChip(
+                            label: Text(group['name'], style: TextStyle(color: checkedList.contains(group['id']) ? Colors.white : null),),
+                            checkmarkColor: Colors.white,
+                            selected: checkedList.contains(group['id']),
+                            selectedColor: Theme.of(context).colorScheme.primary,
+                            onSelected: (v){
+                              if(v){
+                                if(checkedList.contains(group['id'])) return;
 
-                                  if(v){
-                                    if(checkedList.contains(group['id'])) return;
-
-                                    setState(() {
-                                      checkedList.add(group['id']);
-                                    });
-                                  }else{
-                                    setState(() {
-                                      checkedList.remove(group['id']);
-                                    });
-                                  }
-                                }
-                            );
-                          },
-                          separatorBuilder: (_, __){
-                            return const Divider();
-                          },
-                          itemCount: model.allGroupList.length
-                      )
+                                setState(() {
+                                  checkedList.add(group['id']);
+                                });
+                              }else{
+                                setState(() {
+                                  checkedList.remove(group['id']);
+                                });
+                              }
+                            }
+                        )).toList(),
+                      ),
                   ),
                   SizedBox(
                     width: double.infinity,
@@ -113,7 +119,7 @@ class _UserGroupSelectState extends State<UserGroupSelect>{
                             onPressed: (){
                               handleSetGroup();
                             },
-                            child: const Text('保存')
+                            child: loading ? const StateButtonBusy() : const Text('保存')
                         ),
                         OutlinedButton(
                             onPressed: (){

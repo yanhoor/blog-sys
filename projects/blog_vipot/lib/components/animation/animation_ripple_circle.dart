@@ -16,7 +16,6 @@ class AnimationRippleCircle extends StatefulWidget{
 
 class _AnimationRippleCircleState extends State<AnimationRippleCircle> with SingleTickerProviderStateMixin{
   late AnimationController _controller;
-  late Tween<double> opacityTween;
   Animation<double>? opacity;
 
   @override
@@ -27,11 +26,10 @@ class _AnimationRippleCircleState extends State<AnimationRippleCircle> with Sing
       // lowerBound: 0.5,
       duration: const Duration(seconds: 3),
     )..forward()..repeat(reverse: true);
-    opacityTween = Tween<double>(
+    opacity = Tween<double>(
         begin: 1,
         end: 0.5
-    );
-    opacity = opacityTween.animate(CurvedAnimation(
+    ).animate(CurvedAnimation(
         parent: _controller,
         curve: Curves.linear
     ));

@@ -119,6 +119,7 @@ class _MyCommentsPageState extends State<MyCommentsPage>{
 
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(model.total > 0 ? '我的评论(${model.total})' : '我的评论'),
           ),
           body: SafeArea(

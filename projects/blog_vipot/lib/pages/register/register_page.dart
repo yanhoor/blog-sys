@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage>{
         builder: (context, model, child){
           return Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: const Text('注册'),
               actions: <Widget>[
                 IconButton(
@@ -116,7 +117,9 @@ class _RegisterPageState extends State<RegisterPage>{
                           width: MediaQuery.of(context).size.width,
                           margin: const EdgeInsets.symmetric(vertical: 20),
                           child: ElevatedButton(
-                            onPressed: model.isBusy ? null : () async{
+                            onPressed: () async{
+                              if(model.isBusy) return;
+
                               bool r = await model.doRegister();
                               if(r && context.mounted) Navigator.of(context).pop();
                             },

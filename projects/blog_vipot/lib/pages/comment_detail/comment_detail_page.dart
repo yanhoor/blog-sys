@@ -82,6 +82,7 @@ class _CommentDetailPageState extends State<CommentDetailPage> {
 
           return Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: Text('全部回复${model.replyTotal > 0 ? '(${model.replyTotal})' : ''}'),
             ),
             body: SafeArea(

@@ -25,6 +25,7 @@ class _MyCollectionsPageState extends State<MyCollectionsPage>{
       builder: (_, model, child){
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(model.total > 0 ? '我的收藏(${model.total})' : '我的收藏'),
           ),
           body: SafeArea(

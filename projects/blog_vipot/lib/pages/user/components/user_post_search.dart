@@ -14,6 +14,8 @@ class UserPostSearch extends StatefulWidget{
 class _UserPostSearchState extends State<UserPostSearch>{
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Consumer<UserNotifier>(
         builder: (_, model, child){
           return Positioned(
@@ -53,7 +55,7 @@ class _UserPostSearchState extends State<UserPostSearch>{
                           },
                           child: const Icon(Icons.close),
                         ),
-                        fillColor: Colors.white.withOpacity(0.9),
+                        fillColor: isDark ? Colors.black.withOpacity(0.7) : Colors.white.withOpacity(0.9),
                         filled: true,
                         hintText: '请输入搜索内容',
                         contentPadding: EdgeInsets.zero,// 填充

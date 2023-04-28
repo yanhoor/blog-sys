@@ -115,7 +115,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                             );
                                           },
                                           child: const Icon(
-                                            Icons.messenger,
+                                            Icons.messenger_outline,
                                             size: 18,
                                           ),
                                         )),
@@ -169,7 +169,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                           model.notifyListeners();
                                           model.refreshData();
                                         },
-                                        child: Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),),
+                                        child: Text('评论 ${model.postDetail['commentsCount']}', style: TextStyle(fontSize: 14, color: model.currentTab == 1 ? Theme.of(context).colorScheme.primary : null),),
                                       ),
                                       const SizedBox(width: 10,),
                                       GestureDetector(
@@ -181,7 +181,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                           model.notifyListeners();
                                           model.refreshData();
                                         },
-                                        child: Text('点赞 ${model.postDetail['likedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 2 ? Theme.of(context).colorScheme.primary : null)),
+                                        child: Text('点赞 ${model.postDetail['likedByCount']}', style: TextStyle(fontSize: 14, color: model.currentTab == 2 ? Theme.of(context).colorScheme.primary : null)),
                                       ),
                                       const SizedBox(width: 10,),
                                       GestureDetector(
@@ -191,7 +191,7 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                           model.currentTab = 3;
                                           model.refreshData();
                                         },
-                                        child: Text('收藏 ${model.postDetail['collectedByCount']}', style: TextStyle(fontSize: 12, color: model.currentTab == 3 ? Theme.of(context).colorScheme.primary : null)),
+                                        child: Text('收藏 ${model.postDetail['collectedByCount']}', style: TextStyle(fontSize: 14, color: model.currentTab == 3 ? Theme.of(context).colorScheme.primary : null)),
                                       ),
                                     ],
                                   ),

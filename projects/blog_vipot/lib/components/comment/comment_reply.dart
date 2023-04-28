@@ -1,4 +1,5 @@
 import 'package:blog_vipot/components/media/media_image_item.dart';
+import 'package:blog_vipot/components/state/state_button_busy.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class CommentReply extends StatefulWidget{
 class _CommentReplyState extends State<CommentReply>{
   Map<String, dynamic>? replyImage;
   String content = '';
+  bool submitting = false;
 
   @override
   void initState() {
@@ -43,8 +45,12 @@ class _CommentReplyState extends State<CommentReply>{
 
   void handleSubmit() async{
     if(content.isEmpty && replyImage == null) return;
+    if(submitting) return;
 
     try{
+      setState(() {
+        submitting = true;
+      });
       var res = await $http.fetch(ApiUrl.COMMENT_COMMIT, params: {
         'blogId': widget.postId,
         'content': content.isEmpty ? null : content,
@@ -55,11 +61,17 @@ class _CommentReplyState extends State<CommentReply>{
           'topCommentId': widget.comment!['topCommentId'] ?? widget.comment!['id'],
         }
       });
+      setState(() {
+        submitting = false;
+      });
       if(res['success']) {
         widget.onSuccess?.call();
         ToastHelper.success('发表成功');
       }
     }catch(e){
+      setState(() {
+        submitting = false;
+      });
       ToastHelper.error('操作失败');
     }
   }
@@ -115,7 +127,7 @@ class _CommentReplyState extends State<CommentReply>{
                           ),
                           CupertinoButton(
                               onPressed: handleSubmit,
-                              child: const Text('发送')
+                              child: submitting ? StateButtonBusy(color: Theme.of(context).colorScheme.primary,) : const Text('发送')
                           )
                         ],
                       )

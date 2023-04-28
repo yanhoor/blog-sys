@@ -36,6 +36,7 @@ class LoginNotifier extends StateNotifier{
       setBusy();
       try{
         var res = await $http.fetch(ApiUrl.LOGIN, params: loginForm);
+        setComplete();
         if(res['success']){
           await MyStorageManager.sharedPreferences.setString(MyStorageManager.TOKEN, res['result']);
           if(rememberPassword){

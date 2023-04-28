@@ -24,6 +24,7 @@ class _MyLikePageState extends State<MyLikePage>{
       builder: (_, model, child){
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(model.total > 0 ? '我的点赞(${model.total})' : '我的点赞'),
           ),
           body: SafeArea(

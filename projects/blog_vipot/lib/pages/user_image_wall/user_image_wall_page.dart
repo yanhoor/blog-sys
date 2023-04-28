@@ -57,6 +57,7 @@ class _UserImageWallPageState extends State<UserImageWallPage>{
 
           return Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: Text('全部照片(${model.imageTotal})'),
             ),
             body: SafeArea(

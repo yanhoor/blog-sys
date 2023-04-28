@@ -67,7 +67,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                     key: const PageStorageKey(''),
                     gid: '',
                     onModelReady: (indexModel){
-                      model.indexNotifier = indexModel;
+                      model.setIndexNotifier(indexModel);
                     }
                 ) : TabViewWrapper(
                   key: ValueKey<int>(model.groupRefreshTime), // 在新增分组后重建
@@ -79,7 +79,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                   onTabChange: (index) async{
                     String id = model.indexGroupList[index]['id'].toString();
                     int idx = tabModelList.indexWhere((m) => m['id'] == id);
-                    if(idx > -1) model.indexNotifier = tabModelList[idx]['model'];
+                    if(idx > -1) model.setIndexNotifier(tabModelList[idx]['model']);
                     MyStorageManager.sharedPreferences.setString(MyStorageManager.INDEX_GROUP_ID, id);
                   },
                   pageBuilder: (BuildContext context, int index) {
@@ -89,7 +89,7 @@ class _IndexPageState extends State<IndexPage> with AutomaticKeepAliveClientMixi
                       key: PageStorageKey(group['id'].toString()), // PageStorageKey 保存滚动位置
                       gid: group['id'].toString(),
                       onModelReady: (indexModel){
-                        model.indexNotifier = indexModel;
+                        model.setIndexNotifier(indexModel);
                         tabModelList.removeWhere((m) => m['id'] == group['id'].toString());
                         tabModelList.add({
                           'id': group['id'].toString(),

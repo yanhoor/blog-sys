@@ -13,9 +13,8 @@ class StateButtonBusy extends StatelessWidget{
     return SizedBox(
         width: size,
         height: size,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation(color),
+        child: CupertinoActivityIndicator(
+          color: color,
         )
     );
   }

@@ -24,6 +24,7 @@ class _MyProfilePageState extends State<MyProfilePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('编辑资料'),
       ),
       body: SafeArea(

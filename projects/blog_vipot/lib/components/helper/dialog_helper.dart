@@ -7,11 +7,11 @@ class DialogHelper {
     required String message,
     required Future Function() onConfirm,
     Function? onCancel,
-    Color cancelBtnColor = Colors.black54,
+    Color? cancelBtnColor,
     String confirmBtnText = '确定',
     Color? confirmBtnColor,
   }) async{
-    confirmBtnColor = confirmBtnColor ?? Theme.of(context).primaryColor;
+    confirmBtnColor = confirmBtnColor ?? Theme.of(context).colorScheme.primary;
 
     return await showCupertinoDialog(
       context: context,
