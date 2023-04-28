@@ -6,7 +6,7 @@ import '../route/route_name.dart';
 class ExpandableContent extends StatefulWidget{
   final int maxLength;
   final int maxLines;
-  final String content;
+  final String? content;
   String? imageUrl;
   final String expandedBtnText;
   final Function()? onTapExpanded;
@@ -15,6 +15,7 @@ class ExpandableContent extends StatefulWidget{
   bool isSelectable;
   TextStyle? style;
   ScrollController? scrollController;
+
   ExpandableContent({
     super.key,
     this.maxLength = 180,
@@ -39,29 +40,39 @@ class _ExpandableContentState extends State<ExpandableContent>{
   bool isExpanded = false;
   bool multiLines = false;
   double scrollOffset = 0;
-  late String briefContent;
+  String? briefContent;
   List<String> lineList = [];
+  TapGestureRecognizer? tapContentRecognizer;
 
   @override
   void initState() {
     super.initState();
 
-    lineList = widget.content.split('\n');
-    if(lineList.length > widget.maxLines){
-      briefContent = '${lineList.take( widget.maxLines).toList().join('\n')}\n...\n';
-      showAction = true;
-      multiLines = true;
-    }else if(widget.maxLength < widget.content.length){
-      briefContent = '${widget.content.substring(0, widget.maxLength - 1)}...';
-      showAction = true;
-    }else{
-      briefContent = widget.content;
+    if(widget.content != null){
+      lineList = widget.content!.split('\n');
+      if(lineList.length > widget.maxLines){
+        briefContent = '${lineList.take( widget.maxLines).toList().join('\n')}\n...\n';
+        showAction = true;
+        multiLines = true;
+      }else if(widget.maxLength < widget.content!.length){
+        briefContent = '${widget.content!.substring(0, widget.maxLength - 1)}...';
+        showAction = true;
+      }else{
+        briefContent = widget.content!;
+      }
+
+      // 点击正文
+      if(widget.onTap != null){
+        tapContentRecognizer = TapGestureRecognizer()..onTap = widget.onTap;
+      }
     }
+
   }
 
   @override
   void dispose() {
     super.dispose();
+    tapContentRecognizer?.dispose();
   }
 
   @override
@@ -77,15 +88,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
           ),
 
           // 正文
-          // TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style, recognizer: tapContentRecognizer),
-
-          // 正文
-          WidgetSpan(
-              child: GestureDetector(
-                onTap: widget.onTap,
-                child: Text(isExpanded ? widget.content : briefContent, style: widget.style),
-              )
-          ),
+          if(widget.content != null) TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style, recognizer: tapContentRecognizer),
 
           // 查看图片
           if(widget.imageUrl != null) WidgetSpan(child: SelectionContainer.disabled(
@@ -93,12 +96,20 @@ class _ExpandableContentState extends State<ExpandableContent>{
                 onTap: (){
                   Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': [widget.imageUrl], 'initPage': 0});
                 },
-                child: Text(' 查看图片 ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.photo, size: 14, color: Theme.of(context).colorScheme.primary),
+                    Text('查看图片 ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize ?? 12))
+                  ],
+                ),
               )
           )),
 
           // 展开/收起
-          if(showAction) WidgetSpan(child: GestureDetector(
+          // if(showAction) TextSpan(text: isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary), recognizer: tapExpandRecognizer),
+          if(showAction) WidgetSpan(child: SelectionContainer.disabled(child: GestureDetector(
             onTap: () {
               if(widget.onTapExpanded != null){
                 widget.onTapExpanded!();
@@ -113,14 +124,14 @@ class _ExpandableContentState extends State<ExpandableContent>{
                   // scrollOffset = Scrollable.of(context).position.pixels;
                   // print('=====PrimaryScrollController=======${PrimaryScrollController.of(context).offset}');
                   scrollOffset = widget.scrollController!.offset;
-                  print('=========scrollOffset=========$scrollOffset');
+                  debugPrint('=========scrollOffset=========$scrollOffset');
                 }else{
                   widget.scrollController!.animateTo(scrollOffset, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
                 }
               });
             },
-            child: Text(isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
-          )),
+            child: Text(isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize ?? 12)),
+          ))),
         ]
     );
 
