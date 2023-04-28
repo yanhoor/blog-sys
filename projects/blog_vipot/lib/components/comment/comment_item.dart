@@ -81,7 +81,10 @@ class _CommentItemState extends State<CommentItem>{
                       size: 18,
                       color: widget.comment['isLike'] ? Theme.of(context).colorScheme.primary : Theme.of(context).hintColor,
                     ),
-                    if(widget.comment['likedByCount'] > 0) Text(widget.comment['likedByCount'].toString())
+                    if(widget.comment['likedByCount'] > 0) ...[
+                      const SizedBox(width: 3,),
+                      Text(widget.comment['likedByCount'].toString())
+                    ]
                   ],
                 ),
               )
@@ -100,7 +103,6 @@ class _CommentItemState extends State<CommentItem>{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const SizedBox(height: 6),
                 ExpandableContent(
                   content: widget.comment['content'] ?? (widget.comment['replyComment'] != null ? '图片回复' : '图片评论'),
@@ -113,16 +115,16 @@ class _CommentItemState extends State<CommentItem>{
                       onSuccess: widget.onReplySuccess,
                     );
                   },
-                  prefix: widget.comment['replyComment'] != null ? TextSpan(
-                      children: [
-                        if(widget.comment['replyComment']['topCommentId'] != null)TextSpan(
-                            children: [
-                              const TextSpan(text: '回复 '),
-                              TextSpan(text: '@${widget.comment['replyComment']['createBy']['name']}: ', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
-                            ]
-                        )
-                      ]
-                  ) : null,
+                  prefix: widget.comment['replyComment'] != null && widget.comment['replyComment']['topCommentId'] != null ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('回复'),
+                      const SizedBox(width: 2,),
+                      UserName(user: widget.comment['replyComment']['createBy'], showAt: true,),
+                      const SizedBox(width: 2,),
+                      const Text(': '),
+                    ],
+                  ) : null
                 ),
                 if(widget.comment['image'] != null) ...[
                   const SizedBox(height: 8,),
@@ -175,18 +177,25 @@ class _CommentItemState extends State<CommentItem>{
                                   child: ExpandableContent(
                                     content: reply['content'] ?? '',
                                     imageUrl: reply['image'] == null ? null : reply['image']['url'],
-                                    prefix: TextSpan(
-                                        children: [
-                                          reply['replyComment']['topCommentId'] != null
-                                              ? TextSpan(
-                                              children: [
-                                                TextSpan(text: '@${reply['createBy']['name']}', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
-                                                const TextSpan(text: ' 回复 '),
-                                                TextSpan(text: '@${reply['replyComment']['createBy']['name']}: ', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
-                                              ]
-                                          )
-                                              : TextSpan(text: '@${reply['createBy']['name']}: ', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                                    prefix: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if(reply['replyComment']['topCommentId'] == null) ...[
+                                          UserName(user: reply['createBy'], showAt: true,),
+                                          const SizedBox(width: 2,),
+                                          const Text(': '),
                                         ]
+                                        else ...[
+                                          UserName(user: reply['createBy'], showAt: true,),
+                                          const SizedBox(width: 2,),
+                                          const Text('回复'),
+                                          const SizedBox(width: 2,),
+                                          UserName(user: reply['replyComment']['createBy'], showAt: true,),
+                                          const SizedBox(width: 2,),
+                                          const Text(': '),
+                                          const SizedBox(width: 2,),
+                                        ]
+                                      ],
                                     ),
                                     onTap: (){
                                       Navigator.of(context).pushNamed(RouteName.commentDetail,arguments: {'commentId': widget.comment['id']});

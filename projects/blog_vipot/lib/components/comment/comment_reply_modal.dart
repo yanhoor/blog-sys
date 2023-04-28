@@ -36,7 +36,7 @@ showCommentReplyBottomSheet({
                   bottom: MediaQuery.of(ctx).viewInsets.bottom
               ),
               child: CommentReply(
-                key: ValueKey<int>(comment!['id'] ?? 0),
+                key: ValueKey<int>(comment == null ? 0 : comment['id']),
                 postId: postId,
                 comment: comment,
                 onSuccess: (){

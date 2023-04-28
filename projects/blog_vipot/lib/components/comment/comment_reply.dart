@@ -32,13 +32,13 @@ class _CommentReplyState extends State<CommentReply>{
   @override
   void initState() {
     super.initState();
-    debugPrint('========_CommentReplyState initState========${widget.comment!['id']}');
+    debugPrint('========_CommentReplyState initState========${widget.key}');
   }
 
   @override
   void dispose() {
     super.dispose();
-    debugPrint('========_CommentReplyState dispose========${widget.comment!['id']}');
+    debugPrint('========_CommentReplyState dispose========${widget.key}');
   }
 
   void handleSubmit() async{
