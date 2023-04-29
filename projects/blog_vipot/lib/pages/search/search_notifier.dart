@@ -7,7 +7,12 @@ class SearchNotifier extends ChangeNotifier{
   TextEditingController textEditingController = TextEditingController();
 
   SearchNotifier(){
+    getHistoryListFromStorage();
+  }
+
+  getHistoryListFromStorage(){
     List<String> list = MyStorageManager.sharedPreferences.getStringList(MyStorageManager.SEARCH_HISTORY) ?? [];
+    historyList.clear();
     historyList.addAll(list);
     notifyListeners();
   }

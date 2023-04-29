@@ -70,9 +70,12 @@ class _SearchPageState extends State<SearchPage>{
                               ),
                             ),
                             onSubmitted: (v){
+                              if(v.isEmpty) return;
+
                               model.addHistoryItem();
-                              Navigator.of(context).pushNamed(RouteName.searchResult,
-                                  arguments: {'keyword': model.keyword});
+                              Navigator.of(context).pushNamed(RouteName.searchResult, arguments: {'keyword': model.keyword}).then((v) {
+                                model.getHistoryListFromStorage();
+                              });
                               model.textEditingController.text = '';
                             },
                             onChanged: (val){
@@ -118,8 +121,9 @@ class _SearchPageState extends State<SearchPage>{
                                               behavior: HitTestBehavior.opaque,
                                               onTap: (){
                                                 model.addHistoryItem(item);
-                                                Navigator.of(context).pushNamed(RouteName.searchResult,
-                                                    arguments: {'keyword': item});
+                                                Navigator.of(context).pushNamed(RouteName.searchResult, arguments: {'keyword': item}).then((v) {
+                                                  model.getHistoryListFromStorage();
+                                                });
                                               },
                                               child: Padding(
                                                 padding: const EdgeInsets.all(12),

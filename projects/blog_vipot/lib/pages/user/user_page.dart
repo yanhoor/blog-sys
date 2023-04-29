@@ -1,4 +1,5 @@
 import 'package:blog_vipot/components/no_shadow_scroll_behavior.dart';
+import 'package:blog_vipot/components/post/post_search_input.dart';
 import 'package:blog_vipot/components/skeleton/skeleton_user_page.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
 import 'package:blog_vipot/pages/user/components/user_card_section.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:blog_vipot/components/media/media_image_item.dart';
 import 'package:blog_vipot/components/state/state_request_error.dart';
-import 'components/user_post_search.dart';
 
 class UserPage extends StatefulWidget{
   final String userId;
@@ -99,7 +99,30 @@ class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
                     ),
                   ],
                 ),
-                if(model.showSearch) const UserPostSearch()
+                if(model.showSearch) Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: SafeArea(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        width: MediaQuery.of(context).size.width,
+                        child: PostSearchInput(
+                            onTapClose: (){
+                              model.showSearch = false;
+                            },
+                            onSubmitted: (v){
+                              if(v.isEmpty) return;
+
+                              model.keyword = v.trim();
+                              model.refreshController.requestRefresh();
+                            },
+                            onChanged: (val){
+                              model.keyword = val.trim();
+                            }
+                        ),
+                      ),
+                    )
+                )
               ],
             );
           }

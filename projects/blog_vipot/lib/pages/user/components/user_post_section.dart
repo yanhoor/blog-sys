@@ -1,3 +1,4 @@
+import 'package:blog_vipot/components/post/post_list_filter_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,65 +35,12 @@ class _UserPostSectionState extends State<UserPostSection>{
                     ), textAlign: TextAlign.center,),
                     Row(
                       children: [
-                        PopupMenuButton<int>(
-                          child: const Icon(Icons.filter_alt_outlined),
-                          itemBuilder: (BuildContext context){
-                            return [
-                              PopupMenuItem(value: 1,child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.filter_none_rounded, size: 18,),
-                                  SizedBox(width: 12,),
-                                  Text('全部')
-                                ],
-                              ),),
-                              PopupMenuItem(value: 2,child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.trending_up, size: 18,),
-                                  SizedBox(width: 12,),
-                                  Text('最热')
-                                ],
-                              ),),
-                              PopupMenuItem(value: 3,child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.video_collection, size: 18,),
-                                  SizedBox(width: 12,),
-                                  Text('视频')
-                                ],
-                              ),),
-                              PopupMenuItem(value: 4,child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.audiotrack_rounded, size: 18,),
-                                  SizedBox(width: 12,),
-                                  Text('音频')
-                                ],
-                              ),),
-                            ];
-                          },
-                          onSelected: (v){
-                            switch(v){
-                              case 1:
-                                model.mediaType = '';
-                                model.sort = '2';
-                                break;
-                              case 2:
-                                model.mediaType = '';
-                                model.sort = '3';
-                                break;
-                              case 3:
-                                model.mediaType = 'video';
-                                model.sort = '';
-                                break;
-                              case 4:
-                                model.mediaType = 'audio';
-                                model.sort = '';
-                                break;
+                        PostListFilterDropdown(
+                            onChange: (params){
+                              model.mediaType = params.mediaType;
+                              model.sort = params.sort;
+                              model.refreshController.requestRefresh();
                             }
-                            model.refreshController.requestRefresh();
-                          },
                         ),
                         const SizedBox(width: 6,),
                         CustomIconButton(

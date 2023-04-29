@@ -13,8 +13,8 @@ class UserNotifier extends BaseListFetchNotifier{
   int imageTotal = 0;
   int postTotal = 0;
   String _keyword = '';
-  String mediaType = '';
-  String sort = '';
+  String? mediaType;
+  int? sort;
   bool _showSearch = false;
 
   UserNotifier({required this.userId});
