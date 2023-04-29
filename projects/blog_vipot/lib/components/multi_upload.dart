@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:blog_vipot/components/helper/dialog_helper.dart';
 import 'package:blog_vipot/components/media/media_audio_record.dart';
 import 'package:blog_vipot/components/upload_img.dart';
 import 'package:blog_vipot/components/wrapper/provider_wrapper.dart';
@@ -70,6 +71,7 @@ class _MultiUploadState extends State<MultiUpload>{
                 child: CupertinoActivityIndicator(),
               ),
               if(model.selectMode == 2 && model.mediaList.isNotEmpty) GridView.count(
+                key: const ValueKey('image-preview-section'),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisSpacing: 4,
@@ -100,7 +102,7 @@ class _MultiUploadState extends State<MultiUpload>{
                                 CupertinoActionSheetAction(
                                     onPressed: (){
                                       Navigator.pop(modalContext, true);
-                                      model.removeMedia(media);
+                                      model.removeMedia(media: media);
                                     },
                                     child: const Text('删除', style: TextStyle(color: Colors.red),)
                                 )
@@ -115,8 +117,8 @@ class _MultiUploadState extends State<MultiUpload>{
               if(model.selectMode == 3 && model.mediaList.isNotEmpty) ...[
                 UploadImg(
                   key: ValueKey<String>(model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url']),
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  height: MediaQuery.of(context).size.width * 0.7 * 9 / 16,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width * 9 / 16,
                   uploadText: '上传视频封面',
                   onUploadCompleted: (url, file){
                     model.setCover(file);
@@ -131,7 +133,7 @@ class _MultiUploadState extends State<MultiUpload>{
                   child: RawMaterialButton(
                     fillColor: Colors.red,
                     onPressed: (){
-                      model.removeMedia(model.mediaList[0]);
+                      model.removeMedia(media: model.mediaList[0]);
                     },
                     child: const Text('删除视频', style: TextStyle(color: Colors.white),),
                   ),
@@ -178,8 +180,8 @@ class _MultiUploadState extends State<MultiUpload>{
                   const SizedBox(height: 12,),
                   UploadImg(
                     key: ValueKey<String>(model.mediaList[0]['cover'] == null ? '' : model.mediaList[0]['cover']['url']),
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.width * 0.7 * 9 / 16,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width * 9 / 16,
                     uploadText: '上传展示封面',
                     onUploadCompleted: (url, file){
                       model.setCover(file);
@@ -192,13 +194,19 @@ class _MultiUploadState extends State<MultiUpload>{
                     child: RawMaterialButton(
                       fillColor: Colors.red,
                       onPressed: (){
-                        model.removeMedia(model.mediaList[0]);
+                        model.removeMedia(clear: true);
                       },
                       child: const Text('删除录音', style: TextStyle(color: Colors.white),),
                     ),
                   )
                 ]
-              ]
+              ],
+              if(model.failedFileList.isNotEmpty) Center(
+                child: TextButton(
+                  onPressed: model.isUploading ? null : model.uploadFailList,
+                  child: Text('${model.failedFileList.length} 个文件上传失败，点击重新上传', style: TextStyle(color: Colors.red),),
+                ),
+              )
             ],
           );
         }
@@ -215,14 +223,24 @@ class MultiUploadNotifier extends ChangeNotifier{
   String? _audioFilePath; // 录音的地址
   String? _uploadedAudioFilePath; // 上传完成的录音的 _audioFilePath
   List<Map<String, dynamic>> mediaList = [];
+  List<String> failedFileList = []; // 上传失败列表
 
   MultiUploadNotifier({required this.onUploadCompleted});
 
-  removeMedia(media){
+  removeMedia({ dynamic media, bool clear = false}){
     audioFilePath = null;
-    mediaList.remove(media);
+    if(clear) {
+      mediaList.clear();
+    }else{
+      mediaList.remove(media);
+    }
     onUploadCompleted(mediaList);
     if(mediaList.isEmpty) lockChangeMode = false;
+    notifyListeners();
+  }
+
+  clearFailedList(){
+    failedFileList.clear();
     notifyListeners();
   }
 
@@ -258,7 +276,13 @@ class MultiUploadNotifier extends ChangeNotifier{
       if(total != pickedFileList.length) ToastHelper.warning('已过滤超过 ${MyConfig.maxImageSize}M 的图片');
 
       isUploading = true;
-      await Future.wait(pickedFileList.map((f) => uploadFile(f.path)).toList());
+      lockChangeMode = true;
+      try{
+        await Future.wait(pickedFileList.map((f) => uploadFile(f.path)).toList());
+      }catch(e){
+
+      }
+      if(mediaList.isEmpty) lockChangeMode = false;
       isUploading = false;
     } else {
       debugPrint('No image selected.');
@@ -277,26 +301,54 @@ class MultiUploadNotifier extends ChangeNotifier{
         return false;
       }
       isUploading = true;
-      await uploadFile(pickedFile.path);
+      lockChangeMode = true;
+      clearFailedList();
+      try{
+        await uploadFile(pickedFile.path);
+      }catch(e){
+        debugPrint('-----上传视频失败-----${e.toString()}');
+      }
+      if(mediaList.isEmpty) lockChangeMode = false;
       isUploading = false;
     } else {
       debugPrint('No image selected.');
     }
   }
 
+  // 上传录音
   Future handleAudioFile() async{
     if(audioFilePath == null) return;
 
     isUploading = true;
-    await uploadFile(audioFilePath!.replaceAll('file://', ''));
+    lockChangeMode = true;
+    clearFailedList();
+    try{
+      await uploadFile(audioFilePath!.replaceAll('file://', ''));
+    }catch(e){
+
+    }
+    if(mediaList.isEmpty) lockChangeMode = false;
     isUploading = false;
 
     uploadedAudioFilePath = audioFilePath;
   }
 
+  // 失败列表重新上传
+  Future uploadFailList() async{
+    isUploading = true;
+    try{
+      List<String> temp = [];
+      temp.addAll(failedFileList);
+      clearFailedList();
+      await Future.wait(temp.map((p) => uploadFile(p)).toList());
+    }catch(e){
+
+    }
+    isUploading = false;
+  }
+
   // 上传文件
   Future uploadFile(String path) async{
-
     MultipartFile multipartFile = await MultipartFile.fromFile(path);
     try{
       var res = await $http.fetch(
@@ -311,7 +363,6 @@ class MultiUploadNotifier extends ChangeNotifier{
       );
 
       if(res['success']){
-        lockChangeMode = true;
         mediaList.add({
           'file': res['result'],
           'fileId': res['result']['id']
@@ -319,9 +370,14 @@ class MultiUploadNotifier extends ChangeNotifier{
         onUploadCompleted(mediaList);
         notifyListeners();
       }else{
+        failedFileList.add(path);
         ToastHelper.error(res['msg']);
+        return Future.error(res['msg'] ?? '上传失败');
       }
-    }catch(e){}
+    }catch(e){
+      failedFileList.add(path);
+      return Future.error(e);
+    }
   }
 
   int get selectMode => _selectMode;
@@ -376,11 +432,28 @@ class ModeChip extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Consumer<MultiUploadNotifier>(
       builder: (_, model, child){
         return ActionChip(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           onPressed: model.uploadPercent < 1 || (model.lockChangeMode && model.selectMode != value) ? null : () async{
+            if(model.selectMode != value && model.failedFileList.isNotEmpty) {
+              bool result = await DialogHelper.showIOSAlertDialog(
+                  context: context,
+                  message: '有 ${model.failedFileList.length} 个上传失败文件将被删除',
+                  confirmBtnText: '删除',
+                  confirmBtnColor: Colors.red,
+                  onConfirm: () async{}
+              );
+              if(result){
+                model.clearFailedList();
+              }else{
+                return;
+              }
+            }
+
             model.selectMode = value;
 
             if(value == 4) return;
@@ -439,8 +512,8 @@ class ModeChip extends StatelessWidget{
             });
           },
           backgroundColor: model.selectMode == value ? Theme.of(context).colorScheme.primary : null,
-          avatar: Icon(avatar, color: model.selectMode == value ? Colors.white : Colors.black87, size: 18,),
-          labelStyle: TextStyle(color: model.selectMode == value ? Colors.white : Colors.black87),
+          avatar: Icon(avatar, color: (isDark || model.selectMode == value) ? Colors.white : Colors.black87, size: 18,),
+          labelStyle: TextStyle(color: (isDark || model.selectMode == value) ? Colors.white : Colors.black87),
           label: label,
         );
       },
