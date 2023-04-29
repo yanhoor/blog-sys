@@ -9,6 +9,7 @@ import 'package:blog_vipot/pages/post/post_notifier.dart';
 import 'package:blog_vipot/pages/post/post_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:blog_vipot/components/expandable_content.dart';
 import 'package:blog_vipot/components/user/user_avatar.dart';
@@ -19,6 +20,9 @@ import 'package:blog_vipot/components/wrapper/sliver_app_bar_delegate.dart';
 import 'package:blog_vipot/components/comment/comment_reply_modal.dart';
 
 import '../../components/comment/comment_item.dart';
+import '../../components/helper/bot_toast_helper.dart';
+import '../../notifiers/global_notifier.dart';
+import '../../route/route_name.dart';
 
 class PostPage extends StatefulWidget{
   final String postId;
@@ -32,6 +36,16 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
 
   @override
   bool get wantKeepAlive => true;
+
+  bool checkLoginStatus(){
+    var myInfo = Provider.of<GlobalNotifier>(context, listen: false).myInfo;
+    if(myInfo == null){
+      ToastHelper.warning('请先登录');
+      Navigator.of(context).pushNamed(RouteName.login);
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +110,11 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                   children: [
                                     Expanded(
                                         child: RawMaterialButton(
-                                          onPressed: model.handleLikePost,
+                                          onPressed: (){
+                                            if(!checkLoginStatus()) return;
+
+                                            model.handleLikePost();
+                                          },
                                           child: Icon(
                                             model.postDetail['isLike']
                                                 ? Icons.thumb_up_alt
@@ -123,7 +141,11 @@ class _PostPageState extends State<PostPage> with AutomaticKeepAliveClientMixin{
                                         )),
                                     Expanded(
                                         child: RawMaterialButton(
-                                          onPressed: model.handleCollectPost,
+                                          onPressed: (){
+                                            if(!checkLoginStatus()) return;
+
+                                            model.handleCollectPost();
+                                          },
                                           child: Icon(
                                             model.postDetail['isCollect']
                                                 ? Icons.favorite

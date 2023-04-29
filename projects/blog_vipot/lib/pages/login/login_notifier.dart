@@ -45,7 +45,8 @@ class LoginNotifier extends StateNotifier{
           }
           if(pageContext.mounted) {
             Provider.of<GlobalNotifier>(pageContext, listen: false).getUserInfo();
-            Navigator.of(pageContext).popUntil(ModalRoute.withName(RouteName.root));
+            Navigator.of(pageContext).pop();
+            // Navigator.of(pageContext).popUntil(ModalRoute.withName(RouteName.root));
           }
         }
       }catch(e){

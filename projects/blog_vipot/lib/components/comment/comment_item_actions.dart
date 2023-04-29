@@ -1,6 +1,7 @@
 import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
 import 'package:blog_vipot/components/helper/dialog_helper.dart';
 import 'package:blog_vipot/notifiers/global_notifier.dart';
+import 'package:blog_vipot/route/route_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +45,13 @@ class _CommentItemActionsState extends State<CommentItemDActions>{
   }
 
   void handleLikeComment() async{
+    var myInfo = Provider.of<GlobalNotifier>(context, listen: false).myInfo;
+    if(myInfo == null){
+      ToastHelper.warning('请先登录');
+      Navigator.of(context).pushNamed(RouteName.login);
+      return;
+    }
+
     try{
       var res = await $http.fetch(ApiUrl.COMMENT_LIKE, params: {
         'id': widget.comment['id'],
@@ -54,9 +62,11 @@ class _CommentItemActionsState extends State<CommentItemDActions>{
           widget.comment['isLike'] = !widget.comment['isLike'];
           widget.comment['isLike'] ? widget.comment['likedByCount'] ++ : widget.comment['likedByCount'] --;
         });
+      }else{
+        ToastHelper.error(res['msg'] ?? '点赞失败');
       }
     }catch(e){
-      ToastHelper.error('操作失败');
+      ToastHelper.error('点赞失败');
     }
   }
 
@@ -64,6 +74,31 @@ class _CommentItemActionsState extends State<CommentItemDActions>{
   Widget build(BuildContext context) {
     return Consumer<GlobalNotifier>(
         builder: (_, model, child){
+          List<PopupMenuItem<String>> itemList= [
+            if(model.myInfo != null && model.myInfo!['id'] == widget.comment['createById']) PopupMenuItem(
+              value: 'delete',
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Icon(Icons.delete_outline, size: 18, color: Colors.redAccent,),
+                  SizedBox(width: 12,),
+                  Text('删除', style: TextStyle(color: Colors.redAccent),)
+                ],
+              ),
+            ),
+            if(widget.comment['content'] != null) PopupMenuItem(
+              value: 'copy',
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Icon(Icons.copy, size: 18),
+                  SizedBox(width: 12,),
+                  Text('复制内容')
+                ],
+              ),
+            ),
+          ];
+
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -91,33 +126,10 @@ class _CommentItemActionsState extends State<CommentItemDActions>{
                 ),
                 const SizedBox(width: 12,)
               ],
-              PopupMenuButton<String>(
+              if(itemList.isNotEmpty) PopupMenuButton<String>(
                 child: widget.trigger,
                 itemBuilder: (BuildContext context){
-                  return [
-                    if(model.myInfo != null && model.myInfo!['id'] == widget.comment['createById']) PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.delete_outline, size: 18, color: Colors.redAccent,),
-                          SizedBox(width: 12,),
-                          Text('删除', style: TextStyle(color: Colors.redAccent),)
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'copy',
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.copy, size: 18),
-                          SizedBox(width: 12,),
-                          Text('复制内容')
-                        ],
-                      ),
-                    ),
-                  ];
+                  return itemList;
                 },
                 onSelected: (v){
                   switch(v){
