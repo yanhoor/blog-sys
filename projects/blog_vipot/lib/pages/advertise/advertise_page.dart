@@ -41,31 +41,34 @@ class _AdvertisePageState extends State<AdvertisePage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('lib/assets/welcome/welcome_4.jpeg'),
-                fit: BoxFit.fitWidth
-            )
-        ),
-        child: SafeArea(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: CupertinoButton(
-                onPressed: (){
-                  // Navigator.of(context).pushReplacementNamed(RouteName.root);
-                  Navigator.of(context).pushNamedAndRemoveUntil(RouteName.root, (route) => false);
-                  // Navigator.of(context).popUntil(ModalRoute.withName(RouteName.root));
-                },
-                child: AnimatedBuilder(
-                  animation: countdownController,
-                  builder: (_, child){
-                    return Text('跳过 ${stepAnimation.value}');
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('lib/assets/welcome/welcome_4.jpeg'),
+                  fit: BoxFit.fitWidth
+              )
+          ),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: CupertinoButton(
+                  onPressed: (){
+                    // Navigator.of(context).pushReplacementNamed(RouteName.root);
+                    Navigator.of(context).pushNamedAndRemoveUntil(RouteName.root, (route) => false);
+                    // Navigator.of(context).popUntil(ModalRoute.withName(RouteName.root));
                   },
-                )
+                  child: AnimatedBuilder(
+                    animation: countdownController,
+                    builder: (_, child){
+                      return Text('跳过 ${stepAnimation.value}');
+                    },
+                  )
+              ),
             ),
           ),
         ),

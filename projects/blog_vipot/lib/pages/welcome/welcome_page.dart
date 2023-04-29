@@ -28,44 +28,47 @@ class _WelcomePageState extends State<WelcomePage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LiquidSwipe(
-        pages: List.generate(imageList.length, (index) => Stack(
-          children: [
-            WelcomeItem(imageUrl: imageList[index], isLast: index == imageList.length - 1,),
-            Align(
-              alignment: Alignment.bottomCenter,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if(currentIndex == imageList.length - 1) RawMaterialButton(
-                        fillColor: Colors.green,
-                        shape: const StadiumBorder(),
-                        onPressed: (){
-                          MyStorageManager.sharedPreferences.setString(MyStorageManager.VERSION, MyConfig.version);
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: LiquidSwipe(
+          pages: List.generate(imageList.length, (index) => Stack(
+            children: [
+              WelcomeItem(imageUrl: imageList[index], isLast: index == imageList.length - 1,),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if(currentIndex == imageList.length - 1) RawMaterialButton(
+                          fillColor: Colors.green,
+                          shape: const StadiumBorder(),
+                          onPressed: (){
+                            MyStorageManager.sharedPreferences.setString(MyStorageManager.VERSION, MyConfig.version);
 
-                          Navigator.of(context).pushReplacementNamed(RouteName.advertise);
-                        },
-                        child: const Text('立即体验', style: TextStyle(color: Colors.white),),
-                      ),
-                      const SizedBox(height: 12,),
-                      YPagination(amount: imageList.length, current: currentIndex,),
-                    ],
-                  ),
-                )
-            )
-          ],
-        ),),
-        enableLoop: true,
-        waveType: WaveType.liquidReveal,
-        onPageChangeCallback: (index){
-          setState(() {
-            currentIndex = index;
-          });
-          // print('----------------$index');
-        },
+                            Navigator.of(context).pushReplacementNamed(RouteName.advertise);
+                          },
+                          child: const Text('立即体验', style: TextStyle(color: Colors.white),),
+                        ),
+                        const SizedBox(height: 12,),
+                        YPagination(amount: imageList.length, current: currentIndex,),
+                      ],
+                    ),
+                  )
+              )
+            ],
+          ),),
+          enableLoop: true,
+          waveType: WaveType.liquidReveal,
+          onPageChangeCallback: (index){
+            setState(() {
+              currentIndex = index;
+            });
+            // print('----------------$index');
+          },
+        ),
       ),
     );
   }
