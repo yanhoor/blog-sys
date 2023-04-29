@@ -139,6 +139,7 @@ class _MultiUploadState extends State<MultiUpload>{
               ],
               if(model.selectMode == 4) ...[
                 Center(
+                  key: const ValueKey('audio-record-section'),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
