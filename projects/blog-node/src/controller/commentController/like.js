@@ -17,10 +17,35 @@ module.exports = async function (ctx, next) {
   }
 
   try {
-    await prisma.comment.findUnique({
+    const co = await prisma.comment.findUnique({
       where: { id }
     })
+    if (!co) {
+      return (ctx.body = {
+        success: false,
+        msg: '点赞的评论不存在'
+      })
+    }
+
+    console.log('=========点赞评论id=========', id)
     if (isLike) {
+      const rel = await prisma.userLikeCommentRelation.findUnique({
+        where: {
+          ALL_DATA: true,
+          userId_commentId: {
+            userId: userId,
+            commentId: id
+          }
+        }
+      })
+
+      if (rel) {
+        return (ctx.body = {
+          success: true,
+          msg: '已点赞'
+        })
+      }
+
       await prisma.comment.update({
         where: { id },
         data: {
@@ -40,6 +65,23 @@ module.exports = async function (ctx, next) {
         }
       })
     } else {
+      const rel = await prisma.userLikeCommentRelation.findUnique({
+        where: {
+          ALL_DATA: true,
+          userId_commentId: {
+            userId: userId,
+            commentId: id
+          }
+        }
+      })
+
+      if (!rel) {
+        return (ctx.body = {
+          success: true,
+          msg: '已取消点赞'
+        })
+      }
+
       // 这样好像也可以
       // await prisma.userLikeBlogs.delete({
       //   where: {

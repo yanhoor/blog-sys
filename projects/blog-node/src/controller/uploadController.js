@@ -5,6 +5,7 @@ const OSS = require('ali-oss')
 const prisma = require('../database/prisma')
 const md5File = require('md5-file')
 const { FileType } = require('@prisma/client')
+const dayjs = require('dayjs')
 
 class UploadController extends BaseController {
   aliOssClient = new OSS(this.globalConfig.aliOss)
@@ -63,6 +64,11 @@ class UploadController extends BaseController {
     const file = req.files.file
     // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
     const m5 = await md5File(file.filepath)
+    console.log(
+      '开始处理接收到的文件, md5---->',
+      dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      m5
+    )
     let userId = await this.getAuthUserId(ctx, next)
     let fileRes
 

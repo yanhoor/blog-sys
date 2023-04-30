@@ -15,12 +15,14 @@ module.exports = async function (ctx, next) {
       uid,
       gid,
       mediaType,
+      isFollowing = 0,
       page = 1,
       pageSize = this.pageSize
     } = requestBody
     sort = Number(sort)
     uid = Number(uid)
     gid = Number(gid)
+    isFollowing = Number(isFollowing) // 是否关注，1--关注，0--全部
     const skip = pageSize * (page - 1)
     const filter = {
       status: {
@@ -51,6 +53,17 @@ module.exports = async function (ctx, next) {
         }
       }
     }
+    if (isFollowing) {
+      filter.createBy = {
+        is: {
+          followers: {
+            some: {
+              followById: userId
+            }
+          }
+        }
+      }
+    }
     console.log('=======filter=======', filter)
     let orderBy = []
     if (sort) {
@@ -71,9 +84,8 @@ module.exports = async function (ctx, next) {
         // 最热优先
         case 3:
           orderBy.push(
-            { comments: { _count: 'desc' } },
-            { comments: { _count: 'desc' } },
             { likedBy: { _count: 'desc' } },
+            { comments: { _count: 'desc' } },
             { collectedBy: { _count: 'desc' } }
           )
           break

@@ -6,7 +6,7 @@ module.exports = async function (ctx, next) {
     page = 1,
     pageSize = this.pageSize,
     blogId,
-    sort = 1
+    sort = 2
   } = ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
   const skip = pageSize * (page - 1)
@@ -23,7 +23,10 @@ module.exports = async function (ctx, next) {
       orderBy = { createdAt: 'desc' }
       break
     case 2:
-      orderBy = { childComments: { _count: 'desc' } }
+      orderBy = [
+        { likedBy: { _count: 'desc' } },
+        { childComments: { _count: 'desc' } }
+      ]
       break
   }
   try {

@@ -2,14 +2,32 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const { page = 1, pageSize = this.pageSize, topCommentId } = ctx.request.body
+  let {
+    page = 1,
+    sort = 2,
+    pageSize = this.pageSize,
+    topCommentId
+  } = ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
+  sort = Number(sort)
   const skip = pageSize * (page - 1)
   const filter = {
     topCommentId: Number(topCommentId),
     status: {
       notIn: [3, 4]
     }
+  }
+  let orderBy
+  switch (sort) {
+    case 1:
+      orderBy = { createdAt: 'desc' }
+      break
+    case 2:
+      orderBy = [
+        { likedBy: { _count: 'desc' } },
+        { childComments: { _count: 'desc' } }
+      ]
+      break
   }
   try {
     const xprisma = prisma.$extends({
@@ -127,7 +145,7 @@ module.exports = async function (ctx, next) {
           }
         },
         // 评论的回复是升序，旧的在前面
-        orderBy: { createdAt: 'asc' }
+        orderBy
       }),
       prisma.comment.count({ where: filter })
     ])

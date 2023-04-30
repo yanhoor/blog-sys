@@ -50,11 +50,11 @@ class WS {
       const uid = sp.get('token')
       // 前端刷新页面就会重连，所以需要替换原来的ws
       this.wsMap.set(uid.toString(), ws)
-      // console.log('ws connection uid----->', uid, this.wsMap.get(uid))
+      console.log('ws new connection from uid----->', uid)
 
       ws.on('message', (data) => {
         const msg = data.toString()
-        console.log('ws message---->', msg)
+        console.log(`ws message from uid--${uid}-->`, msg)
         // 心跳检测
         if (msg === '1') {
           ws.send(
@@ -71,15 +71,15 @@ class WS {
       // ws.send('something');
 
       ws.on('error', function (data) {
-        console.log('ws error--->', data)
+        console.log('ws error--uid-${uid}->', data)
       })
 
       ws.on('close', function (data) {
-        console.log('ws close--->', data)
+        console.log(`ws close-uid-${uid}->`, data)
       })
 
       ws.on('open', function (data) {
-        console.log('ws open--->', data)
+        console.log('ws open--uid-${uid}->', data)
       })
     })
   }

@@ -47,27 +47,28 @@ model User {
   openid        String?   @unique @db.VarChar(255)
   deletedAt     DateTime?
 
-  blogs                Blog[]              @relation("CreateBlog")
+  blogs                Blog[]                    @relation("CreateBlog")
   // 与博客likeBy显式多对多
   likeBlogs            LikeBlogRelation[]
   collectBlogs         UserCollectBlogs[]
   readBlogs            ReadBlogsRelation[]
-  createNotifications  Notification[]      @relation("CreateNotification")
-  receiveNotifications Notification[]      @relation("ReceiveNotifications")
-  createComments       Comment[]           @relation("CreateComment")
-  auditComments        Comment[]           @relation("AuditComment")
-  auditBlogs           Blog[]              @relation("AuditBlog")
-  replyComments        Comment[]           @relation("ReplyComment")
-  medias               Media[]             @relation("Media")
+  likeComments         UserLikeCommentRelation[]
+  createNotifications  Notification[]            @relation("CreateNotification")
+  receiveNotifications Notification[]            @relation("ReceiveNotifications")
+  createComments       Comment[]                 @relation("CreateComment")
+  auditComments        Comment[]                 @relation("AuditComment")
+  auditBlogs           Blog[]                    @relation("AuditBlog")
+  replyComments        Comment[]                 @relation("ReplyComment")
+  medias               Media[]                   @relation("Media")
   // 隐式多对多关系
   // 粉丝
-  followers            FollowRelation[]    @relation("FollowTarget")
+  followers            FollowRelation[]          @relation("FollowTarget")
   // 关注
-  followings           FollowRelation[]    @relation("FollowBy")
+  followings           FollowRelation[]          @relation("FollowBy")
   // 创建的关注分组
-  followGroups         FollowGroup[]       @relation("CreateFollowGroup")
+  followGroups         FollowGroup[]             @relation("CreateFollowGroup")
   // 所在的关注分组
-  inFollowGroups       FollowGroup[]       @relation("InFollowGroup")
+  inFollowGroups       FollowGroup[]             @relation("InFollowGroup")
   File                 File[]
 
   @@index([createdAt])
@@ -170,6 +171,7 @@ model File {
   deletedAt  DateTime?
   media      Media[]   @relation("MediaFile")
   coverMedia Media[]   @relation("CoverMedia")
+  Comment    Comment[] @relation("CommentImage")
 
   @@index([createdAt])
 }
@@ -253,10 +255,26 @@ model Comment {
   // 作为评论回复时，收到的所有的回复
   replyItems     Comment[] @relation("Reply")
 
-  content       String         @db.Text
+  imageId Int?
+  image   File? @relation(name: "CommentImage", fields: [imageId], references: [id])
+
+  content       String?        @db.Text
   notifications Notification[]
+
+  likedBy UserLikeCommentRelation[]
 
   deletedAt DateTime?
 
   @@index([createdAt])
+}
+
+// 点赞评论关系表
+model UserLikeCommentRelation {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  comment    Comment  @relation(fields: [commentId], references: [id])
+  commentId  Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, commentId])
 }

@@ -43,6 +43,32 @@ module.exports = async function (ctx, next) {
   }
 
   try {
+    if (replyCommentId) {
+      const toComment = await prisma.comment.findUnique({
+        where: {
+          id: replyCommentId
+        }
+      })
+      if (!toComment || toComment.deletedAt) {
+        return (ctx.body = {
+          success: false,
+          msg: '回复的评论不存在'
+        })
+      }
+    }
+
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: Number(blogId)
+      }
+    })
+    if (!blog || blog.deletedAt) {
+      return (ctx.body = {
+        success: false,
+        msg: '回复的博客不存在'
+      })
+    }
+
     const data = {
       createById: Number(userId),
       blogId,
@@ -119,11 +145,6 @@ module.exports = async function (ctx, next) {
             }
           }
         }
-      }
-    })
-    const blog = await prisma.blog.findUnique({
-      where: {
-        id: Number(blogId)
       }
     })
     const nd = {

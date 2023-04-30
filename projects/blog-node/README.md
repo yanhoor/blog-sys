@@ -415,3 +415,23 @@ await prisma.comment.findMany({
   }
 })
 ```
+
+### 多对多关系中，查找某个字段的列表时同时返回了空列表
+
+[使用参考](https://prisma.yoga/reference/api-reference/prisma-client-reference#every)，在过滤博客时，需要查询只含视频类型的博客列表，但是纯文本博客也会包含于其中。[Github issue](https://github.com/prisma/prisma/issues/11819)
+
+```javascript
+await prisma.blog.findMany({
+  where: {
+    medias: {
+      every: {
+        file: {
+          is: {
+            type: 'video'
+          }
+        }
+      }
+    }
+  }
+})
+```
