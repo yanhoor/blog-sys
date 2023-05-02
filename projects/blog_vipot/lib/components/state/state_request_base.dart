@@ -15,21 +15,24 @@ class StateRequestBase extends StatelessWidget{
       // width: double.infinity,
       // height: double.infinity,
       // padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(iconData, color: Theme.of(context).colorScheme.primary, size: size,),
-          if(msg != null) ...[
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(iconData, color: Theme.of(context).colorScheme.primary, size: size,),
+            if(msg != null) ...[
+              const SizedBox(height: 12,),
+              Text(msg!)
+            ],
             const SizedBox(height: 12,),
-            Text(msg!)
+            RawMaterialButton(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+              onPressed: onPressed,
+              child: Text(tip),
+            )
           ],
-          const SizedBox(height: 12,),
-          RawMaterialButton(
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            onPressed: onPressed,
-            child: Text(tip),
-          )
-        ],
+        ),
       ),
     );
   }

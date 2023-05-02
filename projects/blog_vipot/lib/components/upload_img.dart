@@ -33,7 +33,6 @@ class UploadImg extends StatefulWidget{
 class _UploadImgState extends State<UploadImg>{
   @override
   Widget build(BuildContext context) {
-    debugPrint('++++++_UploadImgState++++++++${widget.url}');
     return SizedBox(
       width: widget.width,
       height: widget.height,
@@ -133,7 +132,7 @@ class _UploadImgState extends State<UploadImg>{
                       );
                     });
               },
-              child: widget.preview ?? MediaImageItem(url: model.imgUrl,),
+              child: widget.preview ?? MediaImageItem(url: model.imgUrl, width: double.infinity, height: double.infinity,),
             );
           }
         },

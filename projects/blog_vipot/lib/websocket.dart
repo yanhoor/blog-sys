@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-import 'my_system_notification.dart';
-
 class WebSocketMessageType{
   static String HEART_BEAT = 'heart_beat';
   static String NOTIFICATION = 'notification';
@@ -20,7 +18,6 @@ class MyWebSocket {
   String? uid;
   BuildContext? pageContext;
   Timer? heartTimer;
-  bool isClose = false; // 主动关闭
   DateTime? lastMsgTime;
 
   init(String? uid, {required BuildContext context}) {
@@ -32,6 +29,7 @@ class MyWebSocket {
     debugPrint('======websocketChannel init=======$uid');
     websocketChannel = WebSocketChannel.connect(
       Uri.parse('wss://niubility.website/websocket/?token=$uid'),
+      // Uri.parse('ws://127.0.0.1:8000/websocket/?token=$uid'),
       // Uri.parse('wss://echo.websocket.events'),
     );
 
@@ -43,11 +41,10 @@ class MyWebSocket {
       lastMsgTime = DateTime.now();
       // print('======websocketChannel onMessage=======');
       if(msgType == WebSocketMessageType.NOTIFICATION) {
-        Provider.of<GlobalNotifier>(pageContext!, listen: false).getNotificationCount();
+        GlobalNotifier globalNotifier = Provider.of<GlobalNotifier>(pageContext!, listen: false);
+        globalNotifier.getNotificationCount();
         try{
-          await MySystemNotification.flutterLocalNotificationsPlugin.show(
-              MySystemNotification.notificationId++, 'plain title', 'plain body', MySystemNotification.notificationDetails,
-              payload: 'item x');
+          globalNotifier.getNotificationDetail(msg['id']);
         }catch(e){
           debugPrint('===================$e');
         }
@@ -64,7 +61,7 @@ class MyWebSocket {
 
   sendData(String msg) {
     // print('======websocketChannel sendData=======$msg');
-    websocketChannel!.sink.add(msg);
+    websocketChannel?.sink.add(msg);
   }
 
   reconnect() {
@@ -77,12 +74,15 @@ class MyWebSocket {
     });
   }
 
-  initHeartBeat() {
+  initHeartBeat([bool resumeCheck = false]) {
     heartTimer?.cancel();
     heartTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       // print('===========${timer.tick}');
       DateTime now = DateTime.now();
-      if(lastMsgTime != null && now.difference(lastMsgTime!).inSeconds > 60){
+      if(resumeCheck){
+        lastMsgTime = DateTime.now();
+        sendData('1');
+      }else if(lastMsgTime != null && now.difference(lastMsgTime!).inSeconds > 60){
         debugPrint('没有收到服务端回复，服务端 socket 已断开');
         // 还是重试一下，可能是在后台时没发消息给服务端然后才断开
         reconnect();
@@ -97,7 +97,6 @@ class MyWebSocket {
 
   dispose() {
     websocketChannel?.sink.close(status.goingAway);
-    isClose = true;
     heartTimer?.cancel();
   }
 }

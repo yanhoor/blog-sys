@@ -1,5 +1,7 @@
 import 'package:blog_vipot/components/helper/bot_toast_helper.dart';
+import 'package:blog_vipot/config/index.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
+import 'package:blog_vipot/route/route_name.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
 import 'package:blog_vipot/websocket.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +9,12 @@ import 'package:blog_vipot/http/index.dart';
 import 'package:blog_vipot/pages/index/index_notifier.dart';
 import 'package:video_player/video_player.dart';
 
+import '../my_system_notification.dart';
+
 class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
   late BuildContext pageContext;
+  String initRouteName = RouteName.welcome;
   int currentTab = 0;
   late IndexNotifier indexNotifier;
   late NotificationNotifier notificationNotifier;
@@ -25,12 +30,26 @@ class GlobalNotifier extends ChangeNotifier{
   int unreadComment = 0;
   int unreadLike = 0;
 
-  GlobalNotifier(): homePageController = PageController(){
+  GlobalNotifier(){
+    String? v = MyStorageManager.sharedPreferences.getString(MyStorageManager.VERSION);
+    if(v != null && v == MyConfig.version ){
+      initRouteName = RouteName.advertise;
+    } else{
+      initRouteName = RouteName.welcome;
+    }
     getUserInfo();
   }
 
   setPageContext(BuildContext context){
     pageContext = context;
+  }
+
+  setHomePageController(PageController pc){
+    homePageController = pc;
+  }
+
+  setIndexNotifier(IndexNotifier inf){
+    indexNotifier = inf;
   }
 
   setCurrentTab(int v){
@@ -47,9 +66,14 @@ class GlobalNotifier extends ChangeNotifier{
       if(res['success']){
         ToastHelper.success('已退出登录');
         myWebSocket.dispose();
+        unreadTotal = 0;
         await MyStorageManager.sharedPreferences.setString(MyStorageManager.TOKEN, '');
         await MyStorageManager.sharedPreferences.setString(MyStorageManager.INDEX_GROUP_ID, '');
         myInfo = null;
+        allGroupList.clear();
+        indexGroupList.clear();
+        groupList.clear();
+        notifyListeners();
         return true;
       }else{
         ToastHelper.error(res['msg'] ?? '操作失败');
@@ -117,6 +141,24 @@ class GlobalNotifier extends ChangeNotifier{
         unreadComment = res['result']['unreadComment'];
         unreadLike = res['result']['unreadLike'];
         notifyListeners();
+      }else{
+        // return Future.error(res['msg']);
+      }
+    }catch(e){
+      // return Future.error(e);
+    }
+  }
+
+  Future getNotificationDetail(int id) async {
+    try{
+      var res = await $http.fetch(ApiUrl.NOTIFICATION_INFO, params: { 'id': id });
+      if(res['success']){
+        var detail = res['result'];
+        if(detail['type'] == 'comment'){
+          await MySystemNotification.flutterLocalNotificationsPlugin.show(
+              MySystemNotification.notificationId++, 'Vipot', '您的博客有新评论', MySystemNotification.notificationDetails,
+              payload: 'item x');
+        }
       }else{
         // return Future.error(res['msg']);
       }

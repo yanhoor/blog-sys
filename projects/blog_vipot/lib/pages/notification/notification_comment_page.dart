@@ -64,7 +64,10 @@ class _NotificationCommentPageState extends State<NotificationCommentPage> with 
                           decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(5)),
-                          child: ExpandableContent(content: item['comment']['replyComment']['content'], scrollController: model.scrollController!,),
+                          child: ExpandableContent(content:item['comment']['replyComment']['content'],
+                            imageUrl: item['comment']['replyComment']['image'] == null ? null : item['comment']['replyComment']['image']['url'],
+                            scrollController: model.scrollController!,
+                          ),
                         ),
                         const SizedBox(height: 4,)
                       ],

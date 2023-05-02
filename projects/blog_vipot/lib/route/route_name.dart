@@ -1,5 +1,6 @@
 class RouteName{
-  static const String root = '/';
+  static const String root = '/home';
+  static const String pageNoFound = '/pageNoFound';
   static const String welcome = '/welcome';
   static const String advertise = '/advertise';
   static const String login = '/login';

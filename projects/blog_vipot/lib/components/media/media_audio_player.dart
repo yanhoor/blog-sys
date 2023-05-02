@@ -219,7 +219,7 @@ class SmallControlButtons extends StatelessWidget {
                     // margin: const EdgeInsets.all(8.0),
                     width: iconSize,
                     height: iconSize,
-                    child: const CircularProgressIndicator(),
+                    child: const CupertinoActivityIndicator(),
                   );
                 } else if (playing != true) {
                   return Row(
@@ -229,14 +229,14 @@ class SmallControlButtons extends StatelessWidget {
                         iconSize: iconSize,
                         onPressed: player.play,
                       ),
-                      if(processingState == ProcessingState.ready) CustomIconButton(
-                        icon: const Icon(Icons.stop),
-                        iconSize: iconSize,
-                        onPressed: (){
-                          player.stop();
-                          player.seek(Duration.zero);
-                        },
-                      )
+                      // if(processingState == ProcessingState.ready) CustomIconButton(
+                      //   icon: const Icon(Icons.stop),
+                      //   iconSize: iconSize,
+                      //   onPressed: (){
+                      //     player.stop();
+                      //     player.seek(Duration.zero);
+                      //   },
+                      // )
                     ],
                   );
                 } else if (processingState != ProcessingState.completed) {

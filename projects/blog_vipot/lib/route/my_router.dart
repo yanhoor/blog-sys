@@ -26,6 +26,76 @@ import 'package:blog_vipot/pages/user/user_page.dart';
 class MyRouter{
   static final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>(); // 页面路由监听
 
+  // static GoRouter getGoRouter({String? initialLocation}){
+  //   return GoRouter(
+  //     initialLocation: initialLocation,
+  //     errorBuilder: (BuildContext context, GoRouterState state) => const PageNotFoundPage(),
+  //     redirect: (BuildContext context, GoRouterState state) {
+  //       debugPrint('=========GoRouter redirect==========');
+  //       // return context.namedLocation(RouteName.pageNoFound);
+  //     },
+  //     debugLogDiagnostics: true,
+  //     observers: [
+  //       BotToastNavigatorObserver(),
+  //     ],
+  //     routes: <GoRoute>[
+  //       GoRoute(
+  //         name: RouteName.root,
+  //         path: RouteName.root,
+  //         builder: (BuildContext context, GoRouterState state) => const HomePage(),
+  //         // 可以继续嵌套子路由
+  //         // routes: <GoRoute>[
+  //         //   GoRoute(
+  //         //     name: RouteName.pageNoFound,
+  //         //     path: RouteName.pageNoFound,
+  //         //     builder: (BuildContext context, GoRouterState state) => const PageNotFoundPage(),
+  //         //   ),
+  //         // ],
+  //       ),
+  //       GoRoute(
+  //         name: RouteName.pageNoFound,
+  //         path: RouteName.pageNoFound,
+  //         builder: (BuildContext context, GoRouterState state) => const PageNotFoundPage(),
+  //       ),
+  //       GoRoute(
+  //         name: RouteName.welcome,
+  //         path: RouteName.welcome,
+  //         builder: (BuildContext context, GoRouterState state) => const WelcomePage(),
+  //       ),
+  //       GoRoute(
+  //         name: RouteName.advertise,
+  //         path: RouteName.advertise,
+  //         builder: (BuildContext context, GoRouterState state) => const AdvertisePage(),
+  //       ),
+  //       GoRoute(
+  //         name: RouteName.login,
+  //         path: RouteName.login,
+  //         builder: (BuildContext context, GoRouterState state) => const LoginPage(),
+  //       ),
+  //       GoRoute(
+  //         name: RouteName.register,
+  //         path: RouteName.register,
+  //         builder: (BuildContext context, GoRouterState state) => const RegisterPage(),
+  //       ),
+  //       // GoRoute(
+  //       //   name: RouteName.searchResult,
+  //       //   path: RouteName.register,
+  //       //   builder: (BuildContext context, GoRouterState state) => const RegisterPage(),
+  //       // ),
+  //       // GoRoute(
+  //       //   name: RouteName.register,
+  //       //   path: RouteName.register,
+  //       //   builder: (BuildContext context, GoRouterState state) => const RegisterPage(),
+  //       // ),
+  //       // GoRoute(
+  //       //   name: RouteName.register,
+  //       //   path: RouteName.register,
+  //       //   builder: (BuildContext context, GoRouterState state) => const RegisterPage(),
+  //       // ),
+  //     ],
+  //   );
+  // }
+
   // 路由拦截器
   static Route<dynamic> generateRoute(RouteSettings settings){
     debugPrint('===========路由===========${settings.name}');

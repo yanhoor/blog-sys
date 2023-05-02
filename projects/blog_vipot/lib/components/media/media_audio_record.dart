@@ -15,7 +15,7 @@ class MediaAudioRecord extends StatefulWidget{
 }
 
 class _MediaAudioRecordState extends State<MediaAudioRecord>{
-  Record _audioRecorder = Record();
+  final Record _audioRecorder = Record();
   StreamSubscription<RecordState>? _recordSub;
   RecordState _recordState = RecordState.stop;
   StreamSubscription<Amplitude>? _amplitudeSub;

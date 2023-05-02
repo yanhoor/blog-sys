@@ -9,8 +9,8 @@ class Http{
   Http(){
     dio = Dio(BaseOptions(
       baseUrl: ApiUrl.BASE_URL,
-      connectTimeout: const Duration(milliseconds: 20000),
-      receiveTimeout: const Duration(milliseconds: 20000),
+      connectTimeout: const Duration(seconds: 45),
+      receiveTimeout: const Duration(minutes: 20),
     ));
 
     dio.interceptors.add(
@@ -71,7 +71,7 @@ class Http{
       );
       print('+++++++fetch success+++++++$url');
     }on DioError catch(e){
-      print('+++++++fetch error+++++++${e.message}');
+      print('+++++++fetch error+++++++${e.requestOptions.path}++++++${e.message}');
       return Future.error(e);
     }
     

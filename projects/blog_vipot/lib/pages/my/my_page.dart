@@ -231,7 +231,7 @@ class _MyPageState extends State<MyPage>{
                                   minLeadingWidth: 0,
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                   title: const Text('我的分组', style: TextStyle(fontSize: 14)),
-                                  leading: const Icon(Icons.group, size: 24),
+                                  leading: const Icon(Icons.groups, size: 24),
                                   trailing: const Icon(Icons.arrow_forward_ios, size: 24),
                                   onTap: (){
                                     Navigator.of(context).pushNamed(RouteName.groupManage);

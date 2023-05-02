@@ -131,7 +131,7 @@ class _MediaVideoItemState extends State<MediaVideoItem> with AutomaticKeepAlive
                       },
                       child: Stack(
                         children: [
-                          MediaImageItem(url: widget.coverUrl,),
+                          MediaImageItem(url: widget.coverUrl, width: double.infinity, height: double.infinity,),
                           const Align(
                             alignment: Alignment.center,
                             child: Icon(Icons.play_circle, size: 80, color: Colors.white,),

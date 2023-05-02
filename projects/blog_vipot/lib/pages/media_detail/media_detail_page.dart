@@ -38,7 +38,7 @@ class MediaDetailPage extends StatelessWidget{
                     onTap: (){
                       Navigator.of(context).pushNamed(RouteName.imagePreview, arguments: { 'imageList': imageList.map((f) => f['url']).toList(), 'initPage': index});
                     },
-                    child: MediaImageItem(url: media['file']['url'], fit: BoxFit.contain,),
+                    child: MediaImageItem(url: media['file']['url'], fit: BoxFit.contain, width: double.infinity, height: double.infinity,),
                   ),
                 ),
                 Align(
@@ -59,6 +59,10 @@ class MediaDetailPage extends StatelessWidget{
                           style: const TextStyle(color: Colors.white),
                           content: media['blog']['content'],
                           expandedBtnText: '全文',
+                          onTap: (){
+                            Navigator.of(context).pushNamed(RouteName.post,
+                                arguments: {'postId': media['blog']['id']});
+                          },
                           onTapExpanded: (){
                             Navigator.of(context).pushNamed(RouteName.post,
                                 arguments: {'postId': media['blog']['id']});

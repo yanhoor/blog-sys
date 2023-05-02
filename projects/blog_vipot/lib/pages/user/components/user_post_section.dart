@@ -33,23 +33,11 @@ class _UserPostSectionState extends State<UserPostSection>{
                           TextSpan(text: model.postTotal.toString(), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
                         ]
                     ), textAlign: TextAlign.center,),
-                    Row(
-                      children: [
-                        PostListFilterDropdown(
-                            onChange: (params){
-                              model.mediaType = params.mediaType;
-                              model.sort = params.sort;
-                              model.refreshController.requestRefresh();
-                            }
-                        ),
-                        const SizedBox(width: 6,),
-                        CustomIconButton(
-                          onPressed: (){
-                            model.showSearch = !model.showSearch;
-                          },
-                          icon: const Icon(Icons.search_rounded),
-                        )
-                      ],
+                    CustomIconButton(
+                      onPressed: (){
+                        model.showSearch = !model.showSearch;
+                      },
+                      icon: const Icon(Icons.search_rounded),
                     )
                   ],
                 ),

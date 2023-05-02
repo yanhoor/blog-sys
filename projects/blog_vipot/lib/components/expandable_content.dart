@@ -88,7 +88,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
           ),
 
           // 正文
-          if(widget.content != null) TextSpan(text: isExpanded ? widget.content : briefContent, style: widget.style, recognizer: tapContentRecognizer),
+          if(widget.content != null) TextSpan(text: isExpanded ? (multiLines ? '${widget.content}\n' : widget.content) : briefContent, style: widget.style, recognizer: tapContentRecognizer),
 
           // 查看图片
           if(widget.imageUrl != null) WidgetSpan(child: SelectionContainer.disabled(
@@ -100,7 +100,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.photo, size: 14, color: Theme.of(context).colorScheme.primary),
+                    Icon(Icons.photo, size: 18, color: Theme.of(context).colorScheme.primary),
                     Text('查看图片 ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize))
                   ],
                 ),
@@ -130,7 +130,7 @@ class _ExpandableContentState extends State<ExpandableContent>{
                 }
               });
             },
-            child: Text(isExpanded ? '${multiLines ? '\n' : ''}收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize)),
+            child: Text(isExpanded ? '收起' : widget.expandedBtnText, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: widget.style?.fontSize)),
           )), alignment: PlaceholderAlignment.middle,),
         ]
     );

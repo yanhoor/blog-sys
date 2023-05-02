@@ -37,17 +37,20 @@ class _UserFollowingsPageState extends State<UserFollowingsPage>{
         } else if (model.isError) {
           content = StateRequestError(size: 60, onPressed: model.initData, msg: model.stateErrorText,);
         } else {
-          content = YCard(child: ListView.builder(
-              shrinkWrap: true,
-              // primary: false,
-              controller: model.scrollController,
-              padding: const EdgeInsets.all(0),
-              physics: const NeverScrollableScrollPhysics(), // 禁止滑动
-              itemCount: model.pageList.length,
-              itemBuilder: (context, index) {
-                Map<String, dynamic> user = model.pageList[index];
-                return UserItem(user: user);
-              })
+          content = YCard(
+              padding: EdgeInsets.zero,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  // primary: false,
+                  controller: model.scrollController,
+                  padding: const EdgeInsets.all(0),
+                  physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+                  itemCount: model.pageList.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> user = model.pageList[index];
+                    return UserItem(user: user);
+                  }
+              )
           );
         }
 
