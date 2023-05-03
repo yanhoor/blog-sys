@@ -10,7 +10,17 @@
 
 ### 小程序
 
-[预览地址](https://niubility.website/blog/post/1)
+[预览地址](https://niubility.website/blog/post/2)
+
+### Flutter
+
+[Android 下载](https://static-buck.oss-cn-shenzhen.aliyuncs.com/release/vipot.apk)
+
+IOS:
+
+- [视频预览1](https://niubility.website/blog/post/39)
+- [视频预览2](https://niubility.website/blog/post/40)
+- [视频预览3](https://niubility.website/blog/post/43)
 
 ## 项目运行
 
@@ -116,8 +126,6 @@
 
 - [ ] 样式/过渡美化
 
-- [ ] 移动端适配
-
 #### blog-uni: 小程序端博客
 
 - [x] 使用 `uni-app` 构建
@@ -130,6 +138,6 @@
 
 - [x] 使用 `flutter` + `provider`
 
-- [ ] 录音并发布
+- [x] 录音并发布
 
 - [x] 其他功能同步 `blog-nuxt3`
