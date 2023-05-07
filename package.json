@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "",
   "workspaces": [
-    "projects/*"
+    "projects/*",
+    "modules/*"
   ],
   "scripts": {
     "dev:nuxt": "pnpm run -C projects/blog-nuxt3 dev",

@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userReducer from './userSlice'
+import userReducer from './user/userSlice'
 
 // 具体参考 https://react-redux.js.org/tutorials/typescript-quick-start
 const store = configureStore({

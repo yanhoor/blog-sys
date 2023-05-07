@@ -1,34 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import $http, { myInfo } from '@/http'
-import MyConfig from '@/config'
+import { createSlice } from '@reduxjs/toolkit'
+import { getMyInfo } from './asyncThunk'
+import { User } from 'sys-types'
 
-// 参考 https://redux-toolkit.js.org/api/createAsyncThunk#payloadcreator
-// First, create the thunk
-export const getMyInfo = createAsyncThunk(
-  'user/getMyInfoStatus',
-  async (args, thunkAPI) => {
-    const token = localStorage.getItem(MyConfig.TOKEN)
-    if (!token) return
-
-    try {
-      const { msg, success, result } = await $http.get(myInfo)
-      if (success) {
-        return result
-      } else {
-        return thunkAPI.rejectWithValue(msg)
-      }
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e)
-      console.log('=====useFetchAppendList error======', e)
-    }
-  }
-)
+type UserStateType = {
+  myInfo: User | null
+}
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     myInfo: null
-  },
+  } as UserStateType,
   // 不支持异步
   reducers: {
     // todoAdded(state, action) {
@@ -46,10 +28,12 @@ const userSlice = createSlice({
   // 异步
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
+    // 获取成功
     builder.addCase(getMyInfo.fulfilled, (state, action) => {
       // Add user to the state array
       state.myInfo = action.payload
     })
+    // 获取失败
     builder.addCase(getMyInfo.rejected, (state, action) => {
       console.log('=======getMyInfo.rejected=========', action, action.payload)
     })

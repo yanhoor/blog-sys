@@ -1,0 +1,1 @@
+export { getMyInfo } from './getMyInfo'
