@@ -3,14 +3,17 @@ import { ReactNode, useEffect } from 'react'
 import StatusLoading from '@/components/status/status-loading'
 import { List, PullRefresh } from 'react-vant'
 import { ListFetchState } from '@/hooks/useFetchAppendList'
+import StatusEmpty from '@/components/status/status-empty'
 
 interface Props<E> {
   url: string
+  initParams?: any
   createItem: (item: E) => ReactNode
   createSkeletonItem?: () => ReactNode
 }
 export default function AppendListWrapper<T>({
   url,
+  initParams,
   createItem,
   createSkeletonItem
 }: Props<T>) {
@@ -20,7 +23,7 @@ export default function AppendListWrapper<T>({
     handleInitFetchPageList,
     pageList,
     listState
-  } = useFetchAppendList<T>(url)
+  } = useFetchAppendList<T>(url, initParams)
 
   console.log('------handleInitFetchPageList-------')
   useEffect(() => {
@@ -51,7 +54,11 @@ export default function AppendListWrapper<T>({
           errorText="请求失败，点击重新加载"
           offset={50}
         >
-          {pageList.map((item) => createItem(item))}
+          {pageList.length ? (
+            pageList.map((item) => createItem(item))
+          ) : (
+            <StatusEmpty onRefresh={handleInitFetchPageList} />
+          )}
         </List>
       </PullRefresh>
     )
