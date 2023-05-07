@@ -1,6 +1,6 @@
 # blog-sys
 
-本项目是个人学习 `Node.js/Vue3/Nuxt3/uni-app/TypeScript` 并加以实践而构建的一个博客发布平台，计划通过搭积木式编写功能模块，逐步形成一个具有后端接口、后台管理和前端发布的完整系统。
+本项目是个人学习 `Node.js/Vue3/Nuxt3/uni-app/TypeScript/React/Flutter` 并加以实践而构建的一个微博发布平台，计划通过搭积木式编写功能模块，逐步形成一个具有后端接口、后台管理和前端发布的完整系统。
 
 ## 预览
 
@@ -10,7 +10,7 @@
 
 ### 小程序
 
-[预览地址](https://niubility.website/blog/post/2)
+[视频预览](https://niubility.website/blog/post/2)
 
 ### Flutter
 
@@ -90,7 +90,7 @@ IOS:
 
 - [x] 评论管理，审核
 
-#### blog-nuxt3: PC端博客
+#### blog-nuxt3: PC 端博客
 
 - [x] 使用 `Nuxt3 + TypeScript + Naive UI + SCSS`
 
@@ -140,4 +140,12 @@ IOS:
 
 - [x] 录音并发布
 
+- [x] 支持发布图片评论
+
 - [x] 其他功能同步 `blog-nuxt3`
+
+#### blog-h5: H5 端博客
+
+- [x] 使用 `React 18.2.0` + `React-router-dom` + `React-redux 8.0.5`
+
+- [ ] 其他功能同步 `blog-vipot`
