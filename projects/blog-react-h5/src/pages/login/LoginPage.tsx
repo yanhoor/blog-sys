@@ -5,7 +5,7 @@ import { login } from '@/http/urls'
 import MyConfig from '@/config'
 import { useState } from 'react'
 import { useAppDispatch } from '@/store/hooks'
-import { getMyInfo } from '@/store/userSlice'
+import { getMyInfo } from '@/store/user/asyncThunk'
 
 export default function LoginPage() {
   const dispatch = useAppDispatch()

@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import routes from '@/routes'
 import React, { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { getMyInfo } from '@/store/userSlice'
+import { useAppDispatch } from '@/store/hooks'
+import { getMyInfo } from '@/store/user/asyncThunk'
 
 const router = createBrowserRouter(routes)
 
