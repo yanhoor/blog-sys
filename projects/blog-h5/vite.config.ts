@@ -12,6 +12,10 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [react()],
+    // https://cn.vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+    optimizeDeps: {
+      include: ['sys-types']
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src')
