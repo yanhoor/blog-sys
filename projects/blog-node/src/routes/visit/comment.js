@@ -8,6 +8,7 @@ router.post('/manageList', controller.manageList)
 router.post('/audit', controller.audit)
 router.post('/like', controller.like)
 router.post('/list', controller.list)
+router.post('/info', controller.info)
 router.post('/delete', controller.delete)
 router.post('/replyList', controller.replyList)
 
