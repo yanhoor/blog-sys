@@ -5,7 +5,7 @@ import YTime from '@/components/y-time'
 import MediaList from '@/components/media/media-list'
 import YCard from '@/components/y-card'
 import ExpandableContent from '@/components/expandable-content'
-import { LikeO, Like, StarO, Star, CommentO } from '@react-vant/icons'
+import { GoodJob, GoodJobO, StarO, Star, CommentO } from '@react-vant/icons'
 import { useState } from 'react'
 import $http, { blog_collect, blog_like } from '@/http'
 import { Toast } from 'react-vant'
@@ -64,6 +64,10 @@ export default function PostItem({ post }: Props) {
     }
   }
 
+  function toPostDetail() {
+    navigate('/post/' + postDetail.id)
+  }
+
   return (
     <YCard>
       <div className="flex flex-col items-start gap-2">
@@ -74,9 +78,11 @@ export default function PostItem({ post }: Props) {
             <YTime time={postDetail.createdAt}></YTime>
           </div>
         </div>
-        <ExpandableContent content={postDetail.content} />
-        <div className="w-full">
-          <MediaList list={postDetail.medias} />
+        <div className="w-full" onClick={toPostDetail}>
+          <ExpandableContent content={postDetail.content} />
+          <div className="w-full">
+            <MediaList list={postDetail.medias} />
+          </div>
         </div>
         <div className="w-full flex">
           <div
@@ -84,13 +90,16 @@ export default function PostItem({ post }: Props) {
             onClick={handleLike}
           >
             {postDetail.isLike ? (
-              <Like fontSize="14px" color="#18a058" />
+              <GoodJob fontSize="14px" color="#18a058" />
             ) : (
-              <LikeO fontSize="14px" />
+              <GoodJobO fontSize="14px" />
             )}
             <span>{postDetail.likedByCount}</span>
           </div>
-          <div className="flex flex-1 justify-center items-center gap-1">
+          <div
+            className="flex flex-1 justify-center items-center gap-1"
+            onClick={toPostDetail}
+          >
             <CommentO fontSize="14px" />
             <span>{postDetail.commentsCount}</span>
           </div>

@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 interface Props {
   content: string
   maxLength?: number
   maxLine?: number
   expandText?: string
   collapseText?: string
+  className?: string
 }
 
 export default function ExpandableContent({
+  className = '',
   content,
   maxLine = 3,
   maxLength = 180,
@@ -15,6 +17,7 @@ export default function ExpandableContent({
   collapseText = '收起'
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [scrollTop, setScrollTop] = useState(0)
   let showAction = false
   let isMultiLine = false
   let expandBtnText = expandText
@@ -33,12 +36,22 @@ export default function ExpandableContent({
     showAction = true
   }
 
+  useEffect(() => {
+    // 回到展开前的滚动位置
+    if (!isExpanded) document.documentElement.scrollTop = scrollTop
+  }, [isExpanded])
+
   function triggleExpand() {
+    if (!isExpanded) {
+      setScrollTop(document.documentElement.scrollTop)
+    }
     setIsExpanded((v) => !v)
   }
 
   return (
-    <div className="whitespace-pre-wrap break-words transition-all">
+    <div
+      className={`whitespace-pre-wrap break-words transition-all ${className}`}
+    >
       {isExpanded ? content : briefContent}
       {showAction && (
         <span
