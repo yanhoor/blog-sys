@@ -53,6 +53,8 @@ export default function CommentReply({
       )
       if (success) {
         onComplete()
+        updateEditForm({ content: '' })
+        setImage(undefined)
         Toast.success('评论成功')
       } else {
         Toast.fail(msg || '评论失败')

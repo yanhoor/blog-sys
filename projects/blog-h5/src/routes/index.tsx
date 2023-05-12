@@ -20,7 +20,7 @@ import LoginPage from '@/pages/login/LoginPage'
 import PostPage from '@/pages/post/PostPage'
 import Layout from '@/pages/Layout'
 import React, { ReactNode } from 'react'
-import KeepAlive from 'react-activation'
+import CommentDetailPage from '@/pages/commentDetail/commentDetailPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -74,6 +74,10 @@ const routes: RouteObject[] = [
       {
         path: 'post/:id',
         element: <PostPage></PostPage>
+      },
+      {
+        path: 'commentDetail/:id',
+        element: <CommentDetailPage></CommentDetailPage>
       },
       {
         path: 'test',

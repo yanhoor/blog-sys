@@ -1,0 +1,142 @@
+import { useParams } from 'react-router-dom'
+import { Comment } from 'sys-types'
+import { useRef, useState } from 'react'
+import $http, { comment_info, comment_reply_list } from '@/http'
+import PageFetchWrapper from '@/components/page-fetch-wrapper'
+import AppendListWrapper from '@/components/append-list-wrapper'
+import YCard from '@/components/y-card'
+import CommentItem from '@/components/comment/comment-item'
+import { Popover, PullRefresh } from 'react-vant'
+import { ClockO, Sort } from '@react-vant/icons'
+
+export default function CommentDetailPage() {
+  const params = useParams()
+  const [commentDetail, setCommentDetail] = useState()
+  const commentFilterRef = useRef<any>()
+  const [errorMsg, setErrorMsg] = useState<string>()
+  const [replyTotal, setReplyTotal] = useState(0)
+  const commentListRef = useRef<any>()
+  const [commentFiltType, setCommentFiltType] = useState(1) // 1-- 时间，2--热度
+
+  async function onInit() {
+    await Promise.all([
+      getCommentDetail(),
+      commentListRef.current && commentListRef.current.handleRefreshList()
+    ])
+  }
+
+  async function getCommentDetail() {
+    try {
+      const { msg, success, result } = await $http.post(comment_info, {
+        id: params.id
+      })
+      if (success) {
+        setCommentDetail(result)
+      } else {
+        setErrorMsg(msg || '获取评论失败')
+        return Promise.reject()
+      }
+    } catch (e) {
+      setErrorMsg('获取评论失败')
+      return Promise.reject()
+    }
+  }
+
+  function handleChangeFilterType(v: number) {
+    setCommentFiltType(v)
+    if (commentListRef.current) {
+      commentListRef.current.handleChangeListParams({
+        sort: v
+      })
+      commentListRef.current.handleRefreshList()
+    }
+    commentFilterRef.current?.hide()
+  }
+
+  return (
+    <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
+      <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
+        {commentDetail ? (
+          <>
+            <YCard>
+              <CommentItem
+                comment={commentDetail}
+                onReply={onInit}
+                onDelete={() => history.back()}
+              ></CommentItem>
+            </YCard>
+            <div className="flex flex-col gap-[4px] mx-[5px]">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 text-[12px] font-semibold">
+                  共 {replyTotal} 回复
+                </span>
+                <Popover
+                  ref={commentFilterRef}
+                  placement="bottom-end"
+                  reference={
+                    commentFiltType === 1 ? (
+                      <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
+                        <ClockO fontSize="12px" />
+                        <span>按时间</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
+                        <Sort fontSize="12px" />
+                        <span>按热度</span>
+                      </div>
+                    )
+                  }
+                >
+                  <div className="flex flex-col gap-2 p-3">
+                    <div
+                      className={`flex items-center gap-[4px] ${
+                        commentFiltType === 1 ? 'text-green-700' : ''
+                      }`}
+                      onClick={() => handleChangeFilterType(1)}
+                    >
+                      <ClockO fontSize="16px" />
+                      <span className="text-[14px]">时间</span>
+                    </div>
+                    <div
+                      className={`flex items-center gap-[4px] ${
+                        commentFiltType === 2 ? 'text-green-700' : ''
+                      }`}
+                      onClick={() => handleChangeFilterType(2)}
+                    >
+                      <Sort fontSize="16px" />
+                      <span className="text-[14px]">热度</span>
+                    </div>
+                  </div>
+                </Popover>
+              </div>
+              <YCard>
+                <AppendListWrapper
+                  ref={commentListRef}
+                  enablePullDown={false}
+                  initParams={{
+                    topCommentId: params.id,
+                    sort: commentFiltType
+                  }}
+                  url={comment_reply_list}
+                  createList={(replyList: Comment[]) => (
+                    <div className="divide-y">
+                      {replyList.map((reply) => (
+                        <CommentItem
+                          key={reply.id}
+                          comment={reply}
+                          onReply={onInit}
+                          onDelete={onInit}
+                        ></CommentItem>
+                      ))}
+                    </div>
+                  )}
+                  onFetchComplete={(result) => setReplyTotal(result.total)}
+                ></AppendListWrapper>
+              </YCard>
+            </div>
+          </>
+        ) : null}
+      </PullRefresh>
+    </PageFetchWrapper>
+  )
+}

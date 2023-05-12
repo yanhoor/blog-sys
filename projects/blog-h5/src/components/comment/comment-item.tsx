@@ -8,6 +8,7 @@ import { ImagePreview, Space } from 'react-vant'
 import CommentActions from '@/components/comment/comment-actions'
 import CommentReply from '@/components/comment/comment-reply'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 interface Props {
   comment: Comment
   className?: string
@@ -21,6 +22,7 @@ export default function CommentItem({
   onReply
 }: Props) {
   const [showReply, setShowReply] = useState(false)
+  const navigate = useNavigate()
 
   function handlePreviewImage(url: string) {
     const base: string = import.meta.env.VITE_IMAGE_BASE
@@ -37,11 +39,20 @@ export default function CommentItem({
         <UserName user={comment.createBy} />
       </div>
       <div className="w-full" onClick={() => setShowReply(true)}>
-        <ExpandableContent
-          className="my-1"
-          content={comment.content || '图片评论'}
-          maxLength={60}
-        />
+        <div className="w-full whitespace-pre-wrap break-words inline my-1">
+          {comment.replyComment && comment.replyComment.topCommentId ? (
+            <>
+              <span>回复</span>
+              <UserName user={comment.replyComment.createBy} showAt />
+              <span className="mr-[2px]">:</span>
+            </>
+          ) : null}
+          <ExpandableContent
+            className="inline"
+            content={comment.content || '图片评论'}
+            maxLength={60}
+          />
+        </div>
         {comment.image && (
           <MediaImageItem
             className="max-w-[120px] max-h-[160px]"
@@ -55,7 +66,10 @@ export default function CommentItem({
       </div>
 
       {comment.childComments?.length ? (
-        <div className="px-2 py-1 bg-gray-100 rounded min-w-full mt-2">
+        <div
+          className="px-2 py-1 bg-gray-100 rounded min-w-full mt-2"
+          onClick={() => navigate('/commentDetail/' + comment.id)}
+        >
           <Space direction="vertical" gap={4}>
             {comment.childComments.map((child) => (
               <div className="whitespace-pre-wrap break-words" key={child.id}>
@@ -73,14 +87,18 @@ export default function CommentItem({
                     content={child.content}
                     maxLength={60}
                   />
-                ) : (
+                ) : null}
+                {child.image ? (
                   <span
-                    className="text-green-700"
-                    onClick={() => handlePreviewImage(child.image?.url)}
+                    className="text-green-700 ml-[2px]"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handlePreviewImage(child.image?.url)
+                    }}
                   >
                     查看图片
                   </span>
-                )}
+                ) : null}
               </div>
             ))}
           </Space>
