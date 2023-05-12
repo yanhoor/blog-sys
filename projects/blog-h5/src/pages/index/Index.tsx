@@ -11,7 +11,7 @@ import {
   Manager,
   ManagerO
 } from '@react-vant/icons'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useAppSelector } from '@/store/hooks'
 
 export default function IndexPage() {
