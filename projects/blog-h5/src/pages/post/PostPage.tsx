@@ -190,7 +190,7 @@ export default function PostPage() {
     <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
       {postDetail ? (
         <div className="post-page">
-          <PullRefresh onRefresh={onInit}>
+          <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
             <YCard>
               <div className="flex gap-2">
                 <UserAvatar user={postDetail.createBy} />
