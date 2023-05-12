@@ -11,6 +11,7 @@ import { List, PullRefresh } from 'react-vant'
 import { PageState } from 'sys-types'
 import $http from '@/http'
 import StatusEmpty from '@/components/status/status-empty'
+import StatusError from '@/components/status/status-error'
 
 interface Props {
   url: string
@@ -44,6 +45,7 @@ export default forwardRef(function AppendListWrapper(
   })
   const [listTotal, setListTotal] = useState(0)
   const [pageList, setPageList] = useState([])
+  const [errorMsg, setErrorMsg] = useState<string>()
 
   async function getList(clear = false) {
     console.log('-----getList params--------', fetchParamsRef.current)
@@ -52,18 +54,22 @@ export default forwardRef(function AppendListWrapper(
         url,
         fetchParamsRef.current
       )
-      onFetchComplete?.(result)
-      setPageList(clear ? result.list : [...pageList, ...result.list])
-      setListTotal(result.total)
-      if (
-        result.total == 0 ||
-        (fetchParamsRef.current.page === 1 && result.list.length === 0)
-      ) {
-        setListState(PageState.empty)
-      } else if (result.list.length < fetchParamsRef.current.pageSize) {
-        setListState(PageState.finish)
+      if (success) {
+        onFetchComplete?.(result)
+        setPageList(clear ? result.list : [...pageList, ...result.list])
+        setListTotal(result.total)
+        if (
+          result.total == 0 ||
+          (fetchParamsRef.current.page === 1 && result.list.length === 0)
+        ) {
+          setListState(PageState.empty)
+        } else if (result.list.length < fetchParamsRef.current.pageSize) {
+          setListState(PageState.finish)
+        } else {
+          setListState(PageState.more)
+        }
       } else {
-        setListState(PageState.more)
+        setErrorMsg(msg)
       }
     } catch (e) {
       setListState(PageState.error)
@@ -123,7 +129,7 @@ export default forwardRef(function AppendListWrapper(
   } else if (listState === PageState.empty) {
     return <StatusEmpty onRefresh={handleRefreshList} />
   } else if (listState === PageState.error) {
-    result = <div>Error</div>
+    return <StatusError errorMsg={errorMsg} onRefresh={handleRefreshList} />
   } else {
     result = (
       <PullRefresh onRefresh={handleRefreshList} disabled={!enablePullDown}>
