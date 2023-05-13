@@ -14,7 +14,7 @@
 
 ### Flutter
 
-[Android 下载](https://static-buck.oss-cn-shenzhen.aliyuncs.com/release/vipot.apk)
+[Android 下载](https://yanhoor-public-resource.oss-cn-guangzhou.aliyuncs.com/blog-sys-release/vipot.apk)
 
 IOS:
 
