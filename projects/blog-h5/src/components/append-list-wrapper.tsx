@@ -15,11 +15,13 @@ import StatusError from '@/components/status/status-error'
 
 interface Props {
   url: string
+  className?: string
   initParams?: any
   enablePullDown?: boolean
   createList: (list: any[]) => ReactNode
   createSkeletonItem?: () => ReactNode
   onFetchComplete?: (result: any) => void
+  onListUpdate?: (list: any[]) => void
 }
 interface FetchParams {
   page: number
@@ -33,6 +35,8 @@ export default forwardRef(function AppendListWrapper(
     createList,
     createSkeletonItem,
     onFetchComplete,
+    className,
+    onListUpdate,
     enablePullDown = true
   }: Props,
   ref: Ref<any>
@@ -43,20 +47,34 @@ export default forwardRef(function AppendListWrapper(
     pageSize: 20,
     ...initParams
   })
+  const listLoadingRef = useRef(false) // 避免一次加载多页
+  const pageListRef = useRef([]) // 避免 useState 未更新
   const [listTotal, setListTotal] = useState(0)
   const [pageList, setPageList] = useState([])
   const [errorMsg, setErrorMsg] = useState<string>()
 
   async function getList(clear = false) {
-    console.log('-----getList params--------', fetchParamsRef.current)
+    // console.log(
+    //   '-----getList params--------',
+    //   listLoadingRef.current,
+    //   fetchParamsRef.current
+    // )
+    if (listLoadingRef.current) return
+
+    listLoadingRef.current = true
     try {
       const { msg, success, result } = await $http.post(
         url,
         fetchParamsRef.current
       )
+      listLoadingRef.current = false
       if (success) {
         onFetchComplete?.(result)
-        setPageList(clear ? result.list : [...pageList, ...result.list])
+        pageListRef.current = clear
+          ? result.list
+          : [...pageListRef.current, ...result.list]
+        setPageList(pageListRef.current)
+        onListUpdate?.(pageListRef.current)
         setListTotal(result.total)
         if (
           result.total == 0 ||
@@ -72,26 +90,22 @@ export default forwardRef(function AppendListWrapper(
         setErrorMsg(msg)
       }
     } catch (e) {
+      listLoadingRef.current = false
       setListState(PageState.error)
       console.log('=====useFetchAppendList error======', e)
     }
   }
 
-  function handleInitFetchPageList() {
-    setListState(PageState.initializing)
-    handleRefreshList(false)
-  }
-
-  async function handleRefreshList(refresh = true) {
+  async function handleRefreshList() {
     // console.log('============handleRefreshList===============')
     fetchParamsRef.current.page = 1
     setListTotal(0)
-    if (refresh) setListState(PageState.refreshing)
+    setListState(PageState.refreshing)
     return getList(true)
   }
 
   async function handleLoadNextPage(p?: number) {
-    if (listState === PageState.finish) return
+    if (listState === PageState.finish || listLoadingRef.current) return
 
     if (p) {
       fetchParamsRef.current.page = p
@@ -116,6 +130,7 @@ export default forwardRef(function AppendListWrapper(
 
   const onLoad = async (isRetry: boolean) => {
     if (isRetry) {
+      console.log('=====onLoad isRetry======')
       getList()
     } else {
       handleLoadNextPage()
@@ -146,5 +161,7 @@ export default forwardRef(function AppendListWrapper(
     )
   }
 
-  return <div className="append-list-wrapper">{result}</div>
+  return (
+    <div className={`append-list-wrapper ${className || ''}`}>{result}</div>
+  )
 })
