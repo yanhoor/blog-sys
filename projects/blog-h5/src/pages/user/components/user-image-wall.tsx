@@ -14,7 +14,7 @@ export default function UserImageWall({ userId }: Props) {
   const [imageList, setImageList] = useState<Media[]>([])
   const [imageTotal, setImageTotal] = useState(0)
   const [showMediaDetail, setShowMediaDetail] = useState(false)
-  const [previewMedia, setPreviewMedia] = useState<Media>()
+  const [previewIndex, setPreviewIndex] = useState<number>(-1)
 
   useEffect(() => {
     getImageList()
@@ -39,13 +39,13 @@ export default function UserImageWall({ userId }: Props) {
     }
   }
 
-  function handlePreviewImage(item: Media) {
+  function handlePreviewImage(index: number) {
     // const base: string = import.meta.env.VITE_IMAGE_BASE
     // ImagePreview.open({
     //   images: imageList.map((image) => base + image.file.url),
     //   startPosition: index
     // })
-    setPreviewMedia(item)
+    setPreviewIndex(index)
     setShowMediaDetail(true)
   }
 
@@ -75,16 +75,18 @@ export default function UserImageWall({ userId }: Props) {
                   url={media.file.url}
                   enablePreview={false}
                   quality={60}
-                  onClick={() => handlePreviewImage(media)}
+                  onClick={() => handlePreviewImage(index)}
                 />
               </div>
             </div>
           ))}
         </div>
       </div>
-      {previewMedia ? (
+      {previewIndex > -1 ? (
         <MediaDetailView
-          media={previewMedia}
+          key={previewIndex}
+          mediaList={imageList}
+          initIndex={previewIndex}
           visible={showMediaDetail}
           onChangeVisible={() => setShowMediaDetail(false)}
         />

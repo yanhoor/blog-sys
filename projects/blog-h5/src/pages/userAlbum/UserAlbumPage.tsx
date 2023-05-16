@@ -11,16 +11,16 @@ export default function UserAlbumPage() {
   const [itemTotal, setItemTotal] = useState(0)
   const [imageList, setImageList] = useState<Media[]>([])
   const [showMediaDetail, setShowMediaDetail] = useState(false)
-  const [previewMedia, setPreviewMedia] = useState<Media>()
+  const [previewIndex, setPreviewIndex] = useState<number>(-1)
 
-  function handlePreviewImage(item: Media) {
+  function handlePreviewImage(index: number) {
     // const base: string = import.meta.env.VITE_IMAGE_BASE
     // ImagePreview.open({
     //   images: imageList.map((image) => base + image.file.url),
     //   startPosition: index
     // })
     // console.log('==========handlePreviewImage==========', index)
-    setPreviewMedia(item)
+    setPreviewIndex(index)
     setShowMediaDetail(true)
   }
 
@@ -35,7 +35,7 @@ export default function UserAlbumPage() {
                 url={item.file.url}
                 enablePreview={false}
                 quality={60}
-                onClick={() => handlePreviewImage(item)}
+                onClick={() => handlePreviewImage(index)}
               />
             </div>
           </div>
@@ -53,10 +53,13 @@ export default function UserAlbumPage() {
         onFetchComplete={(result) => {
           setItemTotal(result.total)
         }}
+        onListUpdate={(list: Media[]) => setImageList(list)}
       />
-      {previewMedia ? (
+      {previewIndex > -1 ? (
         <MediaDetailView
-          media={previewMedia}
+          key={previewIndex}
+          mediaList={imageList}
+          initIndex={previewIndex}
           visible={showMediaDetail}
           onChangeVisible={() => setShowMediaDetail(false)}
         />
