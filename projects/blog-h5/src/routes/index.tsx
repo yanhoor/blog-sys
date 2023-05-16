@@ -2,9 +2,7 @@ import {
   RouteObject,
   Navigate,
   createBrowserRouter,
-  createRoutesFromElements,
   Route,
-  DataRouteObject,
   RouterProvider
 } from 'react-router-dom'
 import IndexPage from '@/pages/index/Index'
@@ -21,6 +19,10 @@ import PostPage from '@/pages/post/PostPage'
 import Layout from '@/pages/Layout'
 import React, { ReactNode } from 'react'
 import CommentDetailPage from '@/pages/commentDetail/commentDetailPage'
+import UserPage from '@/pages/user/UserPage'
+import FollowerListPage from '@/pages/followerList/FollowerListPage'
+import FollowingListPage from '@/pages/followingList/FollowingListPage'
+import UserAlbumPage from '@/pages/userAlbum/UserAlbumPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -74,6 +76,22 @@ const routes: RouteObject[] = [
       {
         path: 'post/:id',
         element: <PostPage></PostPage>
+      },
+      {
+        path: 'user/:id',
+        element: <UserPage></UserPage>
+      },
+      {
+        path: 'follower/:uid',
+        element: <FollowerListPage></FollowerListPage>
+      },
+      {
+        path: 'following/:uid',
+        element: <FollowingListPage></FollowingListPage>
+      },
+      {
+        path: 'userAlbum/:uid',
+        element: <UserAlbumPage></UserAlbumPage>
       },
       {
         path: 'commentDetail/:id',
