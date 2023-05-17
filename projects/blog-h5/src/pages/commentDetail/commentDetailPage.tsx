@@ -8,6 +8,8 @@ import YCard from '@/components/y-card'
 import CommentItem from '@/components/comment/comment-item'
 import { Popover, PullRefresh } from 'react-vant'
 import { ClockO, Sort } from '@react-vant/icons'
+import PageWrapper from '@/components/page-wrapper'
+import CustomNavBar from '@/components/custom/custom-nav-bar'
 
 export default function CommentDetailPage() {
   const params = useParams()
@@ -54,89 +56,92 @@ export default function CommentDetailPage() {
   }
 
   return (
-    <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
-      <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
-        {commentDetail ? (
-          <>
-            <YCard>
-              <CommentItem
-                comment={commentDetail}
-                onReply={onInit}
-                onDelete={() => history.back()}
-              ></CommentItem>
-            </YCard>
-            <div className="flex flex-col gap-[4px] mx-[5px]">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 text-[12px] font-semibold">
-                  共 {replyTotal} 回复
-                </span>
-                <Popover
-                  ref={commentFilterRef}
-                  placement="bottom-end"
-                  reference={
-                    commentFiltType === 1 ? (
-                      <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
-                        <ClockO fontSize="12px" />
-                        <span>按时间</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
-                        <Sort fontSize="12px" />
-                        <span>按热度</span>
-                      </div>
-                    )
-                  }
-                >
-                  <div className="flex flex-col gap-2 p-3">
-                    <div
-                      className={`flex items-center gap-[4px] ${
-                        commentFiltType === 1 ? 'text-green-700' : ''
-                      }`}
-                      onClick={() => handleChangeFilterType(1)}
-                    >
-                      <ClockO fontSize="16px" />
-                      <span className="text-[14px]">时间</span>
-                    </div>
-                    <div
-                      className={`flex items-center gap-[4px] ${
-                        commentFiltType === 2 ? 'text-green-700' : ''
-                      }`}
-                      onClick={() => handleChangeFilterType(2)}
-                    >
-                      <Sort fontSize="16px" />
-                      <span className="text-[14px]">热度</span>
-                    </div>
-                  </div>
-                </Popover>
-              </div>
+    <PageWrapper title="评论详情">
+      <CustomNavBar title="评论详情" />
+      <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
+        <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
+          {commentDetail ? (
+            <>
               <YCard>
-                <AppendListWrapper
-                  ref={commentListRef}
-                  enablePullDown={false}
-                  initParams={{
-                    topCommentId: params.id,
-                    sort: commentFiltType
-                  }}
-                  url={comment_reply_list}
-                  createList={(replyList: Comment[]) => (
-                    <div className="divide-y">
-                      {replyList.map((reply) => (
-                        <CommentItem
-                          key={reply.id}
-                          comment={reply}
-                          onReply={onInit}
-                          onDelete={onInit}
-                        ></CommentItem>
-                      ))}
-                    </div>
-                  )}
-                  onFetchComplete={(result) => setReplyTotal(result.total)}
-                ></AppendListWrapper>
+                <CommentItem
+                  comment={commentDetail}
+                  onReply={onInit}
+                  onDelete={() => history.back()}
+                ></CommentItem>
               </YCard>
-            </div>
-          </>
-        ) : null}
-      </PullRefresh>
-    </PageFetchWrapper>
+              <div className="flex flex-col gap-[4px] mx-[5px]">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 text-[12px] font-semibold">
+                    共 {replyTotal} 回复
+                  </span>
+                  <Popover
+                    ref={commentFilterRef}
+                    placement="bottom-end"
+                    reference={
+                      commentFiltType === 1 ? (
+                        <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
+                          <ClockO fontSize="12px" />
+                          <span>按时间</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
+                          <Sort fontSize="12px" />
+                          <span>按热度</span>
+                        </div>
+                      )
+                    }
+                  >
+                    <div className="flex flex-col gap-2 p-3">
+                      <div
+                        className={`flex items-center gap-[4px] ${
+                          commentFiltType === 1 ? 'text-green-700' : ''
+                        }`}
+                        onClick={() => handleChangeFilterType(1)}
+                      >
+                        <ClockO fontSize="16px" />
+                        <span className="text-[14px]">时间</span>
+                      </div>
+                      <div
+                        className={`flex items-center gap-[4px] ${
+                          commentFiltType === 2 ? 'text-green-700' : ''
+                        }`}
+                        onClick={() => handleChangeFilterType(2)}
+                      >
+                        <Sort fontSize="16px" />
+                        <span className="text-[14px]">热度</span>
+                      </div>
+                    </div>
+                  </Popover>
+                </div>
+                <YCard>
+                  <AppendListWrapper
+                    ref={commentListRef}
+                    enablePullDown={false}
+                    initParams={{
+                      topCommentId: params.id,
+                      sort: commentFiltType
+                    }}
+                    url={comment_reply_list}
+                    createList={(replyList: Comment[]) => (
+                      <div className="divide-y">
+                        {replyList.map((reply) => (
+                          <CommentItem
+                            key={reply.id}
+                            comment={reply}
+                            onReply={onInit}
+                            onDelete={onInit}
+                          ></CommentItem>
+                        ))}
+                      </div>
+                    )}
+                    onFetchComplete={(result) => setReplyTotal(result.total)}
+                  ></AppendListWrapper>
+                </YCard>
+              </div>
+            </>
+          ) : null}
+        </PullRefresh>
+      </PageFetchWrapper>
+    </PageWrapper>
   )
 }

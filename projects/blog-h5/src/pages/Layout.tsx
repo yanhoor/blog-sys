@@ -9,7 +9,7 @@ export default function Layout() {
   }, [location])
 
   return (
-    <div className="min-h-full">
+    <div className="layout h-full">
       <Outlet />
       <ScrollRestoration
         getKey={(location, matches) => {

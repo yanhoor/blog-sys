@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { getMyInfo } from '@/store/user/asyncThunk'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import PageWrapper from '@/components/page-wrapper'
+import CustomNavBar from '@/components/custom/custom-nav-bar'
 
 export default function LoginPage() {
   const dispatch = useAppDispatch()
@@ -43,67 +45,70 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[100vh] min-w-[100vw] flex flex-col justify-center absolute">
-      <YCard className="mx-[12px]">
-        <Form form={formInstance}>
-          <Form.Item
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: '请填写手机号' }
-              // {
-              //   validator: (_, value) => {
-              //     if (/1\d{10}/.test(value)) {
-              //       return Promise.resolve(true)
-              //     }
-              //     return Promise.reject(new Error('请输入正确的手机号码'))
-              //   }
-              // }
-            ]}
-            name="mobile"
-            label="手机号"
+    <PageWrapper title="登录">
+      <CustomNavBar title="登录" />
+      <div className="h-full w-full flex flex-col justify-center absolute">
+        <YCard className="mx-[12px]">
+          <Form form={formInstance}>
+            <Form.Item
+              validateTrigger="onBlur"
+              rules={[
+                { required: true, message: '请填写手机号' }
+                // {
+                //   validator: (_, value) => {
+                //     if (/1\d{10}/.test(value)) {
+                //       return Promise.resolve(true)
+                //     }
+                //     return Promise.reject(new Error('请输入正确的手机号码'))
+                //   }
+                // }
+              ]}
+              name="mobile"
+              label="手机号"
+            >
+              <Input
+                placeholder="请输入手机号"
+                type="tel"
+                maxLength={11}
+                value={editForm.mobile}
+                onChange={(mobile) => updateEditForm({ mobile })}
+              />
+            </Form.Item>
+            <Form.Item
+              rules={[{ required: true, message: '请填写密码' }]}
+              name="password"
+              label="密码"
+            >
+              <Input
+                placeholder="请输入密码"
+                type="password"
+                value={editForm.password}
+                onChange={(password) => updateEditForm({ password })}
+              />
+            </Form.Item>
+          </Form>
+          <Button
+            className="!mt-[12px]"
+            type="primary"
+            size="small"
+            round
+            block
+            loading={loading}
+            onClick={handleLogin}
           >
-            <Input
-              placeholder="请输入手机号"
-              type="tel"
-              maxLength={11}
-              value={editForm.mobile}
-              onChange={(mobile) => updateEditForm({ mobile })}
-            />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: '请填写密码' }]}
-            name="password"
-            label="密码"
+            登录
+          </Button>
+          <Button
+            className="!mt-[12px]"
+            size="small"
+            round
+            block
+            onClick={() => navigate('/register', { replace: true })}
           >
-            <Input
-              placeholder="请输入密码"
-              type="password"
-              value={editForm.password}
-              onChange={(password) => updateEditForm({ password })}
-            />
-          </Form.Item>
-        </Form>
-        <Button
-          className="!mt-[12px]"
-          type="primary"
-          size="small"
-          round
-          block
-          loading={loading}
-          onClick={handleLogin}
-        >
-          登录
-        </Button>
-        <Button
-          className="!mt-[12px]"
-          size="small"
-          round
-          block
-          onClick={() => navigate('/register', { replace: true })}
-        >
-          没有账号，去注册
-        </Button>
-      </YCard>
-    </div>
+            没有账号，去注册
+          </Button>
+        </YCard>
+      </div>
+    </PageWrapper>
   )
 }

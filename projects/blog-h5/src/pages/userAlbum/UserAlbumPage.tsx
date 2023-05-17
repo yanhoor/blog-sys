@@ -5,6 +5,8 @@ import AppendListWrapper from '@/components/append-list-wrapper'
 import { user_media_list } from '@/http'
 import MediaImageItem from '@/components/media/media-image-item'
 import MediaDetailView from '@/components/media/media-detail-view'
+import PageWrapper from '@/components/page-wrapper'
+import CustomNavBar from '@/components/custom/custom-nav-bar'
 
 export default function UserAlbumPage() {
   const params = useParams()
@@ -45,25 +47,28 @@ export default function UserAlbumPage() {
   }
 
   return (
-    <div className="friend-list">
-      <AppendListWrapper
-        url={user_media_list}
-        createList={createViewList}
-        initParams={{ type: 1, userId: params.uid }}
-        onFetchComplete={(result) => {
-          setItemTotal(result.total)
-        }}
-        onListUpdate={(list: Media[]) => setImageList(list)}
-      />
-      {previewIndex > -1 ? (
-        <MediaDetailView
-          key={previewIndex}
-          mediaList={imageList}
-          initIndex={previewIndex}
-          visible={showMediaDetail}
-          onChangeVisible={() => setShowMediaDetail(false)}
+    <PageWrapper title="用户相册">
+      <CustomNavBar title={`用户相册(${itemTotal})`} />
+      <div className="user-album">
+        <AppendListWrapper
+          url={user_media_list}
+          createList={createViewList}
+          initParams={{ type: 1, userId: params.uid }}
+          onFetchComplete={(result) => {
+            setItemTotal(result.total)
+          }}
+          onListUpdate={(list: Media[]) => setImageList(list)}
         />
-      ) : null}
-    </div>
+        {previewIndex > -1 ? (
+          <MediaDetailView
+            key={previewIndex}
+            mediaList={imageList}
+            initIndex={previewIndex}
+            visible={showMediaDetail}
+            onChangeVisible={() => setShowMediaDetail(false)}
+          />
+        ) : null}
+      </div>
+    </PageWrapper>
   )
 }

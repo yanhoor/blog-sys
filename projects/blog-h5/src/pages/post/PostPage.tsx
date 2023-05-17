@@ -30,6 +30,8 @@ import AppendListWrapper from '@/components/append-list-wrapper'
 import CommentItem from '@/components/comment/comment-item'
 import CommentReply from '@/components/comment/comment-reply'
 import UserItem from '@/components/user/user-item'
+import PageWrapper from '@/components/page-wrapper'
+import CustomNavBar from '@/components/custom/custom-nav-bar'
 
 export default function PostPage() {
   const params = useParams()
@@ -187,157 +189,160 @@ export default function PostPage() {
   }
 
   return (
-    <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
-      {postDetail ? (
-        <div className="post-page">
-          <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
-            <YCard>
-              <div className="flex gap-2">
-                <UserAvatar user={postDetail.createBy} />
-                <div className="flex flex-col">
-                  <UserName user={postDetail.createBy}></UserName>
-                  <YTime time={postDetail.createdAt} isAlias={false}></YTime>
-                </div>
-              </div>
-              <ExpandableContent
-                className="my-2"
-                content={postDetail.content}
-              />
-              <div className="w-full">
-                <MediaList list={postDetail.medias} maxCount={0} />
-              </div>
-              <div className="w-full mt-6 flex items-center">
-                <div
-                  className="flex-1 flex items-center justify-center gap-2"
-                  onClick={handleLike}
-                >
-                  {postDetail.isLike ? (
-                    <GoodJob fontSize="16px" className="text-green-700" />
-                  ) : (
-                    <GoodJobO fontSize="16px" />
-                  )}
-                </div>
-                <div
-                  className="flex-1 flex items-center justify-center gap-2"
-                  onClick={() => setShowReply(true)}
-                >
-                  <CommentO fontSize="16px" />
-                </div>
-                <div
-                  className="flex-1 flex items-center justify-center gap-2"
-                  onClick={handleCollect}
-                >
-                  {postDetail.isCollect ? (
-                    <Star fontSize="16px" className="text-green-700" />
-                  ) : (
-                    <StarO fontSize="16px" />
-                  )}
-                </div>
-              </div>
-            </YCard>
-            <YCard>
-              <Tabs
-                lineWidth="0"
-                sticky
-                swipeable
-                stickyInitScrollbar={false}
-                align="start"
-                onChange={(name: string | number, tabIndex: number) => {
-                  onTabChange(name as string, tabIndex)
-                }}
-                defaultActive={currentTab}
-              >
-                <Tabs.TabPane key="comment" title={commentTab} name="comment">
-                  <div
-                    className={`mx-[5px] pt-[5px] ${
-                      currentTab === 'comment' ? '' : 'hidden'
-                    }`}
-                  >
-                    <AppendListWrapper
-                      enablePullDown={false}
-                      initParams={{
-                        blogId: postDetail.id,
-                        sort: commentFiltType
-                      }}
-                      ref={commentListRef}
-                      url={comment_list}
-                      createList={createCommentList}
-                      onFetchComplete={(result) =>
-                        setCommentCount(result.total)
-                      }
-                    ></AppendListWrapper>
+    <PageWrapper title={postDetail?.content || '加载中...'}>
+      <CustomNavBar title="博客正文" />
+      <PageFetchWrapper onInit={onInit} errorMsg={errorMsg}>
+        {postDetail ? (
+          <div className="post-page">
+            <PullRefresh className="min-h-[100vh]" onRefresh={onInit}>
+              <YCard>
+                <div className="flex gap-2">
+                  <UserAvatar user={postDetail.createBy} />
+                  <div className="flex flex-col">
+                    <UserName user={postDetail.createBy}></UserName>
+                    <YTime time={postDetail.createdAt} isAlias={false}></YTime>
                   </div>
-                </Tabs.TabPane>
-                <Tabs.TabPane
-                  key="like"
-                  title={`点赞 ${postDetail.likedByCount}`}
-                  name="like"
-                >
+                </div>
+                <ExpandableContent
+                  className="my-2"
+                  content={postDetail.content}
+                />
+                <div className="w-full">
+                  <MediaList list={postDetail.medias} maxCount={0} />
+                </div>
+                <div className="w-full mt-6 flex items-center">
                   <div
-                    className={`mx-[5px] pt-[5px] ${
-                      currentTab === 'like' ? '' : 'hidden'
-                    }`}
+                    className="flex-1 flex items-center justify-center gap-2"
+                    onClick={handleLike}
                   >
-                    <AppendListWrapper
-                      enablePullDown={false}
-                      initParams={{
-                        blogId: postDetail.id
-                      }}
-                      ref={likeUserListRef}
-                      url={blog_action_user_list + '/1'}
-                      createList={(userList: User[]) => (
-                        <div className="divide-y">
-                          {userList.map((user) => (
-                            <UserItem user={user} key={user.id} />
-                          ))}
-                        </div>
-                      )}
-                    ></AppendListWrapper>
+                    {postDetail.isLike ? (
+                      <GoodJob fontSize="16px" className="text-green-700" />
+                    ) : (
+                      <GoodJobO fontSize="16px" />
+                    )}
                   </div>
-                </Tabs.TabPane>
-                <Tabs.TabPane
-                  key="collect"
-                  title={`收藏 ${postDetail.collectedByCount}`}
-                  name="collect"
-                >
                   <div
-                    className={`mx-[5px] pt-[5px] ${
-                      currentTab === 'collect' ? '' : 'hidden'
-                    }`}
+                    className="flex-1 flex items-center justify-center gap-2"
+                    onClick={() => setShowReply(true)}
                   >
-                    <AppendListWrapper
-                      enablePullDown={false}
-                      initParams={{
-                        blogId: postDetail.id
-                      }}
-                      ref={collectUserListRef}
-                      url={blog_action_user_list + '/2'}
-                      createList={(userList: User[]) => (
-                        <div className="divide-y">
-                          {userList.map((user) => (
-                            <UserItem user={user} key={user.id} />
-                          ))}
-                        </div>
-                      )}
-                    ></AppendListWrapper>
+                    <CommentO fontSize="16px" />
                   </div>
-                </Tabs.TabPane>
-              </Tabs>
-            </YCard>
-          </PullRefresh>
-          <CommentReply
-            visible={showReply}
-            onClickOverlay={() => setShowReply(false)}
-            onComplete={() => {
-              onInit()
-              setShowReply(false)
-            }}
-            postId={postDetail.id as number}
-          />
-        </div>
-      ) : (
-        <div></div>
-      )}
-    </PageFetchWrapper>
+                  <div
+                    className="flex-1 flex items-center justify-center gap-2"
+                    onClick={handleCollect}
+                  >
+                    {postDetail.isCollect ? (
+                      <Star fontSize="16px" className="text-green-700" />
+                    ) : (
+                      <StarO fontSize="16px" />
+                    )}
+                  </div>
+                </div>
+              </YCard>
+              <YCard>
+                <Tabs
+                  lineWidth="0"
+                  sticky
+                  swipeable
+                  stickyInitScrollbar={false}
+                  align="start"
+                  onChange={(name: string | number, tabIndex: number) => {
+                    onTabChange(name as string, tabIndex)
+                  }}
+                  defaultActive={currentTab}
+                >
+                  <Tabs.TabPane key="comment" title={commentTab} name="comment">
+                    <div
+                      className={`mx-[5px] pt-[5px] ${
+                        currentTab === 'comment' ? '' : 'hidden'
+                      }`}
+                    >
+                      <AppendListWrapper
+                        enablePullDown={false}
+                        initParams={{
+                          blogId: postDetail.id,
+                          sort: commentFiltType
+                        }}
+                        ref={commentListRef}
+                        url={comment_list}
+                        createList={createCommentList}
+                        onFetchComplete={(result) =>
+                          setCommentCount(result.total)
+                        }
+                      ></AppendListWrapper>
+                    </div>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane
+                    key="like"
+                    title={`点赞 ${postDetail.likedByCount}`}
+                    name="like"
+                  >
+                    <div
+                      className={`mx-[5px] pt-[5px] ${
+                        currentTab === 'like' ? '' : 'hidden'
+                      }`}
+                    >
+                      <AppendListWrapper
+                        enablePullDown={false}
+                        initParams={{
+                          blogId: postDetail.id
+                        }}
+                        ref={likeUserListRef}
+                        url={blog_action_user_list + '/1'}
+                        createList={(userList: User[]) => (
+                          <div className="divide-y">
+                            {userList.map((user) => (
+                              <UserItem user={user} key={user.id} />
+                            ))}
+                          </div>
+                        )}
+                      ></AppendListWrapper>
+                    </div>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane
+                    key="collect"
+                    title={`收藏 ${postDetail.collectedByCount}`}
+                    name="collect"
+                  >
+                    <div
+                      className={`mx-[5px] pt-[5px] ${
+                        currentTab === 'collect' ? '' : 'hidden'
+                      }`}
+                    >
+                      <AppendListWrapper
+                        enablePullDown={false}
+                        initParams={{
+                          blogId: postDetail.id
+                        }}
+                        ref={collectUserListRef}
+                        url={blog_action_user_list + '/2'}
+                        createList={(userList: User[]) => (
+                          <div className="divide-y">
+                            {userList.map((user) => (
+                              <UserItem user={user} key={user.id} />
+                            ))}
+                          </div>
+                        )}
+                      ></AppendListWrapper>
+                    </div>
+                  </Tabs.TabPane>
+                </Tabs>
+              </YCard>
+            </PullRefresh>
+            <CommentReply
+              visible={showReply}
+              onClickOverlay={() => setShowReply(false)}
+              onComplete={() => {
+                onInit()
+                setShowReply(false)
+              }}
+              postId={postDetail.id as number}
+            />
+          </div>
+        ) : (
+          <div></div>
+        )}
+      </PageFetchWrapper>
+    </PageWrapper>
   )
 }
