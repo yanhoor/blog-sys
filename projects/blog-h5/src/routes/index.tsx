@@ -23,6 +23,7 @@ import UserPage from '@/pages/user/UserPage'
 import FollowerListPage from '@/pages/followerList/FollowerListPage'
 import FollowingListPage from '@/pages/followingList/FollowingListPage'
 import UserAlbumPage from '@/pages/userAlbum/UserAlbumPage'
+import RegisterPage from '@/pages/register/RegisterPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -72,6 +73,10 @@ const routes: RouteObject[] = [
       {
         path: 'login',
         element: <LoginPage></LoginPage>
+      },
+      {
+        path: 'register',
+        element: <RegisterPage></RegisterPage>
       },
       {
         path: 'post/:id',

@@ -6,15 +6,20 @@ import MyConfig from '@/config'
 import { useState } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { getMyInfo } from '@/store/user/asyncThunk'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function LoginPage() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [formInstance] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [editForm, updateEditForm] = hooks.useSetState({
     mobile: '',
     password: ''
   })
+
+  const fromPath = searchParams.get('from')
 
   async function handleLogin() {
     formInstance.validateFields().then(async () => {
@@ -26,7 +31,7 @@ export default function LoginPage() {
           Toast.success('登录成功')
           localStorage.setItem(MyConfig.TOKEN, result)
           dispatch(getMyInfo())
-          history.back()
+          navigate(fromPath || '/', { replace: true })
         } else {
           Toast.fail(msg || '登录失败')
         }
@@ -38,16 +43,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="h-full w-full flex flex-col justify-center absolute">
+    <div className="min-h-[100vh] min-w-[100vw] flex flex-col justify-center absolute">
       <YCard className="mx-[12px]">
         <Form form={formInstance}>
           <Form.Item
-            rules={[{ required: true, message: '请填写用户名' }]}
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: '请填写手机号' }
+              // {
+              //   validator: (_, value) => {
+              //     if (/1\d{10}/.test(value)) {
+              //       return Promise.resolve(true)
+              //     }
+              //     return Promise.reject(new Error('请输入正确的手机号码'))
+              //   }
+              // }
+            ]}
             name="mobile"
-            label="用户名"
+            label="手机号"
           >
             <Input
-              placeholder="请输入用户名"
+              placeholder="请输入手机号"
               type="tel"
               maxLength={11}
               value={editForm.mobile}
@@ -77,6 +93,15 @@ export default function LoginPage() {
           onClick={handleLogin}
         >
           登录
+        </Button>
+        <Button
+          className="!mt-[12px]"
+          size="small"
+          round
+          block
+          onClick={() => navigate('/register', { replace: true })}
+        >
+          没有账号，去注册
         </Button>
       </YCard>
     </div>
