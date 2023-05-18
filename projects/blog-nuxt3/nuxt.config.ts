@@ -65,7 +65,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server'
   },
-  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss'],
+  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
   css: ['@/assets/styles/global.scss'],
   vite: {
     css: {

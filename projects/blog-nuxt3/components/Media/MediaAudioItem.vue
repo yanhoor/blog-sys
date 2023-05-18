@@ -4,6 +4,11 @@
       class="hidden"
       :src="config.imageBase + url"
       ref="audioRef"
+      @pause="
+        () => {
+          playState = PlayState.paused
+        }
+      "
       @ended="
         () => {
           playState = PlayState.end
@@ -94,12 +99,14 @@ import {
   Replay20Regular
 } from '@vicons/fluent'
 import { PlayState } from 'sys-types'
+import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
 interface Props {
   url: string
   coverUrl?: string
 }
 
+const playStore = useMediaPlayStore()
 const config = useRuntimeConfig()
 const props = defineProps<Props>()
 const audioRef = ref<HTMLAudioElement>()
@@ -108,6 +115,8 @@ const duration = ref(0)
 const currentTime = ref(0)
 
 function handlePlay() {
+  playStore.currentRef?.pause()
+  playStore.currentRef = audioRef.value
   if (playState.value === PlayState.playing) {
     audioRef.value?.pause()
     playState.value = PlayState.paused

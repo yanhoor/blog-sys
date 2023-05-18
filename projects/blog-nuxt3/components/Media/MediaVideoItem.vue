@@ -24,18 +24,22 @@
 import { NIcon } from 'naive-ui'
 import { PlayCircle24Regular } from '@vicons/fluent'
 import { PlayState } from 'sys-types'
+import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
 interface Props {
   url: string
   coverUrl?: string
 }
 
+const playStore = useMediaPlayStore()
 const props = defineProps<Props>()
 const config = useRuntimeConfig()
 const videoRef = ref<HTMLVideoElement>()
 const playState = ref<PlayState>(PlayState.idle)
 
 function handlePlay() {
+  playStore.currentRef?.pause()
+  playStore.currentRef = videoRef.value
   playState.value = PlayState.playing
   videoRef.value.play()
 }
