@@ -18,7 +18,7 @@
 import { NAvatar, NIcon } from 'naive-ui'
 import { h } from 'vue'
 import { Person24Regular } from '@vicons/fluent'
-import { User } from '@/types'
+import { User } from 'sys-types'
 
 interface Props {
   user: User

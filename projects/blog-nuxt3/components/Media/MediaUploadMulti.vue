@@ -64,7 +64,7 @@ import {
   UploadCustomRequestOptions
 } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
-import { Media } from '@/types'
+import { Media } from 'sys-types'
 
 interface Props {
   modelValue: Media[]

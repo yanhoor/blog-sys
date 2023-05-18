@@ -27,12 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import { File } from '@/types'
+import { MediaFile } from 'sys-types'
 import { NCard, NModal, NIcon, createDiscreteApi } from 'naive-ui'
 import { ArrowCircleLeft24Regular } from '@vicons/fluent'
 
 interface Props {
-  file: File
+  file: MediaFile
   isImg?: boolean
   show: boolean
 }

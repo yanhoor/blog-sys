@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import { NForm, NFormItem, createDiscreteApi, NButton, NInput } from 'naive-ui'
-import { Comment } from '@/types'
+import { Comment } from 'sys-types'
 
 interface Props {
   placeholder?: string

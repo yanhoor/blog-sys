@@ -19,7 +19,7 @@ import {
   NTag,
   createDiscreteApi
 } from 'naive-ui'
-import { User } from '@/types'
+import { User } from 'sys-types'
 
 const myInfo = useUserInfo()
 

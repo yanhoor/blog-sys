@@ -1,7 +1,0 @@
-export { Comment } from './comment'
-export { Blog } from './blog'
-export { User } from './user'
-export { Notification } from './notification'
-export { File } from './file'
-export { Media } from './media'
-export { FollowGroup } from './followGroup'

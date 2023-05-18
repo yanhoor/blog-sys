@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import { createDiscreteApi, NCard, NButton, NIcon } from 'naive-ui'
-import { FollowGroup } from '@/types'
+import { FollowGroup } from 'sys-types'
 import { Compose24Regular } from '@vicons/fluent'
 
 useHead({

@@ -138,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { Blog } from '@/types'
+import { Blog } from 'sys-types'
 import {
   NCard,
   NTime,

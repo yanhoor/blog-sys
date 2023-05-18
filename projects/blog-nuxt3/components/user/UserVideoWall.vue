@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from '@/types'
+import { Media } from 'sys-types'
 import { NIcon, NResult, NSkeleton, NSpin } from 'naive-ui'
 import { Play24Filled } from '@vicons/fluent'
 

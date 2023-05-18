@@ -1,4 +1,4 @@
-import { User } from '@/types/user'
+import { User } from 'sys-types'
 import websocket from '@/websocket'
 export const useUserInfo = () => {
   return useState<User | null>('userInfo', () => null)

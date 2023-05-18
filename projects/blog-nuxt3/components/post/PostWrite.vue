@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { NButton, NInput, createDiscreteApi } from 'naive-ui'
-import { Blog } from '@/types'
+import { Blog } from 'sys-types'
 import MediaUploadMulti from '~/components/Media/MediaUploadMulti.vue'
 
 interface BlogForm extends Blog {

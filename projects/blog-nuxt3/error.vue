@@ -29,7 +29,11 @@
         </template>
       </n-result>
     </div>
-    <n-alert :title="error?.statusCode" type="error" class="overflow-y-auto">
+    <n-alert
+      :title="error?.statusCode?.toString()"
+      type="error"
+      class="overflow-y-auto"
+    >
       <n-descriptions label-placement="top" :column="1">
         <n-descriptions-item>
           <template #label> Message </template>

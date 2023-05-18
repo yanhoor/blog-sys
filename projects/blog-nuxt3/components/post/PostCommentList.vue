@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Blog } from '@/types'
+import { Comment, Blog } from 'sys-types'
 import { NSpin, NButton, NDivider } from 'naive-ui'
 
 interface Props {

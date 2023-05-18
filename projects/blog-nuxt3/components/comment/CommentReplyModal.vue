@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Blog } from '@/types'
+import { Comment, Blog } from 'sys-types'
 import { NModal, NButton, NCard } from 'naive-ui'
 
 interface Props {

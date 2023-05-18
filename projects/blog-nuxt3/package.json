@@ -4,6 +4,7 @@
     "build": "nuxi build --dotenv .env",
     "start": "nuxi start",
     "dev": "nuxi dev --dotenv .env.dev",
+    "dev_prod": "nuxi dev --dotenv .env.dev_prod",
     "dev_docker": "nuxi dev --dotenv .env.dev_docker",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
@@ -30,6 +31,7 @@
     "dayjs": "^1.11.7",
     "naive-ui": "^2.34.3",
     "sortablejs": "^1.15.0",
+    "sys-types": "workspace:^1.0.1",
     "ufo": "^1.1.1"
   }
 }

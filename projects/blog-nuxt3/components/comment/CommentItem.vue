@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment } from '@/types'
+import { Comment } from 'sys-types'
 import {
   NButton,
   NCollapseTransition,

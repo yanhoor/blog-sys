@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { User } from '@/types'
+import { User } from 'sys-types'
 import { NSpin } from 'naive-ui'
 
 interface Props {
