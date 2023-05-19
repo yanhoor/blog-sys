@@ -5,30 +5,32 @@
     :show-file-list="false"
     :custom-request="customRequest"
   >
-    <div class="group relative upload-action" v-if="props.modelValue">
-      <MediaImgView
-        alt="头像"
-        class="w-full h-full object-contain"
-        :url="props.modelValue"
-      />
-      <div
-        class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex"
-      >
-        <n-icon
-          class="cursor-pointer hover:text-green-600"
-          :component="ZoomIn24Regular"
-          size="48"
-          @click.stop="showModal = true"
-        ></n-icon>
-        <!--<n-icon :component="Edit20Filled" size="32"></n-icon>-->
+    <slot name="preview" v-if="props.modelValue">
+      <div class="group relative upload-action">
+        <MediaImgView
+          class="w-full h-full object-contain"
+          :url="props.modelValue"
+        />
+        <div
+          class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex"
+        >
+          <n-icon
+            class="cursor-pointer hover:text-green-600"
+            :component="ZoomIn24Regular"
+            size="48"
+            @click.stop="showModal = true"
+          ></n-icon>
+          <!--<n-icon :component="Edit20Filled" size="32"></n-icon>-->
+        </div>
       </div>
-    </div>
-    <n-icon
-      class="upload-action flex justify-center items-center cursor-pointer hover:text-green-600"
-      size="70"
-      :component="Add24Regular"
-      v-else
-    ></n-icon>
+    </slot>
+    <slot name="trigger" v-else>
+      <n-icon
+        class="upload-action flex justify-center items-center cursor-pointer hover:text-green-600"
+        size="70"
+        :component="Add24Regular"
+      ></n-icon>
+    </slot>
   </n-upload>
   <n-modal
     v-model:show="showModal"
@@ -58,7 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   size: '178px'
 })
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'complete'])
 const previewImageUrl = ref('')
 const showModal = ref(false)
 const config = useRuntimeConfig()
@@ -89,6 +91,7 @@ const customRequest = async ({
     if (success) {
       onFinish()
       emits('update:modelValue', result.url)
+      emits('complete', result)
     } else {
       message.error(msg as string)
       onError()

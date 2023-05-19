@@ -6,12 +6,12 @@
         <div>
           <div class="w-full h-[180px]">
             <img
-              :src="config.imageBase + userInfo.profileCardBg"
+              :src="config.public.imageBase + userInfo.profileCardBg"
               class="w-full h-full object-cover object-center"
               v-if="userInfo.profileCardBg"
             />
             <div
-              class="w-full h-full bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+              class="w-full h-full bg-gradient-to-r from-sky-500 to-indigo-500"
               v-else
             ></div>
           </div>

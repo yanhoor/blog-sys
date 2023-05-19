@@ -1,15 +1,24 @@
 <template>
   <div class="flex flex-wrap gap-[12px]" v-bind="$attrs">
-    <div class="w-full h-full relative" v-if="isPreview">
+    <div class="w-full h-full pt-[24px] relative" v-if="isPreview">
+      <div class="toolbar-container">
+        <div class="toolbar-item" @click="() => (isPreview = false)">
+          <n-icon :component="ZoomOut24Regular" size="20"></n-icon>
+          <span>收起</span>
+        </div>
+        <div class="toolbar-item" @click="handleZoomIn">
+          <n-icon :component="ImageMultiple24Regular" size="20"></n-icon>
+          <span>查看大图</span>
+        </div>
+      </div>
       <div
         class="preview-item-control left-0 left-pre"
         @click="handleNextPreview(-1)"
         v-if="currentPreviewIndex > 0"
       ></div>
-      <div class="w-full h-full rounded-[5px]">
+      <div class="w-full h-0 pt-[100%] relative rounded-[5px]">
         <MediaImgView
-          alt="图像"
-          class="media-preview-item cursor-zoom-out"
+          class="absolute top-0 w-full h-full cursor-zoom-out radius-inherit object-cover"
           :url="currentPreviewItem.url"
           @click="handleCancelPreview"
         />
@@ -39,12 +48,7 @@
         @click="handlePreview(media.file, index, true)"
       >
         <div class="image-item-container" v-if="index < 10">
-          <MediaImgView
-            alt="图像"
-            class="image-item"
-            :url="media.file.url"
-            ratio="80"
-          />
+          <MediaImgView class="image-item" :url="media.file.url" ratio="80" />
           <div
             class="list-item-mask bg-gray-200 group-hover:inline-block"
             :class="[
@@ -66,6 +70,9 @@
 
 <script setup lang="ts">
 import { Media, MediaFile } from 'sys-types'
+import { ImageMultiple24Regular, ZoomOut24Regular } from '@vicons/fluent'
+import { NIcon } from 'naive-ui'
+import { api as viewerApi } from 'v-viewer'
 
 interface Props {
   imageList: Media[]
@@ -117,13 +124,20 @@ function handleNextPreview(c: number) {
 function handlePreviewItemChange(item: Media, idx: number) {
   currentPreviewIndex.value = idx
 }
+
+function handleZoomIn() {
+  viewerApi({
+    options: {
+      initialViewIndex: currentPreviewIndex.value
+    },
+    images: props.imageList.map(
+      (image) => config.public.imageBase + image.file.url
+    )
+  })
+}
 </script>
 
 <style scoped lang="scss">
-.media-preview-item {
-  @apply w-full h-full object-contain;
-  border-radius: inherit; // 图片圆角
-}
 .left-pre {
   cursor: url('@/assets/images/pic_prev.cur'), auto;
 }
@@ -136,8 +150,14 @@ function handlePreviewItemChange(item: Media, idx: number) {
     background: rgba(0, 0, 0, 0.5);
   }
 }
+.toolbar-container {
+  @apply z-20 flex items-center absolute top-0 gap-[12px];
+  .toolbar-item {
+    @apply flex items-center gap-[4px] cursor-pointer;
+  }
+}
 .preview-item-control {
-  @apply absolute w-1/5 h-full top-0 flex justify-start items-center;
+  @apply z-10 absolute w-1/5 h-full top-0 flex justify-start items-center;
 }
 
 .image-item-container {

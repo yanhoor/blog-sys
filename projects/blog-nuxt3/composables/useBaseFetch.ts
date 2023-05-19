@@ -25,10 +25,10 @@ export const useFetchPost = (
     // headers['Content-Type'] = 'multipart/form-data'
     data = fd
   }
-  // console.log('======useFetchPost====', url, process.client, process.server)
+  // console.log('======useFetchPost====', runTimeConfig.public.apiBase)
   // console.log('=======useFetchPost.key======', url + json)
   return $fetch(url, {
-    baseURL: runTimeConfig.apiBase,
+    baseURL: runTimeConfig.public.apiBase,
     // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     headers: {
       Authorization: Authorization
@@ -81,7 +81,7 @@ export const useFetchGet = (
   // console.log('=======useFetchPost.key======', url + json)
   // console.log('======useFetchGet====', url, process.client, process.server, token.value)
   return $fetch(url, {
-    baseURL: runTimeConfig.apiBase,
+    baseURL: runTimeConfig.public.apiBase,
     // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
     method: 'GET',
     params: data,

@@ -1,6 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 
-console.log('===============', process.env.NODE_ENV, process.env.BASE_API)
+console.log('===============', process.env.NODE_ENV, process.env.NUXT_API_BASE)
 const isProd = process.env.NODE_ENV === 'production'
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // 私有key，仅服务端可用
     apiSecret: '123', // .env 文件里 NUXT_API_SECRET 的值(即NUXT_ 开头的值)
-    // 在 public 里面的 key 可以在客户端使用
+    // 在 public 里面的 key 可以在客户端和服务端使用
     public: {
       apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       apiBaseDocker: process.env.NUXT_API_BASE_DOCKER,

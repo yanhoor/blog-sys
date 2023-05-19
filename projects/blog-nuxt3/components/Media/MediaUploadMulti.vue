@@ -18,11 +18,13 @@
             alt="图像"
             class="object-cover overflow-clip"
             :url="media.file.url"
-            v-if="config.imageType.includes(getFileExt(media.file.url))"
+            v-if="config.public.imageType.includes(getFileExt(media.file.url))"
           />
           <video
-            :src="config.imageBase + media.file.url"
-            v-else-if="config.videoType.includes(getFileExt(media.file.url))"
+            :src="config.public.imageBase + media.file.url"
+            v-else-if="
+              config.public.imageType.includes(getFileExt(media.file.url))
+            "
             controls
           ></video>
           <n-icon :component="Document24Regular" size="48" v-else />
@@ -101,9 +103,9 @@ const acceptType = computed(() => {
 function setUploadMode(url: string) {
   if (uploadMode.value !== 3) return
 
-  if (config.imageType.includes(getFileExt(url))) {
+  if (config.public.imageType.includes(getFileExt(url))) {
     uploadMode.value = 1
-  } else if (config.videoType.includes(getFileExt(url))) {
+  } else if (config.public.imageType.includes(getFileExt(url))) {
     uploadMode.value = 2
   }
 }
@@ -116,9 +118,9 @@ function handleBeforeUpload(options: {
   const path = options.file.fullPath as string
   setUploadMode(path)
   const conflict1 =
-    uploadMode.value === 1 && config.videoType.includes(getFileExt(path))
+    uploadMode.value === 1 && config.public.imageType.includes(getFileExt(path))
   const conflict2 =
-    uploadMode.value === 2 && config.imageType.includes(getFileExt(path))
+    uploadMode.value === 2 && config.public.imageType.includes(getFileExt(path))
   if (conflict1 || conflict2) {
     message.error('图片与视频不能同时上传')
     return false
@@ -146,7 +148,7 @@ const customRequest = async ({
     }
     if (
       uploadMode.value == 1 &&
-      config.videoType.includes(getFileExt(file.fullPath as string))
+      config.public.imageType.includes(getFileExt(file.fullPath as string))
     ) {
       message.error('图片与视频不能同时上传')
       onError()

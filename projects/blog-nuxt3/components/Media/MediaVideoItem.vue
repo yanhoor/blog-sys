@@ -5,16 +5,20 @@
         ref="videoRef"
         class="video-item"
         controls
-        :src="config.imageBase + url"
+        :src="config.public.imageBase + url"
       ></video>
       <template v-if="coverUrl && playState === PlayState.idle">
         <MediaImgView class="video-cover" :url="coverUrl" />
         <n-icon
           size="72"
-          class="play-icon"
+          class="transform-center cursor-pointer z-10 text-white"
           :component="PlayCircle24Regular"
           @click="handlePlay"
         />
+        <span
+          class="media-tag absolute top-0 right-0 rounded-bl-[5px] rounded-tr-[5px]"
+          >视频</span
+        >
       </template>
     </div>
   </div>
@@ -57,10 +61,6 @@ function handlePlay() {
   .video-cover {
     @apply absolute object-cover overflow-clip top-0 w-full h-full;
     border-radius: inherit;
-  }
-  .play-icon {
-    @apply cursor-pointer z-10 absolute top-1/2 left-1/2 text-white;
-    transform: translate(-50%, -50%);
   }
 }
 </style>

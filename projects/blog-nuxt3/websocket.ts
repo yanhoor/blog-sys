@@ -16,7 +16,9 @@ class WS {
     this.isClosed = false
     const userInfo = useUserInfo()
     const config = useRuntimeConfig()
-    this.ws = new WebSocket(config.wsHost + '/?token=' + userInfo.value?.id)
+    this.ws = new WebSocket(
+      config.public.wsHost + '/?token=' + userInfo.value?.id
+    )
 
     // 监听连接开启
     this.ws.onopen = (evt) => {

@@ -6,7 +6,7 @@
         :class="{ 'cursor-pointer': !disabled }"
         round
         :size="size"
-        :src="config.imageBase + user.avatar"
+        :src="config.public.imageBase + user.avatar"
         :render-fallback="renderErrorAvatar"
         @click="handleUserHome"
       ></n-avatar>

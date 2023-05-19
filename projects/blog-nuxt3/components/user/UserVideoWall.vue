@@ -19,7 +19,7 @@
           <div class="img-container" @click="handlePreview(media)">
             <video
               class="media-item"
-              :src="config.imageBase + media.file.url"
+              :src="config.public.imageBase + media.file.url"
             ></video>
             <n-icon class="play-icon" :component="Play24Filled" size="48" />
           </div>

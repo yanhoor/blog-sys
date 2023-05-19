@@ -4,14 +4,14 @@
     class="w-[100vw]] h-[100vh]"
     @update:show="emit('update:show', false)"
   >
-    <div class="w-full h-full pb-9/16 relative bg-black">
+    <div class="w-full h-full pt-[calc(100%*9/16)] relative bg-black">
       <template v-if="isImg">
         <MediaImgView class="media-item" :url="file.url" />
       </template>
       <template v-else>
         <video
           class="media-item"
-          :src="config.imageBase + file.url"
+          :src="config.public.imageBase + file.url"
           controls
         ></video>
       </template>
@@ -44,6 +44,6 @@ const config = useRuntimeConfig()
 
 <style lang="scss" scoped>
 .media-item {
-  @apply absolute w-full h-full object-contain;
+  @apply absolute w-full h-full top-0 object-contain;
 }
 </style>

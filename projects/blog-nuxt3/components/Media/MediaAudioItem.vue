@@ -2,7 +2,7 @@
   <div class="media-audio-item">
     <audio
       class="hidden"
-      :src="config.imageBase + url"
+      :src="config.public.imageBase + url"
       ref="audioRef"
       @pause="
         () => {
@@ -32,7 +32,7 @@
       >
         <MediaImgView class="media-cover" :url="coverUrl" v-if="coverUrl" />
         <div
-          class="flex flex-col justify-center items-center gap-[5px] text-white transform-center"
+          class="flex flex-col justify-center items-center gap-[5px] text-white transform-center cursor-pointer z-10"
         >
           <n-icon
             size="48"
@@ -57,6 +57,10 @@
             {{ formatDuration(duration) }}</span
           >
         </div>
+        <span
+          class="media-tag absolute top-0 right-0 rounded-bl-[3px] rounded-tr-[3px]"
+          >录音</span
+        >
       </div>
     </div>
     <div
@@ -131,9 +135,5 @@ function handlePlay() {
 .media-cover {
   @apply absolute object-cover overflow-clip top-0 w-full h-full;
   border-radius: inherit;
-}
-.transform-center {
-  @apply cursor-pointer z-10 absolute top-1/2 left-1/2;
-  transform: translate(-50%, -50%);
 }
 </style>
