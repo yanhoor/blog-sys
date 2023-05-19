@@ -1,9 +1,12 @@
-import { createDiscreteApi } from 'naive-ui'
+import VueViewer from 'v-viewer'
 
 // 显示顶部加载条
 export default defineNuxtPlugin((nuxtApp) => {
   // const bar = ref(null)
   //
+  nuxtApp.hook('app:created', (vueApp) => {
+    vueApp.use(VueViewer)
+  })
   // nuxtApp.hook("app:mounted", (e) => {
   //   if (!bar.value) {
   //     const { loadingBar } = createDiscreteApi(["loadingBar"])

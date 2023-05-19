@@ -34,6 +34,7 @@
     "pinia": "^2.0.28",
     "sortablejs": "^1.15.0",
     "sys-types": "workspace:^1.0.1",
-    "ufo": "^1.1.1"
+    "ufo": "^1.1.2",
+    "v-viewer": "^3.0.11"
   }
 }
