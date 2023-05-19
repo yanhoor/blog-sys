@@ -21,17 +21,16 @@
       <MediaImgView
         :url="comment.image.url"
         v-if="comment.image"
+        enablePreview
         class="max-w-[180px] max-h-[135px] object-contain"
       />
 
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center flex-1">
-          <n-time
-            class="mr-[12px]"
-            type="datetime"
-            :time="new Date(comment.createdAt)"
-            format="yyyy-MM-dd HH:mm"
-          ></n-time>
+          <span
+            class="mr-[12px] text-gray-500"
+            v-time="new Date(comment.createdAt)"
+          ></span>
           <n-button text @click="triggerReply" v-if="userInfo">
             <template #icon>
               <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
@@ -77,7 +76,6 @@ import {
   NButton,
   NCollapseTransition,
   NIcon,
-  NTime,
   createDiscreteApi
 } from 'naive-ui'
 import { Chat24Regular, Chat24Filled } from '@vicons/fluent'

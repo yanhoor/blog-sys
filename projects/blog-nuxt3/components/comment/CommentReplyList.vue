@@ -42,6 +42,7 @@
         <MediaImgView
           :url="reply.image.url"
           v-if="reply.image"
+          enablePreview
           class="max-w-[120px] max-h-[90px] object-contain"
         />
 
@@ -49,17 +50,24 @@
           class="text-gray-500 py-[3px] px-[6px] border custom-border rounded truncate max-w-full bg-gray-200 dark:bg-gray-600 dark:text-gray-300"
           v-if="reply.replyComment?.topCommentId"
         >
-          {{ reply.replyComment?.content }}
+          <ExpandableContent
+            :content="reply.replyComment?.content || '图片回复'"
+            :max-length="160"
+          />
+          <MediaImgView
+            enablePreview
+            v-if="reply.replyComment.image"
+            :url="reply.replyComment.image.url"
+            class="max-w-[180px] max-h-[120px] object-contain"
+          />
         </div>
 
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center flex-1">
-            <n-time
-              class="mr-[12px]"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm"
-              :time="new Date(reply.createdAt)"
-            ></n-time>
+            <span
+              class="mr-[12px] text-gray-500"
+              v-time="new Date(reply.createdAt)"
+            ></span>
             <n-button
               text
               @click="reply.showReply = !reply.showReply"
@@ -121,10 +129,8 @@
 import { Comment, Blog } from 'sys-types'
 import {
   NButton,
-  NTime,
   NCollapseTransition,
   NIcon,
-  NSpin,
   createDiscreteApi
 } from 'naive-ui'
 import {

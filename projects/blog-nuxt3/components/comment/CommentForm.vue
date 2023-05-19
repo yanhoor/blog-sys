@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-end">
+  <div class="flex flex-col gap-[12px]">
     <n-input
       :placeholder="placeholder"
       type="textarea"
@@ -11,19 +11,40 @@
         maxRows: 5
       }"
     />
-    <n-button
-      class="mt-[12px]"
-      type="primary"
-      @click="commitComment"
-      :loading="commentCommitting"
-      >{{ btnText }}</n-button
-    >
+    <div class="flex justify-between items-center">
+      <MediaUploadImg
+        @complete="imageFile = $event"
+        :model-value="imageFile?.url"
+        size="42"
+      >
+        <template #preview>
+          <MediaImgView
+            class="w-[42px] h-[42px] object-cover"
+            :url="imageFile?.url"
+          />
+        </template>
+        <template #trigger>
+          <n-icon
+            class="text-green-600 cursor-pointer"
+            :component="ImageAdd24Regular"
+            size="36px"
+          ></n-icon>
+        </template>
+      </MediaUploadImg>
+      <n-button
+        type="primary"
+        @click="commitComment"
+        :loading="commentCommitting"
+        >{{ btnText }}</n-button
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NForm, NFormItem, createDiscreteApi, NButton, NInput } from 'naive-ui'
-import { Comment } from 'sys-types'
+import { NIcon, createDiscreteApi, NButton, NInput } from 'naive-ui'
+import { ImageAdd24Regular } from '@vicons/fluent'
+import { Comment, MediaFile } from 'sys-types'
 
 interface Props {
   placeholder?: string
@@ -41,29 +62,40 @@ const emit = defineEmits(['success'])
 
 const commentContent = ref('')
 const commentCommitting = ref(false)
+const imageFile = ref<MediaFile>()
 
 async function commitComment() {
   const { message } = createDiscreteApi(['message'])
   const content = commentContent.value.trim()
 
-  if (!content) {
-    message.warning('请输入评论')
+  if (!content && !imageFile.value) {
+    message.warning('请输入内容')
     return
+  }
+
+  const postParams: any = {
+    blogId: props.blogId,
+    content,
+    topCommentId: props.comment?.topCommentId || props.comment?.id,
+    replyCommentId: props.level !== 1 ? props.comment?.id : null,
+    replyToId: props.comment?.createBy?.id
+  }
+
+  if (imageFile.value) {
+    postParams.imageId = imageFile.value.id
   }
 
   try {
     commentCommitting.value = true
-    const { result, success, msg } = await useFetchPost('/comment/commit', {
-      blogId: props.blogId,
-      content,
-      topCommentId: props.comment?.topCommentId || props.comment?.id,
-      replyCommentId: props.level !== 1 ? props.comment?.id : null,
-      replyToId: props.comment?.createBy?.id
-    })
+    const { result, success, msg } = await useFetchPost(
+      '/comment/commit',
+      postParams
+    )
     commentCommitting.value = false
     if (success) {
       emit('success', result)
       commentContent.value = ''
+      imageFile.value = undefined
       message.success('发表成功')
     } else {
       message.error(msg as string)
