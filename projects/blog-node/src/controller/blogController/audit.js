@@ -1,5 +1,6 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
+const { mySocketIo, SOCKETEVENTTYPE } = require('../../socketIo')
 
 module.exports = async function (ctx, next) {
   let { id, auditTip, type } = ctx.request.body
@@ -41,15 +42,29 @@ module.exports = async function (ctx, next) {
       }
     }
     const notification = await prisma.notification.create({
-      data: nd
+      data: nd,
+      select: {
+        id: true,
+        createdAt: true,
+        content: true,
+        isRead: true,
+        type: true,
+        createById: true,
+        blogId: true,
+        blog: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            status: true,
+            auditTip: true
+          }
+        }
+      }
     })
-    this.websocket.sendWsMessage(
-      blog.createById,
-      JSON.stringify({
-        type: this.WEBSOCKET_MESSAGE_TYPE.notification,
-        id: notification.id
-      })
-    )
+    mySocketIo.ioInstance
+      .to(blog.createById.toString())
+      .emit(SOCKETEVENTTYPE.blog_notification, notification)
 
     return (ctx.body = {
       success: true

@@ -39,8 +39,8 @@ import {
   Compose24Regular,
   Star48Filled
 } from '@vicons/fluent'
-import { Component } from 'vue'
-import websocket from '@/websocket'
+import { Component, h } from 'vue'
+import { socketClient } from '@/socketIo'
 
 const renderIcon = (icon: Component) => {
   return () => {
@@ -114,7 +114,7 @@ async function handleLogout() {
         } else {
           token.value = ''
           userInfo.value = null
-          websocket.closeWs()
+          socketClient?.disconnect()
           checkCurrentPath()
         }
       } catch (e) {}

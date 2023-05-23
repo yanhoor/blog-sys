@@ -15,7 +15,7 @@
   </NConfigProvider>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   NConfigProvider,
   NMessageProvider,
@@ -23,12 +23,13 @@ import {
   zhCN,
   dateZhCN
 } from 'naive-ui'
-import websocket from '~/websocket'
+import { initSocketIo, socketClient } from '@/socketIo'
 
 const colorModel = useColorMode()
 const darkMode = useDarkMode()
 const route = useRoute()
 const userInfo = useUserInfo()
+const config = useRuntimeConfig()
 onMounted(() => {
   // 还要加个setTimeout 主题才会换??
   setTimeout(() => {
@@ -48,8 +49,8 @@ onMounted(() => {
     useFetchNotificationCount()
   }
 
-  if (userInfo.value && !websocket.ws) {
-    websocket.init()
+  if (userInfo.value && !socketClient) {
+    initSocketIo(config.public.wsHost, userInfo.value?.id as string)
   }
 })
 

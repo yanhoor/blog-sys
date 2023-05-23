@@ -1,5 +1,6 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
+const { mySocketIo, SOCKETEVENTTYPE } = require('../../socketIo')
 
 module.exports = async function (ctx, next) {
   let { content, blogId, replyToId, imageId, topCommentId, replyCommentId } =
@@ -160,28 +161,52 @@ module.exports = async function (ctx, next) {
         nd.receiveUserId = Number(replyToId)
         nd.type = this.NOTIFICATION_TYPE.comment_reply
         const notification = await prisma.notification.create({
-          data: nd
+          data: nd,
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            isRead: true,
+            type: true,
+            createById: true,
+            blogId: true,
+            commentId: true,
+            comment: {
+              select: {
+                id: true,
+                content: true
+              }
+            }
+          }
         })
-        this.websocket.sendWsMessage(
-          replyToId,
-          JSON.stringify({
-            type: this.WEBSOCKET_MESSAGE_TYPE.notification,
-            id: notification.id
-          })
-        )
+        mySocketIo.ioInstance
+          .to(replyToId.toString())
+          .emit(SOCKETEVENTTYPE.new_comment_notification, notification)
       }
     } else if (blog.createById != userId) {
       // 通知博客作者
       const notification = await prisma.notification.create({
-        data: nd
+        data: nd,
+        select: {
+          id: true,
+          createdAt: true,
+          content: true,
+          isRead: true,
+          type: true,
+          createById: true,
+          blogId: true,
+          commentId: true,
+          comment: {
+            select: {
+              id: true,
+              content: true
+            }
+          }
+        }
       })
-      this.websocket.sendWsMessage(
-        blog.createById,
-        JSON.stringify({
-          type: this.WEBSOCKET_MESSAGE_TYPE.notification,
-          id: notification.id
-        })
-      )
+      mySocketIo.ioInstance
+        .to(blog.createById.toString())
+        .emit(SOCKETEVENTTYPE.new_comment_notification, notification)
     }
     return (ctx.body = {
       success: true,

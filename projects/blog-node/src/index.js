@@ -3,7 +3,7 @@ const cors = require('koa2-cors')
 const { koaBody } = require('koa-body') // 在 ctx.request.body 获取请求参数
 const manageRouter = require('./routes/manage')
 const visitRouter = require('./routes/visit')
-const { websocket } = require('./websocket')
+const { mySocketIo } = require('./socketIo')
 const { defaultLogger, errorLogger } = require('./log')
 
 const app = new koa()
@@ -80,4 +80,4 @@ app.use(visitRouter.routes())
 app.use(manageRouter.routes())
 
 const server = app.listen(8000)
-websocket.init(server)
+mySocketIo.init(server)

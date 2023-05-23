@@ -2,6 +2,8 @@ import { Notification } from 'sys-types'
 import { createDiscreteApi, NButton, NTime } from 'naive-ui'
 import { h } from 'vue'
 
+const { notification } = createDiscreteApi(['notification'])
+
 export const useNotification = () => {
   return useState<Notification[]>('notification', () => [])
 }
@@ -60,82 +62,73 @@ export const useFetchNotificationCount = async (params = {}) => {
 }
 
 // 评论通知弹窗详情显示
-export const useShowNotificationDetail = async (id: string) => {
-  const { notification } = createDiscreteApi(['notification'])
-  try {
-    const { result, success } = await useFetchPost('/notification/info', { id })
-    if (!['comment_reply', 'comment', 'system_audit'].includes(result.type))
-      return
-    if (success) {
-      const n = notification.create({
-        title: '通知',
-        // @ts-ignore
-        content: () =>
-          result.type === 'system_audit'
-            ? h('div', null, [
-                '你有新的系统审核动态，',
-                h(
-                  NButton,
-                  {
-                    text: true,
-                    type: 'primary',
-                    onClick: () => {
-                      setRead(result.blogId)
-                      n.destroy()
-                      navigateTo('/notification/system')
-                    }
-                  },
-                  {
-                    default: () => '去查看'
-                  }
-                )
-              ])
-            : h('div', null, [
-                '你的博客有新评论，',
-                h(
-                  NButton,
-                  {
-                    text: true,
-                    type: 'primary',
-                    onClick: () => {
-                      setRead(result.blogId)
-                      n.destroy()
-                      navigateTo('/post/' + result.blogId)
-                    }
-                  },
-                  {
-                    default: () => '查看详情'
-                  }
-                )
-              ]),
-        // @ts-ignore
-        meta: () =>
-          h(NTime, {
-            type: 'datetime',
-            time: new Date(result.createdAt)
-          }),
-        // @ts-ignore
-        action: () =>
-          h(
-            NButton,
-            {
-              text: true,
-              type: 'primary',
-              onClick: async () => {
-                setRead(result.id)
-                n.destroy()
+export const useShowNotificationDetail = async (result: Notification) => {
+  // todo: Error: [nuxt] A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, Nuxt middleware, or Vue setup function. This is probably not a Nuxt bug.
+  const n = notification?.create({
+    title: '通知',
+    content: () =>
+      result.type === 'system_audit'
+        ? h('div', null, [
+            '你有新的系统审核动态，',
+            h(
+              NButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  setRead(result.blogId)
+                  n.destroy()
+                  navigateTo('/notification/system')
+                }
+              },
+              {
+                default: () => '去查看'
               }
-            },
-            {
-              default: () => '已读'
-            }
-          ),
-        onClose: () => {}
-      })
-    }
-  } catch (e) {}
+            )
+          ])
+        : h('div', null, [
+            '你的博客有新评论，',
+            h(
+              NButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  setRead(result.blogId)
+                  n.destroy()
+                  navigateTo('/post/' + result.blogId)
+                }
+              },
+              {
+                default: () => '查看详情'
+              }
+            )
+          ]),
+    meta: () =>
+      h(NTime, {
+        type: 'datetime',
+        format: 'MM-dd HH:mm',
+        time: new Date(result.createdAt)
+      }),
+    action: () =>
+      h(
+        NButton,
+        {
+          text: true,
+          type: 'primary',
+          onClick: async () => {
+            setRead(result.id as number)
+            n.destroy()
+          }
+        },
+        {
+          default: () => '已读'
+        }
+      ),
+    onClose: () => {}
+  })
 
-  async function setRead(id: string) {
+  async function setRead(id: number) {
     try {
       const { result, success } = await useFetchPost('/notification/read', {
         id

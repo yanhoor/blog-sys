@@ -1,7 +1,6 @@
 const config = require('config-lite')(__dirname)
 const { defaultLogger, errorLogger } = require('../log')
 const jsonwebtoken = require('jsonwebtoken')
-const { websocket, WEBSOCKET_MESSAGE_TYPE } = require('../websocket')
 const redisClient = require('../database/redis')
 const dayjs = require('dayjs')
 const Axios = require('axios')
@@ -12,8 +11,6 @@ class BaseController {
   globalConfig = config
   defaultLogger = defaultLogger
   errorLogger = errorLogger
-  websocket = websocket
-  WEBSOCKET_MESSAGE_TYPE = WEBSOCKET_MESSAGE_TYPE
   // 返回的 code
   CODE = {
     USER_NOT_LOGIN: 999, // 未登录/登录异常
@@ -41,12 +38,14 @@ class BaseController {
   NOTIFICATION_TYPE = NotificationType
 
   getAuthUserId = async (ctx, next) => {
-    const token = ctx.headers['authorization']
+    let token = ctx.headers['authorization']
+    token = token.replace(/Bearer /g, '')
+    // console.log('=======getAuthUserId token====', token)
     let userId = undefined
     if (token) {
       try {
         const user = await jsonwebtoken.verify(
-          token.replace(/Bearer /g, ''),
+          token,
           this.globalConfig.jwtSecret
         )
         const clientToken = await redisClient.get(
