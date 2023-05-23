@@ -123,10 +123,10 @@ class _MyPageState extends State<MyPage>{
                                     onPressed: (){
                                       Navigator.of(context).pushNamed(RouteName.myProfile);
                                     },
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.edit),
                                         SizedBox(width: 4,),
                                         Text('编辑资料')
@@ -149,10 +149,10 @@ class _MyPageState extends State<MyPage>{
                                           }
                                       );
                                     },
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.logout),
                                         SizedBox(width: 4,),
                                         Text('退出登录')

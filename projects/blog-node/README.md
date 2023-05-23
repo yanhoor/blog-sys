@@ -286,6 +286,10 @@ app.use(mount('/manage', require('koa-static')(__dirname + '../public/manage')))
 
 ## 待解决
 
+### pm2 部署 socket.io 连接问题
+
+`pm2` 使用 `cluster` 模式，`instances` 为 `max` 时报错 [`WebSocket is closed before the connection is established.`](https://github.com/socketio/socket.io/issues/798)
+
 ### enum 类型
 
 [参考](https://github.com/prisma/prisma/issues/273), 现在 `schema.prisma` 定义的 `enum` 类型值只能是字符串，以后支持整数类型时需要将各种状态和类型改成 `enum` 类型使用

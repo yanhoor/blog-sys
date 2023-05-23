@@ -71,7 +71,7 @@ module.exports = async function (ctx, next) {
     })
     mySocketIo.ioInstance
       .to(comment.createById.toString())
-      .emit(SOCKETEVENTTYPE.new_comment_notification, notification)
+      .emit(SOCKETEVENTTYPE.notification, notification)
 
     return (ctx.body = {
       success: true

@@ -64,7 +64,7 @@ module.exports = async function (ctx, next) {
     })
     mySocketIo.ioInstance
       .to(blog.createById.toString())
-      .emit(SOCKETEVENTTYPE.blog_notification, notification)
+      .emit(SOCKETEVENTTYPE.notification, notification)
 
     return (ctx.body = {
       success: true

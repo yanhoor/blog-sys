@@ -3,13 +3,13 @@ import 'package:blog_vipot/config/index.dart';
 import 'package:blog_vipot/pages/notification/notification_notifier.dart';
 import 'package:blog_vipot/route/route_name.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
-import 'package:blog_vipot/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_vipot/http/index.dart';
 import 'package:blog_vipot/pages/index/index_notifier.dart';
 import 'package:video_player/video_player.dart';
 
 import '../my_system_notification.dart';
+import '../socket_io.dart';
 
 class GlobalNotifier extends ChangeNotifier{
   late PageController homePageController;
@@ -65,7 +65,7 @@ class GlobalNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.LOGOUT);
       if(res['success']){
         ToastHelper.success('已退出登录');
-        myWebSocket.dispose();
+        mySocketIo.disconnect();
         unreadTotal = 0;
         await MyStorageManager.sharedPreferences.setString(MyStorageManager.TOKEN, '');
         await MyStorageManager.sharedPreferences.setString(MyStorageManager.INDEX_GROUP_ID, '');
@@ -93,7 +93,7 @@ class GlobalNotifier extends ChangeNotifier{
       var res = await $http.fetch(ApiUrl.USER_INFO, method: 'get');
       if(res['success']){
         myInfo = res['result'];
-        if(init && pageContext.mounted) myWebSocket.init(myInfo!['id'].toString(), context: pageContext);
+        if(init && pageContext.mounted) mySocketIo.init(myInfo!['id'], pageContext);
         getAllGroup();
         getNotificationCount();
         return true;

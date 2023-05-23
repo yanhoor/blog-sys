@@ -3,8 +3,7 @@ import { ClientToServerEvents, Notification } from 'sys-types'
 import { useShowNotificationDetail } from '~/composables/useNotification'
 
 const SOCKETEVENTTYPE = {
-  new_comment_notification: 'new-comment-notification',
-  blog_notification: 'blog-notification'
+  notification: 'notification'
 }
 
 interface ServerToClientEvents {
@@ -18,7 +17,8 @@ function initSocketIo(host: string, uid: string) {
   // console.log('=======initSocketIo========', uid)
   socketClient = io(host, {
     query: {
-      uid
+      uid,
+      client: `web-${navigator.userAgent}`
     }
   })
 
@@ -36,7 +36,7 @@ function initSocketIo(host: string, uid: string) {
     ) // false
   })
 
-  socketClient.on(SOCKETEVENTTYPE.new_comment_notification, (arg) => {
+  socketClient.on(SOCKETEVENTTYPE.notification, (arg) => {
     useFetchNotificationCount()
     useShowNotificationDetail(arg)
     // console.log('===========new-comment-notification=============', arg) //

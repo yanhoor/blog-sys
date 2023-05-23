@@ -1,7 +1,7 @@
 import 'package:blog_vipot/my_system_notification.dart';
 import 'package:blog_vipot/route/my_router.dart';
+import 'package:blog_vipot/socket_io.dart';
 import 'package:blog_vipot/storage/storage_manager.dart';
-import 'package:blog_vipot/websocket.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-    myWebSocket.dispose();
+    mySocketIo.disconnect();
   }
 
   @override
@@ -57,9 +57,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('========didChangeAppLifecycleState=========$state');
-    if(state == AppLifecycleState.resumed){
-      myWebSocket.initHeartBeat(true);
-    }
   }
 
   @override

@@ -1,5 +1,4 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
   const { id } = ctx.request.body

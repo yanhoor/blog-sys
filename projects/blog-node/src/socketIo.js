@@ -2,8 +2,7 @@ const { Server } = require('socket.io')
 const { defaultLogger, errorLogger } = require('./log')
 
 const SOCKETEVENTTYPE = {
-  new_comment_notification: 'new-comment-notification',
-  blog_notification: 'blog-notification'
+  notification: 'notification'
 }
 
 class MySocketIo {
@@ -19,11 +18,12 @@ class MySocketIo {
 
     this.ioInstance.on('connection', (socket) => {
       const handshake = socket.handshake
-      const uid = handshake.query.uid
-      console.log('==========建立新的客户端连接============', uid)
-      socket.join(uid, () => {})
+      // query.client 客户端信息
+      const query = handshake.query
+      console.log('==========建立新的客户端连接============', query)
+      socket.join(query.uid, () => {})
       socket.on('disconnect', (reason) => {
-        console.log('==========客户端主动断开连接===========', uid, reason)
+        console.log('==========客户端主动断开连接===========', query, reason)
       })
       console.log('==========io connection rooms===========', socket.rooms)
     })

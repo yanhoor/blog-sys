@@ -181,7 +181,7 @@ module.exports = async function (ctx, next) {
         })
         mySocketIo.ioInstance
           .to(replyToId.toString())
-          .emit(SOCKETEVENTTYPE.new_comment_notification, notification)
+          .emit(SOCKETEVENTTYPE.notification, notification)
       }
     } else if (blog.createById != userId) {
       // 通知博客作者
@@ -206,7 +206,7 @@ module.exports = async function (ctx, next) {
       })
       mySocketIo.ioInstance
         .to(blog.createById.toString())
-        .emit(SOCKETEVENTTYPE.new_comment_notification, notification)
+        .emit(SOCKETEVENTTYPE.notification, notification)
     }
     return (ctx.body = {
       success: true,
