@@ -44,6 +44,17 @@
             @commentDelete="handleLoadNextPage(1)"
           />
         </div>
+
+        <ResultLoading v-if="pageLoading" />
+        <ResultError
+          v-else-if="!fetchResult"
+          @refresh="handleLoadNextPage(1)"
+        />
+        <ResultEmpty
+          v-else-if="pageList.length === 0"
+          @refresh="handleLoadNextPage(1)"
+        />
+        <ResultNoMore v-else-if="pageLoadedFinish" />
       </n-card>
     </div>
   </div>
@@ -59,10 +70,11 @@ interface Props {
 
 const props = defineProps<Props>()
 const emits = defineEmits(['commentDelete'])
-const sortType = ref(1) // 1--按时间，2--按热度
+const sortType = ref(2) // 1--按时间，2--按热度
 const topComment = ref<Comment>()
 const {
   pageList,
+  fetchResult,
   pageLoading,
   pageLoadedFinish,
   handleLoadNextPage,

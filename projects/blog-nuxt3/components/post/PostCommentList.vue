@@ -36,6 +36,12 @@
         >查看全部 {{ pageTotal }} 条评论</n-button
       >
     </div>
+    <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)" />
+    <ResultEmpty
+      v-else-if="pageList.length === 0"
+      @refresh="handleLoadNextPage(1)"
+    />
+    <ResultNoMore v-else-if="pageLoadedFinish" />
   </div>
 </template>
 
@@ -53,12 +59,14 @@ const props = withDefaults(defineProps<Props>(), {
   allowLoadMore: false
 })
 const userInfo = useUserInfo()
-const sortType = ref(1) // 1--按时间，2--按热度
+const sortType = ref(2) // 1--按时间，2--按热度
 
 const {
   pageFetchParams,
   pageList,
   pageLoading,
+  fetchResult,
+  pageLoadedFinish,
   pageTotal,
   handleChangeFetchParams,
   handleLoadNextPage

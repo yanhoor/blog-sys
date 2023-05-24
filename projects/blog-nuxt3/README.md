@@ -4,6 +4,10 @@
 
 需要先 `nuxt build`，然后执行 `pm2 start ecosystem.config.js`
 
+## 常用知识点
+
+- 不要在 `<setup script>` 或 `setup()` 外定义 `const state = ref()`，这样会导致所有访问的用户共享这个变量并且导致内存泄漏，应该使用 `const useX = () => useState('x')`
+
 ## 使用依赖
 
 在引入全局依赖时，可以在 `plugins` 里面通过 `defineNuxtPlugin()` 定义，如 `dayjs`

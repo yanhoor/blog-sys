@@ -18,7 +18,7 @@ function initSocketIo(host: string, uid: string) {
   socketClient = io(host, {
     query: {
       uid,
-      client: `web-${navigator.userAgent}`
+      client: `web-${process.client ? navigator.userAgent : 'unknown'}`
     }
   })
 
