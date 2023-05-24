@@ -50,7 +50,6 @@ interface Props {
   placeholder?: string
   btnText?: string
   blogId: string | number
-  level: number // 发表第几级评论
   comment?: Comment
 }
 
@@ -73,12 +72,15 @@ async function commitComment() {
     return
   }
 
-  const postParams: any = {
+  const postParams: object = {
     blogId: props.blogId,
-    content,
-    topCommentId: props.comment?.topCommentId || props.comment?.id,
-    replyCommentId: props.level !== 1 ? props.comment?.id : null,
-    replyToId: props.comment?.createBy?.id
+    content
+  }
+
+  if (props.comment) {
+    postParams.topCommentId = props.comment.topCommentId || props.comment.id
+    postParams.replyCommentId = props.comment.id
+    postParams.replyToId = props.comment.createById
   }
 
   if (imageFile.value) {

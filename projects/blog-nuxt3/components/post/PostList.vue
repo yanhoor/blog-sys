@@ -50,7 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
   url: '/blog/list'
 })
 const emit = defineEmits(['fetchComplete'])
-provide('allow_load_more_comment', false)
 const fetchNewPost = useFetchNewPost()
 const route = useRoute()
 const userInfo = useUserInfo()

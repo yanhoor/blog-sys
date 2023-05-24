@@ -86,6 +86,7 @@ export const useListAppendFetch = <T>(
       ...pageFetchParams.value,
       ...params
     }
+    handleLoadNextPage(1)
   }
 
   return {

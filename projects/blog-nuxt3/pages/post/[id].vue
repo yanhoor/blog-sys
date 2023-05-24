@@ -17,12 +17,10 @@
             >
               {{ blogInfo.createBy?.name }}
             </div>
-            <n-time
+            <span
               class="text-[12px] text-gray-500"
-              type="datetime"
-              :time="new Date(blogInfo.createdAt)"
-              format="yyyy-MM-dd HH:mm"
-            ></n-time>
+              v-time.format="new Date(blogInfo.createdAt)"
+            ></span>
           </div>
           <n-dropdown trigger="click" :options="actionOptions">
             <n-button
@@ -105,6 +103,7 @@
             <PostCommentList
               ref="commentRef"
               class="w-full"
+              allowLoadMore
               :blog="blogInfo"
               v-if="showType === 'comment'"
             />
@@ -167,7 +166,6 @@ definePageMeta({
 
 type ActionType = 'like' | 'comment' | 'collect' | undefined
 
-provide('allow_load_more_comment', true)
 const route = useRoute()
 const myInfo = useUserInfo()
 const loading = ref(false)

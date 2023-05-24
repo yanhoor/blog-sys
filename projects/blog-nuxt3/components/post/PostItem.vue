@@ -33,21 +33,17 @@
     <MediaListView class="w-full" :list="blog.medias" />
 
     <div class="grid grid-cols-3 w-full">
-      <div class="flex justify-center items-center gap-[6px]">
+      <div
+        class="flex justify-center items-center gap-[6px] cursor-pointer"
+        @click="likeBlog"
+      >
         <n-icon
-          class="text-green-700 cursor-pointer"
+          class="text-green-700"
           size="18"
           :component="ThumbLike16Filled"
-          @click="likeBlog"
           v-if="blog.isLike"
         ></n-icon>
-        <n-icon
-          class="cursor-pointer"
-          size="18"
-          :component="ThumbLike16Regular"
-          @click="likeBlog"
-          v-else
-        ></n-icon>
+        <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
         <span>{{ blog.likedByCount || '赞' }}</span>
       </div>
       <div
@@ -63,21 +59,17 @@
         <n-icon size="18" :component="CommentMultiple16Regular" v-else></n-icon>
         <span>{{ blog.commentsCount || '评论' }}</span>
       </div>
-      <div class="flex justify-center items-center gap-[6px]">
+      <div
+        class="flex justify-center items-center gap-[6px] cursor-pointer"
+        @click="collectBlog"
+      >
         <n-icon
-          class="text-green-700 cursor-pointer"
+          class="text-green-700"
           size="18"
           :component="Star48Filled"
-          @click="collectBlog"
           v-if="blog.isCollect"
         ></n-icon>
-        <n-icon
-          class="cursor-pointer"
-          size="18"
-          :component="Star48Regular"
-          @click="collectBlog"
-          v-else
-        ></n-icon>
+        <n-icon size="18" :component="Star48Regular" v-else></n-icon>
         <span>{{ blog.collectedByCount || '收藏' }}</span>
       </div>
     </div>
@@ -108,9 +100,9 @@ import {
   NIcon,
   NButton,
   NDropdown,
-  NTime,
   NCollapseTransition,
-  createDiscreteApi
+  createDiscreteApi,
+  DialogOptions
 } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 
@@ -136,6 +128,15 @@ const actionOptions = ref<DropdownOption[]>([
             // console.log('-----------', r)
             message.success('复制成功')
           })
+      }
+    }
+  },
+  {
+    label: '进入详情',
+    key: 'viewDetail',
+    props: {
+      onClick: () => {
+        navigateTo('/post/' + props.blog.id)
       }
     }
   }
@@ -208,6 +209,6 @@ async function handleDeletePost() {
       } catch (e) {}
     },
     onNegativeClick: () => {}
-  })
+  } as DialogOptions)
 }
 </script>
