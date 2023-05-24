@@ -1,5 +1,3 @@
-let callback = null
-let scrollEl = null
 function handleScroll(el, binding, vnode, prevVnode) {
   let handler, parentElSelector, scrollElSelector, parentInfo, bottomOffset
   if (typeof binding.value === 'function') {
@@ -16,11 +14,12 @@ function handleScroll(el, binding, vnode, prevVnode) {
   }
   let timer
   if (process.client) {
-    scrollEl = scrollElSelector
+    el.scrollEl = scrollElSelector
       ? document.querySelector(scrollElSelector)
       : window
   }
-  callback = () => {
+
+  el.callback = () => {
     if (process.client && typeof handler === 'function') {
       clearTimeout(timer)
       timer = setTimeout(() => {
@@ -29,7 +28,7 @@ function handleScroll(el, binding, vnode, prevVnode) {
         // console.log('----------handleScroll-----------', parentElSelector, info.bottom, bottomOffset)
         if (info.bottom - bottomOffset <= 50) {
           const finish = handler() // 绑定的函数返回 true 表示已经全部加载完，移除监听
-          if (finish) document.removeEventListener('scroll', callback)
+          if (finish) document.removeEventListener('scroll', el.callback)
         }
       }, 200)
     }
@@ -38,12 +37,15 @@ function handleScroll(el, binding, vnode, prevVnode) {
 
 const loadMore = {
   mounted(el, binding, vnode, prevVnode) {
+    // console.log('======loadMore mounted=======', el)
     handleScroll(el, binding, vnode, prevVnode)
-    scrollEl.addEventListener('scroll', callback)
+    el.scrollEl.addEventListener('scroll', el.callback)
   },
   unmounted(el, binding, vnode, prevVnode) {
-    // console.log('======loadMore unmounted=======')
-    scrollEl.removeEventListener('scroll', callback)
+    // console.log('======loadMore unmounted=======', el)
+    el.scrollEl.removeEventListener('scroll', el.callback)
+    el.callback = null
+    el.scrollEl = null
   }
 }
 
