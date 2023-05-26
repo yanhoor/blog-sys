@@ -81,8 +81,18 @@
             <ExpandedContent
               :max-length="120"
               :show-btn="false"
-              :content="row.content"
+              :content="row.content || '图片评论'"
             />
+          </template>
+        </el-table-column>
+        <el-table-column key="image" prop="image" label="图片">
+          <template #default="{ row }">
+            <MediaImageItem
+              :url="row.image.url"
+              quality="50"
+              v-if="row.image"
+            />
+            <span v-else>无</span>
           </template>
         </el-table-column>
         <el-table-column key="status" label="状态">
@@ -194,6 +204,7 @@ import useListFetch from '@/composables/useListFetch'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import dateRangeShortcuts from '@/utils/dateRangeShortcuts'
 import dayjs from 'dayjs'
+import MediaImageItem from '@/components/media/media_image_item.vue'
 
 const pageState = reactive({
   pageSizeList: [20, 50, 100, 200]

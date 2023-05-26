@@ -1,6 +1,21 @@
 # 说明
 
-# 使用注意
+## Vue3 注意
+
+### template 里面不要使用 `ref.value`
+
+`Vue3` 会自动取 `value` 的值，即使在内联的事件处理函数也不要使用
+
+```Vue
+<template>
+  <!--不要使用 console.log(va.value)-->
+  <button @click="() => {console.log(va)}"></button>
+</template>
+
+<script setup lang="ts">
+const va = ref(0)
+</script>
+```
 
 ### slot
 
