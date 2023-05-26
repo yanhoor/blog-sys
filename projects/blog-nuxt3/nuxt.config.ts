@@ -10,6 +10,7 @@ export default defineNuxtConfig({
         ? [
             'naive-ui',
             'vueuc',
+            'v-viewer',
             '@css-render/vue3-ssr',
             '@juggle/resize-observer'
           ]
@@ -22,10 +23,11 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       apiBaseDocker: process.env.NUXT_API_BASE_DOCKER,
-      imageBase: process.env.NUXT_IMAGE_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
+      imageBase: 'https://static-buck.oss-cn-shenzhen.aliyuncs.com', // 这个好像不会自动获取 NUXT_ 开头的值
       wsHost: process.env.NUXT_WS_HOST,
-      imageType: process.env.NUXT_IMAGE_TYPE,
-      videoType: process.env.NUXT_VIDEO_TYPE
+      imageType: '.jpeg,.jpg,.png,.avif,.webp,.bmp,.gif,.svg',
+      videoType: '.mp4,.mov,.avi,.mkv',
+      audioType: '.mp3,.wav,.flac,.aac,.m4a,.ogg,.webm,.mp4'
     }
   },
   app: {
