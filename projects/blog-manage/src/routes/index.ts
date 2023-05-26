@@ -44,6 +44,13 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '用户列表'
         }
+      },
+      {
+        path: '/mobileVersion',
+        component: () => import('@/views/mobileVersion/MobileVersionList.vue'),
+        meta: {
+          title: '版本列表'
+        }
       }
     ]
   },

@@ -35,6 +35,17 @@ const sourceMenus: Array<MenuProps> = [
     icon: User
   },
   {
+    title: '移动端管理',
+    icon: Shop,
+    children: [
+      {
+        // group: '基础',
+        title: '版本发布',
+        path: '/mobileVersion'
+      }
+    ]
+  },
+  {
     title: '博客管理',
     icon: Shop,
     children: [
