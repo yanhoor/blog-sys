@@ -69,6 +69,13 @@ export default defineNuxtConfig({
   },
   modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
   css: ['@/assets/styles/global.scss'],
+  postcss: {
+    plugins: {
+      'tailwindcss/nesting': {},
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  },
   vite: {
     css: {
       preprocessorOptions: {

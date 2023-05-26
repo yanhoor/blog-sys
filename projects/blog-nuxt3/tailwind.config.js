@@ -1,4 +1,5 @@
 module.exports = {
+  content: ['./src/**/*.vue'],
   corePlugins: {
     // preflight: false, // 禁止预设样式
   },
