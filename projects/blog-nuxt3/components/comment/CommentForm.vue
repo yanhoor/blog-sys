@@ -15,14 +15,11 @@
       <MediaUploadImg
         @complete="imageFile = $event"
         :model-value="imageFile?.url"
-        size="42"
+        :showPreviewIcon="false"
+        :showBorder="false"
+        width="42px"
+        height="42px"
       >
-        <template #preview>
-          <MediaImgView
-            class="w-[42px] h-[42px] object-cover"
-            :url="imageFile?.url"
-          />
-        </template>
         <template #trigger>
           <n-icon
             class="text-green-600 cursor-pointer"

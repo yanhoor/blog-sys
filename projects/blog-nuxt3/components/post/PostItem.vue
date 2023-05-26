@@ -132,7 +132,7 @@ const actionOptions = ref<DropdownOption[]>([
     }
   },
   {
-    label: '进入详情',
+    label: '查看详情',
     key: 'viewDetail',
     props: {
       onClick: () => {

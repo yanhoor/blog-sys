@@ -1,36 +1,40 @@
 <template>
-  <div class="cursor-pointer flex items-center gap-[6px]" v-if="userInfo">
-    <n-button type="primary" @click="showWritePost = true" size="small">
-      <template #icon>
-        <n-icon :component="Compose24Regular" />
-      </template>
-    </n-button>
-    <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-      <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
-    </n-dropdown>
-    <layout-notification />
+  <div class="layout-user">
+    <div class="cursor-pointer flex items-center gap-[6px]" v-if="userInfo">
+      <n-button type="primary" @click="showWritePost = true" size="small">
+        <template #icon>
+          <n-icon :component="Compose24Regular" />
+        </template>
+      </n-button>
+      <n-dropdown :options="userOptions" @select="handleDropdownSelect">
+        <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
+      </n-dropdown>
+      <layout-notification />
+    </div>
+    <n-button type="primary" v-else @click="navigateTo('/login')"
+      >登录</n-button
+    >
+
+    <PostWrite
+      :show="showWritePost"
+      @update:show="
+        ($event) => {
+          showWritePost = $event
+          setTimeout(() => (writePostKey = new Date().getTime()), 300)
+        }
+      "
+      :key="writePostKey"
+    />
   </div>
-  <n-button type="primary" v-else @click="navigateTo('/login')">登录</n-button>
-  <n-modal
-    :close-on-esc="false"
-    v-model:show="showWritePost"
-    preset="card"
-    size="huge"
-    title="快捷发布"
-    class="w-1/2"
-  >
-    <PostWrite @complete="showWritePost = false" />
-  </n-modal>
 </template>
 
 <script lang="ts" setup>
 import {
   NButton,
-  NSpace,
-  NModal,
   NIcon,
   NDropdown,
-  createDiscreteApi
+  createDiscreteApi,
+  DialogOptions
 } from 'naive-ui'
 import {
   ArrowCircleRight20Regular,
@@ -55,6 +59,7 @@ const userInfo = useUserInfo()
 const route = useRoute()
 const showWritePost = ref(false)
 const token = useCookie('token')
+const writePostKey = ref(new Date().getTime())
 const userOptions = ref([
   {
     label: '个人资料',
@@ -120,7 +125,7 @@ async function handleLogout() {
       } catch (e) {}
     },
     onNegativeClick: () => {}
-  })
+  } as DialogOptions)
 }
 
 // 假如当前在需要登录的页面

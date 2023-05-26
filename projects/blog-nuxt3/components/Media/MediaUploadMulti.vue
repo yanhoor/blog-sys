@@ -1,33 +1,84 @@
 <template>
-  <n-upload
-    abstract
-    multiple
-    :accept="acceptType"
-    list-type="image"
-    :show-file-list="false"
-    :on-before-upload="handleBeforeUpload"
-    :custom-request="customRequest"
-  >
-    <div class="flex flex-wrap gap-[12px]">
-      <template v-for="(media, index) of modelValue" :key="media.file.url">
+  <div class="media-upload-multi w-full flex flex-col items-center gap-[12px]">
+    <input
+      class="hidden"
+      type="file"
+      :accept="acceptType"
+      ref="inputRef"
+      :multiple="uploadMode === 2"
+      @change="handleSelectFileChange"
+    />
+
+    <div class="flex justify-center items-center gap-[12px]">
+      <n-button
+        round
+        tertiary
+        type="primary"
+        size="medium"
+        :disabled="lockUploadMode && uploadMode !== 2"
+        @click="handleSelectUploadType(2)"
+      >
+        <template #icon>
+          <n-icon :component="ImageAdd24Regular" />
+        </template>
+        图片
+      </n-button>
+      <n-button
+        round
+        tertiary
+        type="primary"
+        size="medium"
+        :disabled="lockUploadMode && uploadMode !== 3"
+        @click="handleSelectUploadType(3)"
+      >
+        <template #icon>
+          <n-icon :component="VideoAdd24Regular" />
+        </template>
+        视频
+      </n-button>
+      <n-button
+        round
+        tertiary
+        type="primary"
+        size="medium"
+        :disabled="lockUploadMode && uploadMode !== 4"
+        @click="handleSelectUploadType(4)"
+      >
+        <template #icon>
+          <n-icon :component="MusicNote120Regular" />
+        </template>
+        录音
+      </n-button>
+    </div>
+
+    <MediaAudioRecord
+      @complete="handleAudioRecordComplete"
+      v-if="uploadMode === 4"
+    />
+
+    <n-spin size="32px" v-if="uploading"></n-spin>
+
+    <div
+      class="w-full text-center my-[12px]"
+      v-if="audioRecordFile && uploadMode === 4"
+    >
+      <n-button round type="primary" @click="handleUploadAudio"
+        >上传录音</n-button
+      >
+    </div>
+
+    <template v-if="modelValue.length">
+      <div class="flex flex-wrap gap-[12px]" v-if="uploadMode === 2">
         <div
+          v-for="(media, index) of modelValue"
+          :key="media.file.url"
           class="flex justify-center items-center relative limit-size border border-dashed border-gray-300 hover:border-green-600"
           @click.stop
         >
           <MediaImgView
-            alt="图像"
             class="object-cover overflow-clip"
             :url="media.file.url"
-            v-if="config.public.imageType.includes(getFileExt(media.file.url))"
           />
-          <video
-            :src="config.public.imageBase + media.file.url"
-            v-else-if="
-              config.public.imageType.includes(getFileExt(media.file.url))
-            "
-            controls
-          ></video>
-          <n-icon :component="Document24Regular" size="48" v-else />
           <n-icon-wrapper
             class="absolute -top-[8px] -right-[8px] cursor-pointer"
             :size="18"
@@ -37,36 +88,57 @@
             <n-icon :component="Delete24Regular" />
           </n-icon-wrapper>
         </div>
-      </template>
-      <n-upload-trigger #="{ handleClick }" abstract>
-        <n-icon
-          class="limit-size upload-action flex justify-center items-center cursor-pointer hover:text-green-600"
-          size="70"
-          :component="Add24Regular"
-          @click="handleClick"
-          v-if="uploadMode != 2 || (uploadMode == 2 && modelValue.length < 1)"
-        ></n-icon>
-      </n-upload-trigger>
-    </div>
-  </n-upload>
+      </div>
+
+      <div
+        class="w-full h-0 relative pt-[56.25%]"
+        v-if="[3, 4].includes(uploadMode)"
+      >
+        <MediaUploadImg
+          @complete="handleUploadCoverComplete"
+          :model-value="coverFile?.url"
+          class="absolute w-full h-full top-0"
+          width="100%"
+          height="100%"
+          uploadTxt="点击上传封面"
+        />
+      </div>
+
+      <div
+        class="w-full flex flex-col items-center gap-[12px]"
+        v-if="uploadMode === 3"
+      >
+        <MediaVideoItem :url="modelValue[0].file.url" />
+        <n-button round type="error" @click="handleDeleteItem(0)"
+          >删除视频</n-button
+        >
+      </div>
+      <n-button
+        v-if="uploadMode === 4"
+        round
+        type="error"
+        @click="handleDeleteItem(0)"
+        >删除录音</n-button
+      >
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
 import {
-  Add24Regular,
-  Document24Regular,
+  VideoAdd24Regular,
+  ImageAdd24Regular,
+  MusicNote120Regular,
   Delete24Regular
 } from '@vicons/fluent'
 import {
-  NUpload,
+  NSpin,
   NIcon,
-  NUploadTrigger,
+  NButton,
   NIconWrapper,
-  createDiscreteApi,
-  UploadCustomRequestOptions
+  createDiscreteApi
 } from 'naive-ui'
-import type { UploadFileInfo } from 'naive-ui'
-import { Media } from 'sys-types'
+import { Media, MediaFile } from 'sys-types'
 
 interface Props {
   modelValue: Media[]
@@ -75,123 +147,152 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   size: '178px'
 })
-const emits = defineEmits(['update:modelValue'])
-const uploadMode = ref(3) // 上传的类型，1--图片，2--视频, 3--视频/图片
+const emits = defineEmits<{
+  'update:modelValue': [list: Media[]]
+}>()
+const uploadMode = ref(1) // 上传的类型，1--未定，2--图片，3--视频, 4--音频
+const lockUploadMode = ref(false) // 不能选择其他上传类型
+const uploading = ref(false)
+const audioRecordFile = shallowRef<File>()
+const inputRef = ref<HTMLInputElement>()
+const failedFileList = shallowRef<File[]>([])
 const config = useRuntimeConfig()
-const fileList = ref<any[]>([])
 
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (!val.length) return (uploadMode.value = 3)
-
-    setUploadMode(val[0].file.url)
-  }
-)
+const coverFile = computed<MediaFile>(() => {
+  if ([3, 4].includes(uploadMode.value) && props.modelValue.length)
+    return props.modelValue[0]?.cover
+})
 
 const acceptType = computed(() => {
+  const imageType = config.public.imageType
+  const videoType = config.public.videoType
+  const audioType = config.public.audioType
   switch (uploadMode.value) {
     case 1:
-      return 'image/*'
+      return [imageType, videoType, audioType].join()
     case 2:
-      return 'video/*'
+      return imageType
     case 3:
-      return 'image/*,video/*'
+      return videoType
+    case 4:
+      return audioType
   }
 })
 
-function setUploadMode(url: string) {
-  if (uploadMode.value !== 3) return
+function handleSelectUploadType(type: number) {
+  // 已锁定就不能上传其他类型
+  if (lockUploadMode.value && uploadMode.value !== type) return
 
-  if (config.public.imageType.includes(getFileExt(url))) {
-    uploadMode.value = 1
-  } else if (config.public.imageType.includes(getFileExt(url))) {
-    uploadMode.value = 2
+  // 视频和音频只能上传一个
+  if ([3, 4].includes(uploadMode.value) && props.modelValue.length) return
+
+  uploadMode.value = type
+
+  if (type !== 4) {
+    audioRecordFile.value = undefined
+    nextTick(() => {
+      inputRef.value?.click()
+    })
   }
 }
 
-function handleBeforeUpload(options: {
-  file: UploadFileInfo
-  fileList: UploadFileInfo[]
-}) {
+function handleCheckUploadValid(file: File): boolean {
+  const ext = getFileExt(file.name)
+
+  return acceptType.value.includes(ext)
+}
+
+async function handleSelectFileChange(e: Event) {
+  const target: HTMLInputElement = e.target as HTMLInputElement
+  // console.log('=========handleSelectFile=========', e.target.files)
+  if (!target.files) return
+
+  const fileList: FileList = target.files
+
+  const uploadList: Promise<any>[] = []
+  for (const file of fileList) {
+    uploadList.push(handleUploadFile(file))
+  }
+
+  uploading.value = true
+  failedFileList.value = []
+  await Promise.all(uploadList)
+  uploading.value = false
+}
+
+async function handleAudioRecordComplete(f: File | undefined) {
+  handleClearAllFile()
+  audioRecordFile.value = f
+}
+
+async function handleUploadAudio() {
+  failedFileList.value = []
+  uploading.value = true
+  const success = await handleUploadFile(audioRecordFile.value)
+  uploading.value = false
+  if (success) {
+    audioRecordFile.value = undefined
+  }
+}
+
+async function handleUploadFile(file: File): Promise<boolean> {
   const { message } = createDiscreteApi(['message'])
-  const path = options.file.fullPath as string
-  setUploadMode(path)
-  const conflict1 =
-    uploadMode.value === 1 && config.public.imageType.includes(getFileExt(path))
-  const conflict2 =
-    uploadMode.value === 2 && config.public.imageType.includes(getFileExt(path))
-  if (conflict1 || conflict2) {
-    message.error('图片与视频不能同时上传')
+
+  if (!handleCheckUploadValid(file)) {
+    message.error('不支持的文件类型')
     return false
   }
-  return true
-}
-
-const customRequest = async ({
-  file,
-  data,
-  headers,
-  withCredentials,
-  action,
-  onFinish,
-  onError,
-  onProgress
-}: UploadCustomRequestOptions) => {
-  const { message } = createDiscreteApi(['message'])
   // console.log('==============', md5)
   try {
-    if (uploadMode.value == 2 && props.modelValue.length === 1) {
-      message.error('最多上传一个视频')
-      onError()
-      return
-    }
-    if (
-      uploadMode.value == 1 &&
-      config.public.imageType.includes(getFileExt(file.fullPath as string))
-    ) {
-      message.error('图片与视频不能同时上传')
-      onError()
-      return
-    }
-    if (
-      uploadMode.value == 1 &&
-      file.file?.size &&
-      file.file?.size > 1024 * 1024 * 5
-    ) {
-      message.error('图片不能大于 5M')
-      onError()
-      return
-    }
     const { success, result, msg } = await useFetchPost(
       '/upload',
-      { file: file.file },
+      { file },
       true
     )
     if (success) {
-      onFinish()
+      lockUploadMode.value = true
       emits('update:modelValue', [
         ...props.modelValue,
         { fileId: result.id, file: result }
       ])
+      return true
     } else {
+      failedFileList.value.push(file)
       message.error(msg as string)
-      onError()
+      return false
     }
   } catch (e) {
-    onError()
+    failedFileList.value.push(file)
+    message.error('上传失败')
+    return false
   }
+}
+
+function handleUploadCoverComplete(result: MediaFile) {
+  emits('update:modelValue', [
+    {
+      ...props.modelValue[0],
+      cover: result
+    }
+  ])
 }
 
 function getFileExt(path: string) {
   const index = path.lastIndexOf('.')
-  return path.slice(index + 1).toLowerCase()
+  return path.slice(index).toLowerCase()
 }
 
 function handleDeleteItem(idx: number) {
   const temp = props.modelValue.slice()
   temp.splice(idx, 1)
+  if (temp.length === 0) {
+    lockUploadMode.value = false
+  }
   emits('update:modelValue', temp)
+}
+
+function handleClearAllFile() {
+  emits('update:modelValue', [])
 }
 </script>
 

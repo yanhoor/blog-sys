@@ -2,7 +2,7 @@
   <div class="media-audio-item">
     <audio
       class="hidden"
-      :src="config.public.imageBase + url"
+      :src="audioSrc"
       ref="audioRef"
       @pause="
         () => {
@@ -14,16 +14,8 @@
           playState = PlayState.end
         }
       "
-      @durationchange="
-        () => {
-          duration = audioRef?.duration || 0
-        }
-      "
-      @timeupdate="
-        () => {
-          currentTime = audioRef?.currentTime || 0
-        }
-      "
+      @durationchange="handleDurationchange"
+      @timeupdate="handleTimeUpdate"
     ></audio>
     <div class="w-1/3" v-if="coverUrl">
       <div
@@ -107,16 +99,28 @@ import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
 interface Props {
   url: string
+  isAbsoluteUrl?: boolean
   coverUrl?: string
 }
 
 const playStore = useMediaPlayStore()
 const config = useRuntimeConfig()
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isAbsoluteUrl: false
+})
 const audioRef = ref<HTMLAudioElement>()
 const playState = ref<PlayState>(PlayState.idle)
 const duration = ref(0)
+const isInfinityDuration = ref(false)
 const currentTime = ref(0)
+
+const audioSrc = computed(() => {
+  if (props.isAbsoluteUrl) {
+    return props.url
+  } else {
+    return config.public.imageBase + props.url
+  }
+})
 
 function handlePlay() {
   playStore.currentRef?.pause()
@@ -127,6 +131,28 @@ function handlePlay() {
   } else {
     audioRef.value?.play()
     playState.value = PlayState.playing
+  }
+}
+
+function handleDurationchange() {
+  duration.value = audioRef.value?.duration || 0
+  handleUnknownDuration()
+  // console.log('======durationchange=====', duration.value)
+}
+
+function handleTimeUpdate() {
+  if (isInfinityDuration.value) {
+    audioRef.value.currentTime = 0
+    isInfinityDuration.value = false
+  }
+  currentTime.value = audioRef.value?.currentTime || 0
+}
+
+// chrome 获取的时长可能是Infinity，需要这样处理
+function handleUnknownDuration() {
+  if (duration.value === Infinity || isNaN(Number(duration.value))) {
+    isInfinityDuration.value = true
+    audioRef.value.currentTime = 1e101 // 设置一个极大的时间，能显示后再在 handleTimeUpdate 设置回开始
   }
 }
 </script>
