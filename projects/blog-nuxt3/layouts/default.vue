@@ -1,9 +1,9 @@
 <template>
   <n-layout
-    class="default-layout min-h-full pb-[20px] bg-page-light dark:bg-page-dark"
+    class="default-layout min-h-full bg-page-light pb-[20px] dark:bg-page-dark"
   >
     <n-layout-header
-      class="sticky h-[60px] z-50 left-0 right-0 top-0 flex gap-[12px] py-0 px-[20px] items-center justify-between shadow bg-block-light dark:bg-block-dark"
+      class="sticky left-0 right-0 top-0 z-50 flex h-[60px] items-center justify-between gap-[12px] bg-block-light px-[20px] py-0 shadow dark:bg-block-dark"
     >
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
@@ -34,13 +34,13 @@
       </div>
     </n-layout-header>
     <n-layout-content
-      class="mt-[20px] mx-auto overflow-visible w-auto lg:w-[1024px] bg-page-light dark:bg-page-dark"
+      class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark lg:w-[1024px]"
     >
       <!--<div class="main-left">
         <slot name="left"></slot>
       </div>-->
       <div class="flex items-start">
-        <div class="flex-1 max-w-full">
+        <div class="max-w-full flex-1">
           <slot></slot>
         </div>
         <!--<div class="main-right-aside">
@@ -89,7 +89,7 @@ function handleChange(val: string) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .n-layout.default-layout {
   overflow: initial;
   :deep(.n-layout-scroll-container) {

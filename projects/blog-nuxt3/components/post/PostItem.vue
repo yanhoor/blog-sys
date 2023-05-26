@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col items-start gap-[12px]">
-    <div class="flex items-center gap-[6px] w-full relative">
+    <div class="relative flex w-full items-center gap-[6px]">
       <UserAvatar :user="blog.createBy" :size="56" />
       <div class="flex flex-col items-start">
         <div
-          class="text-green-700 text-[20px] cursor-pointer"
+          class="cursor-pointer text-[20px] text-green-700"
           @click="navigateTo({ path: '/user/' + blog.createBy.id })"
         >
           {{ blog.createBy?.name }}
@@ -19,7 +19,7 @@
           quaternary
           circle
           type="default"
-          class="absolute top-0 right-0 cursor-pointer"
+          class="absolute right-0 top-0 cursor-pointer"
         >
           <template #icon>
             <n-icon :component="ChevronDown24Regular" />
@@ -32,9 +32,9 @@
 
     <MediaListView class="w-full" :list="blog.medias" />
 
-    <div class="grid grid-cols-3 w-full">
+    <div class="grid w-full grid-cols-3">
       <div
-        class="flex justify-center items-center gap-[6px] cursor-pointer"
+        class="flex cursor-pointer items-center justify-center gap-[6px]"
         @click="likeBlog"
       >
         <n-icon
@@ -47,7 +47,7 @@
         <span>{{ blog.likedByCount || '赞' }}</span>
       </div>
       <div
-        class="flex justify-center items-center cursor-pointer gap-[6px]"
+        class="flex cursor-pointer items-center justify-center gap-[6px]"
         @click="showComment = !showComment"
       >
         <n-icon
@@ -60,7 +60,7 @@
         <span>{{ blog.commentsCount || '评论' }}</span>
       </div>
       <div
-        class="flex justify-center items-center gap-[6px] cursor-pointer"
+        class="flex cursor-pointer items-center justify-center gap-[6px]"
         @click="collectBlog"
       >
         <n-icon
