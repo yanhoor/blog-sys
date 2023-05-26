@@ -19,7 +19,7 @@
           {{ group.name }}
         </p>
         <div class="flex items-center" v-if="customGroupList.length">
-          <p class="flex-1 font-semibold text-[16px] my-[6px]">自定义分组</p>
+          <p class="my-[6px] flex-1 text-[16px] font-semibold">自定义分组</p>
           <n-button size="small" text @click="showManageGroup = true">
             <template #icon>
               <n-icon :component="Compose24Regular" size="18" />
@@ -121,11 +121,11 @@ function handleChangeGroup(gid?: number) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .group-title {
-  @apply cursor-pointer py-[3px] px-[6px];
+  @apply cursor-pointer px-[6px] py-[3px];
   &:hover {
-    @apply bg-gray-200 rounded dark:bg-gray-700;
+    @apply rounded bg-gray-200 dark:bg-gray-700;
   }
   &.active {
     @apply text-green-600;

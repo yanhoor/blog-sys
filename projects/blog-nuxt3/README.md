@@ -12,11 +12,57 @@
 
 在引入全局依赖时，可以在 `plugins` 里面通过 `defineNuxtPlugin()` 定义，如 `dayjs`
 
+## 开发增强
+
+### Tailwind CSS
+
+`Tailwind css` 建议只使用 `postcss`，不要使用其他预处理器如 `sass`、`less` 等，配置如下：
+
+- [参考](https://www.tailwindcss.cn/docs/installation/using-postcss)安装 `postcss`
+
+- [参考](https://nuxt.com/docs/api/configuration/nuxt-config#postcss)，将上一步的 `postcss` 配置写在 `nuxt.config.js`
+
+```javascript
+export default defineNuxtConfig({
+  postcss: {
+    plugins: {
+      'tailwindcss/nesting': {}, // 这样就可以使用 sass 的嵌套语法，注意在 tailwindcss 前面
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  }
+})
+```
+
+- 配置支持 `sass` 的嵌套写法，如上一步配置写在 `nuxt.config.js`。[参考](https://www.tailwindcss.cn/docs/using-with-preprocessors#nesting)
+
+- 单文件组件使用 `<style lang="postcss">`
+
 ## 待完成功能
 
 - 数量记录：博主的所有文章累计被阅读数
 
 ## 问题记录
+
+### 正式环境报引入包错误
+
+比如引入 `import { api as viewerApi } from 'v-viewer'` 时，报错：`Named export 'api' not found. The requested module 'v-viewer' is a CommonJS module, which may not support all module.exports as named exports. CommonJS modules can always be imported via the default export, for example using: import pkg from 'v-viewer'; const { api } = pkg;`
+
+[参考](https://nuxt.com/docs/guide/concepts/esm/#troubleshooting-esm-issues)
+
+解决方法：
+
+- 将所在组件改为客户端组件：`component.client.vue`
+
+- 将这个包写入以下配置
+
+```javascript
+export default defineNuxtConfig({
+  build: {
+    transpile: ['v-viewer']
+  }
+})
+```
 
 ### build
 

@@ -114,7 +114,7 @@ async function toRegister() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .form-container {
   width: 350px;
   position: relative;

@@ -1,6 +1,6 @@
 <template>
   <n-card
-    class="w-[350px] relative top-1/2 left-1/2"
+    class="relative left-1/2 top-1/2 w-[350px]"
     style="transform: translate(-50%, -50%)"
   >
     <n-form ref="formRef" :model="registerForm" :rules="rules">
@@ -182,7 +182,7 @@ async function toLogin() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .form-container {
   width: 350px;
   position: relative;

@@ -15,14 +15,14 @@
       <n-spin size="small" v-if="loading" />
 
       <div
-        class="p-[12px] flex flex-col items-start gap-[12px] overflow-hidden"
+        class="flex flex-col items-start gap-[12px] overflow-hidden p-[12px]"
         v-else
       >
-        <div class="flex items-center gap-[12px] max-w-full">
+        <div class="flex max-w-full items-center gap-[12px]">
           <UserAvatar :user="userInfo" :size="36" disabled />
-          <div class="flex flex-col gap-[3px] items-start overflow-hidden">
+          <div class="flex flex-col items-start gap-[3px] overflow-hidden">
             <div
-              class="text-green-700 text-[16px] cursor-pointer"
+              class="cursor-pointer text-[16px] text-green-700"
               @click="navigateTo({ path: '/user/' + userInfo.id })"
             >
               {{ userInfo?.name }}
@@ -54,7 +54,7 @@
           >关注</n-button
         >
         <div
-          class="flex items-start justify-around w-full custom-border border-t pt-[6px]"
+          class="custom-border flex w-full items-start justify-around border-t pt-[6px]"
         >
           <div class="statis-item">
             <div class="statis-num">{{ userInfo.followingCount }}</div>
@@ -143,7 +143,7 @@ async function handleFollow(type: number) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .statis-item {
   @apply flex flex-col items-center;
   .statis-num {

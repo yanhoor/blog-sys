@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-wrap gap-[12px]" v-bind="$attrs">
-    <div class="w-full h-full pt-[24px] relative" v-if="isPreview">
+    <div class="relative h-full w-full pt-[24px]" v-if="isPreview">
       <div class="toolbar-container">
         <div class="toolbar-item" @click="() => (isPreview = false)">
           <n-icon :component="ZoomOut24Regular" size="20"></n-icon>
@@ -12,19 +12,19 @@
         </div>
       </div>
       <div
-        class="preview-item-control left-0 left-pre"
+        class="preview-item-control left-pre left-0"
         @click="handleNextPreview(-1)"
         v-if="currentPreviewIndex > 0"
       ></div>
-      <div class="w-full h-0 pt-[100%] relative rounded-[5px]">
+      <div class="relative h-0 w-full rounded-[5px] pt-[100%]">
         <MediaImgView
-          class="absolute top-0 w-full h-full cursor-zoom-out radius-inherit object-cover"
+          class="radius-inherit absolute top-0 h-full w-full cursor-zoom-out object-cover"
           :url="currentPreviewItem.url"
           @click="handleCancelPreview"
         />
       </div>
       <div
-        class="preview-item-control right-0 right-pre"
+        class="preview-item-control right-pre right-0"
         @click="handleNextPreview(1)"
         v-if="currentPreviewIndex !== imageList.length - 1"
       ></div>
@@ -40,9 +40,9 @@
     />
 
     <!--图片列表-->
-    <div class="w-full flex flex-wrap -mt-[6px] -ml-[6px]" v-else>
+    <div class="-ml-[6px] -mt-[6px] flex w-full flex-wrap" v-else>
       <div
-        class="w-1/5 pt-[6px] pl-[6px] group relative cursor-zoom-in"
+        class="group relative w-1/5 cursor-zoom-in pl-[6px] pt-[6px]"
         v-for="(media, index) of imageList"
         :key="media.file.url"
         @click="handlePreview(media.file, index, true)"
@@ -137,7 +137,7 @@ function handleZoomIn() {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="postcss">
 .left-pre {
   cursor: url('@/assets/images/pic_prev.cur'), auto;
 }
@@ -145,33 +145,33 @@ function handleZoomIn() {
   cursor: url('@/assets/images/pic_next.cur'), auto;
 }
 .list-item-mask {
-  @apply absolute top-0 left-0 w-full h-full rounded-[5px];
+  @apply absolute left-0 top-0 h-full w-full rounded-[5px];
   &.num-mask {
     background: rgba(0, 0, 0, 0.5);
   }
 }
 .toolbar-container {
-  @apply z-20 flex items-center absolute top-0 gap-[12px];
+  @apply absolute top-0 z-20 flex items-center gap-[12px];
   .toolbar-item {
-    @apply flex items-center gap-[4px] cursor-pointer;
+    @apply flex cursor-pointer items-center gap-[4px];
   }
 }
 .preview-item-control {
-  @apply z-10 absolute w-1/5 h-full top-0 flex justify-start items-center;
+  @apply absolute top-0 z-10 flex h-full w-1/5 items-center justify-start;
 }
 
 .image-item-container {
-  @apply relative w-full h-0;
+  @apply relative h-0 w-full;
   padding-top: 100%;
   border-radius: 5px;
   .image-item {
-    @apply w-full h-full object-cover overflow-clip absolute top-0;
-    border-radius: inherit; // 图片圆角
+    @apply absolute top-0 h-full w-full overflow-clip object-cover;
+    border-radius: inherit;
   }
 }
 
 .overflow-num {
-  @apply absolute top-1/2 left-1/2 font-semibold text-[24px] break-keep;
+  @apply absolute left-1/2 top-1/2 break-keep text-[24px] font-semibold;
   transform: translate(-50%, -50%);
 }
 </style>

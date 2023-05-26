@@ -1,7 +1,7 @@
 <template>
   <div class="user-image-wall">
     <div
-      class="w-full h-full flex flex-wrap"
+      class="flex h-full w-full flex-wrap"
       v-if="pageLoading && pageFetchParams.page === 1"
     >
       <div class="img-wrapper" v-for="i of 30">
@@ -12,7 +12,7 @@
     </div>
     <div v-else>
       <div
-        class="flex flex-wrap items-start w-full -mt-[6px] -ml-[6px]"
+        class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
         v-loadMore="handleLoadNextPage"
       >
         <div class="img-wrapper" v-for="image of pageList" :key="image.id">
@@ -70,16 +70,16 @@ function handlePreview(m: Media) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .img-wrapper {
-  @apply w-1/5 pt-[6px] pl-[6px];
+  @apply w-1/5 pl-[6px] pt-[6px];
   .img-container {
     border-radius: 5px;
     @apply relative w-full;
     padding-top: 100%;
     .media-item {
-      @apply w-full h-full object-cover overflow-clip absolute top-0 cursor-pointer;
-      border-radius: inherit; // 图片圆角
+      @apply absolute top-0 h-full w-full cursor-pointer overflow-clip object-cover;
+      border-radius: inherit;
     }
   }
 }

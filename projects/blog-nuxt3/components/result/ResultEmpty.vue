@@ -1,7 +1,7 @@
 <template>
-  <div class="result-empty w-full flex flex-col items-center gap-[12px]">
+  <div class="result-empty flex w-full flex-col items-center gap-[12px]">
     <img src="@/assets/images/box-empty.svg" alt="" class="result-icon" />
-    <p class="font-semibold text-[16px]">暂无内容</p>
+    <p class="text-[16px] font-semibold">暂无内容</p>
     <n-button type="primary" @click="emits('refresh')">刷新</n-button>
   </div>
 </template>
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .result-icon {
   width: v-bind('props.size');
 }

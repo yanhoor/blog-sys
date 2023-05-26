@@ -1,5 +1,5 @@
 <template>
-  <div class="media-upload-multi w-full flex flex-col items-center gap-[12px]">
+  <div class="media-upload-multi flex w-full flex-col items-center gap-[12px]">
     <input
       class="hidden"
       type="file"
@@ -9,7 +9,7 @@
       @change="handleSelectFileChange"
     />
 
-    <div class="flex justify-center items-center gap-[12px]">
+    <div class="flex items-center justify-center gap-[12px]">
       <n-button
         round
         tertiary
@@ -56,10 +56,10 @@
       v-if="uploadMode === 4"
     />
 
-    <n-spin size="32px" v-if="uploading"></n-spin>
+    <n-spin :size="32" v-if="uploading" />
 
     <div
-      class="w-full text-center my-[12px]"
+      class="my-[12px] w-full text-center"
       v-if="audioRecordFile && uploadMode === 4"
     >
       <n-button round type="primary" @click="handleUploadAudio"
@@ -72,15 +72,15 @@
         <div
           v-for="(media, index) of modelValue"
           :key="media.file.url"
-          class="flex justify-center items-center relative limit-size border border-dashed border-gray-300 hover:border-green-600"
+          class="limit-size relative flex items-center justify-center border border-dashed border-gray-300 hover:border-green-600"
           @click.stop
         >
           <MediaImgView
-            class="object-cover overflow-clip"
+            class="overflow-clip object-cover"
             :url="media.file.url"
           />
           <n-icon-wrapper
-            class="absolute -top-[8px] -right-[8px] cursor-pointer"
+            class="absolute -right-[8px] -top-[8px] cursor-pointer"
             :size="18"
             :border-radius="6"
             @click="handleDeleteItem(index)"
@@ -91,13 +91,13 @@
       </div>
 
       <div
-        class="w-full h-0 relative pt-[56.25%]"
+        class="relative h-0 w-full pt-[56.25%]"
         v-if="[3, 4].includes(uploadMode)"
       >
         <MediaUploadImg
           @complete="handleUploadCoverComplete"
           :model-value="coverFile?.url"
-          class="absolute w-full h-full top-0"
+          class="absolute top-0 h-full w-full"
           width="100%"
           height="100%"
           uploadTxt="点击上传封面"
@@ -105,7 +105,7 @@
       </div>
 
       <div
-        class="w-full flex flex-col items-center gap-[12px]"
+        class="flex w-full flex-col items-center gap-[12px]"
         v-if="uploadMode === 3"
       >
         <MediaVideoItem :url="modelValue[0].file.url" />
@@ -296,16 +296,13 @@ function handleClearAllFile() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .limit-size {
   width: v-bind('props.size');
   height: v-bind('props.size');
 }
-.upload-action {
-  @apply border border-dashed border-gray-300 hover:border-green-600 hover:opacity-80;
-}
 img,
 video {
-  @apply w-full h-full;
+  @apply h-full w-full;
 }
 </style>

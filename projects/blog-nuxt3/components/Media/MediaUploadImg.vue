@@ -8,15 +8,15 @@
       @change="handleSelectFileChange"
     />
 
-    <div class="w-full h-full" @click="handleTriggerSelect">
+    <div class="h-full w-full" @click="handleTriggerSelect">
       <slot name="preview" v-if="props.modelValue">
-        <div class="group relative upload-action limit-size">
+        <div class="upload-action limit-size group relative">
           <MediaImgView
-            class="w-full h-full object-cover"
+            class="h-full w-full object-cover"
             :url="props.modelValue"
           />
           <n-icon-wrapper
-            class="absolute -top-[8px] -right-[8px] cursor-pointer"
+            class="absolute -right-[8px] -top-[8px] cursor-pointer"
             :size="18"
             :border-radius="6"
             @click.stop="handleDeleteImage"
@@ -25,7 +25,7 @@
           </n-icon-wrapper>
           <div
             v-if="showPreviewIcon"
-            class="absolute cursor-pointer top-0 left-0 bottom-0 right-0 justify-center items-center gap-4 hidden group-hover:flex"
+            class="absolute bottom-0 left-0 right-0 top-0 hidden cursor-pointer items-center justify-center gap-4 group-hover:flex"
           >
             <n-icon
               class="cursor-pointer text-white hover:text-green-600"
@@ -39,13 +39,13 @@
 
       <div
         v-else
-        class="limit-size flex flex-col justify-center items-center gap-[6px]"
+        class="limit-size flex flex-col items-center justify-center gap-[6px]"
         :class="{ 'upload-action': showBorder }"
       >
         <n-spin size="medium" v-if="uploading" />
         <slot name="trigger" v-else>
           <n-icon
-            class="flex justify-center items-center cursor-pointer hover:text-green-600"
+            class="flex cursor-pointer items-center justify-center hover:text-green-600"
             size="70"
             :component="Add24Regular"
           ></n-icon>
@@ -154,7 +154,7 @@ function handlePreview() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .limit-size {
   width: v-bind('props.width');
   height: v-bind('props.height');

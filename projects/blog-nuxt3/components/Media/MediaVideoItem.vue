@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="w-full video-item-container">
+    <div class="video-item-container w-full">
       <video
         ref="videoRef"
         class="video-item"
@@ -11,12 +11,12 @@
         <MediaImgView class="video-cover" :url="coverUrl" />
         <n-icon
           size="72"
-          class="transform-center cursor-pointer z-10 text-white"
+          class="transform-center z-10 cursor-pointer text-white"
           :component="PlayCircle24Regular"
           @click="handlePlay"
         />
         <span
-          class="media-tag absolute top-0 right-0 rounded-bl-[5px] rounded-tr-[5px]"
+          class="media-tag absolute right-0 top-0 rounded-bl-[5px] rounded-tr-[5px]"
           >视频</span
         >
       </template>
@@ -49,17 +49,17 @@ function handlePlay() {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="postcss">
 .video-item-container {
-  @apply relative w-full h-0;
+  @apply relative h-0 w-full;
   padding-top: 56.25%;
   border-radius: 5px;
   .video-item {
-    @apply w-full h-full object-contain overflow-clip absolute top-0 cursor-pointer bg-black;
-    border-radius: inherit; // 图片圆角
+    @apply absolute top-0 h-full w-full cursor-pointer overflow-clip bg-black object-contain;
+    border-radius: inherit;
   }
   .video-cover {
-    @apply absolute object-cover overflow-clip top-0 w-full h-full;
+    @apply absolute top-0 h-full w-full overflow-clip object-cover;
     border-radius: inherit;
   }
 }

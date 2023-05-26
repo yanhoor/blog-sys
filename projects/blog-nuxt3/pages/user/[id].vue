@@ -4,22 +4,22 @@
     <div v-else-if="userInfo">
       <div class="flex-1 overflow-hidden">
         <div>
-          <div class="w-full h-[180px]">
+          <div class="h-[180px] w-full">
             <img
               :src="config.public.imageBase + userInfo.profileCardBg"
-              class="w-full h-full object-cover object-center"
+              class="h-full w-full object-cover object-center"
               v-if="userInfo.profileCardBg"
             />
             <div
-              class="w-full h-full bg-gradient-to-r from-sky-500 to-indigo-500"
+              class="h-full w-full bg-gradient-to-r from-sky-500 to-indigo-500"
               v-else
             ></div>
           </div>
           <div
-            class="flex flex-col p-[12px] pt-0 gap-[12px] bg-card-light dark:bg-card-dark"
+            class="flex flex-col gap-[12px] bg-card-light p-[12px] pt-0 dark:bg-card-dark"
           >
             <div class="flex items-center gap-[12px]">
-              <div class="flex-1 flex gap-[12px]">
+              <div class="flex flex-1 gap-[12px]">
                 <UserAvatar
                   class="relative -mt-[55px]"
                   :size="120"
@@ -27,10 +27,10 @@
                   disabled
                 />
                 <div class="flex flex-col gap-[6px]">
-                  <div class="font-bold text-3xl">{{ userInfo?.name }}</div>
+                  <div class="text-3xl font-bold">{{ userInfo?.name }}</div>
                   <div class="flex gap-[6px]">
                     <div
-                      class="flex gap-[6px] items-center cursor-pointer"
+                      class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(2)"
                     >
                       <span class="text-gray-400">粉丝</span>
@@ -39,7 +39,7 @@
                       }}</span>
                     </div>
                     <div
-                      class="flex gap-[6px] items-center cursor-pointer"
+                      class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(1)"
                     >
                       <span class="text-gray-400">关注</span>
@@ -93,7 +93,7 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-[12px] max-w-full text-gray-600">
+            <div class="flex max-w-full flex-col gap-[12px] text-gray-600">
               <div
                 class="flex items-start gap-[6px]"
                 v-if="userInfo?.introduce"
@@ -132,7 +132,7 @@
           />
         </template>
         <template v-if="contentType == 2">
-          <div class="mb-[12px] flex justify-between items-center">
+          <div class="mb-[12px] flex items-center justify-between">
             <div>全部博客({{ blogTotal }})</div>
             <n-button
               quaternary
@@ -156,7 +156,7 @@
             </n-button>
           </div>
           <n-collapse-transition class="mb-[12px]" :show="showSearch">
-            <div class="flex gap-[12px] items-center">
+            <div class="flex items-center gap-[12px]">
               <y-search
                 v-model:value="searchParams.keyword"
                 @confirm="handleSearchPost"
@@ -362,14 +362,14 @@ function handleSearchPost() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .statis-item {
   @apply flex items-center py-[5px];
   .n-icon {
     @apply mr-[6px];
   }
   .statis-num {
-    @apply ml-[6px] font-semibold text-[18px];
+    @apply ml-[6px] text-[18px] font-semibold;
   }
 }
 </style>

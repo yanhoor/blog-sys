@@ -1,12 +1,12 @@
 <template>
-  <div class="w-full relative">
+  <div class="relative w-full">
     <div class="w-full overflow-hidden">
       <div
-        class="flex transition-all -ml-[6px]"
+        class="-ml-[6px] flex transition-all"
         :style="{ transform: `translateX(-${(currentPage - 1) * 100}%)` }"
       >
         <div
-          class="pl-[6px] relative shrink-0"
+          class="relative shrink-0 pl-[6px]"
           :style="`width: calc(100% / ${pageSize})`"
           v-for="(media, index) of list"
           :key="media.file.url"
@@ -23,7 +23,7 @@
               v-if="modelValue === media.file"
             ></div>
             <div
-              class="list-item-mask bg-gray-600 opacity-30 cursor-pointer"
+              class="list-item-mask cursor-pointer bg-gray-600 opacity-30"
               v-if="modelValue !== media.file"
               @click="handlePreview(media.file, index)"
             ></div>
@@ -32,14 +32,14 @@
       </div>
     </div>
     <div
-      class="flex items-center cursor-pointer absolute -left-[20px] h-full top-0"
+      class="absolute -left-[20px] top-0 flex h-full cursor-pointer items-center"
       @click="handleNextImagePage(-1)"
       v-if="currentPage > 1"
     >
       <n-icon :component="ChevronLeft24Regular" size="24" />
     </div>
     <div
-      class="flex items-center cursor-pointer h-full top-0 absolute -right-[20px]"
+      class="absolute -right-[20px] top-0 flex h-full cursor-pointer items-center"
       @click="handleNextImagePage(1)"
       v-if="currentPage < imageTotalPage"
     >
@@ -86,17 +86,17 @@ function handlePreview(m: Media, idx: number) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .image-item-container {
-  @apply relative w-full h-0;
+  @apply relative h-0 w-full;
   padding-top: 100%;
   border-radius: 5px;
   .image-item {
-    @apply w-full h-full object-cover overflow-clip absolute top-0;
-    border-radius: inherit; // 图片圆角
+    @apply absolute top-0 h-full w-full overflow-clip object-cover;
+    border-radius: inherit;
   }
 }
 .list-item-mask {
-  @apply absolute top-0 left-0 w-full h-full rounded-[5px];
+  @apply absolute left-0 top-0 h-full w-full rounded-[5px];
 }
 </style>

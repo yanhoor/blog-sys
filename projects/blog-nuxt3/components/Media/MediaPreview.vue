@@ -4,7 +4,7 @@
     class="w-[100vw]] h-[100vh]"
     @update:show="emit('update:show', false)"
   >
-    <div class="w-full h-full pt-[calc(100%*9/16)] relative bg-black">
+    <div class="relative h-full w-full bg-black pt-[calc(100%*9/16)]">
       <template v-if="isImg">
         <MediaImgView class="media-item" :url="file.url" />
       </template>
@@ -19,7 +19,7 @@
         :component="ArrowCircleLeft24Regular"
         color="#fff"
         :size="48"
-        class="absolute top-[20px] left-[20px] cursor-pointer"
+        class="absolute left-[20px] top-[20px] cursor-pointer"
         @click="emit('update:show', false)"
       />
     </div>
@@ -42,8 +42,8 @@ const emit = defineEmits(['update:show'])
 const config = useRuntimeConfig()
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .media-item {
-  @apply absolute w-full h-full top-0 object-contain;
+  @apply absolute top-0 h-full w-full object-contain;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="media-audio-record w-full flex flex-col items-center gap-[12px]">
+  <div class="media-audio-record flex w-full flex-col items-center gap-[12px]">
     <div class="flex items-center gap-[6px]">
       <n-icon
         v-if="recordState !== 'recording'"

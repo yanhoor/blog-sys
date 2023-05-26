@@ -1,7 +1,7 @@
 <template>
-  <div class="result-empty w-full flex flex-col items-center gap-[12px]">
+  <div class="result-empty flex w-full flex-col items-center gap-[12px]">
     <n-icon :component="ErrorCircle24Filled" :size="size" color="#36ad6a" />
-    <p class="font-semibold text-[16px]">出错了，请稍后重试</p>
+    <p class="text-[16px] font-semibold">出错了，请稍后重试</p>
     <n-button type="primary" @click="emits('refresh')">刷新</n-button>
   </div>
 </template>
@@ -19,4 +19,4 @@ const props = withDefaults(defineProps<Props>(), {
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="postcss" scoped></style>

@@ -19,12 +19,12 @@
     ></audio>
     <div class="w-1/3" v-if="coverUrl">
       <div
-        class="w-full h-0 relative bg-black rounded-[3px]"
+        class="relative h-0 w-full rounded-[3px] bg-black"
         :style="{ 'padding-top': 'calc(100%*9/16)' }"
       >
         <MediaImgView class="media-cover" :url="coverUrl" v-if="coverUrl" />
         <div
-          class="flex flex-col justify-center items-center gap-[5px] text-white transform-center cursor-pointer z-10"
+          class="transform-center z-10 flex cursor-pointer flex-col items-center justify-center gap-[5px] text-white"
         >
           <n-icon
             size="48"
@@ -50,13 +50,13 @@
           >
         </div>
         <span
-          class="media-tag absolute top-0 right-0 rounded-bl-[3px] rounded-tr-[3px]"
+          class="media-tag absolute right-0 top-0 rounded-bl-[3px] rounded-tr-[3px]"
           >录音</span
         >
       </div>
     </div>
     <div
-      class="w-fit flex items-center px-[12px] py-[5px] dark:bg-gray-600 bg-gray-200 rounded-[6px]"
+      class="flex w-fit items-center rounded-[6px] bg-gray-200 px-[12px] py-[5px] dark:bg-gray-600"
       v-else-if="duration"
     >
       <div class="flex items-center">
@@ -157,9 +157,9 @@ function handleUnknownDuration() {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="postcss">
 .media-cover {
-  @apply absolute object-cover overflow-clip top-0 w-full h-full;
+  @apply absolute top-0 h-full w-full overflow-clip object-cover;
   border-radius: inherit;
 }
 </style>

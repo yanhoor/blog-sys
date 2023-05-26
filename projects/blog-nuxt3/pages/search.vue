@@ -2,7 +2,7 @@
   <div>
     <!--todo: 深色下刷新，颜色变化有过渡-->
     <n-tabs
-      class="p-[20px] pb-0 sticky top-[60px] z-10 bg-card-light dark:bg-card-dark"
+      class="sticky top-[60px] z-10 bg-card-light p-[20px] pb-0 dark:bg-card-dark"
       type="line"
       v-model:value="searchParams.sort"
       @update:value="handleSearch"
@@ -79,7 +79,7 @@ async function handleSearch() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .n-card {
   :deep(.n-card__content) {
     padding-top: 0;
