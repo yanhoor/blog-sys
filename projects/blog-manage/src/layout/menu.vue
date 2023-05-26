@@ -22,7 +22,7 @@ const route = useRoute()
 const defaultActive = computed(() => route.path.replace('/', ''))
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .el-menu {
   min-height: 100%;
 }

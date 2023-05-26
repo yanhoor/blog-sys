@@ -17,7 +17,7 @@ const backToHome = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .el-result {
   height: 100%;
 }

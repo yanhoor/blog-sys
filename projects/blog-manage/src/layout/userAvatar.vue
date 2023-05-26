@@ -50,7 +50,7 @@ async function logout() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .el-avatar {
   cursor: pointer;
 }

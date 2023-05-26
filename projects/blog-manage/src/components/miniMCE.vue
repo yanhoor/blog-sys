@@ -58,7 +58,7 @@ function handleUpdate(val: string) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .editor-container {
   width: 100%;
   :deep(.tox-tinymce) {

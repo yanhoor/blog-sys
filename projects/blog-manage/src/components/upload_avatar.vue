@@ -62,7 +62,7 @@ const handleUpload = async (options: UploadRequestOptions) => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .avatar-uploader {
   :deep(.el-upload) {
     border: 1px dashed var(--el-border-color);

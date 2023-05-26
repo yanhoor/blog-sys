@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading" v-loading="loading"></div>
-  <div v-else class="h-full w-full flex flex-col gap-12 home-container">
-    <div class="w-full flex gap-6">
+  <div v-else class="home-container flex h-full w-full flex-col gap-12">
+    <div class="flex w-full gap-6">
       <NumberBoard
         class="flex-1"
         title="博客总数"
@@ -23,11 +23,11 @@
         :count="totalCount.userActiveCount"
       />
     </div>
-    <div class="flex-1 flex flex-col gap-12">
-      <el-card class="flex-1 chart">
+    <div class="flex flex-1 flex-col gap-12">
+      <el-card class="chart flex-1">
         <LineChart v-bind="weekStatis.blog" />
       </el-card>
-      <el-card class="flex-1 chart">
+      <el-card class="chart flex-1">
         <LineChart v-bind="weekStatis.user" class="flex-1" />
       </el-card>
     </div>
@@ -135,7 +135,7 @@ async function getTotalCount() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .home-container {
   .chart:deep(.el-card__body) {
     width: 100%;

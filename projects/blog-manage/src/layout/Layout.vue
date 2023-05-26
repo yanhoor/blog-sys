@@ -23,7 +23,7 @@ import UserAvatar from './userAvatar.vue'
 import RouteNav from './routeNav.vue'
 import ThemeSwitcher from '@/layout/themeSwitcher.vue'
 </script>
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .app-container {
   width: 100%;
   height: 100%;

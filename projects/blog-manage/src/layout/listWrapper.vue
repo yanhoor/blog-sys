@@ -10,7 +10,7 @@
       <div class="vxe-table-container">
         <slot name="table"></slot>
       </div>
-      <div class="flex justify-end mt-12">
+      <div class="mt-12 flex justify-end">
         <slot name="tablePagination"></slot>
       </div>
     </div>
@@ -20,14 +20,14 @@
 
 <script setup lang="ts"></script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .list-page-wrapper {
-  @apply flex flex-col h-full;
+  @apply flex h-full flex-col;
   .filter-actions {
     @apply my-[12px];
   }
   .list-table-container {
-    @apply flex flex-col flex-1 overflow-hidden;
+    @apply flex flex-1 flex-col overflow-hidden;
     .vxe-table-container {
       @apply flex-1 overflow-hidden;
     }
