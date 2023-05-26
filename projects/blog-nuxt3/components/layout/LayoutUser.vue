@@ -1,15 +1,16 @@
 <template>
   <div class="layout-user">
-    <div class="cursor-pointer flex items-center gap-[6px]" v-if="userInfo">
+    <div class="flex cursor-pointer items-center gap-[6px]" v-if="userInfo">
       <n-button type="primary" @click="showWritePost = true" size="small">
         <template #icon>
           <n-icon :component="Compose24Regular" />
         </template>
       </n-button>
       <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-        <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
+        <n-badge :value="notificationUnreadCount" :max="99">
+          <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
+        </n-badge>
       </n-dropdown>
-      <layout-notification />
     </div>
     <n-button type="primary" v-else @click="navigateTo('/login')"
       >登录</n-button
@@ -17,12 +18,7 @@
 
     <PostWrite
       :show="showWritePost"
-      @update:show="
-        ($event) => {
-          showWritePost = $event
-          setTimeout(() => (writePostKey = new Date().getTime()), 300)
-        }
-      "
+      @update:show="handleWritePostShowUpdate"
       :key="writePostKey"
     />
   </div>
@@ -34,14 +30,16 @@ import {
   NIcon,
   NDropdown,
   createDiscreteApi,
-  DialogOptions
+  DialogOptions,
+  NBadge
 } from 'naive-ui'
 import {
   ArrowCircleRight20Regular,
   CalendarPerson20Regular,
   PersonCircle12Regular,
   Compose24Regular,
-  Star48Filled
+  Star48Filled,
+  Chat24Regular
 } from '@vicons/fluent'
 import { Component, h } from 'vue'
 import { socketClient } from '@/socketIo'
@@ -55,12 +53,14 @@ const renderIcon = (icon: Component) => {
 }
 
 const config = useRuntimeConfig()
+const notificationUnreadCount = useNotificationUnreadCount()
 const userInfo = useUserInfo()
 const route = useRoute()
 const showWritePost = ref(false)
 const token = useCookie('token')
 const writePostKey = ref(new Date().getTime())
-const userOptions = ref([
+
+const userOptions = computed(() => [
   {
     label: '个人资料',
     key: 'profile',
@@ -75,6 +75,13 @@ const userOptions = ref([
     label: '我的收藏',
     key: 'myCollection',
     icon: renderIcon(Star48Filled)
+  },
+  {
+    label: `通知消息${
+      notificationUnreadCount.value ? `(${notificationUnreadCount.value})` : ''
+    }`,
+    key: 'myNotification',
+    icon: renderIcon(Chat24Regular)
   },
   {
     label: '退出登录',
@@ -93,6 +100,9 @@ function handleDropdownSelect(key: string | number) {
       break
     case 'myCollection':
       navigateTo({ name: 'my-collection' })
+      break
+    case 'myNotification':
+      navigateTo('/notification')
       break
     case 'logout':
       handleLogout()
@@ -133,5 +143,10 @@ async function checkCurrentPath() {
   if (['/user/profile'].includes(route.path)) {
     await navigateTo({ path: '/', replace: true })
   }
+}
+
+function handleWritePostShowUpdate(v: boolean) {
+  showWritePost.value = v
+  setTimeout(() => (writePostKey.value = new Date().getTime()), 300)
 }
 </script>

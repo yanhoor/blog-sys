@@ -17,20 +17,7 @@
 
         <LayoutUser />
 
-        <n-switch
-          v-model:value="colorModel"
-          @update:value="handleChange"
-          size="large"
-          checked-value="dark"
-          unchecked-value="light"
-        >
-          <template #checked-icon>
-            <n-icon :component="WeatherMoon16Regular" />
-          </template>
-          <template #unchecked-icon>
-            <n-icon :component="WeatherSunny20Regular" />
-          </template>
-        </n-switch>
+        <LayoutColorMode />
       </div>
     </n-layout-header>
     <n-layout-content
@@ -57,36 +44,15 @@
 <script lang="ts" setup>
 import {
   NButton,
-  NInput,
-  NSwitch,
-  NSpace,
-  NAvatar,
-  NCard,
   NIcon,
-  NDropdown,
   NLayout,
   NLayoutContent,
-  NLayoutHeader,
-  NIconWrapper,
-  createDiscreteApi
+  NLayoutHeader
 } from 'naive-ui'
-import {
-  Search12Regular,
-  WeatherSunny20Regular,
-  WeatherMoon16Regular,
-  Home24Regular
-} from '@vicons/fluent'
-import { useColorMode } from '@vueuse/core'
+import { Home24Regular } from '@vicons/fluent'
 
 const config = useRuntimeConfig()
-const colorModel = useColorMode()
-const darkMode = useDarkMode()
 const userInfo = useUserInfo()
-
-function handleChange(val: string) {
-  // console.log('=======handleChange======', val)
-  darkMode.value = val === 'dark'
-}
 </script>
 
 <style lang="postcss" scoped>

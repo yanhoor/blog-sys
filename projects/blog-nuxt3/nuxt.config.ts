@@ -67,7 +67,23 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server'
   },
-  modules: ['@vueuse/nuxt', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
+  modules: [
+    '@vueuse/nuxt',
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    '@nuxtjs/color-mode'
+  ],
+  // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
+  colorMode: {
+    preference: 'system', // default value of $colorMode.preference
+    fallback: 'light', // fallback value if not system preference found
+    // hid: 'nuxt-color-mode-script',
+    // globalName: '__NUXT_COLOR_MODE__',
+    // componentName: 'ColorScheme',
+    classPrefix: '',
+    classSuffix: '',
+    storageKey: 'nuxt-color-mode'
+  },
   css: ['@/assets/styles/var.css', '@/assets/styles/global.css'],
   postcss: {
     plugins: {
