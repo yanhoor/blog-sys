@@ -272,7 +272,7 @@ useHead(() => {
   }
 })
 
-handlePageInit()
+await handlePageInit()
 
 async function handlePageInit() {
   loading.value = true

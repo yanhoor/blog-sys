@@ -8,11 +8,11 @@
 
     <n-card v-else>
       <div class="flex flex-col items-start gap-[12px]">
-        <div class="flex items-center gap-[6px] w-full relative">
+        <div class="relative flex w-full items-center gap-[6px]">
           <UserAvatar :user="blogInfo.createBy" :size="56" />
           <div class="flex flex-col items-start">
             <div
-              class="text-green-700 text-[20px] cursor-pointer"
+              class="cursor-pointer text-[20px] text-green-700"
               @click="navigateTo({ path: '/user/' + blogInfo.createBy.id })"
             >
               {{ blogInfo.createBy?.name }}
@@ -27,7 +27,7 @@
               quaternary
               circle
               type="default"
-              class="absolute top-0 right-0 cursor-pointer"
+              class="absolute right-0 top-0 cursor-pointer"
             >
               <template #icon>
                 <n-icon :component="ChevronDown24Regular" />
@@ -40,9 +40,9 @@
 
         <MediaListView class="w-full" :list="blogInfo.medias" />
 
-        <div class="grid grid-cols-3 w-full">
+        <div class="grid w-full grid-cols-3">
           <div
-            class="flex justify-center items-center cursor-pointer gap-[6px]"
+            class="flex cursor-pointer items-center justify-center gap-[6px]"
             @click="handleSwitchType('like')"
           >
             <n-icon
@@ -61,7 +61,7 @@
             <span>{{ blogInfo.likedByCount || '赞' }}</span>
           </div>
           <div
-            class="flex justify-center items-center cursor-pointer gap-[6px]"
+            class="flex cursor-pointer items-center justify-center gap-[6px]"
             @click="handleSwitchType('comment')"
           >
             <n-icon
@@ -78,7 +78,7 @@
             <span>{{ blogInfo.commentsCount || '评论' }}</span>
           </div>
           <div
-            class="flex justify-center items-center cursor-pointer gap-[6px]"
+            class="flex cursor-pointer items-center justify-center gap-[6px]"
             @click="handleSwitchType('collect')"
           >
             <n-icon
@@ -186,7 +186,7 @@ useHead(() => {
   }
 })
 
-initPage()
+await initPage()
 
 async function initPage() {
   loading.value = true

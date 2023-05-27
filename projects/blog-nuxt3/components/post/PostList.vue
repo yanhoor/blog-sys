@@ -63,7 +63,7 @@ const {
   handleChangeFetchParams
 } = useListAppendFetch<Blog>(props.url, props.searchParams, {})
 
-handleLoadNextPage()
+await handleLoadNextPage()
   .then((r) => {
     const { message } = createDiscreteApi(['message'])
     if (r?.success) {
