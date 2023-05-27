@@ -105,6 +105,7 @@ import {
   DialogOptions
 } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
+import { h } from 'vue'
 
 interface Props {
   canEdit?: boolean // 是否能编辑文章
@@ -144,7 +145,14 @@ const actionOptions = ref<DropdownOption[]>([
 
 if (props.blog?.createById === userInfo.value?.id) {
   actionOptions.value.unshift({
-    label: '删除',
+    label: () =>
+      h(
+        'span',
+        { class: 'text-red-500' },
+        {
+          default: () => '删除'
+        }
+      ),
     key: 'delete',
     props: {
       onClick: handleDeletePost
