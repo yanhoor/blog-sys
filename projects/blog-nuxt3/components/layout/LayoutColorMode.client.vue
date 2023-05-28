@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { NPopover, NIcon } from 'naive-ui'
+import { NPopover, NIcon, darkTheme } from 'naive-ui'
 import {
   WeatherSunny20Regular,
   WeatherMoon16Regular,
@@ -54,9 +54,13 @@ import {
 
 // colorMode.value 为 dark/light，colorMode.preference 为 dark/light/system
 const colorMode = useColorMode()
+const uiTheme = useUITheme()
 
 function handleChangeColorMode(v: string) {
   colorMode.preference = v
+  nextTick(
+    () => (uiTheme.value = colorMode.value === 'dark' ? darkTheme : null)
+  )
   // console.log(
   //   '=======handleChangeColorMode========',
   //   v,

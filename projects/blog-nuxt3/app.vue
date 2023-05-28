@@ -1,7 +1,7 @@
 <template>
   <NConfigProvider
     class="bg-page-light dark:bg-page-dark"
-    :theme="UITheme"
+    :theme="uiTheme"
     :locale="zhCN"
     :date-locale="dateZhCN"
     inline-theme-disabled
@@ -20,20 +20,13 @@ import { NConfigProvider, darkTheme, zhCN, dateZhCN } from 'naive-ui'
 import { initSocketIo, socketClient } from '@/socketIo'
 
 const colorMode = useColorMode()
+const uiTheme = useUITheme()
 const route = useRoute()
 const userInfo = useUserInfo()
 const config = useRuntimeConfig()
-const UITheme = ref(null)
-
-watch(
-  () => colorMode.value,
-  (val, oldVal) => {
-    UITheme.value = val === 'dark' ? darkTheme : null
-  }
-)
 
 onMounted(() => {
-  UITheme.value = colorMode.value === 'dark' ? darkTheme : null
+  uiTheme.value = colorMode.value === 'dark' ? darkTheme : null
 
   if (userInfo.value) {
     useFetchNotificationCount()
