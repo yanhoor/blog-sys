@@ -218,6 +218,7 @@ async function handleSelectFileChange(e: Event) {
   failedFileList.value = []
   await Promise.all(uploadList)
   uploading.value = false
+  inputRef.value.value = ''
 }
 
 async function handleAudioRecordComplete(f: File | undefined) {

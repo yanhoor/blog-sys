@@ -108,13 +108,10 @@ async function handleSelectFileChange(e: Event) {
     uploadList.push(handleUploadFile(file))
   }
 
-  try {
-    uploading.value = true
-    await Promise.all(uploadList)
-    uploading.value = false
-  } catch (e) {
-    uploading.value = false
-  }
+  uploading.value = true
+  await Promise.all(uploadList)
+  uploading.value = false
+  inputRef.value.value = ''
 }
 
 async function handleUploadFile(file: File) {
