@@ -1,34 +1,36 @@
 <template>
   <div class="flex flex-wrap gap-[12px]" v-bind="$attrs">
-    <div class="relative h-full w-full pt-[24px]" v-if="isPreview">
-      <div class="toolbar-container">
-        <div class="toolbar-item" @click="() => (isPreview = false)">
-          <n-icon :component="ZoomOut24Regular" size="20"></n-icon>
-          <span>收起</span>
+    <n-collapse-transition :show="isPreview">
+      <div class="relative h-full w-full pt-[24px]">
+        <div class="toolbar-container">
+          <div class="toolbar-item" @click="() => (isPreview = false)">
+            <n-icon :component="ZoomOut24Regular" size="20"></n-icon>
+            <span>收起</span>
+          </div>
+          <div class="toolbar-item" @click="handleZoomIn">
+            <n-icon :component="ImageMultiple24Regular" size="20"></n-icon>
+            <span>查看大图</span>
+          </div>
         </div>
-        <div class="toolbar-item" @click="handleZoomIn">
-          <n-icon :component="ImageMultiple24Regular" size="20"></n-icon>
-          <span>查看大图</span>
+        <div
+          class="preview-item-control left-pre left-0"
+          @click="handleNextPreview(-1)"
+          v-if="currentPreviewIndex > 0"
+        ></div>
+        <div class="relative h-0 w-full rounded-[5px] pt-[100%]">
+          <MediaImgView
+            class="radius-inherit absolute top-0 h-full w-full cursor-zoom-out object-cover"
+            :url="currentPreviewItem.url"
+            @click="handleCancelPreview"
+          />
         </div>
+        <div
+          class="preview-item-control right-pre right-0"
+          @click="handleNextPreview(1)"
+          v-if="currentPreviewIndex !== imageList.length - 1"
+        ></div>
       </div>
-      <div
-        class="preview-item-control left-pre left-0"
-        @click="handleNextPreview(-1)"
-        v-if="currentPreviewIndex > 0"
-      ></div>
-      <div class="relative h-0 w-full rounded-[5px] pt-[100%]">
-        <MediaImgView
-          class="radius-inherit absolute top-0 h-full w-full cursor-zoom-out object-cover"
-          :url="currentPreviewItem.url"
-          @click="handleCancelPreview"
-        />
-      </div>
-      <div
-        class="preview-item-control right-pre right-0"
-        @click="handleNextPreview(1)"
-        v-if="currentPreviewIndex !== imageList.length - 1"
-      ></div>
-    </div>
+    </n-collapse-transition>
 
     <!--图片预览下面的小图-->
     <MediaNavigator
@@ -41,26 +43,55 @@
 
     <!--图片列表-->
     <div class="-ml-[6px] -mt-[6px] flex w-full flex-wrap" v-else>
+      <template v-if="imageList.length < 11">
+        <div v-if="imageList.length === 7" class="w-full">
+          <div class="flex w-full flex-wrap">
+            <MediaImgRatioView
+              width="calc(100%/4)"
+              :url="media.file.url"
+              v-for="(media, index) of imageList.slice(0, 4)"
+              @click="handleZoomIn(index)"
+              :key="media.id"
+            />
+          </div>
+
+          <div class="flex w-full flex-wrap">
+            <MediaImgRatioView
+              width="calc(100%/3)"
+              :url="media.file.url"
+              v-for="(media, index) of imageList.slice(4, 7)"
+              @click="handleZoomIn(index + 4)"
+              :key="media.id"
+            />
+          </div>
+        </div>
+
+        <MediaImgRatioView
+          v-else
+          class="cursor-zoom-in"
+          v-for="(media, index) of imageList"
+          @click="handleZoomIn(index)"
+          :key="media.id"
+          :ratio="imageList.length % 5 === 0 ? 1 : 9 / 16"
+          :width="`calc(100%/${getItemWidthRatio(imageList.length)})`"
+          :url="media.file.url"
+        />
+      </template>
       <div
+        v-else
         class="group relative w-1/5 cursor-zoom-in pl-[6px] pt-[6px]"
         v-for="(media, index) of imageList"
         :key="media.file.url"
         @click="handlePreview(media.file, index, true)"
       >
-        <div class="image-item-container" v-if="index < 10">
+        <div class="image-item-container pt-[100%]" v-if="index < 10">
           <MediaImgView class="image-item" :url="media.file.url" ratio="80" />
           <div
             class="list-item-mask bg-gray-200 group-hover:inline-block"
-            :class="[
-              imageList.length > 10 && index === 9
-                ? 'num-mask'
-                : 'hidden opacity-10'
-            ]"
+            :class="[index === 9 ? 'num-mask' : 'hidden opacity-10']"
           ></div>
         </div>
-        <span
-          class="overflow-num text-white"
-          v-if="imageList.length > 10 && index === 9"
+        <span class="overflow-num text-white" v-if="index === 9"
           >+{{ imageList.length - 10 }}</span
         >
       </div>
@@ -71,8 +102,9 @@
 <script setup lang="ts">
 import { Media, MediaFile } from 'sys-types'
 import { ImageMultiple24Regular, ZoomOut24Regular } from '@vicons/fluent'
-import { NIcon } from 'naive-ui'
+import { NIcon, NCollapseTransition } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
+import MediaImgRatioView from '~/components/Media/MediaImgRatioView.vue'
 
 interface Props {
   imageList: Media[]
@@ -125,15 +157,24 @@ function handlePreviewItemChange(item: Media, idx: number) {
   currentPreviewIndex.value = idx
 }
 
-function handleZoomIn() {
+function handleZoomIn(index?: number) {
   viewerApi({
     options: {
-      initialViewIndex: currentPreviewIndex.value
+      initialViewIndex: index || currentPreviewIndex.value
     },
     images: props.imageList.map(
       (image) => config.public.imageBase + image.file.url
     )
   })
+}
+
+function getItemWidthRatio(itemCount: number): number {
+  if (itemCount < 5 && itemCount % 2 === 0) return 2
+  if (itemCount === 8) return 4
+  if (itemCount > 5 && itemCount % 3 === 0) return 3
+  if (itemCount === 10) return 5
+
+  return itemCount
 }
 </script>
 
@@ -162,12 +203,12 @@ function handleZoomIn() {
 
 .image-item-container {
   @apply relative h-0 w-full;
-  padding-top: 100%;
   border-radius: 5px;
-  .image-item {
-    @apply absolute top-0 h-full w-full overflow-clip object-cover;
-    border-radius: inherit;
-  }
+}
+
+.image-item {
+  @apply absolute top-0 h-full w-full overflow-clip object-cover;
+  border-radius: inherit;
 }
 
 .overflow-num {

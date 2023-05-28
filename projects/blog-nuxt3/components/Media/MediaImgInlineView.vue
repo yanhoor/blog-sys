@@ -1,6 +1,6 @@
 <template>
   <div
-    class="inline-flex items-center gap-[4px] align-text-bottom leading-[18px] text-[#18a058]"
+    class="inline-flex cursor-pointer items-center gap-[4px] align-text-top leading-[18px] text-[#18a058]"
     @click.stop="handlePreview"
   >
     <n-icon size="18" :component="Image24Regular" />
