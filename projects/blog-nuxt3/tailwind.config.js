@@ -1,7 +1,7 @@
 module.exports = {
-  content: ['./src/**/*.vue'],
+  content: ['./src/**/*.{html,js,vue}'],
   corePlugins: {
-    // preflight: false, // 禁止预设样式
+    preflight: false // 禁止预设样式
   },
   darkMode: 'class',
   theme: {
