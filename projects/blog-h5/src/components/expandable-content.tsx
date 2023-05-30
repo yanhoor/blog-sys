@@ -41,7 +41,9 @@ export default function ExpandableContent({
   function triggerExpand(e: any) {
     e.stopPropagation()
     if (!isExpanded) {
-      setScrollTop(document.documentElement.scrollTop)
+      scrollTopRef.current = document.documentElement.scrollTop
+    } else {
+      document.documentElement.scrollTop = scrollTopRef.current
     }
     setIsExpanded((v) => !v)
   }
