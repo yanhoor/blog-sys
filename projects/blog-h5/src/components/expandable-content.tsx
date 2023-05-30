@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
+import { PhotoO } from '@react-vant/icons'
+import { ImagePreview } from 'react-vant'
 interface Props {
   content: string
   maxLength?: number
@@ -17,7 +19,7 @@ export default function ExpandableContent({
   collapseText = '收起'
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [scrollTop, setScrollTop] = useState(0)
+  const scrollTopRef = useRef(0)
   let showAction = false
   let isMultiLine = false
   let expandBtnText = expandText
@@ -36,12 +38,8 @@ export default function ExpandableContent({
     showAction = true
   }
 
-  useEffect(() => {
-    // 回到展开前的滚动位置
-    if (!isExpanded) document.documentElement.scrollTop = scrollTop
-  }, [isExpanded])
-
-  function triggleExpand() {
+  function triggerExpand(e: any) {
+    e.stopPropagation()
     if (!isExpanded) {
       setScrollTop(document.documentElement.scrollTop)
     }
