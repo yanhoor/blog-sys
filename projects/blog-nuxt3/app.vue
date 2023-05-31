@@ -28,6 +28,10 @@ const config = useRuntimeConfig()
 onMounted(() => {
   uiTheme.value = colorMode.value === 'dark' ? darkTheme : null
 
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', handleSystemModeChange)
+
   if (userInfo.value) {
     useFetchNotificationCount()
   }
@@ -36,6 +40,16 @@ onMounted(() => {
     initSocketIo(config.public.wsHost, userInfo.value?.id as string)
   }
 })
+
+onUnmounted(() => {
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .removeEventListener('change', handleSystemModeChange)
+})
+
+function handleSystemModeChange(e: MediaQueryListEvent) {
+  uiTheme.value = e.matches ? darkTheme : null
+}
 
 function getPathKey() {
   return route.fullPath
