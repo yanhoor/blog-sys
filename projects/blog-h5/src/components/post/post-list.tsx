@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 interface Props {
   url?: string
-  initParams?: any
+  initParams?: object
 }
 
 export default function PostList({ url = '/blog/list', initParams }: Props) {
@@ -20,12 +20,10 @@ export default function PostList({ url = '/blog/list', initParams }: Props) {
   }
 
   return (
-    <div>
-      <AppendListWrapper
-        url={url}
-        createList={createPostList}
-        initParams={initParams}
-      />
-    </div>
+    <AppendListWrapper
+      url={url}
+      createList={createPostList}
+      initParams={initParams}
+    />
   )
 }

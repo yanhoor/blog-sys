@@ -1,4 +1,4 @@
-import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 
 export default function Layout() {
@@ -11,13 +11,6 @@ export default function Layout() {
   return (
     <div className="layout h-full">
       <Outlet />
-      <ScrollRestoration
-        getKey={(location, matches) => {
-          // default behavior
-          console.log('======ScrollRestoration=======', matches)
-          return location.pathname + location.search
-        }}
-      />
     </div>
   )
 }

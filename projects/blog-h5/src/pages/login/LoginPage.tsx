@@ -47,10 +47,11 @@ export default function LoginPage() {
   return (
     <PageWrapper title="登录">
       <CustomNavBar title="登录" />
-      <div className="h-full w-full flex flex-col justify-center absolute">
+      <div className="absolute flex h-full w-full flex-col justify-center">
         <YCard className="mx-[12px]">
           <Form form={formInstance}>
             <Form.Item
+              className="!bg-block-light dark:!bg-block-dark"
               validateTrigger="onBlur"
               rules={[
                 { required: true, message: '请填写手机号' }

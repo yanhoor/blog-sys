@@ -51,10 +51,12 @@ export default function UserImageWall({ userId }: Props) {
 
   return imageList.length ? (
     <div className="image-section">
-      <div className="flex justify-between items-center mx-[5px]">
+      <div className="mx-[5px] flex items-center justify-between">
         <div className="flex items-center gap-[4px]">
-          <span className="text-gray-500 text-[14px]">相册</span>
-          <span className="font-semibold text-[16px]">{imageTotal}</span>
+          <span className="secondary-text text-[14px]">相册</span>
+          <span className="regular-text text-[16px] font-semibold">
+            {imageTotal}
+          </span>
         </div>
         <span
           className="text-[14px]"
@@ -66,10 +68,10 @@ export default function UserImageWall({ userId }: Props) {
         </span>
       </div>
       <div className="w-full">
-        <div className="overflow-auto flex">
+        <div className="flex overflow-auto">
           {imageList.map((media, index) => (
-            <div className="w-1/5 float-left shrink-0" key={media.id}>
-              <div className="relative w-full h-0 pt-[100%]">
+            <div className="float-left w-1/5 shrink-0" key={media.id}>
+              <div className="relative h-0 w-full pt-[100%]">
                 <MediaImageItem
                   className="absolute top-0 h-full w-full overflow-clip object-cover"
                   url={media.file.url}

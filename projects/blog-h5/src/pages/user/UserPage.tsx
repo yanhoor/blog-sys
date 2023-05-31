@@ -65,7 +65,7 @@ export default function UserPage() {
             <div className="user-page">
               {userInfo.profileCardBg ? (
                 <MediaImageItem
-                  className="w-full h-[150px]"
+                  className="h-[150px] w-full"
                   url={userInfo.profileCardBg}
                 />
               ) : (
@@ -75,44 +75,44 @@ export default function UserPage() {
                 <YCard className="!rounded-tl-[18px] !rounded-tr-[18px]">
                   <div className="flex items-start gap-[12px]">
                     <UserAvatar size={56} user={userInfo} />
-                    <div className="flex-1 flex flex-col">
+                    <div className="flex flex-1 flex-col">
                       <UserName
                         className="text-[24px] font-semibold"
                         user={userInfo}
                       />
-                      <div className="flex justify-around divide-x">
+                      <div className="divide-color flex justify-around divide-x">
                         <div
-                          className="flex-1 flex items-center justify-center gap-[8px]"
+                          className="flex flex-1 items-center justify-center gap-[8px]"
                           onClick={() => {
                             navigate('/follower/' + userInfo.id)
                           }}
                         >
-                          <span className="text-gray-500">粉丝</span>
-                          <span className="text-center text-[18px] font-semibold">
+                          <span className="secondary-text">粉丝</span>
+                          <span className="regular-text text-center text-[18px] font-semibold">
                             {userInfo.followerCount}
                           </span>
                         </div>
                         <div
-                          className="flex-1 flex items-center justify-center gap-[8px]"
+                          className="flex flex-1 items-center justify-center gap-[8px]"
                           onClick={() => {
                             navigate('/following/' + userInfo.id)
                           }}
                         >
-                          <span className="text-gray-500">关注</span>
-                          <span className="text-center text-[18px] font-semibold">
+                          <span className="secondary-text">关注</span>
+                          <span className="regular-text text-center text-[18px] font-semibold">
                             {userInfo.followingCount}
                           </span>
                         </div>
-                        <div className="flex-1 flex items-center justify-center gap-[8px]">
-                          <span className="text-gray-500">获赞</span>
-                          <span className="text-center text-[18px] font-semibold">
+                        <div className="flex flex-1 items-center justify-center gap-[8px]">
+                          <span className="secondary-text">获赞</span>
+                          <span className="regular-text text-center text-[18px] font-semibold">
                             {userInfo.likedCount}
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-[12px] text-gray-500 text-[12px]">
+                  <div className="secondary-text mt-[12px] text-[12px]">
                     简介：{userInfo.introduce || '暂无简介'}
                   </div>
                 </YCard>
@@ -120,10 +120,10 @@ export default function UserPage() {
                 <UserImageWall userId={params.id as string} key={refreshTime} />
 
                 <div className="post-section">
-                  <div className="flex justify-between items-center mx-[5px]">
+                  <div className="mx-[5px] flex items-center justify-between">
                     <div className="flex items-center gap-[4px]">
-                      <span className="text-gray-500 text-[14px]">博客</span>
-                      <span className="font-semibold text-[16px]">
+                      <span className="secondary-text text-[14px]">博客</span>
+                      <span className="regular-text text-[16px] font-semibold">
                         {postTotal}
                       </span>
                     </div>

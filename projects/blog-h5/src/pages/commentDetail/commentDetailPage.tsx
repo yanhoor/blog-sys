@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { Comment } from 'sys-types'
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import $http, { comment_info, comment_reply_list } from '@/http'
 import PageFetchWrapper from '@/components/page-fetch-wrapper'
 import AppendListWrapper from '@/components/append-list-wrapper'
@@ -10,6 +10,7 @@ import { Popover, PullRefresh } from 'react-vant'
 import { ClockO, Sort } from '@react-vant/icons'
 import PageWrapper from '@/components/page-wrapper'
 import CustomNavBar from '@/components/custom/custom-nav-bar'
+import { ThemeContext } from '@/contexts'
 
 export default function CommentDetailPage() {
   const params = useParams()
@@ -19,6 +20,7 @@ export default function CommentDetailPage() {
   const [replyTotal, setReplyTotal] = useState(0)
   const commentListRef = useRef<any>()
   const [commentFiltType, setCommentFiltType] = useState(1) // 1-- 时间，2--热度
+  const theme = useContext(ThemeContext)
 
   async function onInit() {
     await Promise.all([
@@ -69,23 +71,24 @@ export default function CommentDetailPage() {
                   onDelete={() => history.back()}
                 ></CommentItem>
               </YCard>
-              <div className="flex flex-col gap-[4px] mx-[5px]">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-[12px] font-semibold">
-                    共 {replyTotal} 回复
+              <div className="mx-[5px] flex flex-col gap-[4px]">
+                <div className="secondary-text flex items-center justify-between">
+                  <span className="text-[14px] font-semibold">
+                    共 {replyTotal} 条回复
                   </span>
                   <Popover
                     ref={commentFilterRef}
+                    theme={theme}
                     placement="bottom-end"
                     reference={
                       commentFiltType === 1 ? (
-                        <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
-                          <ClockO fontSize="12px" />
+                        <div className="flex items-center gap-[2px] text-[14px]">
+                          <ClockO fontSize="14px" />
                           <span>按时间</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-[2px] text-gray-500 text-[12px]">
-                          <Sort fontSize="12px" />
+                        <div className="flex items-center gap-[2px] text-[14px]">
+                          <Sort fontSize="14px" />
                           <span>按热度</span>
                         </div>
                       )
@@ -123,7 +126,7 @@ export default function CommentDetailPage() {
                     }}
                     url={comment_reply_list}
                     createList={(replyList: Comment[]) => (
-                      <div className="divide-y">
+                      <div className="divide-color divide-y">
                         {replyList.map((reply) => (
                           <CommentItem
                             key={reply.id}

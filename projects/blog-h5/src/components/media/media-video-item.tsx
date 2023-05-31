@@ -12,8 +12,9 @@ export default function MediaVideoItem({ url, coverUrl }: Props) {
   const [isPlaying, setIsPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  function playVideo() {
+  function playVideo(e: any) {
     console.log('==================')
+    e.stopPropagation()
     videoRef.current?.play()
     setIsPlaying(true)
   }

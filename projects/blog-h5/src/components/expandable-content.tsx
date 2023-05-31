@@ -7,7 +7,9 @@ interface Props {
   maxLine?: number
   expandText?: string
   collapseText?: string
+  imageUrl?: string
   className?: string
+  onClickExpand?: (event: any) => void
 }
 
 export default function ExpandableContent({
@@ -16,7 +18,9 @@ export default function ExpandableContent({
   maxLine = 3,
   maxLength = 180,
   expandText = '展开',
-  collapseText = '收起'
+  collapseText = '收起',
+  onClickExpand,
+  imageUrl
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
   const scrollTopRef = useRef(0)
@@ -48,15 +52,35 @@ export default function ExpandableContent({
     setIsExpanded((v) => !v)
   }
 
+  function handlePreviewImage(url: string) {
+    const base: string = import.meta.env.VITE_IMAGE_BASE
+    ImagePreview.open({
+      showIndex: false,
+      images: [base + url]
+    })
+  }
+
   return (
     <div
-      className={`whitespace-pre-wrap break-words transition-all ${className}`}
+      className={`regular-text whitespace-pre-wrap break-words transition-all ${className}`}
     >
-      {isExpanded ? content : briefContent}
+      <span>{isExpanded ? content : briefContent}</span>
+      {imageUrl ? (
+        <div
+          className="ml-[2px] inline-flex items-center whitespace-pre-wrap align-text-top leading-[18px]"
+          onClick={(e) => {
+            e.stopPropagation()
+            handlePreviewImage(imageUrl)
+          }}
+        >
+          <PhotoO fontSize="18px" className="inline text-primary" />
+          <span className="ml-[2px] text-primary">查看图片</span>
+        </div>
+      ) : null}
       {showAction && (
         <span
-          className={`text-green-700 ${isMultiLine ? '' : 'ml-1'}`}
-          onClick={triggleExpand}
+          className={`text-primary ${isMultiLine ? '' : 'ml-[2px]'}`}
+          onClick={onClickExpand || triggerExpand}
         >
           {isExpanded ? collapseBtnText : expandBtnText}
         </span>

@@ -1,6 +1,7 @@
 import { Image } from 'react-vant'
-import { User } from '@/types'
+import { User } from 'sys-types'
 import { UserO } from '@react-vant/icons'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 interface Props {
   user: User
@@ -9,9 +10,18 @@ interface Props {
 
 export default function UserAvatar({ user, size = 38 }: Props) {
   const ErrorIcon = <UserO />
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  function toUserPage(e: any) {
+    e.stopPropagation()
+    if (location.pathname === '/user/' + user.id) return
+
+    navigate('/user/' + user.id)
+  }
 
   return (
-    <div className="user-avatar">
+    <div className="user-avatar" onClick={toUserPage}>
       <Image
         width={size}
         height={size}

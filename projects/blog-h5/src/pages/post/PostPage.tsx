@@ -7,7 +7,7 @@ import $http, {
   blog_action_user_list
 } from '@/http'
 import { Popover, PullRefresh, Tabs, Toast } from 'react-vant'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import { Blog, Comment, User } from 'sys-types'
 import {
   GoodJob,
@@ -25,13 +25,14 @@ import YTime from '@/components/y-time'
 import ExpandableContent from '@/components/expandable-content'
 import MediaList from '@/components/media/media-list'
 import YCard from '@/components/y-card'
-import { useTabChange } from '@/hooks/useTabChange'
+import { useTabChange } from '@/hooks'
 import AppendListWrapper from '@/components/append-list-wrapper'
 import CommentItem from '@/components/comment/comment-item'
 import CommentReply from '@/components/comment/comment-reply'
 import UserItem from '@/components/user/user-item'
 import PageWrapper from '@/components/page-wrapper'
 import CustomNavBar from '@/components/custom/custom-nav-bar'
+import { ThemeContext } from '@/contexts'
 
 export default function PostPage() {
   const params = useParams()
@@ -45,6 +46,7 @@ export default function PostPage() {
   const { onTabChange, currentTab } = useTabChange<string>('comment')
   const [errorMsg, setErrorMsg] = useState<string>()
   const [commentFiltType, setCommentFiltType] = useState(1) // 1-- 时间，2--热度
+  const theme = useContext(ThemeContext)
 
   // 页面初始化
   async function onInit() {
@@ -132,7 +134,7 @@ export default function PostPage() {
   // 评论列表显示
   const createCommentList = (commentList: Comment[]): ReactNode => {
     return (
-      <div className="comment-list divide-y">
+      <div className="comment-list divide-color divide-y">
         {commentList.map((comment) => (
           <CommentItem
             comment={comment}
@@ -151,6 +153,7 @@ export default function PostPage() {
       <div className="flex items-center gap-[2px]">
         <Popover
           ref={commentFilterRef}
+          theme={theme}
           placement="bottom-start"
           reference={
             commentFiltType === 1 ? (
@@ -164,7 +167,7 @@ export default function PostPage() {
             <div className="flex flex-col gap-2 p-3">
               <div
                 className={`flex items-center gap-[4px] ${
-                  commentFiltType === 1 ? 'text-green-700' : ''
+                  commentFiltType === 1 ? 'text-primary' : ''
                 }`}
                 onClick={() => handleChangeCommentFilter(1)}
               >
@@ -173,7 +176,7 @@ export default function PostPage() {
               </div>
               <div
                 className={`flex items-center gap-[4px] ${
-                  commentFiltType === 2 ? 'text-green-700' : ''
+                  commentFiltType === 2 ? 'text-primary' : ''
                 }`}
                 onClick={() => handleChangeCommentFilter(2)}
               >
@@ -208,41 +211,42 @@ export default function PostPage() {
                   content={postDetail.content}
                 />
                 <div className="w-full">
-                  <MediaList list={postDetail.medias} maxCount={0} />
+                  <MediaList list={postDetail.medias} showAll />
                 </div>
-                <div className="w-full mt-6 flex items-center">
+                <div className="regular-text mt-6 flex w-full items-center">
                   <div
-                    className="flex-1 flex items-center justify-center gap-2"
+                    className="flex flex-1 items-center justify-center gap-2"
                     onClick={handleLike}
                   >
                     {postDetail.isLike ? (
-                      <GoodJob fontSize="16px" className="text-green-700" />
+                      <GoodJob fontSize="16px" className="text-primary" />
                     ) : (
                       <GoodJobO fontSize="16px" />
                     )}
                   </div>
                   <div
-                    className="flex-1 flex items-center justify-center gap-2"
+                    className="flex flex-1 items-center justify-center gap-2"
                     onClick={() => setShowReply(true)}
                   >
                     <CommentO fontSize="16px" />
                   </div>
                   <div
-                    className="flex-1 flex items-center justify-center gap-2"
+                    className="flex flex-1 items-center justify-center gap-2"
                     onClick={handleCollect}
                   >
                     {postDetail.isCollect ? (
-                      <Star fontSize="16px" className="text-green-700" />
+                      <Star fontSize="16px" className="text-primary" />
                     ) : (
                       <StarO fontSize="16px" />
                     )}
                   </div>
                 </div>
               </YCard>
-              <YCard>
+              <YCard padding="0">
                 <Tabs
                   lineWidth="0"
                   sticky
+                  offsetTop={45}
                   swipeable
                   stickyInitScrollbar={false}
                   align="start"
@@ -253,7 +257,7 @@ export default function PostPage() {
                 >
                   <Tabs.TabPane key="comment" title={commentTab} name="comment">
                     <div
-                      className={`mx-[5px] pt-[5px] ${
+                      className={`mx-[5px] px-[8px] pt-[5px] ${
                         currentTab === 'comment' ? '' : 'hidden'
                       }`}
                     >
@@ -278,7 +282,7 @@ export default function PostPage() {
                     name="like"
                   >
                     <div
-                      className={`mx-[5px] pt-[5px] ${
+                      className={`mx-[5px] px-[8px] pt-[5px] ${
                         currentTab === 'like' ? '' : 'hidden'
                       }`}
                     >
@@ -290,7 +294,7 @@ export default function PostPage() {
                         ref={likeUserListRef}
                         url={blog_action_user_list + '/1'}
                         createList={(userList: User[]) => (
-                          <div className="divide-y">
+                          <div className="divide-color divide-y">
                             {userList.map((user) => (
                               <UserItem user={user} key={user.id} />
                             ))}
@@ -305,7 +309,7 @@ export default function PostPage() {
                     name="collect"
                   >
                     <div
-                      className={`mx-[5px] pt-[5px] ${
+                      className={`mx-[5px] px-[8px] pt-[5px] ${
                         currentTab === 'collect' ? '' : 'hidden'
                       }`}
                     >
@@ -317,7 +321,7 @@ export default function PostPage() {
                         ref={collectUserListRef}
                         url={blog_action_user_list + '/2'}
                         createList={(userList: User[]) => (
-                          <div className="divide-y">
+                          <div className="divide-color divide-y">
                             {userList.map((user) => (
                               <UserItem user={user} key={user.id} />
                             ))}

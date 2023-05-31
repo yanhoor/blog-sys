@@ -84,31 +84,31 @@ export default function PostItem({ post }: Props) {
             <MediaList list={postDetail.medias} />
           </div>
         </div>
-        <div className="w-full flex">
+        <div className="regular-text flex w-full">
           <div
-            className="flex flex-1 justify-center items-center gap-1"
+            className="flex flex-1 items-center justify-center gap-1"
             onClick={handleLike}
           >
             {postDetail.isLike ? (
-              <GoodJob fontSize="14px" color="#18a058" />
+              <GoodJob fontSize="14px" className="text-primary" />
             ) : (
               <GoodJobO fontSize="14px" />
             )}
             <span>{postDetail.likedByCount}</span>
           </div>
           <div
-            className="flex flex-1 justify-center items-center gap-1"
+            className="flex flex-1 items-center justify-center gap-1"
             onClick={toPostDetail}
           >
             <CommentO fontSize="14px" />
             <span>{postDetail.commentsCount}</span>
           </div>
           <div
-            className="flex flex-1 justify-center items-center gap-1"
+            className="flex flex-1 items-center justify-center gap-1"
             onClick={handleCollect}
           >
             {postDetail.isCollect ? (
-              <Star fontSize="14px" color="#18a058" />
+              <Star fontSize="14px" className="text-primary" />
             ) : (
               <StarO fontSize="14px" />
             )}

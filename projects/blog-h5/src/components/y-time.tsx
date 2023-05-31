@@ -6,7 +6,7 @@ interface Props {
 }
 export default function YTime({ time, isAlias = true }: Props) {
   return (
-    <span className="text-[12px] text-gray-500">
+    <span className="secondary-text text-[12px]">
       {isAlias ? TimeUtils.toAliasTime(time) : TimeUtils.formatTime(time)}
     </span>
   )

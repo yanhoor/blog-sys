@@ -4,11 +4,13 @@ import UserName from '@/components/user/user-name'
 import ExpandableContent from '@/components/expandable-content'
 import MediaImageItem from '@/components/media/media-image-item'
 import YTime from '@/components/y-time'
-import { ImagePreview, Space } from 'react-vant'
+import { Space } from 'react-vant'
 import CommentActions from '@/components/comment/comment-actions'
 import CommentReply from '@/components/comment/comment-reply'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowDown } from '@react-vant/icons'
+
 interface Props {
   comment: Comment
   className?: string
@@ -24,14 +26,6 @@ export default function CommentItem({
   const [showReply, setShowReply] = useState(false)
   const navigate = useNavigate()
 
-  function handlePreviewImage(url: string) {
-    const base: string = import.meta.env.VITE_IMAGE_BASE
-    ImagePreview.open({
-      showIndex: false,
-      images: [base + url]
-    })
-  }
-
   return (
     <div className={`comment-item flex flex-col items-start py-3 ${className}`}>
       <div className="flex items-center gap-2">
@@ -39,7 +33,7 @@ export default function CommentItem({
         <UserName user={comment.createBy} />
       </div>
       <div className="w-full" onClick={() => setShowReply(true)}>
-        <div className="w-full whitespace-pre-wrap break-words inline my-1">
+        <div className="my-1 inline w-full whitespace-pre-wrap break-words">
           {comment.replyComment && comment.replyComment.topCommentId ? (
             <>
               <span>回复</span>
@@ -55,19 +49,19 @@ export default function CommentItem({
         </div>
         {comment.image && (
           <MediaImageItem
-            className="max-w-[120px] max-h-[160px]"
+            className="max-h-[160px] max-w-[120px]"
             url={comment.image.url}
           />
         )}
       </div>
-      <div className="w-full flex justify-between mt-1">
+      <div className="mt-1 flex w-full justify-between">
         <YTime time={comment.createdAt}></YTime>
         <CommentActions comment={comment} onDelete={onDelete} />
       </div>
 
       {comment.childComments?.length ? (
         <div
-          className="px-2 py-1 bg-gray-100 rounded min-w-full mt-2"
+          className="bg-block-section mt-2 min-w-full rounded px-2 py-1"
           onClick={() => navigate('/commentDetail/' + comment.id)}
         >
           <Space direction="vertical" gap={4}>
@@ -84,23 +78,19 @@ export default function CommentItem({
                 {child.content ? (
                   <ExpandableContent
                     className="my-1 inline"
+                    imageUrl={child.image?.url}
                     content={child.content}
                     maxLength={60}
                   />
                 ) : null}
-                {child.image ? (
-                  <span
-                    className="text-green-700 ml-[2px]"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handlePreviewImage(child.image?.url)
-                    }}
-                  >
-                    查看图片
-                  </span>
-                ) : null}
               </div>
             ))}
+            {comment.childCommentsCount > 2 ? (
+              <div className="flex items-center gap-[2px] text-primary">
+                <span>共 {comment.childCommentsCount} 条回复</span>
+                <ArrowDown />
+              </div>
+            ) : null}
           </Space>
         </div>
       ) : (

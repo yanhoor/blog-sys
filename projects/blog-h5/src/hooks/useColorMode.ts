@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react'
 
 export type ColorMode = 'dark' | 'light'
-type Preference = ColorMode & 'system'
+type ColorPreference = ColorMode | 'system'
 
 export function useColorMode() {
   const [value, setValue] = useState<ColorMode>('light')
-  const [preference, setPreference] = useState<Preference>(
-    'system' as Preference
-  )
+  const [preference, setPreference] = useState<ColorPreference>('system')
 
   useEffect(() => {
     const memo = localStorage.getItem('color-mode') ?? 'system'
-    setPreference(memo as Preference)
+    setPreference(memo as ColorPreference)
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', handleSystemModeChange)

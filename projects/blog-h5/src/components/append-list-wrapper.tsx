@@ -137,17 +137,19 @@ export default forwardRef(function AppendListWrapper(
     }
   }
 
-  let result: ReactNode
-
-  if (listState === PageState.loading && pageList.length === 0) {
-    result = createSkeletonItem ? createSkeletonItem() : <StatusLoading />
-  } else if (listState === PageState.empty) {
+  if (listState === PageState.empty) {
     return <StatusEmpty onRefresh={handleRefreshList} />
   } else if (listState === PageState.error) {
     return <StatusError errorMsg={errorMsg} onRefresh={handleRefreshList} />
-  } else {
-    result = (
-      <PullRefresh onRefresh={handleRefreshList} disabled={!enablePullDown}>
+  }
+
+  return (
+    <div className={`append-list-wrapper h-full ${className || ''}`}>
+      <PullRefresh
+        className="h-full"
+        onRefresh={handleRefreshList}
+        disabled={!enablePullDown}
+      >
         <List
           onLoad={onLoad}
           finished={listState === PageState.finish}
@@ -158,10 +160,6 @@ export default forwardRef(function AppendListWrapper(
           {createList(pageList)}
         </List>
       </PullRefresh>
-    )
-  }
-
-  return (
-    <div className={`append-list-wrapper ${className || ''}`}>{result}</div>
+    </div>
   )
 })

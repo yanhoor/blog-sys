@@ -67,11 +67,11 @@ export default function CommentReply({
 
   return myInfo ? (
     <ActionSheet visible={visible} onClickOverlay={onClickOverlay}>
-      <div className="flex items-start gap-4 px-[12px] py-[24px]">
+      <div className="block-bg-color flex items-start gap-4 px-[12px]  py-[24px]">
         <UserAvatar user={myInfo} />
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4">
           <Input.TextArea
-            className="border p-3 rounded"
+            className="border-color rounded border p-3"
             placeholder={
               comment ? `回复 @${comment.createBy.name}:` : '发表评论'
             }
@@ -79,18 +79,18 @@ export default function CommentReply({
             autoSize={{ minHeight: 80, maxHeight: 120 }}
             onChange={(v) => updateEditForm({ content: v.trim() })}
           />
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <UploadImg
               url={image?.url}
               preview={
                 <MediaImageItem
                   url={image?.url ?? ''}
-                  className="w-[32px] h-[32px]"
+                  className="h-[32px] w-[32px]"
                   enablePreview={false}
                 />
               }
               onComplete={(url, file) => setImage(file)}
-              trigger={<PhotoO fontSize="32px" className="text-green-700" />}
+              trigger={<PhotoO fontSize="32px" className="text-primary" />}
             />
             <span className="text-green-700" onClick={handleCommitComment}>
               发送

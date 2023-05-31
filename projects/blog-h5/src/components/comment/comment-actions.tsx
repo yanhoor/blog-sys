@@ -7,7 +7,7 @@ import {
   OtherPay,
   DeleteO
 } from '@react-vant/icons'
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { useAppSelector } from '@/store/hooks'
 import $http, {
   blog_info,
@@ -16,6 +16,7 @@ import $http, {
   comment_like
 } from '@/http'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { ThemeContext } from '@/contexts'
 
 interface Props {
   comment: Comment
@@ -27,6 +28,7 @@ export default function CommentActions({ comment: com, onDelete }: Props) {
   const popoverRef = useRef<any>()
   const [comment, setComment] = useState(com)
   const myInfo = useAppSelector((state) => state.user.myInfo)
+  const theme = useContext(ThemeContext)
 
   function handleCopy() {
     navigator.clipboard.writeText(comment.content || '').then(() => {
@@ -90,22 +92,23 @@ export default function CommentActions({ comment: com, onDelete }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="regular-text flex items-center gap-2">
       <div className="flex items-center gap-1" onClick={handleLikeComment}>
-        {comment.isLike ? <GoodJob className="text-green-700" /> : <GoodJobO />}
+        {comment.isLike ? <GoodJob className="text-primary" /> : <GoodJobO />}
         <span className="text-[14px]">
           {comment.likedByCount ? comment.likedByCount : ''}
         </span>
       </div>
       <Popover
         ref={popoverRef}
+        theme={theme}
         reference={<Ellipsis fontSize="14px" />}
         placement="bottom-end"
       >
         <div className="flex flex-col gap-2 p-3">
           <div className="flex items-center gap-[4px]" onClick={handleCopy}>
             <OtherPay fontSize="16px" />
-            <div className="text-[14px] whitespace-nowrap">复制内容</div>
+            <div className="whitespace-nowrap text-[14px]">复制内容</div>
           </div>
           {myInfo?.id === comment.createById && (
             <div
@@ -113,7 +116,7 @@ export default function CommentActions({ comment: com, onDelete }: Props) {
               onClick={handleDeleteComment}
             >
               <DeleteO fontSize="16px" />
-              <div className="text-[14px] whitespace-nowrap">删除</div>
+              <div className="whitespace-nowrap text-[14px]">删除</div>
             </div>
           )}
         </div>

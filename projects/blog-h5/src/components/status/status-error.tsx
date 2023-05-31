@@ -13,7 +13,7 @@ export default function StatusError({
     <div className="flex flex-col items-center gap-[12px] p-[12px]">
       <WarningO fontSize="32px" />
       <p className="text-[14px]">{errorMsg}</p>
-      <Button type="primary" size="small" plain hairline onClick={onRefresh}>
+      <Button type="primary" size="small" round hairline onClick={onRefresh}>
         点击重试
       </Button>
     </div>

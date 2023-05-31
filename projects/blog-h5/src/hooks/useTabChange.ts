@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 
 export function useTabChange<T>(initTab: T) {
   const [scrollTopInfo, setScrollTopInfo] = useState<Map<T, number>>(new Map())
   const [currentTab, setCurrentTab] = useState<T>(initTab)
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     const meo = scrollTopInfo.get(currentTab)
@@ -17,7 +18,9 @@ export function useTabChange<T>(initTab: T) {
       // console.log('=======记忆切换前的tab的滚动位置========', v)
       return v
     })
-    setCurrentTab(name)
+    startTransition(() => {
+      setCurrentTab(name)
+    })
   }
 
   return {

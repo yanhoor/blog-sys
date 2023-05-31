@@ -8,7 +8,7 @@ interface Props {
 export default function CustomNavBar({ title }: Props) {
   return (
     <NavBar
-      style={{ '--rv-nav-bar-icon-color': '#000' }}
+      border={false}
       leftArrow={<ArrowLeft />}
       placeholder
       fixed

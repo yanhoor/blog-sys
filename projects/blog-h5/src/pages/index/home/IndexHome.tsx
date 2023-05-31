@@ -2,7 +2,7 @@ import PostList from '@/components/post/post-list'
 import { useAppSelector } from '@/store/hooks'
 import { Tabs } from 'react-vant'
 import MyConfig from '@/config'
-import { useTabChange } from '@/hooks/useTabChange'
+import { useTabChange } from '@/hooks'
 import { useState } from 'react'
 import PageWrapper from '@/components/page-wrapper'
 import { FollowGroup } from 'sys-types'
@@ -45,7 +45,7 @@ export default function IndexHomePage() {
             {groupList.map((group) => (
               <Tabs.TabPane key={group.id} title={group.name} name={group.id}>
                 <div
-                  className={`index-home mb-[50px] mx-[5px] pt-[5px] ${
+                  className={`index-home mx-[5px] mb-[50px] pt-[5px] ${
                     currentTab === group.id ? '' : 'hidden'
                   }`}
                 >
@@ -58,7 +58,7 @@ export default function IndexHomePage() {
             ))}
           </Tabs>
         ) : (
-          <div className="index-home mb-[50px] mx-[5px] pt-[5px]">
+          <div className="index-home mx-[5px] mb-[50px] pt-[5px]">
             <PostList key={0} />
           </div>
         )}

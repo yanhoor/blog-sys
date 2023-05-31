@@ -37,7 +37,11 @@ export default function IndexPage() {
     <div className="index-page">
       <Outlet />
 
-      <Tabbar value={currentTab} onChange={(v) => handleChangeTab(v as string)}>
+      <Tabbar
+        border={false}
+        value={currentTab}
+        onChange={(v) => handleChangeTab(v as string)}
+      >
         <Tabbar.Item
           name="/index"
           icon={(active) => (active ? <WapHome /> : <WapHomeO />)}

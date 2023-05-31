@@ -2,18 +2,11 @@ import MediaImageItem from '@/components/media/media-image-item'
 import { PlayCircle, PauseCircle, Replay, Play, Pause } from '@react-vant/icons'
 import React, { useRef } from 'react'
 import { useState } from 'react'
-import TimeUtils from '@/utils/timeUtils'
+import { PlayState, timeUtils } from 'sys-types'
 
 interface Props {
   url: string
   coverUrl?: string
-}
-
-enum PlayState {
-  idle,
-  playing,
-  paused,
-  end
 }
 
 export default function MediaAudioItem({ url, coverUrl }: Props) {
@@ -22,7 +15,8 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
 
-  function playVideo() {
+  function playVideo(e: any) {
+    e.stopPropagation()
     if (playState === PlayState.playing) {
       audioRef.current?.pause()
       setPlayState(PlayState.paused)
@@ -50,7 +44,7 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
       {player}
       <div className="flex items-center gap-[4px] text-gray-700 bg-gray-200 rounded-[5px] py-[5px] px-[12px]">
         <h3 className="text-start flex-1">
-          {TimeUtils.formatDuration(currentTime || 0)}
+          {timeUtils.formatDuration(currentTime || 0)}
         </h3>
         <div>
           {playState === PlayState.playing && (
@@ -64,7 +58,7 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
           )}
         </div>
         <h3 className="text-end flex-1">
-          {TimeUtils.formatDuration(duration)}
+          {timeUtils.formatDuration(duration)}
         </h3>
       </div>
     </div>
@@ -98,9 +92,9 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
               {duration > 0 && (
                 <h3 className="text-center">
                   {currentTime > 0
-                    ? `${TimeUtils.formatDuration(currentTime)}/`
+                    ? `${timeUtils.formatDuration(currentTime)}/`
                     : ''}
-                  {TimeUtils.formatDuration(duration)}
+                  {timeUtils.formatDuration(duration)}
                 </h3>
               )}
             </div>
