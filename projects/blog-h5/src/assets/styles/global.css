@@ -1,0 +1,24 @@
+/*全局类名*/
+
+.regular-text{
+    @apply text-regular-light dark:text-regular-dark;
+}
+.secondary-text{
+@apply text-secondary-light dark:text-secondary-dark;
+}
+
+.bg-block-section{
+    @apply bg-gray-100 dark:bg-block-dark;
+}
+
+.border-color{
+    @apply border-border-light dark:border-border-dark;
+}
+
+.divide-color{
+    @apply divide-border-light dark:divide-border-dark;
+}
+
+.block-bg-color{
+    @apply bg-block-light dark:bg-block-dark;
+}

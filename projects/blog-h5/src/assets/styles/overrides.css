@@ -1,0 +1,45 @@
+/*覆盖 vant 主题颜色*/
+
+:root:root{
+    /*button*/
+    --rv-button-primary-background-color: theme('colors.primary');
+    --rv-button-primary-border-color: theme('colors.primary');
+
+    /*tab*/
+    --rv-tab-active-text-color: theme('colors.primary');
+    --rv-tabs-bottom-bar-color: theme('colors.primary');
+
+    /*tabbar*/
+    --rv-tabbar-item-active-color: theme('colors.primary');
+    --rv-tabbar-background-color: theme('colors.block.light');
+
+    /*nav*/
+    --rv-nav-bar-icon-color: theme('colors.regular.light');
+    &.dark{
+         /*card*/
+         --rv-card-background-color: theme('colors.card.dark');
+
+         /*tab*/
+         --rv-tab-text-color: theme('colors.regular.dark');
+         --rv-tabs-nav-background-color: theme('colors.block.dark');
+
+         /*tabbar*/
+         --rv-tabbar-background-color: theme('colors.block.dark');
+         --rv-tabbar-item-text-color: theme('colors.regular.dark');
+         --rv-tabbar-item-active-background-color: theme('colors.block.dark');
+
+     /*nav*/
+         --rv-nav-bar-background-color: theme('colors.block.dark');
+         --rv-nav-bar-icon-color: theme('colors.regular.dark');
+         --rv-nav-bar-text-color: theme('colors.regular.dark');
+         --rv-nav-bar-title-text-color: theme('colors.regular.dark');
+
+     }
+}
+
+.rv-form-item{
+    @apply !bg-block-light dark:!bg-block-dark;
+    &::after{
+    @apply !border-border-light dark:!border-border-dark;
+     }
+}

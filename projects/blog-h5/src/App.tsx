@@ -3,9 +3,7 @@ import React, { createContext, useEffect } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { getMyInfo } from '@/store/user/asyncThunk'
 import { useColorMode } from '@/hooks'
-import { ColorMode } from '@/hooks/useColorMode'
-
-const ThemeContext = createContext<ColorMode>('light')
+import { ThemeContext } from '@/contexts'
 
 function App() {
   const dispatch = useAppDispatch()

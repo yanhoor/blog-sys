@@ -17,7 +17,13 @@
 }
 
 html,body, #root{
-  @apply w-full h-full;
-  background-color: #f2f2f2;
+  @apply w-full h-full bg-page-light;
+}
+
+html.dark{
+  @apply bg-page-dark;
+  #root{
+    @apply bg-page-dark;
+  }
 }
 
