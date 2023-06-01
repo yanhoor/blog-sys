@@ -24,6 +24,7 @@ import FollowerListPage from '@/pages/followerList/FollowerListPage'
 import FollowingListPage from '@/pages/followingList/FollowingListPage'
 import UserAlbumPage from '@/pages/userAlbum/UserAlbumPage'
 import RegisterPage from '@/pages/register/RegisterPage'
+import SearchResultPage from '@/pages/searchResult/SearchResultPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -77,6 +78,10 @@ const routes: RouteObject[] = [
       {
         path: 'register',
         element: <RegisterPage></RegisterPage>
+      },
+      {
+        path: 'searchResult',
+        element: <SearchResultPage></SearchResultPage>
       },
       {
         path: 'post/:id',
