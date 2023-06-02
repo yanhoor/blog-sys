@@ -4,16 +4,18 @@ import { Helmet } from 'react-helmet'
 interface Props {
   children: ReactNode
   title?: string
+  className?: string
   titleMaxLength?: number
 }
 
 export default function PageWrapper({
   children,
   title,
+  className,
   titleMaxLength = 12
 }: Props) {
   return (
-    <div className="page-wrapper h-full">
+    <div className={`page-wrapper h-full ${className || ''}`}>
       {title ? (
         <Helmet titleTemplate="%s | Vipot">
           <title>

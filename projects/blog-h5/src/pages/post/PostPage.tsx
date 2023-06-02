@@ -242,7 +242,7 @@ export default function PostPage() {
                   </div>
                 </div>
               </YCard>
-              <YCard padding="0">
+              <YCard className="!p-0">
                 <Tabs
                   lineWidth="0"
                   sticky

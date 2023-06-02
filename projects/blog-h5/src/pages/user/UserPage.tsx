@@ -65,7 +65,7 @@ export default function UserPage() {
             <div className="user-page">
               {userInfo.profileCardBg ? (
                 <MediaImageItem
-                  className="h-[150px] w-full"
+                  className="h-[150px] w-full overflow-clip object-cover"
                   url={userInfo.profileCardBg}
                 />
               ) : (

@@ -9,12 +9,7 @@ import {
 } from '@react-vant/icons'
 import { useContext, useRef, useState } from 'react'
 import { useAppSelector } from '@/store/hooks'
-import $http, {
-  blog_info,
-  blog_like,
-  comment_delete,
-  comment_like
-} from '@/http'
+import $http, { comment_delete, comment_like } from '@/http'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ThemeContext } from '@/contexts'
 

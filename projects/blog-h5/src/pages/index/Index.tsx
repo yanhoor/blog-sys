@@ -1,4 +1,4 @@
-import { useLocation, Outlet, useNavigate } from 'react-router-dom'
+import { useLocation, Outlet, useNavigate, useMatch } from 'react-router-dom'
 import { Tabbar } from 'react-vant'
 import {
   Add,
@@ -11,17 +11,27 @@ import {
   Manager,
   ManagerO
 } from '@react-vant/icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '@/store/hooks'
 
 export default function IndexPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const match = useMatch('/index/*')
   const userState = useAppSelector((state) => state.user)
 
   const pathname = location.pathname.replace('/index', '')
   const [currentTab, setCurrentTab] = useState(pathname || '/index')
-  // console.log('===========', location)
+
+  useEffect(() => {
+    if (
+      ['', 'search', 'new', 'notification', 'my'].includes(
+        match?.params['*'] as string
+      )
+    ) {
+      setCurrentTab(match?.params['*'] ? '/' + match?.params['*'] : '/index')
+    }
+  }, [location])
 
   function handleChangeTab(v: string) {
     if (['/new', '/notification', '/my'].includes(v) && !userState.myInfo) {

@@ -16,7 +16,7 @@ export default {
         },
         page: {
           light: '#e9ecef',
-          dark: '#1c1b22'
+          dark: '#141414'
         },
         block: {
           light: '#fff',
@@ -24,7 +24,7 @@ export default {
         },
         card: {
           light: '#fff',
-          dark: '#18181c'
+          dark: '#1d1e1f'
         },
         content: {
           light: '#F7F8FAB2',

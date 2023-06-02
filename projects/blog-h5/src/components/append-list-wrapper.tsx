@@ -144,22 +144,20 @@ export default forwardRef(function AppendListWrapper(
   }
 
   return (
-    <div className={`append-list-wrapper relative h-full ${className || ''}`}>
-      <PullRefresh
-        className="absolute h-full w-full"
-        onRefresh={handleRefreshList}
-        disabled={!enablePullDown}
+    <PullRefresh
+      className={`h-full w-full ${className || ''}`}
+      onRefresh={handleRefreshList}
+      disabled={!enablePullDown}
+    >
+      <List
+        onLoad={onLoad}
+        finished={listState === PageState.finish}
+        errorText="请求失败，点击重新加载"
+        finishedText="没有更多了"
+        offset={50}
       >
-        <List
-          onLoad={onLoad}
-          finished={listState === PageState.finish}
-          errorText="请求失败，点击重新加载"
-          finishedText="没有更多了"
-          offset={50}
-        >
-          {createList(pageList)}
-        </List>
-      </PullRefresh>
-    </div>
+        {createList(pageList)}
+      </List>
+    </PullRefresh>
   )
 })

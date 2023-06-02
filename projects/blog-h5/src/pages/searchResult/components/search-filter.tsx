@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const SearchFilter = memo(function ({ onConfirm }: Props) {
-  console.log('========SearchFilter========')
+  // console.log('========SearchFilter========')
   const theme = useContext(ThemeContext)
   const filterRef = useRef<any>()
   const [currentType, setCurrentType] = useState(1)

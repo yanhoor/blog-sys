@@ -45,13 +45,13 @@ export default function LoginPage() {
   }
 
   return (
-    <PageWrapper title="登录">
+    <PageWrapper className="flex flex-col" title="登录">
       <CustomNavBar title="登录" />
-      <div className="absolute flex h-full w-full flex-col justify-center">
+      <div className="flex w-full flex-1 flex-col justify-center">
         <YCard className="mx-[12px]">
           <Form form={formInstance}>
             <Form.Item
-              className="!bg-block-light dark:!bg-block-dark"
+              className="!bg-card-light dark:!bg-card-dark"
               validateTrigger="onBlur"
               rules={[
                 { required: true, message: '请填写手机号' }
@@ -76,6 +76,7 @@ export default function LoginPage() {
               />
             </Form.Item>
             <Form.Item
+              className="!bg-card-light dark:!bg-card-dark"
               rules={[{ required: true, message: '请填写密码' }]}
               name="password"
               label="密码"

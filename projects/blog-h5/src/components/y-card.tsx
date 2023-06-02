@@ -7,22 +7,14 @@ interface Props {
   radius?: string
   children: ReactNode
 }
-export default function YCard({
-  className,
-  children,
-  padding = '8px',
-  radius = '3px'
-}: Props) {
+export default function YCard({ className, children }: Props) {
   return (
-    <Card
-      className={`post-item mb-[8px] ${className || ''}`}
-      round
-      style={{
-        '--rv-card-radius': radius,
-        '--rv-card-body-padding': padding
-      }}
+    <div
+      className={`card-bg-color mb-[8px] rounded-[3px] p-[8px] shadow ${
+        className || ''
+      }`}
     >
-      <Card.Body>{children}</Card.Body>
-    </Card>
+      {children}
+    </div>
   )
 }

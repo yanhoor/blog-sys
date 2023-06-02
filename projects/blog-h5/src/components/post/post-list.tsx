@@ -6,9 +6,15 @@ import { ReactNode } from 'react'
 interface Props {
   url?: string
   initParams?: object
+  className?: string
 }
 
-export default function PostList({ url = '/blog/list', initParams }: Props) {
+export default function PostList({
+  url = '/blog/list',
+  initParams,
+  className
+}: Props) {
+  // console.log('========PostList========')
   const createPostList = (postList: Blog[]): ReactNode => {
     return (
       <div className="post-list">
@@ -22,6 +28,7 @@ export default function PostList({ url = '/blog/list', initParams }: Props) {
   return (
     <AppendListWrapper
       url={url}
+      className={className}
       createList={createPostList}
       initParams={initParams}
     />

@@ -2,7 +2,9 @@ import axios, { AxiosRequestConfig } from 'axios'
 import MyConfig from '@/config'
 
 const DEFAULT_CONFIG: AxiosRequestConfig = {
-  baseURL: import.meta.env.PROD ? '/api' : '/api',
+  baseURL: import.meta.env.PROD
+    ? '/api'
+    : import.meta.env.VITE_API_BASE + '/api',
   timeout: 45000,
   withCredentials: true,
   method: 'post',
@@ -26,7 +28,8 @@ class Http {
       (config) => {
         // console.log(`请求拦截配置-->`, config);
         const sit = localStorage.getItem(MyConfig.TOKEN)
-        if (config.headers) config.headers['authorization'] = 'Bearer ' + sit // jwt校验
+        if (config.headers && sit)
+          config.headers['authorization'] = 'Bearer ' + sit // jwt校验
         return config // 需要返回
       },
       (error) => {

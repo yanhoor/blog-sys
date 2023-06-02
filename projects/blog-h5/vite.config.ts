@@ -10,6 +10,8 @@ export default defineConfig(({ command, mode }) => {
   // 设置第三个参数为 '' 来加载所有环境变量，而不管是否有 `VITE_` 前缀。
   const env = loadEnv(mode, process.cwd(), '')
 
+  console.log('=======连接到后端=========', env.VITE_API_BASE)
+
   return {
     plugins: [react()],
     // https://cn.vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
@@ -22,15 +24,16 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     server: {
-      port: 7878,
-      proxy: {
-        '/api': {
-          // target: 'http://localhost:8000',
-          target: env.VITE_API_BASE,
-          changeOrigin: true
-          // rewrite: (path) => path.replace(/^\/api/, '')
-        }
-      }
+      port: 7878
+      // 直接在 axios 配置
+      // proxy: {
+      //   '/api': {
+      //     // target: 'http://localhost:8000',
+      //     target: env.VITE_API_BASE,
+      //     changeOrigin: true
+      //     // rewrite: (path) => path.replace(/^\/api/, '')
+      //   }
+      // }
     }
   }
 })

@@ -22,3 +22,7 @@
 .block-bg-color{
     @apply bg-block-light dark:bg-block-dark;
 }
+
+.card-bg-color{
+    @apply bg-card-light dark:bg-card-dark;
+}

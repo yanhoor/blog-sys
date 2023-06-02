@@ -15,6 +15,9 @@
 
     /*nav*/
     --rv-nav-bar-icon-color: theme('colors.regular.light');
+
+    /*badge*/
+    --rv-badge-border-width: '0px';
     &.dark{
          /*card*/
          --rv-card-background-color: theme('colors.card.dark');
@@ -34,11 +37,20 @@
          --rv-nav-bar-text-color: theme('colors.regular.dark');
          --rv-nav-bar-title-text-color: theme('colors.regular.dark');
 
+    /*input*/
+         --rv-input-text-color: theme('colors.regular.dark');
+         --rv-input-placeholder-text-color: theme('colors.secondary.dark');
+
+     /*search*/
+         --rv-search-background-color: theme('colors.block.dark');
+         --rv-search-content-background-color: theme('colors.page.dark');
+         --rv-search-left-icon-color: theme('colors.secondary.dark');
+         --rv-search-label-color: theme('colors.secondary.dark');
+         --rv-search-action-text-color: theme('colors.secondary.dark');
      }
 }
 
 .rv-form-item{
-    @apply !bg-block-light dark:!bg-block-dark;
     &::after{
     @apply !border-border-light dark:!border-border-dark;
      }

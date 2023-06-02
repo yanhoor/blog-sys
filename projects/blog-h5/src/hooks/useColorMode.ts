@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import MyConfig from '@/config'
 
 export type ColorMode = 'dark' | 'light'
 type ColorPreference = ColorMode | 'system'
@@ -8,7 +9,7 @@ export function useColorMode() {
   const [preference, setPreference] = useState<ColorPreference>('system')
 
   useEffect(() => {
-    const memo = localStorage.getItem('color-mode') ?? 'system'
+    const memo = localStorage.getItem(MyConfig.COLOR_MODE_KEY) ?? 'system'
     setPreference(memo as ColorPreference)
     window
       .matchMedia('(prefers-color-scheme: dark)')
@@ -22,7 +23,7 @@ export function useColorMode() {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('color-mode', preference)
+    localStorage.setItem(MyConfig.COLOR_MODE_KEY, preference)
     if (preference === 'system') {
       setValue(
         window.matchMedia('(prefers-color-scheme: dark)').matches

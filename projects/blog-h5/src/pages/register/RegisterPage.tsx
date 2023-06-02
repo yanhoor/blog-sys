@@ -40,12 +40,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <PageWrapper title="注册">
+    <PageWrapper className="flex flex-col" title="注册">
       <CustomNavBar title="注册" />
-      <div className="h-full w-full flex flex-col justify-center absolute">
+      <div className="flex w-full flex-1 flex-col justify-center">
         <YCard className="mx-[12px]">
           <Form form={formInstance}>
             <Form.Item
+              className="!bg-card-light dark:!bg-card-dark"
               rules={[{ required: true, message: '请填写用户名' }]}
               name="name"
               label="用户名"
@@ -59,6 +60,7 @@ export default function RegisterPage() {
               />
             </Form.Item>
             <Form.Item
+              className="!bg-card-light dark:!bg-card-dark"
               validateTrigger="onBlur"
               rules={[
                 { required: true, message: '请填写手机号' },
@@ -83,6 +85,7 @@ export default function RegisterPage() {
               />
             </Form.Item>
             <Form.Item
+              className="!bg-card-light dark:!bg-card-dark"
               validateTrigger="onBlur"
               rules={[
                 { required: true, message: '请填写密码' },
@@ -108,6 +111,7 @@ export default function RegisterPage() {
               />
             </Form.Item>
             <Form.Item
+              className="!bg-card-light dark:!bg-card-dark"
               validateTrigger="onBlur"
               rules={[
                 { required: true, message: '请再次输入密码' },
