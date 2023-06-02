@@ -144,9 +144,9 @@ export default forwardRef(function AppendListWrapper(
   }
 
   return (
-    <div className={`append-list-wrapper h-full ${className || ''}`}>
+    <div className={`append-list-wrapper relative h-full ${className || ''}`}>
       <PullRefresh
-        className="h-full"
+        className="absolute h-full w-full"
         onRefresh={handleRefreshList}
         disabled={!enablePullDown}
       >
