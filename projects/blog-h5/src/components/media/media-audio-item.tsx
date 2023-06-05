@@ -6,10 +6,15 @@ import { PlayState, timeUtils } from 'sys-types'
 
 interface Props {
   url: string
+  isAbsoluteUrl?: boolean
   coverUrl?: string
 }
 
-export default function MediaAudioItem({ url, coverUrl }: Props) {
+export default function MediaAudioItem({
+  url,
+  coverUrl,
+  isAbsoluteUrl = false
+}: Props) {
   const [playState, setPlayState] = useState<PlayState>(PlayState.idle)
   const audioRef = useRef<HTMLAudioElement>(null)
   const [duration, setDuration] = useState(0)
@@ -31,7 +36,7 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
   const player = (
     <audio
       preload="auto"
-      src={base + url}
+      src={isAbsoluteUrl ? url : base + url}
       ref={audioRef}
       onEnded={() => setPlayState(PlayState.end)}
       onDurationChange={() => setDuration(audioRef.current?.duration || 0)}
@@ -42,32 +47,32 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
   const smallPlayer = (
     <div>
       {player}
-      <div className="flex items-center gap-[4px] text-gray-700 bg-gray-200 rounded-[5px] py-[5px] px-[12px]">
-        <h3 className="text-start flex-1">
-          {timeUtils.formatDuration(currentTime || 0)}
-        </h3>
+      <div className="flex w-fit items-center gap-[4px] rounded-[5px] bg-gray-200 px-[8px] py-[5px] dark:bg-gray-600">
         <div>
           {playState === PlayState.playing && (
-            <Pause fontSize="20px" onClick={playVideo} />
+            <Pause fontSize="18px" onClick={playVideo} />
           )}
           {[PlayState.idle, PlayState.paused].includes(playState) && (
-            <Play fontSize="20px" onClick={playVideo} />
+            <Play fontSize="18px" onClick={playVideo} />
           )}
           {playState === PlayState.end && (
-            <Replay fontSize="20px" onClick={playVideo} />
+            <Replay fontSize="18px" onClick={playVideo} />
           )}
         </div>
-        <h3 className="text-end flex-1">
-          {timeUtils.formatDuration(duration)}
-        </h3>
+        <div className="divide-x divide-gray-400 text-[12px]">
+          <span className="px-[8px]">
+            {timeUtils.formatDuration(currentTime || 0)}
+          </span>
+          <span className="px-[8px]">{timeUtils.formatDuration(duration)}</span>
+        </div>
       </div>
     </div>
   )
 
   const largePlayer = (
-    <div className="media-video-item w-full h-full">
+    <div className="media-video-item h-full w-full">
       <div
-        className="relative w-full h-0 bg-black"
+        className="relative h-0 w-full bg-black"
         style={{ paddingTop: 'calc(100% * 9 / 16)' }}
       >
         {player}
@@ -77,9 +82,9 @@ export default function MediaAudioItem({ url, coverUrl }: Props) {
             <MediaImageItem
               url={coverUrl}
               quality={60}
-              className="absolute object-cover overflow-clip top-0 w-full h-full"
+              className="absolute top-0 h-full w-full overflow-clip object-cover"
             />
-            <div className="z-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white flex flex-col items-center">
+            <div className="z-2 absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-white">
               {playState === PlayState.playing && (
                 <PauseCircle fontSize="56px" onClick={playVideo} />
               )}
