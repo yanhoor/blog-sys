@@ -87,6 +87,7 @@ export default function CommentReply({
                   url={image?.url ?? ''}
                   className="h-[32px] w-[32px]"
                   enablePreview={false}
+                  stopPropagation={false}
                 />
               }
               onComplete={(url, file) => setImage(file)}

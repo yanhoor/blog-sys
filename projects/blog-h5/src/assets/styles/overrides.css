@@ -19,6 +19,11 @@
     /*badge*/
     --rv-badge-border-width: '0px';
     &.dark{
+    /*button*/
+         --rv-button-default-background-color: theme('colors.gray.600');
+         --rv-button-default-border-color: theme('colors.gray.600');
+         --rv-button-default-color: theme('colors.regular.dark');
+
          /*card*/
          --rv-card-background-color: theme('colors.card.dark');
 
@@ -47,6 +52,11 @@
          --rv-search-left-icon-color: theme('colors.secondary.dark');
          --rv-search-label-color: theme('colors.secondary.dark');
          --rv-search-action-text-color: theme('colors.secondary.dark');
+
+    /*actionsheet*/
+         --rv-action-sheet-item-background: theme('colors.block.dark');
+         --rv-action-sheet-item-text-color: theme('colors.regular.dark');
+         --rv-action-sheet-cancel-padding-color: theme('colors.page.dark');
      }
 }
 
@@ -54,4 +64,8 @@
     &::after{
     @apply !border-border-light dark:!border-border-dark;
      }
+}
+
+.rv-image-preview__index{
+    z-index: 10;
 }

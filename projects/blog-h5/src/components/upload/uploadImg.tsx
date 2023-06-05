@@ -9,6 +9,8 @@ import { ActionSheetAction } from 'react-vant/es/action-sheet/PropsType'
 
 interface Props {
   url?: string
+  uploadTip?: string
+  className?: string
   trigger?: ReactNode
   preview?: ReactNode
   onComplete: (url: string, file?: MediaFile) => void
@@ -16,11 +18,14 @@ interface Props {
 
 export default function UploadImg({
   url,
+  uploadTip,
+  className,
   trigger,
   preview,
   onComplete
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
   const [showAction, setShowAction] = useState(false)
   const actionList: ActionSheetAction[] = [
     { name: '预览' },
@@ -32,6 +37,7 @@ export default function UploadImg({
     if (!e.target.files) return
 
     const file: File = e.target.files[0]
+    setUploading(true)
     try {
       const { msg, success, result } = await $http.post(
         upload,
@@ -40,6 +46,7 @@ export default function UploadImg({
         },
         true
       )
+      setUploading(false)
       if (success) {
         onComplete(result.url, result)
         console.log('================', result)
@@ -47,6 +54,7 @@ export default function UploadImg({
         Toast.fail(msg || '上传失败')
       }
     } catch (e) {
+      setUploading(false)
       Toast.fail('上传失败')
       console.log('=====handleUpload error======', e)
     }
@@ -55,10 +63,9 @@ export default function UploadImg({
   function handleActionSelect(action: ActionSheetAction, index: number) {
     switch (index) {
       case 0:
-        const base: string = import.meta.env.VITE_IMAGE_BASE
         ImagePreview.open({
           showIndex: false,
-          images: [base + url]
+          images: [import.meta.env.VITE_IMAGE_BASE + url]
         })
         break
       case 1:
@@ -67,27 +74,50 @@ export default function UploadImg({
     }
   }
 
-  return url ? (
-    <div onClick={() => setShowAction(true)}>
-      {preview ?? (
-        <MediaImageItem url={url} quality={60} enablePreview={false} />
+  return (
+    <div className={`upload-img ${className || ''}`}>
+      {url ? (
+        <div className="h-full w-full" onClick={() => setShowAction(true)}>
+          {preview ?? (
+            <MediaImageItem
+              className="h-full w-full overflow-clip object-cover"
+              url={url}
+              quality={60}
+              enablePreview={false}
+              stopPropagation={false}
+            />
+          )}
+          <ActionSheet
+            visible={showAction}
+            actions={actionList}
+            cancelText="取消"
+            round={false}
+            onCancel={() => setShowAction(false)}
+            onSelect={handleActionSelect}
+          />
+        </div>
+      ) : (
+        <div
+          className="flex h-full w-full flex-col items-center justify-center gap-[4px]"
+          onClick={() => inputRef.current?.click()}
+        >
+          {trigger ?? (
+            <div className="flex flex-col items-center justify-center gap-[6px]">
+              <Upgrade fontSize="32px" className="text-primary" />
+              {!!uploadTip && (
+                <span className="secondary-text text-[14px]">{uploadTip}</span>
+              )}
+            </div>
+          )}
+          <input
+            className="hidden"
+            type="file"
+            accept={MyConfig.IMAGE_TYPE}
+            ref={inputRef}
+            onChange={handleUpload}
+          />
+        </div>
       )}
-      <ActionSheet
-        visible={showAction}
-        actions={actionList}
-        onSelect={handleActionSelect}
-      />
-    </div>
-  ) : (
-    <div onClick={() => inputRef.current?.click()}>
-      {trigger ?? <Upgrade fontSize="24px" className="text-green-700" />}
-      <input
-        className="hidden"
-        type="file"
-        accept={MyConfig.IMAGE_TYPE}
-        ref={inputRef}
-        onChange={handleUpload}
-      />
     </div>
   )
 }

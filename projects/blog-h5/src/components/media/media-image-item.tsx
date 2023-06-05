@@ -7,6 +7,7 @@ interface Props {
   style?: CSSProperties
   quality?: number
   enablePreview?: boolean
+  stopPropagation?: boolean
   onClick?: () => void
 }
 
@@ -15,6 +16,7 @@ export default function MediaImageItem({
   quality,
   className,
   enablePreview = true,
+  stopPropagation = true,
   style,
   onClick
 }: Props) {
@@ -23,8 +25,6 @@ export default function MediaImageItem({
   if (quality) imgUrl += '?x-oss-process=image/resize,p_' + quality
 
   function handlePreviewImage() {
-    if (!enablePreview) return
-
     const base: string = import.meta.env.VITE_IMAGE_BASE
     ImagePreview.open({
       showIndex: false,
@@ -33,17 +33,17 @@ export default function MediaImageItem({
   }
 
   function handleClickImage(e: any) {
-    e.stopPropagation()
+    if (stopPropagation) e.stopPropagation()
     if (onClick) {
       onClick()
-    } else {
+    } else if (enablePreview) {
       handlePreviewImage()
     }
   }
 
   return (
     <img
-      className={`media-image-item ${className}`}
+      className={`media-image-item ${className || ''}`}
       style={style}
       src={imgUrl}
       onClick={handleClickImage}

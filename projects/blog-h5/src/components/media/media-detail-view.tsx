@@ -36,9 +36,6 @@ export default function MediaDetailView({
   return (
     <div className="media-detail-view">
       <ActionSheet
-        style={{
-          '--rv-action-sheet-max-height': '30%'
-        }}
         visible={visible}
         round={false}
         onClickOverlay={onChangeVisible}
@@ -55,21 +52,23 @@ export default function MediaDetailView({
                 key={media.id}
                 style={{ display: currentIndex === index ? 'block' : 'none' }}
               >
-                <MediaImageItem
-                  className="w-full overflow-clip object-cover"
-                  url={media.file.url}
-                  quality={60}
-                  enablePreview={false}
-                  onClick={() => handlePreviewImage(index)}
-                />
-                <div className="p-[6px]" onClick={() => toPostDetail(media)}>
-                  <ExpandableContent
-                    className="text-white"
-                    content={media.blog.content}
-                    expandText="全文"
-                    maxLength={40}
-                    onClickExpand={() => toPostDetail(media)}
+                <div className="flex max-h-[45vh] flex-col">
+                  <MediaImageItem
+                    className="w-full flex-1 overflow-hidden object-cover"
+                    url={media.file.url}
+                    quality={60}
+                    enablePreview={false}
+                    onClick={() => handlePreviewImage(index)}
                   />
+                  <div className="p-[6px]" onClick={() => toPostDetail(media)}>
+                    <ExpandableContent
+                      className="!text-white"
+                      content={media.blog!.content}
+                      expandText="全文"
+                      maxLength={40}
+                      onClickExpand={() => toPostDetail(media)}
+                    />
+                  </div>
                 </div>
               </Swiper.Item>
             ))}
