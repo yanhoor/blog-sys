@@ -6,6 +6,8 @@ import {
   RouterProvider,
   createRoutesFromElements
 } from 'react-router-dom'
+import store from '@/store'
+import { getMyInfo } from '@/store/user/asyncThunk'
 import IndexPage from '@/pages/index/Index'
 import TestRoutePage from '@/pages/test/test-route/TestRoute'
 import TestPage from '@/pages/test/index/Test'
@@ -26,10 +28,11 @@ import FollowingListPage from '@/pages/followingList/FollowingListPage'
 import UserAlbumPage from '@/pages/userAlbum/UserAlbumPage'
 import RegisterPage from '@/pages/register/RegisterPage'
 import SearchResultPage from '@/pages/searchResult/SearchResultPage'
-import store from '@/store'
-import { getMyInfo } from '@/store/user/asyncThunk'
 import MyConfig from '@/config'
 import ErrorPage from '@/routes/ErrorPage'
+import MyCollectionPage from '@/pages/myCollections/MyCollectionPage'
+import MyLikePage from '@/pages/myLikes/MyLikePage'
+import MyCommentPage from '@/pages/myComments/MyCommentPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -52,6 +55,7 @@ async function authLoader() {
       throw { isLogin: false }
     }
   }
+  return true
 }
 
 const routes = [
@@ -63,6 +67,7 @@ const routes = [
       // 默认路由
       {
         index: true, // 参考 https://reactrouter.com/en/6.11.1/start/concepts#index-routes
+        key: 'root',
         element: <Navigate to="/index"></Navigate> // 定向到 /index，然后 /index 再定向到 IndexHomePage
       },
       {
@@ -72,7 +77,7 @@ const routes = [
           {
             // path: '/index/home',
             index: true, // /index 的默认路由
-            // key: '/index/home',
+            key: 'index-home',
             element: <IndexHomePage></IndexHomePage>
           },
           {
@@ -92,6 +97,7 @@ const routes = [
           {
             path: 'my',
             auth: true,
+            key: 'index-my',
             element: <IndexMyPage></IndexMyPage>
           }
         ]
@@ -107,6 +113,21 @@ const routes = [
       {
         path: 'searchResult',
         element: <SearchResultPage></SearchResultPage>
+      },
+      {
+        path: 'myCollections',
+        auth: true,
+        element: <MyCollectionPage></MyCollectionPage>
+      },
+      {
+        path: 'myLikes',
+        auth: true,
+        element: <MyLikePage></MyLikePage>
+      },
+      {
+        path: 'myComments',
+        auth: true,
+        element: <MyCommentPage></MyCommentPage>
       },
       {
         path: 'post/:id',
