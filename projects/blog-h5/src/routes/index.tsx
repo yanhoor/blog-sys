@@ -3,7 +3,8 @@ import {
   Navigate,
   createBrowserRouter,
   Route,
-  RouterProvider
+  RouterProvider,
+  createRoutesFromElements
 } from 'react-router-dom'
 import IndexPage from '@/pages/index/Index'
 import TestRoutePage from '@/pages/test/test-route/TestRoute'
@@ -25,6 +26,10 @@ import FollowingListPage from '@/pages/followingList/FollowingListPage'
 import UserAlbumPage from '@/pages/userAlbum/UserAlbumPage'
 import RegisterPage from '@/pages/register/RegisterPage'
 import SearchResultPage from '@/pages/searchResult/SearchResultPage'
+import store from '@/store'
+import { getMyInfo } from '@/store/user/asyncThunk'
+import MyConfig from '@/config'
+import ErrorPage from '@/routes/ErrorPage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -32,7 +37,24 @@ type RouteObjectType = {
   children?: RouteObjectType[]
 } & RouteObject
 
-const routes: RouteObject[] = [
+async function authLoader() {
+  const myInfo = store.getState().user.myInfo
+
+  const token = localStorage.getItem(MyConfig.TOKEN)
+  if (!token) throw { isLogin: false }
+
+  if (!myInfo) {
+    try {
+      const result = await store.dispatch(getMyInfo()).unwrap()
+      return true
+    } catch (e) {
+      // console.log('=======authLoader===error=======', e)
+      throw { isLogin: false }
+    }
+  }
+}
+
+const routes = [
   {
     path: '/',
     // element: <Navigate to="/index"></Navigate>,
@@ -59,14 +81,17 @@ const routes: RouteObject[] = [
           },
           {
             path: 'new',
+            auth: true,
             element: <IndexNewPage></IndexNewPage>
           },
           {
             path: 'notification',
+            auth: true,
             element: <IndexNotificationPage></IndexNotificationPage>
           },
           {
             path: 'my',
+            auth: true,
             element: <IndexMyPage></IndexMyPage>
           }
         ]
@@ -124,31 +149,39 @@ const routes: RouteObject[] = [
       }
     ]
   }
-]
+] as RouteObjectType[]
 
 function buildRouteComponent(route: RouteObjectType): ReactNode {
   console.log('======buildRouteComponent========', route)
-  return route.index ? (
-    <Route
-      index={route.index}
-      element={route.element}
-      key={route.key || route.path}
-    ></Route>
-  ) : (
-    <Route
-      path={route.path}
-      element={route.element}
-      key={route.key || route.path}
-    >
-      {route.children &&
-        route.children.map((child) => buildRouteComponent(child))}
-    </Route>
-  )
+  if (route.index) {
+    return (
+      <Route
+        index={route.index}
+        element={route.element}
+        loader={route.auth ? authLoader : undefined}
+        errorElement={<ErrorPage />}
+        key={route.key || route.path}
+      ></Route>
+    )
+  } else {
+    return (
+      <Route
+        path={route.path}
+        loader={route.auth ? authLoader : undefined}
+        element={route.element}
+        errorElement={<ErrorPage />}
+        key={route.key || route.path}
+      >
+        {route.children &&
+          route.children.map((child) => buildRouteComponent(child))}
+      </Route>
+    )
+  }
 }
 
 const router = createBrowserRouter(
-  // createRoutesFromElements(routes.map((route) => buildRouteComponent(route)))
-  routes
+  createRoutesFromElements(routes.map((route) => buildRouteComponent(route)))
+  // routes
 )
 
 export default <RouterProvider router={router} />
