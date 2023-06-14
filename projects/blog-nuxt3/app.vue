@@ -48,7 +48,9 @@ onUnmounted(() => {
 })
 
 function handleSystemModeChange(e: MediaQueryListEvent) {
-  uiTheme.value = e.matches ? darkTheme : null
+  if (colorMode.preference === 'system') {
+    uiTheme.value = e.matches ? darkTheme : null
+  }
 }
 
 function getPathKey() {
