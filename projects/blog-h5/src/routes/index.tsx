@@ -33,6 +33,7 @@ import ErrorPage from '@/routes/ErrorPage'
 import MyCollectionPage from '@/pages/myCollections/MyCollectionPage'
 import MyLikePage from '@/pages/myLikes/MyLikePage'
 import MyCommentPage from '@/pages/myComments/MyCommentPage'
+import MyProfilePage from '@/pages/myProfile/MyProfilePage'
 
 type RouteObjectType = {
   auth?: boolean
@@ -125,6 +126,11 @@ const routes = [
         element: <MyLikePage></MyLikePage>
       },
       {
+        path: 'myProfile',
+        auth: true,
+        element: <MyProfilePage></MyProfilePage>
+      },
+      {
         path: 'myComments',
         auth: true,
         element: <MyCommentPage></MyCommentPage>
@@ -173,7 +179,7 @@ const routes = [
 ] as RouteObjectType[]
 
 function buildRouteComponent(route: RouteObjectType): ReactNode {
-  console.log('======buildRouteComponent========', route)
+  // console.log('======buildRouteComponent========', route)
   if (route.index) {
     return (
       <Route
@@ -201,7 +207,10 @@ function buildRouteComponent(route: RouteObjectType): ReactNode {
 }
 
 const router = createBrowserRouter(
-  createRoutesFromElements(routes.map((route) => buildRouteComponent(route)))
+  createRoutesFromElements(routes.map((route) => buildRouteComponent(route))),
+  {
+    basename: '/mobile/'
+  }
   // routes
 )
 
