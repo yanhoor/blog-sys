@@ -26,7 +26,11 @@ const userInfo = useUserInfo()
 const config = useRuntimeConfig()
 
 onMounted(() => {
-  uiTheme.value = colorMode.value === 'dark' ? darkTheme : null
+  // console.log('=========app mounted=============')
+  // 对于服务端渲染的 naive ui 需要这样才起效？
+  setTimeout(() => {
+    uiTheme.value = colorMode.value === 'dark' ? darkTheme : null
+  }, 300)
 
   window
     .matchMedia('(prefers-color-scheme: dark)')
