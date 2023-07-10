@@ -14,7 +14,6 @@
           playState = PlayState.end
         }
       "
-      @durationchange="handleDurationchange"
       @timeupdate="handleTimeUpdate"
     ></audio>
     <div class="w-1/3" v-if="coverUrl">
@@ -122,6 +121,10 @@ const audioSrc = computed(() => {
   }
 })
 
+onMounted(() => {
+  handleDurationchange()
+})
+
 function handlePlay() {
   playStore.currentRef?.pause()
   playStore.currentRef = audioRef.value
@@ -141,6 +144,7 @@ function handleDurationchange() {
 }
 
 function handleTimeUpdate() {
+  // console.log('======handleTimeUpdate=====', duration.value)
   if (isInfinityDuration.value) {
     audioRef.value.currentTime = 0
     isInfinityDuration.value = false
@@ -150,6 +154,7 @@ function handleTimeUpdate() {
 
 // chrome 获取的时长可能是Infinity，需要这样处理
 function handleUnknownDuration() {
+  // console.log('======handleUnknownDuration=====', duration.value)
   if (duration.value === Infinity || isNaN(Number(duration.value))) {
     isInfinityDuration.value = true
     audioRef.value.currentTime = 1e101 // 设置一个极大的时间，能显示后再在 handleTimeUpdate 设置回开始
