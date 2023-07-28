@@ -28,11 +28,13 @@ export function toAliasTime(value: string): string {
   if (h < 24) {
     return h + '小时前'
   }
-  if (h < 48) {
+  const yesterday = dayjs().subtract(1, 'd')
+  const isYesterday = dayjs().isSame(yesterday, 'day')
+  if (h >= 24 && isYesterday) {
     return '昨天 ' + dayjs(t).format('HH:mm')
   }
-  const d = dayjs().diff(dayjs(t), 'day')
-  if (d < 366) {
+  const isSame = dayjs().isSame(dayjs(t), 'year')
+  if (isSame) {
     return dayjs(t).format('MM-DD HH:mm')
   }
   return dayjs(t).format('YYYY-MM-DD HH:mm')
