@@ -1,15 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>博客管理后台</title>
-    <link rel="preconnect" crossorigin="anonymous" href="https://cdn.tiny.cloud">
+    <title>Vipot 后台管理系统</title>
+    <link
+      rel="preconnect"
+      crossorigin="anonymous"
+      href="https://cdn.tiny.cloud"
+    />
     <link rel="dns-prefetch" href="https://cdn.tiny.cloud" />
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      const wrapper = document.createElement('div')
+      wrapper.id = 'codeRain'
+      wrapper.style.width = '100%'
+      wrapper.style.height = '100%'
+      wrapper.style.zIndex = '99'
+      const cvs = document.createElement('canvas')
+      wrapper.appendChild(cvs)
+      document.querySelector('#app').appendChild(wrapper)
+      const width = window.innerWidth * devicePixelRatio
+      const height = window.innerHeight * devicePixelRatio
+      cvs.width = width
+      cvs.height = height
+      cvs.style.backgroundColor = '#c3c3c3'
+
+      const ctx = cvs.getContext('2d')
+      const fontSize = 20 * devicePixelRatio
+      const columnWidth = fontSize
+      const columnCount = Math.floor(width / columnWidth)
+      const nextChar = new Array(columnCount).fill(0)
+
+      function draw() {
+        ctx.fillStyle = 'rgba(80, 80, 80, 0.1)'
+        ctx.fillRect(0, 0, width, height)
+        for (let i = 0; i < columnCount; i++) {
+          ctx.fillStyle = getRandomColor()
+          const char = getRandomChar()
+          ctx.font = `${fontSize}px "Roboto Mono"`
+          const x = i * columnWidth
+          const s = nextChar[i]
+          const y = (s + 1) * fontSize
+          ctx.fillText(char, x, y)
+          if (y > height && Math.random() > 0.99) {
+            nextChar[i] = 0
+          } else {
+            nextChar[i]++
+          }
+        }
+      }
+
+      function getRandomColor() {
+        const fontColors = [
+          '#33b5e5',
+          '#0099cc',
+          '#aa66cc',
+          '#9933cc',
+          '#99cc00',
+          '#669900',
+          '#ffbb33',
+          '#ff8800',
+          '#ff4444',
+          '#cc0000'
+        ]
+
+        return fontColors[Math.floor(Math.random() * fontColors.length)]
+      }
+
+      function getRandomChar() {
+        const str = 'vipot'
+        return str[Math.floor(Math.random() * str.length)]
+      }
+
+      draw()
+      setInterval(draw, 30)
+    </script>
   </body>
 </html>
