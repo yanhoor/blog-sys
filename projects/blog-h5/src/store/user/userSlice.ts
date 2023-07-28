@@ -26,17 +26,11 @@ const userSlice = createSlice({
   } as UserStateType,
   // 不支持异步
   reducers: {
-    // todoAdded(state, action) {
-    //   state.push({
-    //     id: action.payload.id,
-    //     text: action.payload.text,
-    //     completed: false
-    //   })
-    // },
-    // todoToggled(state, action) {
-    //   const todo = state.find((todo) => todo.id === action.payload)
-    //   todo.completed = !todo.completed
-    // }
+    clearMyInfo(state) {
+      state.myInfo = null
+      state.unreadTotal = 0
+      state.allGroupList = []
+    }
   },
   // 异步
   extraReducers: (builder) => {
@@ -63,5 +57,5 @@ const userSlice = createSlice({
   }
 })
 
-// export const {} = userSlice.actions
+export const { clearMyInfo } = userSlice.actions
 export default userSlice.reducer
