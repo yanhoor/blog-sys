@@ -14,6 +14,7 @@
           playState = PlayState.end
         }
       "
+      @loadedmetadata="handleGetDuration"
       @timeupdate="handleTimeUpdate"
     ></audio>
     <div class="w-1/3" v-if="coverUrl">
@@ -122,7 +123,7 @@ const audioSrc = computed(() => {
 })
 
 onMounted(() => {
-  handleDurationchange()
+  handleGetDuration()
 })
 
 function handlePlay() {
@@ -137,14 +138,17 @@ function handlePlay() {
   }
 }
 
-function handleDurationchange() {
-  duration.value = audioRef.value?.duration || 0
+function handleGetDuration() {
+  duration.value = audioRef.value?.duration
   handleUnknownDuration()
-  // console.log('======durationchange=====', duration.value)
 }
 
 function handleTimeUpdate() {
-  // console.log('======handleTimeUpdate=====', duration.value)
+  // console.log(
+  //   '======handleTimeUpdate=====',
+  //   duration.value,
+  //   audioRef.value?.currentTime
+  // )
   if (isInfinityDuration.value) {
     audioRef.value.currentTime = 0
     isInfinityDuration.value = false
