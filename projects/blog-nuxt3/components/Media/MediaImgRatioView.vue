@@ -1,29 +1,15 @@
 <template>
-  <div
-    :style="{
-      width
-    }"
-    class="relative pl-[6px] pt-[6px]"
-  >
-    <div
-      class="image-item-container"
-      :style="{ 'padding-top': `calc(100%*${ratio})` }"
-    >
-      <MediaImgView class="image-item" :url="url" ratio="80" />
-    </div>
+  <div class="image-item-container">
+    <MediaImgView class="image-item" :url="url" ratio="80" />
   </div>
 </template>
 
 <script lang="ts" setup>
 interface Props {
-  width: string
   url: string
-  ratio?: number
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  ratio: 9 / 16
-})
+const props = defineProps<Props>()
 </script>
 
 <style lang="postcss" scoped>

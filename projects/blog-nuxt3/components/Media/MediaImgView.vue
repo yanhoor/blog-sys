@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-center" v-if="loadError">
+  <div class="flex items-center justify-center" v-if="loadError">
     <n-icon :component="ImageOff24Regular" size="64"></n-icon>
   </div>
   <img
