@@ -205,8 +205,7 @@ import {
   NTime,
   NIcon,
   NTag,
-  NDatePicker,
-  createDiscreteApi
+  NDatePicker
 } from 'naive-ui'
 import { User, Media } from '~/types'
 import dayjs from 'dayjs'
@@ -214,6 +213,7 @@ import dayjs from 'dayjs'
 definePageMeta({
   key: (route) => route.path
 })
+const messageRef = ref()
 const config = useRuntimeConfig()
 const route = useRoute()
 const myInfo = useUserInfo()
@@ -275,6 +275,7 @@ useHead(() => {
 await handlePageInit()
 
 async function handlePageInit() {
+  messageRef.value = useDiscreteApi(['message'])
   loading.value = true
   await getUserInfo()
   await getUserStatis()
@@ -282,7 +283,6 @@ async function handlePageInit() {
 }
 
 async function getUserInfo() {
-  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost(
       '/user/' + route.params.id,
@@ -292,7 +292,7 @@ async function getUserInfo() {
       userInfo.value = result
       searchParams.uid = result.id
     } else {
-      message.error(msg as string)
+      messageRef.value.error(msg as string)
       if (code == 222) {
         await navigateTo('/', { replace: true })
       }
@@ -301,7 +301,6 @@ async function getUserInfo() {
 }
 
 async function getUserStatis() {
-  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost('/statis/user', {
       id: userInfo.value?.id
@@ -309,7 +308,7 @@ async function getUserStatis() {
     if (success) {
       statisInfo.value = result
     } else {
-      message.error(msg as string)
+      messageRef.value.error(msg as string)
     }
   } catch (e) {}
 }

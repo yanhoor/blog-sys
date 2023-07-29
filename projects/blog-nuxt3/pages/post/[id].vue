@@ -146,7 +146,7 @@ import {
   NDropdown,
   NButton,
   NCollapseTransition,
-  createDiscreteApi,
+  DialogOptions,
   DropdownOption
 } from 'naive-ui'
 import {
@@ -166,6 +166,7 @@ definePageMeta({
 
 type ActionType = 'like' | 'comment' | 'collect' | undefined
 
+const messageRef = ref()
 const route = useRoute()
 const myInfo = useUserInfo()
 const loading = ref(false)
@@ -189,6 +190,7 @@ useHead(() => {
 await initPage()
 
 async function initPage() {
+  messageRef.value = useDiscreteApi(['message'])
   loading.value = true
   await getBlogInfo()
   loading.value = false
@@ -199,7 +201,6 @@ async function getBlogInfo() {
     const { result, success, msg, code } = await useFetchPost('/blog/info', {
       id: blogId
     })
-    const { message } = useDiscreteApi(['message'])
     if (success) {
       blogInfo.value = result
       if (result.createById === myInfo.value?.id) {
@@ -215,17 +216,7 @@ async function getBlogInfo() {
             label: '复制博客地址',
             key: 'copyLink',
             props: {
-              onClick: () => {
-                const { message } = useDiscreteApi(['message'])
-                navigator.clipboard
-                  .writeText(
-                    location.origin + '/blog/post/' + blogInfo.value?.id
-                  )
-                  .then((r) => {
-                    // console.log('-----------', r)
-                    message.success('复制成功')
-                  })
-              }
+              onClick: handleCopyPostUrl
             }
           }
         ]
@@ -235,23 +226,13 @@ async function getBlogInfo() {
             label: '复制博客地址',
             key: 'copyLink',
             props: {
-              onClick: () => {
-                const { message } = useDiscreteApi(['message'])
-                navigator.clipboard
-                  .writeText(
-                    location.origin + '/blog/post/' + blogInfo.value?.id
-                  )
-                  .then((r) => {
-                    // console.log('-----------', r)
-                    message.success('复制成功')
-                  })
-              }
+              onClick: handleCopyPostUrl
             }
           }
         ]
       }
     } else if (code === 1) {
-      message.error(msg as string)
+      messageRef.value.error(msg as string)
       return navigateTo({ path: '/', replace: true })
     }
   } catch (e) {
@@ -259,11 +240,19 @@ async function getBlogInfo() {
   }
 }
 
+function handleCopyPostUrl() {
+  navigator.clipboard
+    .writeText(location.origin + '/blog/post/' + blogInfo.value?.id)
+    .then((r) => {
+      // console.log('-----------', r)
+      messageRef.value.success('复制成功')
+    })
+}
+
 async function likeBlog() {
   showType.value = 'like'
-  const { message } = useDiscreteApi(['message'])
   if (!myInfo.value) {
-    return message.info('请先登录')
+    return messageRef.value.info('请先登录')
   }
 
   try {
@@ -280,9 +269,8 @@ async function likeBlog() {
 
 async function collectBlog() {
   showType.value = 'collect'
-  const { message } = useDiscreteApi(['message'])
   if (!myInfo.value) {
-    return message.info('请先登录')
+    return messageRef.value.info('请先登录')
   }
 
   try {
@@ -335,6 +323,6 @@ async function handleDeletePost() {
       } catch (e) {}
     },
     onNegativeClick: () => {}
-  })
+  } as DialogOptions)
 }
 </script>
