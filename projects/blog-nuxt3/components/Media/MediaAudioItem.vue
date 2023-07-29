@@ -147,13 +147,15 @@ function handleTimeUpdate() {
   // console.log(
   //   '======handleTimeUpdate=====',
   //   duration.value,
-  //   audioRef.value?.currentTime
+  //   audioRef.value?.currentTime,
+  //   audioRef.value?.duration
   // )
   if (isInfinityDuration.value) {
     audioRef.value.currentTime = 0
     isInfinityDuration.value = false
   }
   currentTime.value = audioRef.value?.currentTime || 0
+  duration.value = audioRef.value?.duration
 }
 
 // chrome 获取的时长可能是Infinity，需要这样处理
