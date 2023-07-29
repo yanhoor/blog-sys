@@ -6,6 +6,7 @@
         class="video-item"
         controls
         :src="config.public.imageBase + url"
+        @play="handlePlaying"
       ></video>
       <template v-if="coverUrl && playState === PlayState.idle">
         <MediaImgView class="video-cover" :url="coverUrl" />
@@ -41,11 +42,39 @@ const config = useRuntimeConfig()
 const videoRef = ref<HTMLVideoElement>()
 const playState = ref<PlayState>(PlayState.idle)
 
+onMounted(() => {
+  // 元素不可见时自动暂停播放
+  const observer = new IntersectionObserver(
+    (entries) => {
+      // console.log(
+      //   '=======IntersectionObserver=======',
+      //   videoRef.value.src,
+      //   entries
+      // )
+      const currentItem = entries[0]
+      if (
+        !currentItem.isIntersecting &&
+        playState.value === PlayState.playing
+      ) {
+        currentItem.target.pause()
+      }
+    },
+    {
+      threshold: 0.8
+    }
+  )
+
+  observer.observe(videoRef.value)
+})
+
 function handlePlay() {
-  playStore.currentRef?.pause()
+  videoRef.value.play()
+}
+
+function handlePlaying() {
+  if (playStore.currentRef !== videoRef.value) playStore.currentRef?.pause()
   playStore.currentRef = videoRef.value
   playState.value = PlayState.playing
-  videoRef.value.play()
 }
 </script>
 
