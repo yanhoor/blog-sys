@@ -199,7 +199,7 @@ async function getBlogInfo() {
     const { result, success, msg, code } = await useFetchPost('/blog/info', {
       id: blogId
     })
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     if (success) {
       blogInfo.value = result
       if (result.createById === myInfo.value?.id) {
@@ -216,7 +216,7 @@ async function getBlogInfo() {
             key: 'copyLink',
             props: {
               onClick: () => {
-                const { message } = createDiscreteApi(['message'])
+                const { message } = useDiscreteApi(['message'])
                 navigator.clipboard
                   .writeText(
                     location.origin + '/blog/post/' + blogInfo.value?.id
@@ -236,7 +236,7 @@ async function getBlogInfo() {
             key: 'copyLink',
             props: {
               onClick: () => {
-                const { message } = createDiscreteApi(['message'])
+                const { message } = useDiscreteApi(['message'])
                 navigator.clipboard
                   .writeText(
                     location.origin + '/blog/post/' + blogInfo.value?.id
@@ -261,7 +261,7 @@ async function getBlogInfo() {
 
 async function likeBlog() {
   showType.value = 'like'
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!myInfo.value) {
     return message.info('请先登录')
   }
@@ -280,7 +280,7 @@ async function likeBlog() {
 
 async function collectBlog() {
   showType.value = 'collect'
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!myInfo.value) {
     return message.info('请先登录')
   }
@@ -317,7 +317,7 @@ function handleSwitchType(val: ActionType) {
 }
 
 async function handleDeletePost() {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '删除博客',
     content: '确定删除？',

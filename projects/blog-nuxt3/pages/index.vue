@@ -91,7 +91,7 @@ getAllGroup()
 async function getAllGroup() {
   if (!myInfo.value) return
 
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],

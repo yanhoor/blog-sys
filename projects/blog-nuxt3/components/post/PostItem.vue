@@ -122,7 +122,7 @@ const actionOptions = ref<DropdownOption[]>([
     key: 'copyLink',
     props: {
       onClick: () => {
-        const { message } = createDiscreteApi(['message'])
+        const { message } = useDiscreteApi(['message'])
         navigator.clipboard
           .writeText(location.origin + '/blog/post/' + props.blog.id)
           .then((r) => {
@@ -161,7 +161,7 @@ if (props.blog?.createById === userInfo.value?.id) {
 }
 
 async function likeBlog() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!userInfo.value) {
     return message.info('请先登录')
   }
@@ -179,7 +179,7 @@ async function likeBlog() {
 }
 
 async function collectBlog() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!userInfo.value) {
     return message.info('请先登录')
   }
@@ -199,7 +199,7 @@ async function collectBlog() {
 }
 
 async function handleDeletePost() {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '删除博客',
     content: '确定删除？',

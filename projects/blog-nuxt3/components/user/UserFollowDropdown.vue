@@ -70,7 +70,7 @@ function handleDropdownSelect(key: string | number) {
 
 async function handleFollow(type: number) {
   followLoading.value = true
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost('/user/follow', {
       id: props.user?.id,

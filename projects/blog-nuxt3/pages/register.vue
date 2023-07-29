@@ -158,7 +158,7 @@ function validatePasswordSame(rule: FormItemRule, value: string): boolean {
 function handleRegister(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
         const { result, success } = await useFetchPost(

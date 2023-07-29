@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-tabs
-      class="-mt-[20px] mb-[12px] px-[24px] sticky top-[60px] z-10 bg-card-light dark:bg-card-dark"
+      class="sticky top-[60px] z-10 -mt-[20px] mb-[12px] bg-card-light px-[24px] dark:bg-card-dark"
       type="line"
       v-model:value="currentTab"
       @update:value="handleChangeTab"
@@ -24,7 +24,7 @@ import { useNotificationUnreadAuditCount } from '~/composables/useNotification'
 definePageMeta({
   redirect: '/notification/comment',
   middleware: async (to, from) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     const token = useCookie('token')
     // console.log('=============', token, to.fullPath, from.fullPath)
     if (!token.value) {

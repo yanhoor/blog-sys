@@ -117,7 +117,7 @@ async function handleSelectFileChange(e: Event) {
 async function handleUploadFile(file: File) {
   if (!config.public.imageType.includes(getFileExt(file.name))) return
 
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   // console.log('==============', md5)
   try {
     const { success, result, msg } = await useFetchPost(

@@ -7,7 +7,7 @@
     width="30%"
   >
     <n-drawer-content title="快捷发布" closable>
-      <div class="w-full h-full flex flex-col items-start gap-[12px]">
+      <div class="flex h-full w-full flex-col items-start gap-[12px]">
         <n-input
           v-model:value="postForm.content"
           type="textarea"
@@ -40,13 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NButton,
-  NInput,
-  NDrawer,
-  NDrawerContent,
-  createDiscreteApi
-} from 'naive-ui'
+import { NButton, NInput, NDrawer, NDrawerContent } from 'naive-ui'
 import { Blog } from 'sys-types'
 import MediaUploadMulti from '~/components/Media/MediaUploadMulti.vue'
 
@@ -74,7 +68,7 @@ const postForm = ref<BlogForm>({
 const isProcessing = ref(false)
 
 async function handlePost() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   postForm.value.content = postForm.value.content.trim()
   if (!postForm.value.content) {
     message.error('请输入内容')

@@ -25,14 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  NButton,
-  NIcon,
-  NDropdown,
-  createDiscreteApi,
-  DialogOptions,
-  NBadge
-} from 'naive-ui'
+import { NButton, NIcon, NDropdown, DialogOptions, NBadge } from 'naive-ui'
 import {
   ArrowCircleRight20Regular,
   CalendarPerson20Regular,
@@ -115,7 +108,7 @@ async function handleUserHome() {
 }
 
 async function handleLogout() {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '退出登录',
     content: '确定退出？',
@@ -140,7 +133,7 @@ async function handleLogout() {
 
 // 假如当前在需要登录的页面
 async function checkCurrentPath() {
-  if (['/user/profile'].includes(route.path)) {
+  if (['/user/profile', '/'].includes(route.path)) {
     await navigateTo({ path: '/', replace: true })
   }
 }

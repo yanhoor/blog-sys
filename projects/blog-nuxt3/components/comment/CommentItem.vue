@@ -1,12 +1,12 @@
 <template>
-  <div v-bind="attrs" class="w-full flex flex-col gap-[8px] items-start">
+  <div v-bind="attrs" class="flex w-full flex-col items-start gap-[8px]">
     <div class="flex items-center gap-[6px]">
       <UserAvatar :user="comment.createBy" :size="42" />
       <UserName :user="comment.createBy" />
     </div>
 
     <div>
-      <div v-if="comment.replyComment?.topCommentId" class="inline mr-[2px]">
+      <div v-if="comment.replyComment?.topCommentId" class="mr-[2px] inline">
         回复
         <UserName :user="comment.replyComment.createBy" show-at />:
       </div>
@@ -23,11 +23,11 @@
       :url="comment.image.url"
       v-if="comment.image"
       enablePreview
-      class="max-w-[180px] max-h-[135px] object-contain"
+      class="max-h-[135px] max-w-[180px] object-contain"
     />
 
-    <div class="flex items-center justify-between w-full group">
-      <div class="flex items-center flex-1">
+    <div class="group flex w-full items-center justify-between">
+      <div class="flex flex-1 items-center">
         <span
           class="mr-[12px] text-gray-500"
           v-time="new Date(comment.createdAt)"
@@ -41,7 +41,7 @@
       </div>
       <div class="flex items-center gap-[12px]">
         <n-icon
-          class="text-red-600 cursor-pointer hidden group-hover:inline-block"
+          class="hidden cursor-pointer text-red-600 group-hover:inline-block"
           :component="Delete24Regular"
           size="18"
           @click="handleDeleteComment"
@@ -49,7 +49,7 @@
           v-if="comment?.createById === userInfo?.id"
         />
         <div
-          class="flex justify-center items-center cursor-pointer gap-[6px]"
+          class="flex cursor-pointer items-center justify-center gap-[6px]"
           @click="handleLikeComment"
         >
           <n-icon
@@ -77,7 +77,7 @@
 
     <div
       v-if="comment.childComments?.length > 0"
-      class="px-[12px] bg-content-light dark:bg-content-dark rounded-[5px] min-w-full"
+      class="min-w-full rounded-[5px] bg-content-light px-[12px] dark:bg-content-dark"
     >
       <CommentItem
         v-for="(reply, index) of comment.childComments"
@@ -160,7 +160,7 @@ function handleReplySuccess(reply: Comment) {
 }
 
 async function handleDeleteComment() {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '删除',
     content: '确定删除该评论？该评论下的所有回复也将被删除',
@@ -194,7 +194,7 @@ function handleDeleteTopComment(comment: Comment) {
 }
 
 async function handleLikeComment() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!userInfo.value) {
     return message.info('请先登录')
   }

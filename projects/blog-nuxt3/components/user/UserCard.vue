@@ -106,7 +106,7 @@ function handleShow(val: boolean) {
 }
 async function getUserInfo() {
   loading.value = true
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost(
       '/user/' + props.userId,
@@ -125,7 +125,7 @@ async function getUserInfo() {
 
 async function handleFollow(type: number) {
   followLoading.value = true
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost('/user/follow', {
       id: props.userId,

@@ -68,7 +68,7 @@ onUnmounted(() => {
 getSupportAudioFormat()
 
 async function initRecorder() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
 
   try {
     stream = await navigator.mediaDevices.getUserMedia({

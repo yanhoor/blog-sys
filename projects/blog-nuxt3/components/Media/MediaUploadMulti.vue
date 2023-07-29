@@ -237,7 +237,7 @@ async function handleUploadAudio() {
 }
 
 async function handleUploadFile(file: File): Promise<boolean> {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
 
   if (!handleCheckUploadValid(file)) {
     message.error('不支持的文件类型')

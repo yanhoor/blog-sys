@@ -11,7 +11,7 @@
         maxRows: 5
       }"
     />
-    <div class="flex justify-between items-center">
+    <div class="flex items-center justify-between">
       <MediaUploadImg
         @complete="imageFile = $event"
         :model-value="imageFile?.url"
@@ -22,7 +22,7 @@
       >
         <template #trigger>
           <n-icon
-            class="text-green-600 cursor-pointer"
+            class="cursor-pointer text-green-600"
             :component="ImageAdd24Regular"
             size="36px"
           ></n-icon>
@@ -61,7 +61,7 @@ const commentCommitting = ref(false)
 const imageFile = ref<MediaFile>()
 
 async function commitComment() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   const content = commentContent.value.trim()
 
   if (!content && !imageFile.value) {

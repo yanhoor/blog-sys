@@ -65,7 +65,7 @@ const {
 
 await handleLoadNextPage()
   .then((r) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     if (r?.success) {
       emit('fetchComplete', fetchResult)
     } else {

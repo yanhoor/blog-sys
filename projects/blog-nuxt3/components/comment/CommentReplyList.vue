@@ -16,7 +16,7 @@
         />
       </n-card>
 
-      <div class="flex gap-[12px] text-[16px] mx-[12px]">
+      <div class="mx-[12px] flex gap-[12px] text-[16px]">
         <span
           class="cursor-pointer"
           :class="{ 'text-green-700': sortType === 1 }"
@@ -96,7 +96,7 @@ function handleInit() {
 }
 
 async function getTopCommentDetail() {
-  const { message } = createDiscreteApi(['message', 'dialog'])
+  const { message } = useDiscreteApi(['message', 'dialog'])
 
   try {
     const { result, success, msg } = await useFetchPost('/comment/info', {

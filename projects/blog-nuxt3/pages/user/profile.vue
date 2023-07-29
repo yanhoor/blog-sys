@@ -1,6 +1,6 @@
 <template>
   <n-card>
-    <div class="font-bold text-4xl">个人资料</div>
+    <div class="text-4xl font-bold">个人资料</div>
     <n-divider></n-divider>
     <div class="mt-12">
       <n-form
@@ -85,7 +85,7 @@ import { User } from '~/types'
 
 definePageMeta({
   middleware: async (to, from) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     const token = useCookie('token')
     // console.log('=============', token, to.fullPath, from.fullPath)
     if (!token.value) {
@@ -123,7 +123,7 @@ const isProcessing = ref(false)
 getProfile()
 
 async function getProfile() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchGet('/user/info', {})
     if (success) {
@@ -137,7 +137,7 @@ async function getProfile() {
 
 async function handleSave() {
   formRef.value?.validate(async (errors) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
         isProcessing.value = true

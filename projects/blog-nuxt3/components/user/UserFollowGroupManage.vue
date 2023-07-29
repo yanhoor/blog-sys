@@ -6,7 +6,7 @@
         size="large"
         closable
         @close="emit('update:show', false)"
-        class="w-2/5 max-h-screen"
+        class="max-h-screen w-2/5"
       >
         <div class="flex flex-col gap-[12px]">
           <p class="text-[12px] text-gray-400">
@@ -124,7 +124,7 @@ onUnmounted(() => {
 })
 
 async function handleSortGroup(list: FollowGroup[]) {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   const idList = list.map((item) => item.id)
   try {
     const {
@@ -142,7 +142,7 @@ async function handleSortGroup(list: FollowGroup[]) {
 }
 
 async function handleDeleteGroup(id: number) {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   dialog.error({
     title: '删除',
     content: '确定删除该分组？',
@@ -173,7 +173,7 @@ function handleEditGroup(group: FollowGroup) {
 }
 
 async function handleSave() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!editItem.value) return
 
   editItem.value.name = editItem.value.name.trim()

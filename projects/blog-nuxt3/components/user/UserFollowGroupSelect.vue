@@ -5,7 +5,7 @@
       size="large"
       closable
       @close="emit('update:show', false)"
-      class="w-1/3 max-h-screen flex flex-col"
+      class="flex max-h-screen w-1/3 flex-col"
       content-style="flex: 1; overflow: hidden; display: flex; flex-direction: column"
     >
       <div class="overflow-auto">
@@ -122,7 +122,7 @@ async function InitPage() {
 }
 
 async function handleCreateGroup() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   groupForm.value.name = groupForm.value.name.trim()
   if (adding.value) return
   adding.value = true
@@ -145,7 +145,7 @@ async function handleCreateGroup() {
 }
 
 async function handleConfirm() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (!selectIdList.value.length) {
     message.warning('请选择分组')
     return
@@ -168,7 +168,7 @@ async function handleConfirm() {
 }
 
 async function getAllGroup() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],
@@ -185,7 +185,7 @@ async function getAllGroup() {
 }
 
 async function getContainGroupList() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],

@@ -282,7 +282,7 @@ async function handlePageInit() {
 }
 
 async function getUserInfo() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost(
       '/user/' + route.params.id,
@@ -301,7 +301,7 @@ async function getUserInfo() {
 }
 
 async function getUserStatis() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost('/statis/user', {
       id: userInfo.value?.id
@@ -340,7 +340,7 @@ function handleViewFriends(type: number) {
 }
 
 function handleSearchPost() {
-  const { message } = createDiscreteApi(['message'])
+  const { message } = useDiscreteApi(['message'])
   if (selectDateRange.value?.length) {
     const diff = dayjs(selectDateRange.value[1]).diff(
       dayjs(selectDateRange.value[0]),

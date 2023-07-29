@@ -49,7 +49,7 @@ import {
 definePageMeta({
   redirect: '/my/follower',
   middleware: async (to, from) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     const token = useCookie('token')
     // console.log('=============', token, to.fullPath, from.fullPath)
     if (!token.value) {

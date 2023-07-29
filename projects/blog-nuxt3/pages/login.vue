@@ -85,7 +85,7 @@ const rules: FormRules = {
 function handlePost(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    const { message } = createDiscreteApi(['message'])
+    const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
         const { result, success, msg } = await useFetchPost(

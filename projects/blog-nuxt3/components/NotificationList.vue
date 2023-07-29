@@ -3,7 +3,7 @@
     <SkeletonNotification v-if="pageLoading && pageFetchParams.page === 1" />
 
     <div v-loadMore="handleLoadNextPage" v-else>
-      <div class="flex justify-between items-center mb-[12px]">
+      <div class="mb-[12px] flex items-center justify-between">
         <div class="flex items-center gap-[6px]">
           <template v-if="pageList.length > 0 && fetchResult.unreadTotal > 0">
             <div class="flex items-center gap-[6px]">
@@ -53,7 +53,7 @@
       </div>
       <template v-if="pageList.length">
         <n-checkbox-group
-          class="overflow-hidden grid grid-cols-1 gap-[12px]"
+          class="grid grid-cols-1 gap-[12px] overflow-hidden"
           v-model:value="checkedList"
           @update:value="handleCheckItem"
         >
@@ -70,12 +70,12 @@
             ></n-checkbox>
             <n-card class="overflow-hidden">
               <div
-                class="group flex flex-col gap-[12px] items-start divide-y divide-border-light dark:divide-border-dark"
+                class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
                 :class="{ 'text-gray-400': notification.isRead }"
               >
                 <slot :notification="notification"></slot>
 
-                <div class="flex justify-between items-center w-full pt-[12px]">
+                <div class="flex w-full items-center justify-between pt-[12px]">
                   <span v-time="notification.createdAt" class="text-gray-400" />
                   <n-button
                     text
@@ -85,7 +85,7 @@
                     @click="handleRemarkRead(notification.id)"
                     >标为已读</n-button
                   >
-                  <span class="text-green-700 hidden group-hover:block" v-else
+                  <span class="hidden text-green-700 group-hover:block" v-else
                     >已读</span
                   >
                 </div>
@@ -211,7 +211,7 @@ async function handleRemarkRead(id: string, isAll = false) {
 }
 
 async function handleMultiRemark(isAll: boolean) {
-  const { message, dialog } = createDiscreteApi(['message', 'dialog'])
+  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   if (isAll) {
     dialog.warning({
       title: '全部标为已读',
