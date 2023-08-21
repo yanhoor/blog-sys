@@ -57,6 +57,12 @@
          --rv-action-sheet-item-background: theme('colors.block.dark');
          --rv-action-sheet-item-text-color: theme('colors.regular.dark');
          --rv-action-sheet-cancel-padding-color: theme('colors.page.dark');
+
+        /*cell*/
+        --rv-cell-background-color: theme('colors.card.dark');
+        --rv-cell-text-color: theme('colors.regular.dark');
+        --rv-cell-border-color: theme('colors.border.dark');
+        --rv-cell-active-color: theme('colors.border.dark');
      }
 }
 
