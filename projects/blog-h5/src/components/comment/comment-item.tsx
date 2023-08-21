@@ -75,14 +75,12 @@ export default function CommentItem({
                   </>
                 )}
                 <span className="ml-[2px] mr-[4px]">:</span>
-                {child.content ? (
-                  <ExpandableContent
-                    className="my-1 inline"
-                    imageUrl={child.image?.url}
-                    content={child.content}
-                    maxLength={60}
-                  />
-                ) : null}
+                <ExpandableContent
+                  className="my-1 inline"
+                  imageUrl={child.image?.url}
+                  content={child.content || ''}
+                  maxLength={60}
+                />
               </div>
             ))}
             {comment.childCommentsCount! > 2 ? (
