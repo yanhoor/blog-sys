@@ -10,7 +10,7 @@ import UploadImg from '@/components/upload/uploadImg'
 import MediaAudioRecord from '@/components/media/media-audio-record'
 
 interface Props {
-  onComplete: (mediaList: Media[]) => void
+  onComplete: (mediaList: UploadFile[]) => void
 }
 
 // 上传的类型，1--未定，2--图片，3--视频, 4--音频
@@ -21,14 +21,22 @@ enum UploadMode {
   audio
 }
 
+export interface UploadFile {
+  fileId: number
+  file: MediaFile
+  cover?: MediaFile
+  coverId?: number | string
+  key?: number | string
+}
+
 export const UploadMulti = memo(function ({ onComplete }: Props) {
   const [uploadMode, setUploadMode] = useState<UploadMode>(UploadMode.unknown)
   const [lockUploadMode, setLockUploadMode] = useState(false) // 不能选择其他上传类型
   const [uploading, setUploading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [acceptType, setAcceptType] = useState('')
-  const [mediaList, setMediaList] = useState<Media[]>([])
-  const completeListRef = useRef<Media[]>([])
+  const [mediaList, setMediaList] = useState<UploadFile[]>([])
+  const completeListRef = useRef<UploadFile[]>([])
   const [coverFile, setCoverFile] = useState<MediaFile>()
   const [audioRecordFile, setAudioRecordFile] = useState<File>()
 
@@ -103,7 +111,7 @@ export const UploadMulti = memo(function ({ onComplete }: Props) {
           fileId: result.id,
           file: result,
           key: new Date().getTime()
-        } as Media
+        }
         completeListRef.current.push(newMedia)
         setMediaList(completeListRef.current)
         return true

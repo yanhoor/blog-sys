@@ -32,7 +32,7 @@ export default function NotificationAuditList() {
                 <div className="bg-block-section mt-2 min-w-full rounded px-2 py-1 text-[12px]">
                   <ExpandableContent
                     className="inline"
-                    content={notification.comment.content}
+                    content={notification.comment.content!}
                   />
                 </div>
               )}

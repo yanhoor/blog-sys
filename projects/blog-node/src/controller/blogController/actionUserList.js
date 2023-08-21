@@ -44,7 +44,7 @@ module.exports = async function (ctx, next) {
     const xprisma = prisma.$extends({
       result: {
         user: {
-          followersCount: {
+          followerCount: {
             needs: { followers: true },
             compute(result) {
               return result.followers.length
@@ -77,7 +77,7 @@ module.exports = async function (ctx, next) {
         name: true,
         avatar: true,
         introduce: true,
-        followersCount: true,
+        followerCount: true,
         isFollowing: true
       }
     })

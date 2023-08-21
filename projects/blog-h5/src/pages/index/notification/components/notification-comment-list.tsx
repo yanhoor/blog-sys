@@ -20,7 +20,7 @@ export default function NotificationCommentList() {
               <div className="flex items-center gap-[6px] text-[12px]">
                 <UserAvatar user={notification.createBy} size={32} />
                 <UserName user={notification.createBy} />
-                {notification.comment.replyComment ? (
+                {notification.comment!.replyComment ? (
                   <span>回复了您的评论：</span>
                 ) : (
                   <span>评论了您：</span>
@@ -34,22 +34,22 @@ export default function NotificationCommentList() {
                     : undefined
                 }
               >
-                {!!notification.comment.replyComment && (
+                {!!notification.comment?.replyComment && (
                   <div className="bg-block-section mt-2 min-w-full rounded px-2 py-1">
                     <ExpandableContent
                       className="inline"
                       content={
-                        notification.comment.replyComment.content || '图片评论'
+                        notification.comment!.replyComment.content || '图片评论'
                       }
-                      imageUrl={notification.comment.replyComment.image?.url}
+                      imageUrl={notification.comment!.replyComment.image?.url}
                       maxLength={60}
                     />
                   </div>
                 )}
                 <ExpandableContent
                   className="inline"
-                  content={notification.comment.content || ''}
-                  imageUrl={notification.comment.image?.url}
+                  content={notification.comment!.content || ''}
+                  imageUrl={notification.comment!.image?.url}
                   maxLength={60}
                 />
               </div>

@@ -37,7 +37,7 @@ export default function TestPage(props: any) {
       </button>
       <h3>params is: {searchParams.get('id')}</h3>
       <TestA type={'13123'}></TestA>
-      <button onClick={() => setSearchParams({ type: 23, id: 55 })}>
+      <button onClick={() => setSearchParams({ type: '23', id: '55' })}>
         change
       </button>
       <main>

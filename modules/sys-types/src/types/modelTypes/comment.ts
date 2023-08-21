@@ -1,6 +1,6 @@
 import { User } from "./user";
 import { Blog } from "./blog";
-import { MediaFile } from "@/types/mediaFile";
+import { MediaFile } from "./mediaFile";
 export interface Comment {
   id: number | string;
   content?: string;
@@ -17,6 +17,7 @@ export interface Comment {
   replyCommentId: string | number;
   isLike: boolean;
   likedByCount: number;
+  childCommentsCount?: number;
   replyComment?: Comment;
   replyItems?: Comment[];
   childComments?: Comment[];

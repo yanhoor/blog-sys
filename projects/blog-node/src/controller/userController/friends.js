@@ -55,7 +55,7 @@ module.exports = async function (ctx, next) {
               return result.followers.some((u) => u.followById === uid)
             }
           },
-          followersCount: {
+          followerCount: {
             needs: { followers: true },
             compute(result) {
               return result.followers.length
@@ -97,7 +97,7 @@ module.exports = async function (ctx, next) {
         name: true,
         avatar: true,
         introduce: true,
-        followersCount: true,
+        followerCount: true,
         isFollowing: true,
         isMutualFollowing: true
       }

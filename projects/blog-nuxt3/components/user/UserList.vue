@@ -22,8 +22,8 @@
           }}</span>
           <span
             class="text-gray-400 text-[12px] dark:text-gray-600"
-            v-if="user.followersCount"
-            >粉丝：{{ user.followersCount }}</span
+            v-if="user.followerCount"
+            >粉丝：{{ user.followerCount }}</span
           >
         </div>
         <UserFollowDropdown :user="user" @update="handleLoadNextPage(1)" />

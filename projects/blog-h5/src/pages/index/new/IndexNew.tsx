@@ -1,14 +1,13 @@
 import { Input, hooks, Toast, Button } from 'react-vant'
 import YCard from '@/components/y-card'
-import { UploadMulti } from '@/components/upload/upload-multi'
+import { UploadMulti, UploadFile } from '@/components/upload/upload-multi'
 import { useState } from 'react'
-import { Media } from 'sys-types'
-import $http, { blog_edit, comment_commit } from '@/http'
+import $http, { blog_edit } from '@/http'
 
 export default function IndexNewPage() {
   const [editForm, updateEditForm] = hooks.useSetState<{
     content: string
-    medias: Media[]
+    medias: UploadFile[]
   }>({
     content: '',
     medias: []
@@ -18,7 +17,7 @@ export default function IndexNewPage() {
 
   console.log('=======IndexNewPage========')
 
-  function handleUploadComplete(list: Media[]) {
+  function handleUploadComplete(list: UploadFile[]) {
     // console.log('====handleUploadComplete======', list)
     updateEditForm({ medias: list })
   }

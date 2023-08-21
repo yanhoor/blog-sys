@@ -85,7 +85,7 @@ export default function CommentItem({
                 ) : null}
               </div>
             ))}
-            {comment.childCommentsCount > 2 ? (
+            {comment.childCommentsCount! > 2 ? (
               <div className="flex items-center gap-[2px] text-primary">
                 <span>共 {comment.childCommentsCount} 条回复</span>
                 <ArrowDown />

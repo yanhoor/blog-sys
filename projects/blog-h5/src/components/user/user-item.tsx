@@ -16,7 +16,7 @@ export default function UserItem({ user }: Props) {
           {user.introduce || '暂无简介'}
         </span>
         <span className="text-gray-500 text-[12px]">
-          粉丝：{user.followersCount}
+          粉丝：{user.followerCount}
         </span>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { User } from "./user";
+import { Comment } from "./comment";
+import { Blog } from "./blog";
 
 enum Type {
   collect_blog = "collect_blog",
@@ -19,4 +21,6 @@ export interface Notification {
   blogId: number;
   isRead: number | string;
   type: Type;
+  comment?: Comment;
+  blog?: Blog;
 }
