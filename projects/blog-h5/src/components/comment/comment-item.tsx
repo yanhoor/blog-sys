@@ -13,6 +13,7 @@ import { ArrowDown } from '@react-vant/icons'
 
 interface Props {
   comment: Comment
+  showChildren?: boolean
   className?: string
   onDelete?: () => void
   onReply: () => void
@@ -21,6 +22,7 @@ export default function CommentItem({
   comment,
   className,
   onDelete,
+  showChildren = true,
   onReply
 }: Props) {
   const [showReply, setShowReply] = useState(false)
@@ -59,7 +61,7 @@ export default function CommentItem({
         <CommentActions comment={comment} onDelete={onDelete} />
       </div>
 
-      {comment.childComments?.length ? (
+      {comment.childComments?.length && showChildren ? (
         <div
           className="bg-block-section mt-2 min-w-full rounded px-2 py-1"
           onClick={() => navigate('/commentDetail/' + comment.id)}

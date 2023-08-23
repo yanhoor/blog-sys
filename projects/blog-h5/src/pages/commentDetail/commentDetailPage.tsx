@@ -68,6 +68,7 @@ export default function CommentDetailPage() {
                 <CommentItem
                   comment={commentDetail}
                   onReply={onInit}
+                  showChildren={false}
                   onDelete={() => history.back()}
                 ></CommentItem>
               </YCard>

@@ -1,27 +1,31 @@
 <template>
   <div v-bind="attrs" class="flex w-full flex-col items-start gap-[8px]">
     <div class="flex items-center gap-[6px]">
-      <UserAvatar :user="comment.createBy" :size="42" />
-      <UserName :user="comment.createBy" />
+      <UserAvatar :user="currentComment.createBy" :size="42" />
+      <UserName :user="currentComment.createBy" />
     </div>
 
     <div>
-      <div v-if="comment.replyComment?.topCommentId" class="mr-[2px] inline">
+      <div
+        v-if="currentComment.replyComment?.topCommentId"
+        class="mr-[2px] inline"
+      >
         回复
-        <UserName :user="comment.replyComment.createBy" show-at />:
+        <UserName :user="currentComment.replyComment.createBy" show-at />:
       </div>
       <ExpandableContent
         class="inline"
         :content="
-          comment.content || (comment.replyComment ? '图片回复' : '图片评论')
+          currentComment.content ||
+          (currentComment.replyComment ? '图片回复' : '图片评论')
         "
         :max-length="160"
       />
     </div>
 
     <MediaImgView
-      :url="comment.image.url"
-      v-if="comment.image"
+      :url="currentComment.image.url"
+      v-if="currentComment.image"
       enablePreview
       class="max-h-[135px] max-w-[180px] object-contain"
     />
@@ -30,7 +34,7 @@
       <div class="flex flex-1 items-center">
         <span
           class="mr-[12px] text-gray-500"
-          v-time="new Date(comment.createdAt)"
+          v-time="new Date(currentComment.createdAt)"
         ></span>
         <n-button text @click="triggerReply" v-if="userInfo">
           <template #icon>
@@ -46,7 +50,7 @@
           size="18"
           @click="handleDeleteComment"
           :loading="commentDeleting"
-          v-if="comment?.createById === userInfo?.id"
+          v-if="currentComment?.createById === userInfo?.id"
         />
         <div
           class="flex cursor-pointer items-center justify-center gap-[6px]"
@@ -56,10 +60,10 @@
             class="text-green-700"
             size="18"
             :component="ThumbLike16Filled"
-            v-if="comment.isLike"
+            v-if="currentComment.isLike"
           ></n-icon>
           <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
-          <span>{{ comment.likedByCount || '' }}</span>
+          <span>{{ currentComment.likedByCount || '' }}</span>
         </div>
       </div>
     </div>
@@ -67,35 +71,37 @@
     <n-collapse-transition :show="showReply">
       <CommentForm
         btnText="发布"
-        :placeholder="`回复 ${comment.createBy.name}:`"
+        :placeholder="`回复 ${currentComment.createBy.name}:`"
         :level="2"
-        :comment="comment"
-        :blogId="comment.blogId"
+        :comment="currentComment"
+        :blogId="currentComment.blogId"
         @success="handleReplySuccess"
       />
     </n-collapse-transition>
 
     <div
-      v-if="comment.childComments?.length > 0"
+      v-if="currentComment.childComments?.length > 0 && showChildren"
       class="min-w-full rounded-[5px] bg-content-light px-[12px] dark:bg-content-dark"
     >
       <CommentItem
-        v-for="(reply, index) of comment.childComments"
+        v-for="(reply, index) of currentComment.childComments"
         class="py-[12px]"
         :comment="reply"
         :key="reply.id"
-        @replySuccess="(rep) => comment.childComments.splice(index, 0, rep)"
-        @commentDelete="(_) => comment.childComments.splice(index, 1)"
+        @replySuccess="
+          (rep) => currentComment.childComments.splice(index, 0, rep)
+        "
+        @commentDelete="getCommentInfo()"
       />
       <n-button
         class="mb-[12px]"
         text
         type="primary"
         icon-placement="right"
-        v-if="comment.childCommentsCount > 2"
+        v-if="currentComment.childCommentsCount > 2"
         @click="showReplyDetailList = true"
       >
-        共 {{ comment.childCommentsCount }} 条回复
+        共 {{ currentComment.childCommentsCount }} 条回复
         <template #icon>
           <n-icon :component="ChevronDown24Filled" />
         </template>
@@ -106,7 +112,7 @@
   <n-drawer v-model:show="showReplyDetailList" width="500px">
     <n-drawer-content title="所有回复" body-content-style="padding: 0">
       <CommentReplyList
-        :comment="comment"
+        :comment="currentComment"
         @commentDelete="handleDeleteTopComment"
       />
     </n-drawer-content>
@@ -119,7 +125,6 @@ import {
   NButton,
   NCollapseTransition,
   NIcon,
-  createDiscreteApi,
   NDrawer,
   NDrawerContent,
   DialogOptions
@@ -133,18 +138,22 @@ import {
   Delete24Regular
 } from '@vicons/fluent'
 
-// 如果 props.comment.topCommentId 存在，props.comment 就是评论的回复，即当前组件在第二层
+// 如果 currentComment.value.topCommentId 存在，currentComment.value 就是评论的回复，即当前组件在第二层
 interface Props {
   comment: Comment
+  showChildren?: boolean
 }
 
 const attrs = useAttrs()
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  showChildren: true
+})
 const emits = defineEmits(['replySuccess', 'commentDelete'])
 const userInfo = useUserInfo()
 const showReply = ref(false)
 const commentDeleting = ref(false)
 const showReplyDetailList = ref(false)
+const currentComment = ref<Comment>(props.comment)
 
 function triggerReply() {
   showReply.value = !showReply.value
@@ -152,8 +161,8 @@ function triggerReply() {
 
 function handleReplySuccess(reply: Comment) {
   showReply.value = false
-  if (props.comment.childComments) {
-    props.comment.childComments.splice(0, 0, reply)
+  if (currentComment.value.childComments) {
+    currentComment.value.childComments.splice(0, 0, reply)
   } else {
     emits('replySuccess', reply)
   }
@@ -170,12 +179,12 @@ async function handleDeleteComment() {
       try {
         commentDeleting.value = true
         const { result, success, msg } = await useFetchPost('/comment/delete', {
-          id: props.comment.id
+          id: currentComment.value.id
         })
         commentDeleting.value = false
         if (success) {
           message.success('删除成功')
-          emits('commentDelete', props.comment)
+          emits('commentDelete', currentComment.value)
         } else {
           message.error(msg as string)
         }
@@ -193,6 +202,23 @@ function handleDeleteTopComment(comment: Comment) {
   emits('commentDelete', comment)
 }
 
+async function getCommentInfo() {
+  const { message } = useDiscreteApi(['message'])
+  try {
+    commentDeleting.value = true
+    const { result, success, msg } = await useFetchPost('/comment/info', {
+      id: currentComment.value.id
+    })
+    if (success) {
+      currentComment.value = result
+    } else {
+      message.error(msg as string)
+    }
+  } catch (e) {
+    console.log('=====/comment/info=======', e)
+  }
+}
+
 async function handleLikeComment() {
   const { message } = useDiscreteApi(['message'])
   if (!userInfo.value) {
@@ -201,14 +227,14 @@ async function handleLikeComment() {
 
   try {
     const { result, success } = await useFetchPost('/comment/like', {
-      id: props.comment.id,
-      isLike: props.comment.isLike ? 0 : 1
+      id: currentComment.value.id,
+      isLike: currentComment.value.isLike ? 0 : 1
     })
     if (success) {
-      props.comment.isLike = !props.comment.isLike
-      props.comment.isLike
-        ? props.comment.likedByCount++
-        : props.comment.likedByCount--
+      currentComment.value.isLike = !currentComment.value.isLike
+      currentComment.value.isLike
+        ? currentComment.value.likedByCount++
+        : currentComment.value.likedByCount--
     }
   } catch (e) {}
 }

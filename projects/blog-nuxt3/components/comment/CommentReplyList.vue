@@ -10,6 +10,7 @@
     <div class="flex flex-col gap-[12px]">
       <n-card :bordered="false" v-if="topComment">
         <CommentItem
+          :showChildren="false"
           :comment="topComment"
           @replySuccess="handleInit"
           @commentDelete="emits('commentDelete', topComment)"
