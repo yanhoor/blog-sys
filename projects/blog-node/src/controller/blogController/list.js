@@ -42,9 +42,10 @@ module.exports = async function (ctx, next) {
     filter.createdAt = {}
     if (startTime) filter.createdAt.gte = new Date(startTime)
     if (endTime) filter.createdAt.lte = new Date(endTime)
-    if (mediaType) {
+    if (mediaType && Object.values(FileType).includes(mediaType)) {
       filter.medias = {
-        every: {
+        // 使用 every 会返回包含 medias = [] 的数据
+        some: {
           file: {
             is: {
               type: mediaType
