@@ -1,17 +1,17 @@
 <template>
   <div class="flex flex-col items-start gap-[12px]">
     <div class="relative flex w-full items-center gap-[6px]">
-      <UserAvatar :user="blog.createBy" :size="56" />
+      <UserAvatar :user="currentPost.createBy" :size="56" />
       <div class="flex flex-col items-start">
         <div
           class="cursor-pointer text-[20px] text-green-700"
-          @click="navigateTo({ path: '/user/' + blog.createBy.id })"
+          @click="navigateTo({ path: '/user/' + currentPost.createBy.id })"
         >
-          {{ blog.createBy?.name }}
+          {{ currentPost.createBy?.name }}
         </div>
         <span
           class="text-[12px] text-gray-500"
-          v-time="new Date(blog.createdAt)"
+          v-time="new Date(currentPost.createdAt)"
         ></span>
       </div>
       <n-dropdown trigger="click" :options="actionOptions">
@@ -28,9 +28,9 @@
       </n-dropdown>
     </div>
 
-    <ExpandableContent :content="blog.content" />
+    <ExpandableContent :content="currentPost.content" />
 
-    <MediaListView class="w-full" :list="blog.medias" />
+    <MediaListView class="w-full" :list="currentPost.medias" />
 
     <div class="grid w-full grid-cols-3">
       <div
@@ -41,10 +41,10 @@
           class="text-green-700"
           size="18"
           :component="ThumbLike16Filled"
-          v-if="blog.isLike"
+          v-if="currentPost.isLike"
         ></n-icon>
         <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
-        <span>{{ blog.likedByCount || '赞' }}</span>
+        <span>{{ currentPost.likedByCount || '赞' }}</span>
       </div>
       <div
         class="flex cursor-pointer items-center justify-center gap-[6px]"
@@ -54,10 +54,10 @@
           class="text-green-700"
           size="18"
           :component="CommentMultiple28Filled"
-          v-if="blog.commentsCount"
+          v-if="currentPost.commentsCount"
         ></n-icon>
         <n-icon size="18" :component="CommentMultiple16Regular" v-else></n-icon>
-        <span>{{ blog.commentsCount || '评论' }}</span>
+        <span>{{ currentPost.commentsCount || '评论' }}</span>
       </div>
       <div
         class="flex cursor-pointer items-center justify-center gap-[6px]"
@@ -67,17 +67,17 @@
           class="text-green-700"
           size="18"
           :component="Star48Filled"
-          v-if="blog.isCollect"
+          v-if="currentPost.isCollect"
         ></n-icon>
         <n-icon size="18" :component="Star48Regular" v-else></n-icon>
-        <span>{{ blog.collectedByCount || '收藏' }}</span>
+        <span>{{ currentPost.collectedByCount || '收藏' }}</span>
       </div>
     </div>
 
     <n-collapse-transition :show="showComment">
       <PostCommentList
         class="w-full"
-        :blog="blog"
+        :blog="currentPost"
         :page-size="2"
         v-if="showComment"
       />
@@ -101,7 +101,6 @@ import {
   NButton,
   NDropdown,
   NCollapseTransition,
-  createDiscreteApi,
   DialogOptions
 } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
@@ -116,6 +115,9 @@ const props = defineProps<Props>()
 const emit = defineEmits(['delete', 'refresh'])
 const userInfo = useUserInfo()
 const showComment = ref(false)
+const likeLoading = ref(false)
+const collectLoading = ref(false)
+const currentPost = ref<Blog>(props.blog)
 const actionOptions = ref<DropdownOption[]>([
   {
     label: '复制博客地址',
@@ -124,7 +126,7 @@ const actionOptions = ref<DropdownOption[]>([
       onClick: () => {
         const { message } = useDiscreteApi(['message'])
         navigator.clipboard
-          .writeText(location.origin + '/blog/post/' + props.blog.id)
+          .writeText(location.origin + '/blog/post/' + currentPost.value.id)
           .then((r) => {
             // console.log('-----------', r)
             message.success('复制成功')
@@ -137,13 +139,13 @@ const actionOptions = ref<DropdownOption[]>([
     key: 'viewDetail',
     props: {
       onClick: () => {
-        navigateTo('/post/' + props.blog.id)
+        navigateTo('/post/' + currentPost.value.id)
       }
     }
   }
 ])
 
-if (props.blog?.createById === userInfo.value?.id) {
+if (currentPost.value?.createById === userInfo.value?.id) {
   actionOptions.value.unshift({
     label: () =>
       h(
@@ -162,40 +164,50 @@ if (props.blog?.createById === userInfo.value?.id) {
 
 async function likeBlog() {
   const { message } = useDiscreteApi(['message'])
-  if (!userInfo.value) {
+  if (!userInfo.value || likeLoading.value) {
     return message.info('请先登录')
   }
 
   try {
+    likeLoading.value = true
     const { result, success } = await useFetchPost('/blog/like', {
-      id: props.blog.id,
-      isLike: props.blog.isLike ? 0 : 1
+      id: currentPost.value.id,
+      isLike: currentPost.value.isLike ? 0 : 1
     })
+    likeLoading.value = false
     if (success) {
-      props.blog.isLike = !props.blog.isLike
-      props.blog.isLike ? props.blog.likedByCount++ : props.blog.likedByCount--
+      currentPost.value.isLike = !currentPost.value.isLike
+      currentPost.value.isLike
+        ? currentPost.value.likedByCount++
+        : currentPost.value.likedByCount--
     }
-  } catch (e) {}
+  } catch (e) {
+    likeLoading.value = false
+  }
 }
 
 async function collectBlog() {
   const { message } = useDiscreteApi(['message'])
-  if (!userInfo.value) {
+  if (!userInfo.value || collectLoading.value) {
     return message.info('请先登录')
   }
 
   try {
+    collectLoading.value = true
     const { result, success } = await useFetchPost('/blog/collect', {
-      id: props.blog.id,
-      isCollect: props.blog.isCollect ? 0 : 1
+      id: currentPost.value.id,
+      isCollect: currentPost.value.isCollect ? 0 : 1
     })
+    collectLoading.value = false
     if (success) {
-      props.blog.isCollect = !props.blog.isCollect
-      props.blog.isCollect
-        ? props.blog.collectedByCount++
-        : props.blog.collectedByCount--
+      currentPost.value.isCollect = !currentPost.value.isCollect
+      currentPost.value.isCollect
+        ? currentPost.value.collectedByCount++
+        : currentPost.value.collectedByCount--
     }
-  } catch (e) {}
+  } catch (e) {
+    collectLoading.value = false
+  }
 }
 
 async function handleDeletePost() {
@@ -208,7 +220,7 @@ async function handleDeletePost() {
     onPositiveClick: async () => {
       try {
         const { result, success } = await useFetchPost('/blog/delete', {
-          id: props.blog.id
+          id: currentPost.value.id
         })
         if (success) {
           message.success('已删除')

@@ -151,6 +151,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits(['replySuccess', 'commentDelete'])
 const userInfo = useUserInfo()
 const showReply = ref(false)
+const likeLoading = ref(false)
 const commentDeleting = ref(false)
 const showReplyDetailList = ref(false)
 const currentComment = ref<Comment>(props.comment)
@@ -221,21 +222,25 @@ async function getCommentInfo() {
 
 async function handleLikeComment() {
   const { message } = useDiscreteApi(['message'])
-  if (!userInfo.value) {
+  if (!userInfo.value || likeLoading.value) {
     return message.info('请先登录')
   }
 
   try {
+    likeLoading.value = true
     const { result, success } = await useFetchPost('/comment/like', {
       id: currentComment.value.id,
       isLike: currentComment.value.isLike ? 0 : 1
     })
+    likeLoading.value = false
     if (success) {
       currentComment.value.isLike = !currentComment.value.isLike
       currentComment.value.isLike
         ? currentComment.value.likedByCount++
         : currentComment.value.likedByCount--
     }
-  } catch (e) {}
+  } catch (e) {
+    likeLoading.value = false
+  }
 }
 </script>

@@ -170,6 +170,8 @@ const messageRef = ref()
 const route = useRoute()
 const myInfo = useUserInfo()
 const loading = ref(false)
+const likeLoading = ref(false)
+const collectLoading = ref(false)
 const blogInfo = ref<Blog>()
 const blogId = route.params.id
 const commentRef = ref()
@@ -251,37 +253,45 @@ function handleCopyPostUrl() {
 
 async function likeBlog() {
   showType.value = 'like'
-  if (!myInfo.value) {
+  if (!myInfo.value || likeLoading.value) {
     return messageRef.value.info('请先登录')
   }
 
   try {
+    likeLoading.value = true
     const { result, success } = await useFetchPost('/blog/like', {
       id: blogInfo.value?.id,
       isLike: blogInfo.value?.isLike ? 0 : 1
     })
+    likeLoading.value = false
     if (success) {
       getBlogInfo()
       likeRef.value?.handleLoadNextPage(1)
     }
-  } catch (e) {}
+  } catch (e) {
+    likeLoading.value = false
+  }
 }
 
 async function collectBlog() {
   showType.value = 'collect'
-  if (!myInfo.value) {
+  if (!myInfo.value || collectLoading.value) {
     return messageRef.value.info('请先登录')
   }
 
   try {
+    collectLoading.value = true
     const { result, success } = await useFetchPost('/blog/collect', {
       id: blogInfo.value?.id,
       isCollect: blogInfo.value?.isCollect ? 0 : 1
     })
+    collectLoading.value = false
     if (success) {
       getBlogInfo()
     }
-  } catch (e) {}
+  } catch (e) {
+    collectLoading.value = false
+  }
 }
 
 function handleSwitchType(val: ActionType) {
