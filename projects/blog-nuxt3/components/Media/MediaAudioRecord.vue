@@ -67,6 +67,10 @@ onUnmounted(() => {
 
 getSupportAudioFormat()
 
+function handleClearAudio() {
+  audioSrc.value = undefined
+}
+
 async function initRecorder() {
   const { message } = useDiscreteApi(['message'])
 
@@ -206,4 +210,8 @@ function getSupportAudioFormat() {
     }
   }
 }
+
+defineExpose({
+  handleClearAudio
+})
 </script>

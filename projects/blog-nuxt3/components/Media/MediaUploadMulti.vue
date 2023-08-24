@@ -52,6 +52,7 @@
     </div>
 
     <MediaAudioRecord
+      ref="audioRecorderRef"
       @complete="handleAudioRecordComplete"
       v-if="uploadMode === 4"
     />
@@ -117,7 +118,7 @@
         v-if="uploadMode === 4"
         round
         type="error"
-        @click="handleDeleteItem(0)"
+        @click="handleDeleteAudio()"
         >删除录音</n-button
       >
     </template>
@@ -153,6 +154,7 @@ const emits = defineEmits<{
 const uploadMode = ref(1) // 上传的类型，1--未定，2--图片，3--视频, 4--音频
 const lockUploadMode = ref(false) // 不能选择其他上传类型
 const uploading = ref(false)
+const audioRecorderRef = ref()
 const audioRecordFile = shallowRef<File>()
 const inputRef = ref<HTMLInputElement>()
 const failedFileList = shallowRef<File[]>([])
@@ -290,6 +292,11 @@ function handleDeleteItem(idx: number) {
     lockUploadMode.value = false
   }
   emits('update:modelValue', temp)
+}
+
+function handleDeleteAudio() {
+  audioRecorderRef.value?.handleClearAudio()
+  handleDeleteItem(0)
 }
 
 function handleClearAllFile() {
