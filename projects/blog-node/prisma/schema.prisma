@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["clientExtensions", "filteredRelationCount"]
+  provider = "prisma-client-js"
+  // previewFeatures = ["clientExtensions", "filteredRelationCount"]
 }
 
 // 关系计数filteredRelationCount: https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing#filter-the-relation-count
@@ -24,6 +24,13 @@ enum FileType {
   video
   audio
   image
+}
+
+// 移动端平台类型
+enum PlatformType {
+  android
+  ios
+  miniProgram
 }
 
 // 模型，对应数据库的表
@@ -60,6 +67,8 @@ model User {
   auditBlogs           Blog[]                    @relation("AuditBlog")
   replyComments        Comment[]                 @relation("ReplyComment")
   medias               Media[]                   @relation("Media")
+  mobileVersions       UpdateVersion[]           @relation("CreateVersion")
+  customContents       CustomContent[]           @relation("CreateCustomContent")
   // 隐式多对多关系
   // 粉丝
   followers            FollowRelation[]          @relation("FollowTarget")
@@ -70,6 +79,7 @@ model User {
   // 所在的关注分组
   inFollowGroups       FollowGroup[]             @relation("InFollowGroup")
   File                 File[]
+  Topic                Topic[]                   @relation("CreateTopic")
 
   @@index([createdAt])
 }
@@ -203,8 +213,34 @@ model Blog {
   comments      Comment[]
   notifications Notification[]
   medias        Media[]
+  topics        BlogTopicRelation[]
 
   @@index([createdAt])
+}
+
+// 博客话题
+model Topic {
+  id         String              @id @default(cuid())
+  createdAt  DateTime            @default(now())
+  createBy   User                @relation(name: "CreateTopic", fields: [createById], references: [id])
+  createById Int
+  content    String              @unique
+  deletedAt  DateTime?
+  blogs      BlogTopicRelation[]
+
+  @@index([content(length: 20)], name: "content")
+}
+
+// 博客话题关系表
+model BlogTopicRelation {
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     Int
+  topic      Topic    @relation(fields: [topicId], references: [id])
+  topicId    String
+  // offset     Int // 在博客内容的开始位置
+  assignedAt DateTime @default(now())
+
+  @@id([blogId, topicId])
 }
 
 // 通知
@@ -241,7 +277,7 @@ model Comment {
   auditedAt      DateTime? // 审核时间
   status         Int       @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
   replyTo        User?     @relation(name: "ReplyComment", fields: [replyToId], references: [id])
-  replyToId      Int?
+  replyToId      Int? // 回复的上级评论的作者
   blog           Blog      @relation(fields: [blogId], references: [id])
   blogId         Int
   // 作为评论回复时，所属的一级评论id
@@ -277,4 +313,30 @@ model UserLikeCommentRelation {
   assignedAt DateTime @default(now())
 
   @@id([userId, commentId])
+}
+
+model UpdateVersion {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  createBy    User         @relation(name: "CreateVersion", fields: [createById], references: [id])
+  createById  Int
+  // 平台类型
+  platform    PlatformType
+  // 是否发布
+  publish     Boolean      @default(false)
+  // 是否强制更新
+  forceUpdate Boolean      @default(false)
+  // 下载地址
+  url         String       @db.Text
+  // 版本号
+  version     String       @db.Text
+  // 更新记录
+  changeLog   String?      @db.Text
+}
+
+model CustomContent {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(name: "CreateCustomContent", fields: [createById], references: [id])
+  createById Int
 }

@@ -36,7 +36,10 @@
           </n-dropdown>
         </div>
 
-        <ExpandableContent :content="blogInfo.content" />
+        <ExpandableContent
+          :content="blogInfo.content"
+          :topic="blogInfo.topics?.map((t) => t.topic)"
+        />
 
         <MediaListView class="w-full" :list="blogInfo.medias" />
 

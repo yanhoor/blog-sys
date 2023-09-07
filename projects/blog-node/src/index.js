@@ -45,8 +45,9 @@ app.use(
     origin(ctx) {
       const { origin, Origin, referer, Referer } = ctx.request.headers
       const allowOrigin = origin || Origin || referer || Referer || '*'
-      // return 'http://localhost:3000';
+      // return 'http://192.168.3.31:7878'
       return allowOrigin
+      // return '*'
     },
     credentials: true,
     maxAge: 60 * 60 * 24,
@@ -80,4 +81,5 @@ app.use(visitRouter.routes())
 app.use(manageRouter.routes())
 
 const server = app.listen(8000)
+server.keepAliveTimeout = 30 * 1000
 mySocketIo.init(server)

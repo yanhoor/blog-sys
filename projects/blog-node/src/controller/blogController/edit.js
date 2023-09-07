@@ -102,6 +102,14 @@ module.exports = async function (ctx, next) {
         item.createById = userId
       })
       newItem.createById = userId
+      // 两个#之间不能有空白符
+      let topicList = content.match(/#[^#^\s]+?#/g) || [] // 含 # 的话题
+      topicList = [...new Set(topicList)]
+      topicList = topicList.map((t) => ({
+        origin: t,
+        content: t.slice(1, -1)
+        // offset: content.indexOf(t)
+      }))
       const res = await prisma.blog.create({
         data: {
           ...newItem,
@@ -111,11 +119,26 @@ module.exports = async function (ctx, next) {
                 createById: userId,
                 fileId: m.fileId
               }
-              if (m.cover) {
-                med.coverId = m.cover.id
-              }
+              med.coverId = m.coverId || m.cover?.id || null
               return med
             })
+          },
+          topics: {
+            // 创建 BlogTopicRelation
+            create: topicList.map((t) => ({
+              // offset: t.offset,
+              topic: {
+                connectOrCreate: {
+                  where: {
+                    content: t.content
+                  },
+                  create: {
+                    content: t.content,
+                    createById: userId
+                  }
+                }
+              }
+            }))
           }
         },
         select: {
@@ -134,6 +157,18 @@ module.exports = async function (ctx, next) {
               id: true,
               name: true,
               avatar: true
+            }
+          },
+          topics: {
+            select: {
+              // offset: true,
+              topicId: true,
+              topic: {
+                select: {
+                  id: true,
+                  content: true
+                }
+              }
             }
           },
           medias: {

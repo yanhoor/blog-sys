@@ -81,6 +81,18 @@ module.exports = async function (ctx, next) {
             avatar: true
           }
         },
+        topics: {
+          select: {
+            // offset: true,
+            topicId: true,
+            topic: {
+              select: {
+                id: true,
+                content: true
+              }
+            }
+          }
+        },
         medias: {
           where: {
             deletedAt: null

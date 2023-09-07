@@ -9,6 +9,7 @@ module.exports = async function (ctx, next) {
 
     let {
       keyword,
+      topicId,
       startTime,
       endTime,
       sort,
@@ -31,7 +32,7 @@ module.exports = async function (ctx, next) {
     }
     let userId = await this.getAuthUserId(ctx, next)
     if (uid) filter.createById = uid
-    if (keyword)
+    if (keyword) {
       filter.OR = [
         {
           content: {
@@ -39,6 +40,14 @@ module.exports = async function (ctx, next) {
           }
         }
       ]
+    }
+    if (topicId) {
+      filter.topics = {
+        some: {
+          topicId: topicId
+        }
+      }
+    }
     filter.createdAt = {}
     if (startTime) filter.createdAt.gte = new Date(startTime)
     if (endTime) filter.createdAt.lte = new Date(endTime)
@@ -191,6 +200,18 @@ module.exports = async function (ctx, next) {
               id: true,
               name: true,
               avatar: true
+            }
+          },
+          topics: {
+            select: {
+              // offset: true,
+              topicId: true,
+              topic: {
+                select: {
+                  id: true,
+                  content: true
+                }
+              }
             }
           },
           medias: {

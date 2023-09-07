@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { NTabs, NTab, NButton, NSelect } from 'naive-ui'
+import { NTabs, NTab, NSelect } from 'naive-ui'
 import dayjs from 'dayjs'
 
 useHead({
@@ -38,6 +38,7 @@ const selectTime = ref('0')
 const blogListRef = ref()
 const searchParams = reactive({
   keyword: route.query.keyword,
+  topicId: route.query.topicId,
   startTime: '',
   endTime: '',
   sort: 1

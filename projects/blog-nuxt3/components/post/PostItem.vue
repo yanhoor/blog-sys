@@ -28,7 +28,7 @@
       </n-dropdown>
     </div>
 
-    <ExpandableContent :content="currentPost.content" />
+    <ExpandableContent :content="currentPost.content" :topic="topicList" />
 
     <MediaListView class="w-full" :list="currentPost.medias" />
 
@@ -144,6 +144,7 @@ const actionOptions = ref<DropdownOption[]>([
     }
   }
 ])
+const topicList = computed(() => currentPost.value.topics?.map((t) => t.topic))
 
 if (currentPost.value?.createById === userInfo.value?.id) {
   actionOptions.value.unshift({
