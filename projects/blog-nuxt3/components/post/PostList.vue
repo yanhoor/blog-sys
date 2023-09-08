@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { NCard, NBackTop, createDiscreteApi } from 'naive-ui'
+import { NCard, NBackTop } from 'naive-ui'
 import { Blog } from 'sys-types'
 
 interface Props {
@@ -63,6 +63,12 @@ const {
   handleChangeFetchParams
 } = useListAppendFetch<Blog>(props.url, props.searchParams, {})
 
+// todo: why? 不要放到最后，会造成通过 ref 使用这些方法时是 undefined，与下面的 await 冲突。如果去掉 await 就可以放到最后
+defineExpose({
+  handleLoadNextPage,
+  handleChangeFetchParams
+})
+
 await handleLoadNextPage()
   .then((r) => {
     const { message } = useDiscreteApi(['message'])
@@ -91,9 +97,4 @@ function handleLoadMore() {
 function handlePostDelete(idx: number) {
   pageList.value.splice(idx, 1)
 }
-
-defineExpose({
-  handleLoadNextPage,
-  handleChangeFetchParams
-})
 </script>
