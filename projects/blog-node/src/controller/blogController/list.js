@@ -9,6 +9,7 @@ module.exports = async function (ctx, next) {
 
     let {
       keyword,
+      isTopic = 0,
       topicId,
       startTime,
       endTime,
@@ -33,13 +34,23 @@ module.exports = async function (ctx, next) {
     let userId = await this.getAuthUserId(ctx, next)
     if (uid) filter.createById = uid
     if (keyword) {
-      filter.OR = [
-        {
-          content: {
-            contains: keyword
+      if (isTopic) {
+        filter.topics = {
+          some: {
+            topic: {
+              is: {
+                content: {
+                  contains: keyword
+                }
+              }
+            }
           }
         }
-      ]
+      } else {
+        filter.content = {
+          contains: keyword
+        }
+      }
     }
     if (topicId) {
       filter.topics = {
@@ -81,10 +92,10 @@ module.exports = async function (ctx, next) {
         // 综合排序
         case 1:
           orderBy.push(
-            { createdAt: 'desc' },
             { comments: { _count: 'desc' } },
             { likedBy: { _count: 'desc' } },
-            { collectedBy: { _count: 'desc' } }
+            { collectedBy: { _count: 'desc' } },
+            { createdAt: 'desc' }
           )
           break
         // 最新优先
@@ -94,8 +105,8 @@ module.exports = async function (ctx, next) {
         // 最热优先
         case 3:
           orderBy.push(
-            { likedBy: { _count: 'desc' } },
             { comments: { _count: 'desc' } },
+            { likedBy: { _count: 'desc' } },
             { collectedBy: { _count: 'desc' } }
           )
           break

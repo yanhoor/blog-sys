@@ -21,7 +21,7 @@
       </div>
     </n-layout-header>
     <n-layout-content
-      class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark lg:w-[1024px]"
+      class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark xl:w-[1200px]"
     >
       <!--<div class="main-left">
         <slot name="left"></slot>
