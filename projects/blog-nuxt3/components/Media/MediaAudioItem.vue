@@ -9,11 +9,7 @@
           playState = PlayState.paused
         }
       "
-      @ended="
-        () => {
-          playState = PlayState.end
-        }
-      "
+      @ended="handlePlayEnd"
       @loadedmetadata="handleGetDuration"
       @timeupdate="handleTimeUpdate"
     ></audio>
@@ -24,28 +20,30 @@
       >
         <MediaImgView class="media-cover" :url="coverUrl" v-if="coverUrl" />
         <div
-          class="transform-center z-10 flex cursor-pointer flex-col items-center justify-center gap-[5px] text-white"
+          class="transform-center z-10 flex flex-col items-center justify-center text-white"
         >
-          <n-icon
-            size="48"
-            :component="PauseCircle24Regular"
-            @click="handlePlay"
-            v-if="playState === PlayState.playing"
-          />
-          <n-icon
-            size="48"
-            :component="Replay20Regular"
-            @click="handlePlay"
-            v-else-if="playState === PlayState.end"
-          />
-          <n-icon
-            size="48"
-            :component="PlayCircle24Regular"
-            @click="handlePlay"
-            v-else
-          />
+          <div class="cursor-pointer">
+            <n-icon
+              size="48"
+              :component="PauseCircle24Regular"
+              @click="handlePlay"
+              v-if="playState === PlayState.playing"
+            />
+            <n-icon
+              size="48"
+              :component="Replay20Regular"
+              @click="handlePlay"
+              v-else-if="playState === PlayState.end"
+            />
+            <n-icon
+              size="48"
+              :component="PlayCircle24Regular"
+              @click="handlePlay"
+              v-else
+            />
+          </div>
           <span
-            >{{ currentTime > 0 ? `${formatDuration(currentTime)}/` : '' }}
+            >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
             {{ formatDuration(duration) }}</span
           >
         </div>
@@ -55,11 +53,12 @@
         >
       </div>
     </div>
+
     <div
       class="flex w-fit items-center rounded-[6px] bg-gray-200 px-[12px] py-[5px] dark:bg-gray-600"
       v-else-if="duration"
     >
-      <div class="flex items-center">
+      <div class="flex cursor-pointer items-center">
         <n-icon
           size="24"
           :component="PauseCircle24Regular"
@@ -150,17 +149,23 @@ function handleTimeUpdate() {
   //   audioRef.value?.currentTime,
   //   audioRef.value?.duration
   // )
-  if (isInfinityDuration.value) {
-    audioRef.value.currentTime = 0
-    isInfinityDuration.value = false
-  }
   currentTime.value = audioRef.value?.currentTime || 0
   duration.value = audioRef.value?.duration
 }
 
+function handlePlayEnd() {
+  playState.value = PlayState.end
+  // 获取时长时设置了超长播放时间而触发 end 事件
+  if (isInfinityDuration.value) {
+    audioRef.value.currentTime = 0
+    isInfinityDuration.value = false
+    playState.value = PlayState.idle
+  }
+}
+
 // chrome 获取的时长可能是Infinity，需要这样处理
 function handleUnknownDuration() {
-  // console.log('======handleUnknownDuration=====', duration.value)
+  // console.log('======handleUnknownDuration=====', props.url, duration.value)
   if (duration.value === Infinity || isNaN(Number(duration.value))) {
     isInfinityDuration.value = true
     audioRef.value.currentTime = 1e101 // 设置一个极大的时间，能显示后再在 handleTimeUpdate 设置回开始
