@@ -41,6 +41,7 @@
         class="flex-1"
         :searchParams="{ gid: currentGroupId }"
       />
+      <TopicHotList class="relative sticky top-[80px] w-[280px]" />
     </div>
 
     <div class="mt-[20px] text-center text-gray-400">
@@ -62,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { createDiscreteApi, NCard, NButton, NIcon } from 'naive-ui'
+import { NCard, NButton, NIcon } from 'naive-ui'
 import { FollowGroup } from 'sys-types'
 import { Compose24Regular } from '@vicons/fluent'
 
