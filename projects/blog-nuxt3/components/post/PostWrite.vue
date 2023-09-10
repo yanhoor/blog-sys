@@ -164,7 +164,7 @@ function handleSearchTopic() {
   //   textarea.selectionEnd
   // )
   const v = postForm.value.content
-  const idx = v.lastIndexOf('#', textarea.selectionEnd)
+  const idx = v.lastIndexOf('#', textarea.selectionEnd - 1)
   const range = v.slice(idx, textarea.selectionEnd) // 获取 # 与 光标之间的文本
   // 以#结尾或以#+非空格+任意字符结尾(即排除 #+空格+字符)
   if (/#$|#\S*$/g.test(range)) {
