@@ -46,14 +46,17 @@ const lineContentList = computed(() => {
 
   return props.content.split('\n')
 })
+
 const isMultiLines = computed(
   () => lineContentList.value.length > props.maxLine
 )
+
 const showAction = computed(() => {
   if (lineContentList.value.length > props.maxLine) return true
 
   return props.content?.length > props.maxLength
 })
+
 const displayContentList = computed(() => {
   if (!props.content) return []
 
@@ -63,9 +66,8 @@ const displayContentList = computed(() => {
     preContent = `${props.content}${isMultiLines.value ? '\n' : ''}`
   } else {
     if (lineContentList.value.length > props.maxLine) {
-      return (
+      preContent =
         lineContentList.value.slice(0, props.maxLine).join('\n') + '\n...\n'
-      )
     } else if (props.content && props.content.length > props.maxLength) {
       preContent = props.content.slice(0, props.maxLength) + '...'
     } else {
