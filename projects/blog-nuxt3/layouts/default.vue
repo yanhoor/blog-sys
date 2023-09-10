@@ -21,13 +21,13 @@
       </div>
     </n-layout-header>
     <n-layout-content
-      class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark xl:w-[1200px]"
+      class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark"
     >
       <!--<div class="main-left">
         <slot name="left"></slot>
       </div>-->
       <div class="flex items-start">
-        <div class="max-w-full flex-1">
+        <div class="flex max-w-full flex-1 justify-center">
           <slot></slot>
         </div>
         <!--<div class="main-right-aside">
