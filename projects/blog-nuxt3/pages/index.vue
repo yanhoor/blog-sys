@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <LayoutMain size="large">
     <div class="flex items-start gap-[12px]">
-      <n-card class="sticky top-[80px] max-w-[180px]" v-if="myInfo">
+      <n-card class="sticky top-[80px] w-[280px]" v-if="myInfo">
         <p
           class="group-title"
           :class="{ active: !currentGroupId }"
@@ -59,7 +59,7 @@
       @change="getAllGroup"
       :groupList="customGroupList"
     />
-  </div>
+  </LayoutMain>
 </template>
 
 <script setup lang="ts">

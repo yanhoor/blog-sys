@@ -1,5 +1,5 @@
 <template>
-  <div class="post-detail-page">
+  <LayoutMain>
     <div v-if="loading">
       <n-card shadow="never">
         <SkeletonBlog></SkeletonBlog>
@@ -136,7 +136,7 @@
     </n-card>
 
     <n-back-top :right="50" />
-  </div>
+  </LayoutMain>
 </template>
 
 <script setup lang="ts">

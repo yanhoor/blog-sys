@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-start gap-[12px]">
+  <LayoutMain class="flex items-start gap-[12px]">
     <n-layout-sider
       class="sticky top-[62px]"
       bordered
@@ -25,7 +25,7 @@
     <div class="flex-1">
       <NuxtPage />
     </div>
-  </div>
+  </LayoutMain>
 </template>
 
 <script lang="ts" setup>

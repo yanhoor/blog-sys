@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <LayoutMain>
     <SkeletonUser v-if="loading" />
     <div v-else-if="userInfo">
       <div class="flex-1 overflow-hidden">
@@ -188,7 +188,7 @@
         </template>
       </div>
     </div>
-  </div>
+  </LayoutMain>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-result flex items-start gap-[12px]">
+  <LayoutMain class="search-result flex items-start gap-[12px]" size="large">
     <n-card class="sticky top-[80px] w-[240px]">
       <p class="text-[16px] font-semibold">搜索结果</p>
       <CustomCollapse
@@ -72,7 +72,7 @@
     </n-card>
     <PostList class="flex-1" ref="blogListRef" :searchParams="searchParams" />
     <TopicHotList class="sticky top-[80px] w-[280px]" />
-  </div>
+  </LayoutMain>
 </template>
 
 <script setup lang="ts">

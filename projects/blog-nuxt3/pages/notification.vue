@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <LayoutMain>
     <n-tabs
       class="sticky top-[60px] z-10 -mt-[20px] mb-[12px] bg-card-light px-[24px] dark:bg-card-dark"
       type="line"
@@ -14,7 +14,7 @@
       >
     </n-tabs>
     <NuxtPage :pageKey="route.fullPath" />
-  </div>
+  </LayoutMain>
 </template>
 
 <script setup lang="ts">
