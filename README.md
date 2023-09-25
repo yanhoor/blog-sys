@@ -4,23 +4,8 @@
 
 ## 预览
 
-### PC 端
-
-[预览地址](https://niubility.website/blog/)
-
-### 小程序
-
-[视频预览](https://niubility.website/blog/post/2)
-
-### Flutter
-
-[Android 下载](https://yanhoor-public-resource.oss-cn-guangzhou.aliyuncs.com/blog-sys-release/vipot.apk)
-
-IOS:
-
-- [视频预览1](https://niubility.website/blog/post/39)
-- [视频预览2](https://niubility.website/blog/post/40)
-- [视频预览3](https://niubility.website/blog/post/43)
+[主页](https://niubility.website/blog/)  
+[移动端](https://niubility.website/blog/search?topicId=08d4c166-8dfd-421f-8527-5c32b2fe7c9e)
 
 ## 项目运行
 
@@ -107,6 +92,8 @@ IOS:
 - [x] 博客搜索/过滤
 
 - [x] 博客评论/评论引用/评论排序/删除评论
+
+- [x] 转发博客
 
 - [x] 博客数据记录，如阅读/点赞/收藏
 
