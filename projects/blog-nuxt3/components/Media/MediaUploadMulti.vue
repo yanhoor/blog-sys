@@ -231,14 +231,14 @@ async function handleAudioRecordComplete(f: File | undefined) {
 async function handleUploadAudio() {
   failedFileList.value = []
   uploading.value = true
-  const success = await handleUploadFile(audioRecordFile.value)
+  const success = await handleUploadFile(audioRecordFile.value, 'audio')
   uploading.value = false
   if (success) {
     audioRecordFile.value = undefined
   }
 }
 
-async function handleUploadFile(file: File): Promise<boolean> {
+async function handleUploadFile(file: File, type?: string): Promise<boolean> {
   const { message } = useDiscreteApi(['message'])
 
   if (!handleCheckUploadValid(file)) {
@@ -249,7 +249,7 @@ async function handleUploadFile(file: File): Promise<boolean> {
   try {
     const { success, result, msg } = await useFetchPost(
       '/upload',
-      { file },
+      { file, type },
       true
     )
     if (success) {

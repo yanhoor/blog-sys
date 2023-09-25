@@ -60,7 +60,7 @@ class UploadController extends BaseController {
 
   upload = async (ctx, next) => {
     const req = ctx.request
-    // const { lastFilePath } = req.body
+    const { type } = req.body
     const file = req.files.file
     // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
     const m5 = await md5File(file.filepath)
@@ -102,7 +102,7 @@ class UploadController extends BaseController {
         } else {
           fullName = await this.handleMultipartUpload(file, m5)
         }
-        const fileType = this.getFileType(fullName)
+        const fileType = type || this.getFileType(fullName)
         fileRes = await prisma.file.create({
           data: {
             createById: userId,
