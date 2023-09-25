@@ -6,6 +6,19 @@ module.exports = async function (ctx, next) {
   const skip = pageSize * (page - 1)
   let orderBy = [{ blogs: { _count: 'desc' } }, { createdAt: 'desc' }]
   const where = { content: { contains: keyword } }
+
+  try {
+    if (!userId) throw new Error('未登录')
+    const user = await prisma.user.findUnique({ where: { id: userId } })
+    if (user.type !== 1) throw new Error('不是管理员')
+  } catch (e) {
+    ctx.body = {
+      success: false,
+      msg: e.message
+    }
+    return false
+  }
+
   try {
     const [list, total] = await prisma.$transaction([
       prisma.topic.findMany({
@@ -14,7 +27,16 @@ module.exports = async function (ctx, next) {
         take: pageSize,
         select: {
           id: true,
-          content: true
+          content: true,
+          createdAt: true,
+          createById: true,
+          createBy: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true
+            }
+          }
         },
         orderBy
       }),
@@ -29,6 +51,6 @@ module.exports = async function (ctx, next) {
       }
     })
   } catch (e) {
-    this.errorLogger.error('topic.list--------->', e)
+    this.errorLogger.error('topic.manageList--------->', e)
   }
 }

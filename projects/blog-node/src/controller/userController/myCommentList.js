@@ -1,5 +1,5 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
+const { commentFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   const { page = 1, pageSize = this.pageSize } = ctx.request.body
@@ -17,37 +17,7 @@ module.exports = async function (ctx, next) {
         where: filter,
         orderBy: { createdAt: 'desc' },
         select: {
-          id: true,
-          createdAt: true,
-          content: true,
-          blogId: true,
-          topCommentId: true,
-          createById: true,
-          status: true,
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          imageId: true,
-          image: {
-            select: {
-              id: true,
-              createById: true,
-              type: true,
-              url: true
-            }
-          },
-          replyToId: true,
-          replyTo: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
+          ...commentFieldExpose.select,
           blog: {
             select: {
               id: true,

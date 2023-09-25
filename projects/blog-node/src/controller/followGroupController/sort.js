@@ -17,7 +17,7 @@ module.exports = async function (ctx, next) {
       ids.split(',').map((id, idx) => {
         return prisma.followGroup.update({
           where: {
-            id: Number(id)
+            id
           },
           data: {
             sort: idx + 100

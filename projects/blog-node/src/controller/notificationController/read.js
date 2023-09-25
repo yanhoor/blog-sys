@@ -16,10 +16,7 @@ module.exports = async function (ctx, next) {
   let where = {}
   if (id) {
     where.id = {
-      in: id
-        .toString()
-        .split(',')
-        .map((i) => Number(i))
+      in: id.toString().split(',')
     }
   }
   if (isAll) {

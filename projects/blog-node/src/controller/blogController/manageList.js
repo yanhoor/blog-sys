@@ -1,5 +1,10 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
+const {
+  mediaFieldExpose,
+  authorFieldExpose,
+  blogBaseFieldExpose
+} = require('../../exposeField')
 
 module.exports = async (ctx, next) => {
   try {
@@ -16,7 +21,6 @@ module.exports = async (ctx, next) => {
       page = 1,
       pageSize = this.pageSize
     } = ctx.request.body
-    uid = Number(uid)
     status = Number(status)
     const skip = pageSize * (page - 1)
     const filter = {}
@@ -64,51 +68,12 @@ module.exports = async (ctx, next) => {
         take: pageSize,
         where: filter,
         select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          deletedAt: true,
-          createById: true,
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          status: true,
+          ...blogBaseFieldExpose.select,
+          createBy: authorFieldExpose,
           auditStatus: true,
           auditedAt: true,
           auditTip: true,
-          content: true,
-          address: true,
-          addressName: true,
-          latitude: true,
-          longitude: true,
-          medias: {
-            select: {
-              id: true,
-              blogId: true,
-              fileId: true,
-              file: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              },
-              coverId: true,
-              cover: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              }
-            }
-          }
+          medias: mediaFieldExpose
         },
         orderBy: { updatedAt: 'desc' }
       }),

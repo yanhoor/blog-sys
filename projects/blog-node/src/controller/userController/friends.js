@@ -16,7 +16,6 @@ module.exports = async function (ctx, next) {
     return false
   }
 
-  uid = Number(uid)
   switch (Number(relateType)) {
     // 关注
     case 1:

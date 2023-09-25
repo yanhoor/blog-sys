@@ -1,5 +1,5 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
+const { commentFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   let {
@@ -12,7 +12,7 @@ module.exports = async function (ctx, next) {
   sort = Number(sort)
   const skip = pageSize * (page - 1)
   const filter = {
-    topCommentId: Number(topCommentId),
+    topCommentId,
     status: {
       notIn: [3, 4]
     }
@@ -52,32 +52,12 @@ module.exports = async function (ctx, next) {
     const [topComment, list, total] = await prisma.$transaction([
       xprisma.comment.findUnique({
         where: {
-          id: Number(topCommentId)
+          id: topCommentId
         },
         select: {
-          id: true,
-          createdAt: true,
-          content: true,
-          blogId: true,
-          createById: true,
           likedByCount: true,
           isLike: true,
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          imageId: true,
-          image: {
-            select: {
-              id: true,
-              createById: true,
-              type: true,
-              url: true
-            }
-          }
+          ...commentFieldExpose.select
         }
       }),
       xprisma.comment.findMany({
@@ -85,64 +65,9 @@ module.exports = async function (ctx, next) {
         take: pageSize,
         where: filter,
         select: {
-          id: true,
-          createdAt: true,
-          content: true,
-          blogId: true,
-          topCommentId: true,
-          replyCommentId: true,
-          createById: true,
           likedByCount: true,
           isLike: true,
-          replyComment: {
-            select: {
-              id: true,
-              createdAt: true,
-              content: true,
-              blogId: true,
-              topCommentId: true,
-              createById: true,
-              createBy: {
-                select: {
-                  id: true,
-                  name: true,
-                  avatar: true
-                }
-              },
-              imageId: true,
-              image: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              }
-            }
-          },
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          imageId: true,
-          image: {
-            select: {
-              id: true,
-              createById: true,
-              type: true,
-              url: true
-            }
-          },
-          replyTo: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          }
+          ...commentFieldExpose.select
         },
         // 评论的回复是升序，旧的在前面
         orderBy

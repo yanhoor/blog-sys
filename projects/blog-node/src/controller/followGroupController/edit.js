@@ -3,7 +3,6 @@ const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
   let { name, id } = ctx.request.body
-  id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
   try {
     if (!userId) throw new Error('未登录')

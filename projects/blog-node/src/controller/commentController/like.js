@@ -2,7 +2,6 @@ const prisma = require('../../database/prisma')
 
 module.exports = async function (ctx, next) {
   let { id, isLike } = ctx.request.body
-  id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
   try {
     if (!id) throw new Error('评论id不能为空')

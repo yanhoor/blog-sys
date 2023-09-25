@@ -16,7 +16,6 @@ module.exports = async function (ctx, next) {
       page = 1,
       pageSize = this.pageSize
     } = ctx.request.body
-    uid = Number(uid)
     status = Number(status)
     const skip = pageSize * (page - 1)
     const filter = {}

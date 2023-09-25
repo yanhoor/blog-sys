@@ -8,7 +8,7 @@ module.exports = async function (ctx, next) {
   try {
     if (!id) throw new Error('缺少参数: id')
     const comment = await prisma.comment.findUnique({
-      where: { id: Number(id) }
+      where: { id }
     })
     if (!comment || comment.createById !== userId) throw new Error('评论不存在')
   } catch (e) {
@@ -21,7 +21,7 @@ module.exports = async function (ctx, next) {
   try {
     await prisma.$transaction([
       prisma.comment.update({
-        where: { id: Number(id) },
+        where: { id },
         data: {
           deletedAt: new Date(),
           status: 4
@@ -29,7 +29,7 @@ module.exports = async function (ctx, next) {
       }),
       prisma.comment.updateMany({
         where: {
-          OR: [{ topCommentId: Number(id) }, { replyCommentId: Number(id) }]
+          OR: [{ topCommentId: id }, { replyCommentId: id }]
         },
         data: {
           deletedAt: new Date(),

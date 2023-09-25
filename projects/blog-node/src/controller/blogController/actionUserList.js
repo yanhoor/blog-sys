@@ -21,7 +21,7 @@ module.exports = async function (ctx, next) {
     let userId = await this.getAuthUserId(ctx, next)
     const blog = await prisma.blog.findUnique({
       where: {
-        id: Number(blogId)
+        id: blogId
       },
       select: {
         likedBy: {

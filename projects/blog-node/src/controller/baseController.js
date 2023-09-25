@@ -5,6 +5,7 @@ const redisClient = require('../database/redis')
 const dayjs = require('dayjs')
 const Axios = require('axios')
 const { NotificationType } = require('@prisma/client')
+const uuid = require('uuid')
 
 class BaseController {
   pageSize = config.pageSize
@@ -39,7 +40,7 @@ class BaseController {
 
   getAuthUserId = async (ctx, next) => {
     let token = ctx.headers['authorization']
-    token = token.replace(/Bearer /g, '')
+    token = token?.replace(/Bearer /g, '')
     // console.log('=======getAuthUserId token====', token)
     let userId = undefined
     if (token) {
@@ -57,6 +58,10 @@ class BaseController {
       }
     }
     return userId
+  }
+
+  createUUID = () => {
+    return uuid.v4()
   }
 
   createTimeRange = (preDiff, endDiff) => {

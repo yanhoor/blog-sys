@@ -1,8 +1,8 @@
 const prisma = require('../../database/prisma')
+const { commentFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   let { id } = ctx.request.body
-  id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
 
   try {
@@ -27,40 +27,12 @@ module.exports = async function (ctx, next) {
 
     const comment = await xprisma.comment.findUnique({
       where: {
-        id: Number(id)
+        id
       },
       select: {
-        id: true,
-        createdAt: true,
-        content: true,
-        blogId: true,
-        createById: true,
-        topCommentId: true,
+        ...commentFieldExpose.select,
         likedByCount: true,
         isLike: true,
-        createBy: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        imageId: true,
-        image: {
-          select: {
-            id: true,
-            createById: true,
-            type: true,
-            url: true
-          }
-        },
-        replyTo: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
         childComments: {
           take: 2,
           where: {
@@ -71,70 +43,7 @@ module.exports = async function (ctx, next) {
           },
           // 可以用include
           select: {
-            id: true,
-            createdAt: true,
-            content: true,
-            blogId: true,
-            topCommentId: true,
-            replyCommentId: true,
-            createById: true,
-            createBy: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true
-              }
-            },
-            imageId: true,
-            image: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            },
-            replyTo: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true
-              }
-            },
-            replyComment: {
-              select: {
-                id: true,
-                createdAt: true,
-                content: true,
-                blogId: true,
-                topCommentId: true,
-                deletedAt: true,
-                createById: true,
-                createBy: {
-                  select: {
-                    id: true,
-                    name: true,
-                    avatar: true
-                  }
-                },
-                imageId: true,
-                image: {
-                  select: {
-                    id: true,
-                    createById: true,
-                    type: true,
-                    url: true
-                  }
-                },
-                replyTo: {
-                  select: {
-                    id: true,
-                    name: true,
-                    avatar: true
-                  }
-                }
-              }
-            }
+            ...commentFieldExpose.select
           }
         },
         _count: {

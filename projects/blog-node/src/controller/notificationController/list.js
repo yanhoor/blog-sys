@@ -1,5 +1,5 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
+const { blogFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   const { page = 1, pageSize = this.pageSize, type, isRead } = ctx.request.body
@@ -43,13 +43,7 @@ module.exports = async function (ctx, next) {
           type: true,
           content: true,
           blogId: true,
-          blog: {
-            select: {
-              id: true,
-              content: true,
-              deletedAt: true
-            }
-          },
+          blog: blogFieldExpose,
           commentId: true,
           comment: {
             select: {

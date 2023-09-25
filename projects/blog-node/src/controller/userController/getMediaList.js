@@ -5,7 +5,6 @@ const config = require('config-lite')(__dirname)
 module.exports = async function (ctx, next) {
   let { type, userId, page = 1, pageSize = this.pageSize } = ctx.request.body
   const skip = pageSize * (page - 1)
-  userId = Number(userId)
   let filter = { createById: userId }
   try {
     if (!type || !userId) throw new Error('缺少参数')

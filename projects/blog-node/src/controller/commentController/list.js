@@ -1,5 +1,5 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
+const { commentFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   const {
@@ -11,7 +11,7 @@ module.exports = async function (ctx, next) {
   let userId = await this.getAuthUserId(ctx, next)
   const skip = pageSize * (page - 1)
   const filter = {
-    blogId: Number(blogId),
+    blogId,
     topCommentId: null,
     status: {
       notIn: [3, 4]
@@ -25,7 +25,8 @@ module.exports = async function (ctx, next) {
     case 2:
       orderBy = [
         { likedBy: { _count: 'desc' } },
-        { childComments: { _count: 'desc' } }
+        { childComments: { _count: 'desc' } },
+        { createdAt: 'desc' }
       ]
       break
   }
@@ -64,14 +65,9 @@ module.exports = async function (ctx, next) {
         take: pageSize,
         where: filter,
         select: {
-          id: true,
-          createdAt: true,
-          content: true,
-          blogId: true,
-          topCommentId: true,
-          createById: true,
           isLike: true,
           likedByCount: true,
+          ...commentFieldExpose.select,
           // childCommentsCount: true, // 会使 childComments select 无效
           _count: {
             select: {
@@ -84,7 +80,7 @@ module.exports = async function (ctx, next) {
                   }
                 }
               }
-            } // 这个数量错误，包含了已删除的
+            }
           },
           childComments: {
             take: 2,
@@ -95,95 +91,7 @@ module.exports = async function (ctx, next) {
               }
             },
             // 可以用include
-            select: {
-              id: true,
-              createdAt: true,
-              content: true,
-              blogId: true,
-              topCommentId: true,
-              replyCommentId: true,
-              createById: true,
-              createBy: {
-                select: {
-                  id: true,
-                  name: true,
-                  avatar: true
-                }
-              },
-              imageId: true,
-              image: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              },
-              replyTo: {
-                select: {
-                  id: true,
-                  name: true,
-                  avatar: true
-                }
-              },
-              replyComment: {
-                select: {
-                  id: true,
-                  createdAt: true,
-                  content: true,
-                  blogId: true,
-                  topCommentId: true,
-                  deletedAt: true,
-                  createById: true,
-                  createBy: {
-                    select: {
-                      id: true,
-                      name: true,
-                      avatar: true
-                    }
-                  },
-                  imageId: true,
-                  image: {
-                    select: {
-                      id: true,
-                      createById: true,
-                      type: true,
-                      url: true
-                    }
-                  },
-                  replyTo: {
-                    select: {
-                      id: true,
-                      name: true,
-                      avatar: true
-                    }
-                  }
-                }
-              }
-            }
-          },
-          createBy: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          imageId: true,
-          image: {
-            select: {
-              id: true,
-              createById: true,
-              type: true,
-              url: true
-            }
-          },
-          replyTo: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
+            select: commentFieldExpose.select
           }
         },
         orderBy

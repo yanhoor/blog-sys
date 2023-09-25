@@ -2,13 +2,12 @@ const prisma = require('../../database/prisma')
 
 module.exports = async function (ctx, next) {
   let { id } = ctx.request.body
-  id = Number(id)
   // let userId = await this.getAuthUserId(ctx, next)
 
   try {
     const media = await prisma.media.findUnique({
       where: {
-        id: Number(id)
+        id
       },
       select: {
         id: true,

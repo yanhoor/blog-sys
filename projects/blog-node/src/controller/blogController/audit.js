@@ -4,7 +4,6 @@ const { mySocketIo, SOCKETEVENTTYPE } = require('../../socketIo')
 
 module.exports = async function (ctx, next) {
   let { id, auditTip, type } = ctx.request.body
-  id = Number(id)
   type = Number(type)
   try {
     if (!id) throw new Error('id不能为空')
@@ -32,7 +31,7 @@ module.exports = async function (ctx, next) {
     })
 
     const nd = {
-      createById: Number(userId),
+      createById: userId,
       receiveUserId: blog.createById,
       type: this.NOTIFICATION_TYPE.system_audit,
       blogId: blog.id,

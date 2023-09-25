@@ -1,5 +1,4 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
   const { groupId, userId } = ctx.request.body
@@ -14,14 +13,14 @@ module.exports = async function (ctx, next) {
   }
 
   try {
-    const idList = groupId.split(',').map((i) => ({ id: Number(i) }))
+    const idList = groupId.split(',')
     const res = await prisma.user.update({
       where: {
         id: userId // 关注的用户id
       },
       data: {
         inFollowGroups: {
-          set: idList
+          set: idList.map((id) => ({ id }))
         }
       }
     })

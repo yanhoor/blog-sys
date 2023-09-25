@@ -22,7 +22,7 @@ module.exports = async function (ctx, next) {
         where: {
           ALL_DATA: true,
           userId_followById: {
-            userId: Number(id),
+            userId: id,
             followById: userId
           }
         }
@@ -45,7 +45,7 @@ module.exports = async function (ctx, next) {
               {
                 user: {
                   connect: {
-                    id: Number(id)
+                    id
                   }
                 }
               }
@@ -61,7 +61,7 @@ module.exports = async function (ctx, next) {
         where: {
           ALL_DATA: true,
           userId_followById: {
-            userId: Number(id),
+            userId: id,
             followById: userId
           }
         }
@@ -103,7 +103,7 @@ module.exports = async function (ctx, next) {
               delete: [
                 {
                   userId_followById: {
-                    userId: Number(id),
+                    userId: id,
                     followById: userId
                   }
                 }

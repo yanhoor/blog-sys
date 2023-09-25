@@ -1,16 +1,13 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 const { mySocketIo, SOCKETEVENTTYPE } = require('../../socketIo')
+const { commentFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   let { content, blogId, replyToId, imageId, topCommentId, replyCommentId } =
     ctx.request.body
   let userId = await this.getAuthUserId(ctx, next)
-  imageId = imageId ? Number(imageId) : null
-  blogId = Number(blogId)
-  replyToId = Number(replyToId)
-  topCommentId = Number(topCommentId)
-  replyCommentId = Number(replyCommentId)
+  imageId = imageId || null
   content = content ? content.trim() : null
 
   try {
@@ -19,19 +16,19 @@ module.exports = async function (ctx, next) {
     if (!blogId) throw new Error('博客id不能为空')
     if (replyToId) {
       const user = await prisma.user.findUnique({
-        where: { id: Number(replyToId) }
+        where: { id: replyToId }
       })
       if (!user) throw new Error('用户不存在')
     }
     if (topCommentId) {
       const comment = await prisma.comment.findUnique({
-        where: { id: Number(topCommentId) }
+        where: { id: topCommentId }
       })
       if (!comment) throw new Error('评论不存在')
     }
     if (replyCommentId) {
       const comment = await prisma.comment.findUnique({
-        where: { id: Number(replyCommentId) }
+        where: { id: replyCommentId }
       })
       if (!comment) throw new Error('评论不存在')
     }
@@ -60,7 +57,7 @@ module.exports = async function (ctx, next) {
 
     const blog = await prisma.blog.findUnique({
       where: {
-        id: Number(blogId)
+        id: blogId
       }
     })
     if (!blog || blog.deletedAt) {
@@ -71,7 +68,7 @@ module.exports = async function (ctx, next) {
     }
 
     const data = {
-      createById: Number(userId),
+      createById: userId,
       blogId,
       content,
       imageId
@@ -84,81 +81,20 @@ module.exports = async function (ctx, next) {
     const res = await prisma.comment.create({
       data,
       select: {
-        id: true,
-        createdAt: true,
-        content: true,
-        blogId: true,
-        topCommentId: true,
-        replyCommentId: true,
-        createById: true,
-        createBy: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        imageId: true,
-        image: {
-          select: {
-            id: true,
-            createById: true,
-            type: true,
-            url: true
-          }
-        },
-        replyTo: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        replyComment: {
-          select: {
-            id: true,
-            createdAt: true,
-            content: true,
-            blogId: true,
-            topCommentId: true,
-            createBy: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true
-              }
-            },
-            imageId: true,
-            image: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            },
-            replyTo: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true
-              }
-            }
-          }
-        }
+        ...commentFieldExpose.select
       }
     })
     const nd = {
-      createById: Number(userId),
+      createById: userId,
       receiveUserId: blog.createById,
       type: this.NOTIFICATION_TYPE.comment,
-      blogId: Number(blogId),
+      blogId,
       commentId: res.id
     }
     if (replyToId) {
       if (replyToId != userId) {
         // 通知评论回复的用户
-        nd.receiveUserId = Number(replyToId)
+        nd.receiveUserId = replyToId
         nd.type = this.NOTIFICATION_TYPE.comment_reply
         const notification = await prisma.notification.create({
           data: nd,
