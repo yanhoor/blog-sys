@@ -3,4 +3,5 @@
 }
 html.dark{
   @apply bg-page-dark;
+  color-scheme: light dark;
 }

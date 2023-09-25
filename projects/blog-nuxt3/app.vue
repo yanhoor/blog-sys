@@ -5,6 +5,7 @@
     :locale="zhCN"
     :date-locale="dateZhCN"
     inline-theme-disabled
+    :theme-overrides="themeOverrides"
   >
     <NuxtLoadingIndicator />
     <NuxtLayout>
@@ -16,9 +17,20 @@
 </template>
 
 <script setup lang="ts">
-import { NConfigProvider, darkTheme, zhCN, dateZhCN } from 'naive-ui'
+import {
+  NConfigProvider,
+  darkTheme,
+  zhCN,
+  dateZhCN,
+  GlobalThemeOverrides
+} from 'naive-ui'
 import { initSocketIo, socketClient } from '@/socketIo'
 
+const themeOverrides: GlobalThemeOverrides = {
+  common: {
+    primaryColor: '#18a058'
+  }
+}
 const colorMode = useColorMode()
 const uiTheme = useUITheme()
 const route = useRoute()

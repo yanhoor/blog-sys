@@ -47,7 +47,7 @@ import { NIcon, NResult, NSkeleton, NSpin } from 'naive-ui'
 import { Play24Filled } from '@vicons/fluent'
 
 interface Props {
-  userId: number
+  userId: string
 }
 const props = defineProps<Props>()
 const config = useRuntimeConfig()

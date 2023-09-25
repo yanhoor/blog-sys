@@ -57,7 +57,7 @@
           @click="handleLikeComment"
         >
           <n-icon
-            class="text-green-700"
+            class="text-primary"
             size="18"
             :component="ThumbLike16Filled"
             v-if="currentComment.isLike"

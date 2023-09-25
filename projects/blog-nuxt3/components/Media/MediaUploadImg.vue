@@ -28,7 +28,7 @@
             class="absolute bottom-0 left-0 right-0 top-0 hidden cursor-pointer items-center justify-center gap-4 group-hover:flex"
           >
             <n-icon
-              class="cursor-pointer text-white hover:text-green-600"
+              class="cursor-pointer text-white hover:text-primary"
               :component="ZoomIn24Regular"
               size="48"
               @click.stop="handlePreview"
@@ -45,7 +45,7 @@
         <n-spin size="medium" v-if="uploading" />
         <slot name="trigger" v-else>
           <n-icon
-            class="flex cursor-pointer items-center justify-center hover:text-green-600"
+            class="flex cursor-pointer items-center justify-center hover:text-primary"
             size="70"
             :component="Add24Regular"
           ></n-icon>

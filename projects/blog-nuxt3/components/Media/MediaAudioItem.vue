@@ -151,16 +151,17 @@ function handleTimeUpdate() {
   // )
   currentTime.value = audioRef.value?.currentTime || 0
   duration.value = audioRef.value?.duration
-}
-
-function handlePlayEnd() {
-  playState.value = PlayState.end
   // 获取时长时设置了超长播放时间而触发 end 事件
   if (isInfinityDuration.value) {
     audioRef.value.currentTime = 0
     isInfinityDuration.value = false
     playState.value = PlayState.idle
   }
+}
+
+function handlePlayEnd() {
+  playState.value = PlayState.end
+  // console.log('======handlePlayEnd=====', audioRef.value.currentTime)
 }
 
 // chrome 获取的时长可能是Infinity，需要这样处理

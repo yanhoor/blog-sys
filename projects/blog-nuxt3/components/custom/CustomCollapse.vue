@@ -46,10 +46,13 @@ interface Option {
 interface Props {
   title: string
   modelValue: any
+  optionKey?: string // option 唯一值的 key
   options: Option[]
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {
+  optionKey: 'value'
+})
 const emits = defineEmits<{
   change: [v: any]
   'update:modelValue': [v: any]
@@ -60,7 +63,7 @@ const currentOption = ref(
 )
 
 function handleClickOption(val: any) {
-  if (currentOption.value === val) return
+  if (currentOption.value[props.optionKey] === val[props.optionKey]) return
 
   currentOption.value = val
   // 顺序不能乱

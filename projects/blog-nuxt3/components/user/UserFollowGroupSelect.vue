@@ -76,19 +76,18 @@ import {
   NCheckboxGroup,
   NCheckbox,
   NSpin,
-  NCard,
-  createDiscreteApi
+  NCard
 } from 'naive-ui'
 import {
   Add24Regular,
   Dismiss24Regular,
   Checkmark24Regular
 } from '@vicons/fluent'
-import { FollowGroup } from '~/types'
+import { FollowGroup } from 'sys-types'
 
 interface Props {
   show: boolean
-  userId: number
+  userId: string
 }
 
 const props = defineProps<Props>()

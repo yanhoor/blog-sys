@@ -1,7 +1,7 @@
 <template>
   <LayoutMain size="large">
     <div class="flex items-start gap-[12px]">
-      <n-card class="sticky top-[80px] w-[280px]" v-if="myInfo">
+      <n-card class="sticky top-[80px] w-[180px]" v-if="myInfo">
         <p
           class="group-title"
           :class="{ active: !currentGroupId }"
@@ -49,7 +49,7 @@
         href="https://beian.miit.gov.cn"
         target="_blank"
         rel="noopener noreferrer"
-        class="hover:text-green-700"
+        class="hover:text-primary"
         >粤ICP备2022151349号</a
       >
     </div>

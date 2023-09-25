@@ -1,5 +1,5 @@
 <template>
-  <div class="topic-hot-list">
+  <div class="topic-hot-list" v-if="pageList.length">
     <n-card>
       <div class="flex items-center justify-between">
         <p class="text-[16px] font-semibold">热搜榜</p>
@@ -35,7 +35,7 @@
         </p>
       </div>
       <SkeletonTopicList v-if="pageLoading" />
-      <n-button
+      <!--<n-button
         block
         round
         secondary
@@ -43,7 +43,7 @@
         size="small"
         class="mt-[12px]"
         >查看完整榜单</n-button
-      >
+      >-->
     </n-card>
   </div>
 </template>

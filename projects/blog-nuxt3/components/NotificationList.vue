@@ -85,7 +85,7 @@
                     @click="handleRemarkRead(notification.id)"
                     >标为已读</n-button
                   >
-                  <span class="hidden text-green-700 group-hover:block" v-else
+                  <span class="hidden text-primary group-hover:block" v-else
                     >已读</span
                   >
                 </div>

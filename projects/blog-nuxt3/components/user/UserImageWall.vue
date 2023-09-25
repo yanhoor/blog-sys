@@ -44,7 +44,7 @@ import { Media } from 'sys-types'
 import { NResult, NBackTop, NSpin, NSkeleton } from 'naive-ui'
 
 interface Props {
-  userId: number
+  userId: string
 }
 const props = defineProps<Props>()
 const curMedia = ref<Media>()

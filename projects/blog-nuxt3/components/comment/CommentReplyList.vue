@@ -20,13 +20,13 @@
       <div class="mx-[12px] flex gap-[12px] text-[16px]">
         <span
           class="cursor-pointer"
-          :class="{ 'text-green-700': sortType === 1 }"
+          :class="{ 'text-primary': sortType === 1 }"
           @click="handleChangeSortType(1)"
           >按时间</span
         >
         <span
           class="cursor-pointer"
-          :class="{ 'text-green-700': sortType === 2 }"
+          :class="{ 'text-primary': sortType === 2 }"
           @click="handleChangeSortType(2)"
           >按热度</span
         >

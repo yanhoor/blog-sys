@@ -8,7 +8,7 @@ const searchWord = ref<string>((route.query?.keyword as string) || '')
 const runtimeConfig = useRuntimeConfig()
 
 async function handleSearch() {
-  // if(!searchWord.value?.trim()) return
+  if (!searchWord.value?.trim()) return
 
   // await navigateTo({ path: '/search', query: { keyword: searchWord.value } })
   window.open(

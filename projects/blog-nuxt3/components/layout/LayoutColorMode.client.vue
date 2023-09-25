@@ -3,7 +3,7 @@
     <div class="flex flex-col">
       <div
         class="action-item"
-        :class="{ 'text-green-700': $colorMode.preference === 'light' }"
+        :class="{ 'text-primary': $colorMode.preference === 'light' }"
         @click="handleChangeColorMode('light')"
       >
         <n-icon size="24" :component="WeatherSunny20Regular" />
@@ -11,7 +11,7 @@
       </div>
       <div
         class="action-item"
-        :class="{ 'text-green-700': $colorMode.preference === 'dark' }"
+        :class="{ 'text-primary': $colorMode.preference === 'dark' }"
         @click="handleChangeColorMode('dark')"
       >
         <n-icon size="24" :component="WeatherMoon16Regular" />
@@ -19,7 +19,7 @@
       </div>
       <div
         class="action-item"
-        :class="{ 'text-green-700': $colorMode.preference === 'system' }"
+        :class="{ 'text-primary': $colorMode.preference === 'system' }"
         @click="handleChangeColorMode('system')"
       >
         <n-icon size="24" :component="Desktop24Regular" />

@@ -132,13 +132,7 @@ import {
   MusicNote120Regular,
   Delete24Regular
 } from '@vicons/fluent'
-import {
-  NSpin,
-  NIcon,
-  NButton,
-  NIconWrapper,
-  createDiscreteApi
-} from 'naive-ui'
+import { NSpin, NIcon, NButton, NIconWrapper } from 'naive-ui'
 import { Media, MediaFile } from 'sys-types'
 
 interface Props {
@@ -247,9 +241,11 @@ async function handleUploadFile(file: File, type?: string): Promise<boolean> {
   }
   // console.log('==============', md5)
   try {
+    const formData = { file }
+    if (type) formData.type = type
     const { success, result, msg } = await useFetchPost(
       '/upload',
-      { file, type },
+      formData,
       true
     )
     if (success) {

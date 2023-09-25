@@ -1,45 +1,53 @@
 <template>
-  <div class="flex flex-col gap-[12px]">
-    <n-input
-      :placeholder="placeholder"
-      type="textarea"
-      size="small"
-      @keyup.shift.enter="commitComment"
-      v-model:value="commentContent"
-      :autosize="{
-        minRows: 3,
-        maxRows: 5
-      }"
-    />
-    <div class="flex items-center justify-between">
-      <MediaUploadImg
-        @complete="imageFile = $event"
-        :model-value="imageFile?.url"
-        :showPreviewIcon="false"
-        :showBorder="false"
-        width="42px"
-        height="42px"
-      >
-        <template #trigger>
-          <n-icon
-            class="cursor-pointer text-green-600"
-            :component="ImageAdd24Regular"
-            size="36px"
-          ></n-icon>
-        </template>
-      </MediaUploadImg>
-      <n-button
-        type="primary"
-        @click="commitComment"
-        :loading="commentCommitting"
-        >{{ btnText }}</n-button
-      >
+  <div class="flex items-start pb-[20px]" v-if="userInfo">
+    <UserAvatar
+      class="mr-[12px]"
+      :user="userInfo"
+      :size="42"
+      disabled
+    ></UserAvatar>
+    <div class="flex flex-1 flex-col gap-[12px]">
+      <n-input
+        :placeholder="placeholder"
+        type="textarea"
+        size="small"
+        @keyup.shift.enter="commitComment"
+        v-model:value="commentContent"
+        :autosize="{
+          minRows: 3,
+          maxRows: 5
+        }"
+      />
+      <div class="flex items-center justify-between">
+        <MediaUploadImg
+          @complete="imageFile = $event"
+          :model-value="imageFile?.url"
+          :showPreviewIcon="false"
+          :showBorder="false"
+          width="42px"
+          height="42px"
+        >
+          <template #trigger>
+            <n-icon
+              class="cursor-pointer text-primary"
+              :component="ImageAdd24Regular"
+              size="36px"
+            ></n-icon>
+          </template>
+        </MediaUploadImg>
+        <n-button
+          type="primary"
+          @click="commitComment"
+          :loading="commentCommitting"
+          >{{ btnText }}</n-button
+        >
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NIcon, createDiscreteApi, NButton, NInput } from 'naive-ui'
+import { NIcon, NButton, NInput } from 'naive-ui'
 import { ImageAdd24Regular } from '@vicons/fluent'
 import { Comment, MediaFile } from 'sys-types'
 
@@ -59,6 +67,7 @@ const emit = defineEmits(['success'])
 const commentContent = ref('')
 const commentCommitting = ref(false)
 const imageFile = ref<MediaFile>()
+const userInfo = useUserInfo()
 
 async function commitComment() {
   const { message } = useDiscreteApi(['message'])

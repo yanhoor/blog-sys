@@ -1,23 +1,20 @@
 <template>
   <div v-loadMore="allowLoadMore ? handleLoadNextPage : null">
-    <div class="flex items-start pb-[20px]" v-if="userInfo">
-      <UserAvatar class="mr-[12px]" :user="userInfo" :size="42"></UserAvatar>
-      <CommentForm
-        class="flex-1"
-        :blogId="blog.id as number"
-        @success="handleAddComment"
-      />
-    </div>
+    <CommentForm
+      class="flex-1"
+      :blogId="blog.id as number"
+      @success="handleAddComment"
+    />
     <div class="flex gap-[12px] text-[16px]">
       <span
         class="cursor-pointer"
-        :class="{ 'text-green-700': sortType === 1 }"
+        :class="{ 'text-primary': sortType === 1 }"
         @click="handleChangeSortType(1)"
         >按时间</span
       >
       <span
         class="cursor-pointer"
-        :class="{ 'text-green-700': sortType === 2 }"
+        :class="{ 'text-primary': sortType === 2 }"
         @click="handleChangeSortType(2)"
         >按热度</span
       >
@@ -32,7 +29,7 @@
     <ResultLoading v-if="pageLoading" />
     <div class="text-center" v-else-if="!allowLoadMore && pageTotal > pageSize">
       <n-divider />
-      <n-button text @click="navigateTo(`/post/${blog.id}`)"
+      <n-button text @click="navigateTo(`/post/${blog.id}#comment`)"
         >查看全部 {{ pageTotal }} 条评论</n-button
       >
     </div>
@@ -58,11 +55,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   allowLoadMore: false
 })
-const userInfo = useUserInfo()
 const sortType = ref(2) // 1--按时间，2--按热度
 
 const {
-  pageFetchParams,
   pageList,
   pageLoading,
   fetchResult,
