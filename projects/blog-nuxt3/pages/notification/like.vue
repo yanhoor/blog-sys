@@ -3,7 +3,7 @@
     <div
       class="flex max-w-full items-center gap-[6px] whitespace-nowrap pb-[12px]"
     >
-      <UserAvatar :user="notification.createBy" size="small" />
+      <UserAvatar :user="notification.createBy" :size="32" />
       <span
         class="cursor-pointer text-[18px] font-semibold text-primary"
         @click="navigateTo({ path: '/user/' + notification.createById })"

@@ -3,7 +3,10 @@
     <div class="relative flex w-full items-center gap-[6px]">
       <UserAvatar :user="currentPost.createBy" :size="56"></UserAvatar>
       <div class="flex flex-col items-start">
-        <UserName class="text-[18px]" :user="currentPost.createBy"></UserName>
+        <UserName
+          class="text-[18px] font-semibold"
+          :user="currentPost.createBy"
+        ></UserName>
         <span
           class="secondary-text-color text-[12px]"
           v-time="new Date(currentPost.createdAt)"

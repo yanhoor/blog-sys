@@ -8,7 +8,7 @@
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
-            <n-icon :size="28" :component="Home24Regular"> </n-icon>
+            <n-icon :size="20" :component="Home24Regular"> </n-icon>
           </template>
         </n-button>
       </div>
@@ -23,20 +23,11 @@
     <n-layout-content
       class="mx-auto mt-[20px] w-auto overflow-visible bg-page-light dark:bg-page-dark"
     >
-      <!--<div class="main-left">
-        <slot name="left"></slot>
-      </div>-->
       <div class="flex items-start">
         <div class="flex max-w-full flex-1 justify-center">
           <slot></slot>
         </div>
-        <!--<div class="main-right-aside">
-          <slot name="right">dwdwed</slot>
-        </div>-->
       </div>
-      <!--<div class="mt-[20px]">
-        <n-card>bottom</n-card>
-      </div>-->
     </n-layout-content>
   </n-layout>
 </template>

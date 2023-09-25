@@ -1,15 +1,26 @@
 <template>
-  <UserCard :uid="user.id" :uname="user.name" :disabled="disabled">
+  <UserCard
+    class="leading-[1]"
+    :uid="user.id"
+    :uname="user.name"
+    :disabled="disabled"
+  >
     <template #trigger>
-      <n-avatar
-        class="flex shrink-0 items-center justify-center"
-        :class="{ 'cursor-pointer': !disabled }"
-        round
-        :size="size"
-        :src="config.public.imageBase + user.avatar"
-        :render-fallback="renderErrorAvatar"
-        @click="handleUserHome"
-      ></n-avatar>
+      <span @click="handleUserHome" :class="{ 'cursor-pointer': !disabled }">
+        <n-icon
+          :component="PersonCircle20Regular"
+          v-if="!user.avatar"
+          :size="size"
+        ></n-icon>
+        <n-avatar
+          v-else
+          class="flex shrink-0 items-center justify-center"
+          round
+          :size="size"
+          :src="config.public.imageBase + user.avatar"
+          :render-fallback="renderErrorAvatar"
+        ></n-avatar>
+      </span>
     </template>
   </UserCard>
 </template>
@@ -17,16 +28,16 @@
 <script setup lang="ts">
 import { NAvatar, NIcon } from 'naive-ui'
 import { h } from 'vue'
-import { Person24Regular } from '@vicons/fluent'
+import { PersonCircle20Regular } from '@vicons/fluent'
 import { User } from 'sys-types'
 
 interface Props {
   user: User
   disabled?: boolean
-  size?: number | 'small' | 'medium' | 'large'
+  size?: number
 }
 const props = withDefaults(defineProps<Props>(), {
-  size: 'medium'
+  size: 32
 })
 const config = useRuntimeConfig()
 
@@ -38,7 +49,7 @@ async function handleUserHome() {
 
 function renderErrorAvatar() {
   return h(NIcon, {
-    component: Person24Regular
+    component: PersonCircle20Regular
   })
 }
 </script>

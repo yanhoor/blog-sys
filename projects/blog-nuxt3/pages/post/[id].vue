@@ -11,12 +11,10 @@
         <div class="relative flex w-full items-center gap-[6px]">
           <UserAvatar :user="currentPost.createBy" :size="56" />
           <div class="flex flex-col items-start">
-            <div
-              class="cursor-pointer text-[20px] text-primary"
-              @click="navigateTo({ path: '/user/' + currentPost.createBy.id })"
-            >
-              {{ currentPost.createBy?.name }}
-            </div>
+            <UserName
+              class="text-[18px] font-semibold"
+              :user="currentPost.createBy"
+            ></UserName>
             <span
               class="text-[12px] text-gray-500"
               v-time.format="new Date(currentPost.createdAt)"

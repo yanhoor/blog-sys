@@ -1,5 +1,5 @@
 <template>
-  <div class="post-list">
+  <div class="post-list min-w-[720px]">
     <SkeletonPostList
       v-if="pageLoading && pageFetchParams.page === 1"
     ></SkeletonPostList>

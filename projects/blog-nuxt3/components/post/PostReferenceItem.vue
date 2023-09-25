@@ -6,7 +6,11 @@
       <p>博客已删除</p>
     </template>
     <template v-else>
-      <UserName class="text-[14px]" :user="currentPost.createBy" show-at />
+      <UserName
+        class="text-[14px] font-semibold"
+        :user="currentPost.createBy"
+        show-at
+      />
       <ExpandableContent
         :content="currentPost.content"
         :topicList="topicList"

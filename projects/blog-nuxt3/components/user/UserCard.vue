@@ -1,5 +1,5 @@
 <template>
-  <div class="user-card">
+  <span class="user-card">
     <n-popover
       trigger="hover"
       @update:show="handleShow"
@@ -69,7 +69,7 @@
       :userId="userInfo.id"
       v-if="userInfo"
     />
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">

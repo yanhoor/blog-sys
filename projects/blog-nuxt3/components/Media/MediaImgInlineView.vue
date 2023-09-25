@@ -1,11 +1,11 @@
 <template>
-  <div
+  <span
     class="inline-flex cursor-pointer items-center gap-[4px] align-text-top leading-[18px] text-[#18a058]"
     @click.stop="handlePreview"
   >
     <n-icon size="18" :component="Image24Regular" />
     <span>查看图片</span>
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">
