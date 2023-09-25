@@ -1,6 +1,6 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
 const { FileType } = require('@prisma/client')
+const { blogFieldExpose, mediaFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   try {
@@ -22,8 +22,6 @@ module.exports = async function (ctx, next) {
       pageSize = this.pageSize
     } = requestBody
     sort = Number(sort)
-    uid = Number(uid)
-    gid = Number(gid)
     isFollowing = Number(isFollowing) // 是否关注，1--关注，0--全部
     const skip = pageSize * (page - 1)
     const filter = {
@@ -85,7 +83,6 @@ module.exports = async function (ctx, next) {
         }
       }
     }
-    console.log('=======filter=======', filter)
     let orderBy = []
     if (sort) {
       switch (sort) {
@@ -181,7 +178,20 @@ module.exports = async function (ctx, next) {
             compute(blog) {
               return blog.collectedBy.some((item) => item.userId == userId)
             }
+          },
+          retweetCount: {
+            needs: { referrerBlogs: true },
+            compute(blog) {
+              return blog.referrerBlogs.length
+            }
           }
+          // referenceMedias: {
+          //   needs: { referenceBlogs: true },
+          //   compute(blog) {
+          //     const ml = blog.referenceBlogs.map((b) => b.medias)
+          //     return ml.flat(2).filter((m) => m)
+          //   }
+          // }
         }
       }
     })
@@ -191,62 +201,17 @@ module.exports = async function (ctx, next) {
         take: pageSize,
         where: filter,
         select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          createById: true,
-          status: true,
           likedByCount: true,
           collectedByCount: true,
           commentsCount: true,
+          retweetCount: true,
+          // referenceMedias: true,
           isLike: true,
           isCollect: true,
-          content: true,
-          address: true,
-          addressName: true,
-          latitude: true,
-          longitude: true,
-          createBy: {
+          ...blogFieldExpose.select,
+          referenceBlogs: {
             select: {
-              id: true,
-              name: true,
-              avatar: true
-            }
-          },
-          topics: {
-            select: {
-              // offset: true,
-              topicId: true,
-              topic: {
-                select: {
-                  id: true,
-                  content: true
-                }
-              }
-            }
-          },
-          medias: {
-            select: {
-              id: true,
-              blogId: true,
-              fileId: true,
-              file: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              },
-              coverId: true,
-              cover: {
-                select: {
-                  id: true,
-                  createById: true,
-                  type: true,
-                  url: true
-                }
-              }
+              medias: mediaFieldExpose
             }
           }
         },

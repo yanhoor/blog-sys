@@ -9,6 +9,7 @@ const audit = require('./audit')
 const like = require('./like')
 const actionUserList = require('./actionUserList')
 const collect = require('./collect')
+const retweetList = require('./retweetList')
 
 class BlogController extends BaseController {
   constructor() {
@@ -23,6 +24,7 @@ class BlogController extends BaseController {
     this.like = like.bind(this)
     this.actionUserList = actionUserList.bind(this)
     this.collect = collect.bind(this)
+    this.retweetList = retweetList.bind(this)
   }
 }
 

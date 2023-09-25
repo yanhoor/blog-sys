@@ -34,14 +34,18 @@
     </div>
 
     <div
-      class="w-full p-[12px] cursor-pointer bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700"
+      class="w-full cursor-pointer rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
       @click="navigateTo({ path: '/post/' + notification.blog.id })"
       v-if="notification.blog"
     >
-      <ExpandableContent :content="notification.blog.content" />
+      <ExpandableContent
+        :content="notification.blog.content"
+        :topicList="handleTopicList(notification)"
+        :media-list="handleMediaList(notification)"
+      />
     </div>
     <div
-      class="w-full p-[12px] bg-gray-100 rounded-[5px] !border-0 dark:bg-gray-700"
+      class="w-full rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
       v-else
     >
       <div class="text-red-500">博客已经被删除</div>
@@ -51,4 +55,14 @@
 
 <script setup lang="ts">
 import { NTag } from 'naive-ui'
+import { Notification } from 'sys-types'
+
+function handleTopicList(notification: Notification) {
+  return notification.blog.topics?.map((t) => t.topic)
+}
+
+function handleMediaList(notification: Notification) {
+  const rl = notification.blog.referenceBlogs?.map((b) => b.medias) || []
+  return [notification.blog.medias, ...rl].flat(2)
+}
 </script>

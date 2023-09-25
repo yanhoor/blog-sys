@@ -47,13 +47,13 @@ module.exports = async function (ctx, next) {
         userId.toString()
       )
 
-      if (Number(userId) !== currentBlog.createById) {
+      if (userId !== currentBlog.createById) {
         const notification = await prisma.notification.create({
           data: {
-            createById: Number(userId),
+            createById: userId,
             receiveUserId: currentBlog.createById,
             type: this.NOTIFICATION_TYPE.like_blog,
-            blogId: Number(id)
+            blogId: id
           },
           select: {
             id: true,

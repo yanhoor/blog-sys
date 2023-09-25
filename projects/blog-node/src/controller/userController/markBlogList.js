@@ -1,5 +1,5 @@
 const prisma = require('../../database/prisma')
-const redisClient = require('../../database/redis')
+const { blogFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   // type: 1--点赞，2--收藏
@@ -109,55 +109,12 @@ module.exports = async function (ctx, next) {
         }
       },
       select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        createById: true,
-        status: true,
         likedByCount: true,
         collectedByCount: true,
         commentsCount: true,
         isLike: true,
         isCollect: true,
-        content: true,
-        address: true,
-        addressName: true,
-        latitude: true,
-        longitude: true,
-        createBy: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        medias: {
-          where: {
-            deletedAt: null
-          },
-          select: {
-            id: true,
-            blogId: true,
-            fileId: true,
-            file: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            },
-            coverId: true,
-            cover: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            }
-          }
-        }
+        ...blogFieldExpose.select
       }
     })
 

@@ -1,9 +1,9 @@
 const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
+const { blogFieldExpose, mediaFieldExpose } = require('../../exposeField')
 
 module.exports = async function (ctx, next) {
   let { id } = ctx.request.body
-  id = Number(id)
   let userId = await this.getAuthUserId(ctx, next)
   try {
     const xprisma = prisma.$extends({
@@ -50,6 +50,12 @@ module.exports = async function (ctx, next) {
               )
               return list.length
             }
+          },
+          retweetCount: {
+            needs: { referrerBlogs: true },
+            compute(blog) {
+              return blog.referrerBlogs.length
+            }
           }
         }
       }
@@ -59,64 +65,15 @@ module.exports = async function (ctx, next) {
         id
       },
       select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        status: true,
-        content: true,
         isLike: true,
         likedByCount: true,
         collectedByCount: true,
         commentsCount: true,
         isCollect: true,
-        address: true,
-        addressName: true,
-        latitude: true,
-        longitude: true,
-        createById: true,
-        createBy: {
+        ...blogFieldExpose.select,
+        referenceBlogs: {
           select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        },
-        topics: {
-          select: {
-            // offset: true,
-            topicId: true,
-            topic: {
-              select: {
-                id: true,
-                content: true
-              }
-            }
-          }
-        },
-        medias: {
-          where: {
-            deletedAt: null
-          },
-          select: {
-            id: true,
-            fileId: true,
-            file: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            },
-            coverId: true,
-            cover: {
-              select: {
-                id: true,
-                createById: true,
-                type: true,
-                url: true
-              }
-            }
+            medias: mediaFieldExpose
           }
         }
       }

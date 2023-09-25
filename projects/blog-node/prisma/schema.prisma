@@ -37,7 +37,7 @@ enum PlatformType {
 model User {
   // 字段名----字段类型（又分为标量类型，如 Int/String 等，或模型类型，如 Blog[]）----属性，如 @id
   // 字段类型后面可以有类型修饰符 ? 和 []，如 String? 表示非必须，Blog[] 表示该字段值是列表。没有修饰符的是必填字段，不能为空
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(uuid())
   createdAt     DateTime  @default(now())
   lastActiveAt  DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -78,19 +78,19 @@ model User {
   followGroups         FollowGroup[]             @relation("CreateFollowGroup")
   // 所在的关注分组
   inFollowGroups       FollowGroup[]             @relation("InFollowGroup")
-  File                 File[]
-  Topic                Topic[]                   @relation("CreateTopic")
+  files                File[]
+  topics               Topic[]                   @relation("CreateTopic")
 
   @@index([createdAt])
 }
 
 // 关注分组
 model FollowGroup {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   createBy     User     @relation(name: "CreateFollowGroup", fields: [createById], references: [id])
-  createById   Int
+  createById   String
   sort         Int      @default(0)
   // 包含的用户
   containUsers User[]   @relation("InFollowGroup")
@@ -102,10 +102,10 @@ model FollowGroup {
 
 model FollowRelation {
   user       User     @relation(name: "FollowTarget", fields: [userId], references: [id])
-  userId     Int
+  userId     String
   // FollowBy 关注了 FollowTarget
   followBy   User     @relation(name: "FollowBy", fields: [followById], references: [id])
-  followById Int
+  followById String
   assignedAt DateTime @default(now())
 
   @@id([userId, followById])
@@ -114,9 +114,9 @@ model FollowRelation {
 // 点赞博客关系表
 model LikeBlogRelation {
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
   blog       Blog     @relation(fields: [blogId], references: [id])
-  blogId     Int
+  blogId     String
   assignedAt DateTime @default(now())
 
   @@id([userId, blogId])
@@ -125,9 +125,9 @@ model LikeBlogRelation {
 // 收藏博客关系表
 model UserCollectBlogs {
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
   blog       Blog     @relation(fields: [blogId], references: [id])
-  blogId     Int
+  blogId     String
   assignedAt DateTime @default(now())
 
   // 这样应该使用
@@ -143,26 +143,26 @@ model UserCollectBlogs {
 // 阅读博客关系表
 model ReadBlogsRelation {
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
   blog       Blog     @relation(fields: [blogId], references: [id])
-  blogId     Int
+  blogId     String
   assignedAt DateTime @default(now())
 
   @@id([userId, blogId])
 }
 
 model Media {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   createBy   User     @relation(name: "Media", fields: [createById], references: [id])
-  createById Int
+  createById String
   title      String?  @db.Text
-  fileId     Int
+  fileId     String
   file       File     @relation(name: "MediaFile", fields: [fileId], references: [id])
-  coverId    Int?
+  coverId    String?
   cover      File?    @relation(name: "CoverMedia", fields: [coverId], references: [id])
-  blogId     Int?
-  blog       Blog?    @relation(fields: [blogId], references: [id])
+  blogId     String?
+  blog       Blog?    @relation(name: "BlogCreateMedia", fields: [blogId], references: [id])
 
   deletedAt DateTime?
 
@@ -170,10 +170,10 @@ model Media {
 }
 
 model File {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   createBy   User     @relation(fields: [createById], references: [id])
-  createById Int
+  createById String
   md5        String   @db.Text
   url        String   @unique
   type       FileType
@@ -187,16 +187,16 @@ model File {
 }
 
 model Blog {
-  id          Int                 @id @default(autoincrement())
+  id          String              @id @default(uuid())
   createdAt   DateTime            @default(now())
   createBy    User                @relation(name: "CreateBlog", fields: [createById], references: [id])
-  createById  Int
+  createById  String
   likedBy     LikeBlogRelation[]
   collectedBy UserCollectBlogs[]
   readBy      ReadBlogsRelation[]
   updatedAt   DateTime
   auditBy     User?               @relation(name: "AuditBlog", fields: [auditById], references: [id])
-  auditById   Int?
+  auditById   String?
   auditTip    String?             @db.VarChar(255)
   auditStatus Int                 @default(0) // 1--审核通过，0--未审核，2--审核不通过
   auditedAt   DateTime? // 审核时间
@@ -209,33 +209,52 @@ model Blog {
   // title   String @db.VarChar(255)
   content String @db.Text
 
-  deletedAt     DateTime?
-  comments      Comment[]
-  notifications Notification[]
-  medias        Media[]
-  topics        BlogTopicRelation[]
+  deletedAt           DateTime?
+  comments            Comment[]
+  notifications       Notification[]
+  medias              Media[]             @relation("BlogCreateMedia")
+  topics              BlogTopicRelation[] @relation("TopicBlog")
+  retweetBlog         Blog[]              @relation("RetweetOrigin")
+  // 多层转发的第一条博客
+  retweetOriginBlogId String?
+  retweetOriginBlog   Blog?               @relation("RetweetOrigin", fields: [retweetOriginBlogId], references: [id])
+  // 隐式多对多转发关系
+  referrerBlogs       Blog[]              @relation(name: "BlogRefernce") // 被谁转发
+  referenceBlogs      Blog[]              @relation(name: "BlogRefernce") // 转发的博客列表。对于被转发的，自身就是 ReferrerBlog
 
   @@index([createdAt])
 }
 
+// 转发关系，a 转发 b，则 a 作为 referrerId
+// model BlogRetweetRelationgRetweetRelation {
+//   referrerId    Int
+//   referrerBlog  Blog     @relation(name: "ReferrerBlog", fields: [referrerId], references: [id])
+//   // 被转发
+//   referenceId   Int
+//   referenceBlog Blog     @relation(name: "RefernceBlog", fields: [referenceId], references: [id])
+//   assignedAt    DateTime @default(now())
+//
+//   @@id([referrerId, referenceId])
+// }
+
 // 博客话题
 model Topic {
-  id         String              @id @default(cuid())
+  id         String              @id @default(uuid())
   createdAt  DateTime            @default(now())
   createBy   User                @relation(name: "CreateTopic", fields: [createById], references: [id])
-  createById Int
+  createById String
   content    String              @unique
   deletedAt  DateTime?
-  blogs      BlogTopicRelation[]
+  blogs      BlogTopicRelation[] @relation("BlogTopic")
 
   @@index([content(length: 20)], name: "content")
 }
 
 // 博客话题关系表
 model BlogTopicRelation {
-  blog       Blog     @relation(fields: [blogId], references: [id])
-  blogId     Int
-  topic      Topic    @relation(fields: [topicId], references: [id])
+  blog       Blog     @relation(name: "TopicBlog", fields: [blogId], references: [id])
+  blogId     String
+  topic      Topic    @relation(name: "BlogTopic", fields: [topicId], references: [id])
   topicId    String
   // offset     Int // 在博客内容的开始位置
   assignedAt DateTime @default(now())
@@ -245,15 +264,15 @@ model BlogTopicRelation {
 
 // 通知
 model Notification {
-  id            Int              @id @default(autoincrement())
+  id            String           @id @default(uuid())
   createdAt     DateTime         @default(now())
   createBy      User             @relation(name: "CreateNotification", fields: [createById], references: [id])
-  createById    Int
+  createById    String
   receiveUser   User?            @relation(name: "ReceiveNotifications", fields: [receiveUserId], references: [id])
-  receiveUserId Int?
-  blogId        Int?
+  receiveUserId String?
+  blogId        String?
   blog          Blog?            @relation(fields: [blogId], references: [id])
-  commentId     Int?
+  commentId     String?
   comment       Comment?         @relation(fields: [commentId], references: [id])
   content       Json?
   isRead        Int?             @default(0) // 0--未读，1--已读
@@ -266,33 +285,33 @@ model Notification {
 
 // 博客评论及回复
 model Comment {
-  id             Int       @id @default(autoincrement())
+  id             String    @id @default(uuid())
   createdAt      DateTime  @default(now())
   createBy       User      @relation(name: "CreateComment", fields: [createById], references: [id])
-  createById     Int
+  createById     String
   auditBy        User?     @relation(name: "AuditComment", fields: [auditById], references: [id])
-  auditById      Int?
+  auditById      String?
   auditTip       String?   @db.VarChar(255)
   auditStatus    Int       @default(0) // 1--审核通过，0--未审核，2--审核不通过
   auditedAt      DateTime? // 审核时间
   status         Int       @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
   replyTo        User?     @relation(name: "ReplyComment", fields: [replyToId], references: [id])
-  replyToId      Int? // 回复的上级评论的作者
+  replyToId      String? // 回复的上级评论的作者
   blog           Blog      @relation(fields: [blogId], references: [id])
-  blogId         Int
+  blogId         String
   // 作为评论回复时，所属的一级评论id
-  topCommentId   Int?
+  topCommentId   String?
   topComment     Comment?  @relation(name: "ChildComment", fields: [topCommentId], references: [id])
   // 作为一级评论时，下面的所有回复
   childComments  Comment[] @relation("ChildComment")
   // 作为评论回复时，回复哪个评论回复（不是一级）
-  replyCommentId Int?
+  replyCommentId String?
   replyComment   Comment?  @relation(name: "Reply", fields: [replyCommentId], references: [id])
   // 作为评论回复时，收到的所有的回复
   replyItems     Comment[] @relation("Reply")
 
-  imageId Int?
-  image   File? @relation(name: "CommentImage", fields: [imageId], references: [id])
+  imageId String?
+  image   File?   @relation(name: "CommentImage", fields: [imageId], references: [id])
 
   content       String?        @db.Text
   notifications Notification[]
@@ -307,19 +326,19 @@ model Comment {
 // 点赞评论关系表
 model UserLikeCommentRelation {
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
   comment    Comment  @relation(fields: [commentId], references: [id])
-  commentId  Int
+  commentId  String
   assignedAt DateTime @default(now())
 
   @@id([userId, commentId])
 }
 
 model UpdateVersion {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(uuid())
   createdAt   DateTime     @default(now())
   createBy    User         @relation(name: "CreateVersion", fields: [createById], references: [id])
-  createById  Int
+  createById  String
   // 平台类型
   platform    PlatformType
   // 是否发布
@@ -335,8 +354,8 @@ model UpdateVersion {
 }
 
 model CustomContent {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   createBy   User     @relation(name: "CreateCustomContent", fields: [createById], references: [id])
-  createById Int
+  createById String
 }

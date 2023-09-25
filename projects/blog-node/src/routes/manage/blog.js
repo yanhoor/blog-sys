@@ -13,5 +13,6 @@ router.post('/like', controller.like)
 router.post('/actionUserList/:type', controller.actionUserList)
 router.post('/collect', controller.collect)
 router.post('/audit', controller.audit)
+router.post('/retweetList', controller.retweetList)
 
 module.exports = router

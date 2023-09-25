@@ -6,28 +6,31 @@ module.exports = async function (ctx, next) {
     await prisma.$transaction([
       prisma.blog.update({
         where: {
-          id: Number(id)
+          id
         },
         data: {
-          deletedAt: new Date()
-        }
-      }),
-      prisma.media.updateMany({
-        where: {
-          blogId: Number(id)
-        },
-        data: {
-          deletedAt: new Date()
-        }
-      }),
-      prisma.comment.updateMany({
-        where: {
-          blogId: Number(id)
-        },
-        data: {
-          deletedAt: new Date()
+          deletedAt: new Date(),
+          referenceBlogs: {
+            set: [] // 清除转发关系，https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#disconnect-a-related-record
+          }
         }
       })
+      // prisma.media.updateMany({
+      //   where: {
+      //     blogId: id
+      //   },
+      //   data: {
+      //     deletedAt: new Date()
+      //   }
+      // }),
+      // prisma.comment.updateMany({
+      //   where: {
+      //     blogId: id
+      //   },
+      //   data: {
+      //     deletedAt: new Date()
+      //   }
+      // })
     ])
 
     return (ctx.body = {
