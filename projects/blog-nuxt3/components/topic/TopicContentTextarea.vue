@@ -91,7 +91,7 @@ onMounted(() => {
   inputEl.value.addEventListener('click', handleFocus)
   if (props.modelValue) {
     // 对于转发微博，已经有部分内容，将光标移到前面
-    inputEl.value.focus()
+    inputEl.value.focus({ preventScroll: true })
     inputEl.value.setSelectionRange(0, 0)
   }
 })
