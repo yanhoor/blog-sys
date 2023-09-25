@@ -2,8 +2,23 @@ const prisma = require('../../database/prisma')
 const redisClient = require('../../database/redis')
 
 module.exports = async function (ctx, next) {
-  const { id } = ctx.request.params
+  const { uid, uname } = ctx.request.body
   let currentUserId = await this.getAuthUserId(ctx, next)
+  try {
+    if (!uid && !uname) throw new Error('参数不能为空')
+  } catch (e) {
+    ctx.body = {
+      success: false,
+      msg: e.message
+    }
+    return false
+  }
+
+  const where = {}
+
+  if (uid) where.id = uid
+  if (uname) where.name = uname
+
   try {
     const xprisma = prisma.$extends({
       result: {
@@ -49,9 +64,7 @@ module.exports = async function (ctx, next) {
       }
     })
     const user = await xprisma.user.findUnique({
-      where: {
-        id: Number(id)
-      },
+      where: where,
       select: {
         id: true,
         name: true,

@@ -1,10 +1,14 @@
 <template>
-  <span
-    class="cursor-pointer text-green-700"
-    @click="navigateTo({ path: '/user/' + user.id })"
-  >
-    {{ (showAt ? '@' : '') + user.name }}
-  </span>
+  <UserCard :uid="user.id" :uname="user.name" :disabled="disabled">
+    <template #trigger>
+      <span
+        class="cursor-pointer text-primary"
+        @click="navigateTo({ path: '/user/id/' + user.id })"
+      >
+        {{ (showAt ? '@' : '') + user.name }}
+      </span>
+    </template>
+  </UserCard>
 </template>
 
 <script setup lang="ts">
@@ -13,9 +17,11 @@ import { User } from 'sys-types'
 interface Props {
   user: User
   showAt?: boolean
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showAt: false
+  showAt: false,
+  disabled: false
 })
 </script>

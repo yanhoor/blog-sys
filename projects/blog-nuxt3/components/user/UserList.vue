@@ -11,17 +11,13 @@
         :key="user.id"
       >
         <UserAvatar :user="user" :size="42"></UserAvatar>
-        <div class="flex-1 flex flex-col items-start self-start gap-[3px]">
-          <span
-            class="text-green-700 cursor-pointer"
-            @click="navigateTo({ path: '/user/' + user.id })"
-            >{{ user.name }}</span
-          >
-          <span class="text-gray-400 text-[12px] dark:text-gray-600">{{
+        <div class="flex flex-1 flex-col items-start gap-[3px] self-start">
+          <UserName :user="user"></UserName>
+          <span class="secondary-text-color text-[12px]">{{
             user.introduce || '暂无介绍'
           }}</span>
           <span
-            class="text-gray-400 text-[12px] dark:text-gray-600"
+            class="secondary-text-color text-[12px]"
             v-if="user.followerCount"
             >粉丝：{{ user.followerCount }}</span
           >

@@ -1,8 +1,8 @@
 <template>
-  <UserCard :userId="user.id" :disabled="true">
+  <UserCard :uid="user.id" :uname="user.name" :disabled="disabled">
     <template #trigger>
       <n-avatar
-        class="flex justify-center items-center shrink-0"
+        class="flex shrink-0 items-center justify-center"
         :class="{ 'cursor-pointer': !disabled }"
         round
         :size="size"
@@ -25,13 +25,15 @@ interface Props {
   disabled?: boolean
   size?: number | 'small' | 'medium' | 'large'
 }
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  size: 'medium'
+})
 const config = useRuntimeConfig()
 
 async function handleUserHome() {
   if (props.disabled) return
 
-  await navigateTo({ path: '/user/' + props.user.id })
+  await navigateTo({ path: '/user/id/' + props.user.id })
 }
 
 function renderErrorAvatar() {

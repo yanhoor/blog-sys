@@ -104,7 +104,7 @@ function handleDropdownSelect(key: string | number) {
 }
 
 async function handleUserHome() {
-  await navigateTo({ path: '/user/' + userInfo.value?.id })
+  await navigateTo({ path: '/user/id/' + userInfo.value?.id })
 }
 
 async function handleLogout() {

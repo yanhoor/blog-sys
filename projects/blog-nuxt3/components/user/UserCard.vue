@@ -4,30 +4,26 @@
       trigger="hover"
       @update:show="handleShow"
       class="max-w-[280px]"
-      :disabled="disabled || currentUser?.id === userId"
+      :disabled="disabled"
     >
       <template #trigger>
-        <div>
-          <slot name="trigger"></slot>
-        </div>
+        <slot name="trigger"></slot>
       </template>
 
       <n-spin size="small" v-if="loading" />
 
       <div
         class="flex flex-col items-start gap-[12px] overflow-hidden p-[12px]"
-        v-else
+        v-else-if="userInfo"
       >
-        <div class="flex max-w-full items-center gap-[12px]">
+        <div
+          class="flex max-w-full cursor-pointer items-center gap-[12px]"
+          @click="navigateTo({ path: '/user/id/' + userInfo.id })"
+        >
           <UserAvatar :user="userInfo" :size="36" disabled />
-          <div class="flex flex-col items-start gap-[3px] overflow-hidden">
-            <div
-              class="cursor-pointer text-[16px] text-green-700"
-              @click="navigateTo({ path: '/user/' + userInfo.id })"
-            >
-              {{ userInfo?.name }}
-            </div>
-          </div>
+          <span class="text-[16px] text-primary">
+            {{ userInfo?.name }}
+          </span>
         </div>
         <UserFollowDropdown
           v-if="userInfo.isFollowing"
@@ -50,7 +46,7 @@
           size="small"
           @click="handleFollow(1)"
           :loading="followLoading"
-          v-else
+          v-else-if="uid !== currentUser.id && uname !== currentUser.name"
           >关注</n-button
         >
         <div
@@ -66,27 +62,23 @@
           </div>
         </div>
       </div>
+      <p v-else>暂无信息</p>
     </n-popover>
     <UserFollowGroupSelect
       v-model:show="showGroupSelect"
-      :userId="userId"
+      :userId="userInfo.id"
       v-if="userInfo"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  NPopover,
-  NButton,
-  NSpin,
-  NDropdown,
-  createDiscreteApi
-} from 'naive-ui'
-import { User } from '~/types'
+import { NPopover, NButton, NSpin } from 'naive-ui'
+import { User } from 'sys-types'
 
 interface Props {
-  userId: number
+  uid?: string
+  uname?: string
   disabled?: boolean
 }
 
@@ -109,8 +101,11 @@ async function getUserInfo() {
   const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost(
-      '/user/' + props.userId,
-      {}
+      '/user/userInfo',
+      {
+        uid: props.uid,
+        uname: props.uname
+      }
     )
     if (success) {
       userInfo.value = result
@@ -128,7 +123,7 @@ async function handleFollow(type: number) {
   const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost('/user/follow', {
-      id: props.userId,
+      id: props.uid,
       type
     })
     if (success) {

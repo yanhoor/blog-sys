@@ -33,7 +33,7 @@
                       class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(2)"
                     >
-                      <span class="text-gray-400">粉丝</span>
+                      <span class="secondary-text-color">粉丝</span>
                       <span class="text-[18px] font-semibold">{{
                         userInfo.followerCount
                       }}</span>
@@ -42,7 +42,7 @@
                       class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(1)"
                     >
-                      <span class="text-gray-400">关注</span>
+                      <span class="secondary-text-color">关注</span>
                       <span class="text-[18px] font-semibold">{{
                         userInfo.followingCount
                       }}</span>
@@ -93,7 +93,9 @@
               </div>
             </div>
 
-            <div class="flex max-w-full flex-col gap-[12px] text-gray-600">
+            <div
+              class="secondary-text-color flex max-w-full flex-col gap-[12px]"
+            >
               <div
                 class="flex items-start gap-[6px]"
                 v-if="userInfo?.introduce"
@@ -188,6 +190,7 @@
         </template>
       </div>
     </div>
+    <ResultError :msg="errorMsg" @refresh="handlePageInit" v-else></ResultError>
   </LayoutMain>
 </template>
 
@@ -210,16 +213,19 @@ import {
 import { User, Media } from '~/types'
 import dayjs from 'dayjs'
 
-definePageMeta({
-  key: (route) => route.path
-})
-const messageRef = ref()
+interface Props {
+  uid?: string
+  uname?: string
+}
+
+const props = defineProps<Props>()
 const config = useRuntimeConfig()
 const route = useRoute()
 const myInfo = useUserInfo()
 const userInfo = ref<User>()
 const loading = ref(false)
 const showSearch = ref(false)
+const errorMsg = ref()
 const selectDateRange = ref<[number, number]>()
 const rangeShortcuts = {
   昨天: () => {
@@ -268,14 +274,17 @@ watch(
 
 useHead(() => {
   return {
-    title: loading.value ? '加载中...' : `@${userInfo.value?.name}的个人主页`
+    title: loading.value
+      ? '加载中...'
+      : userInfo.value?.name
+      ? `@${userInfo.value?.name}的个人主页`
+      : errorMsg.value || '🤬用户不存在'
   }
 })
 
 await handlePageInit()
 
 async function handlePageInit() {
-  messageRef.value = useDiscreteApi(['message'])
   loading.value = true
   await getUserInfo()
   await getUserStatis()
@@ -285,19 +294,18 @@ async function handlePageInit() {
 async function getUserInfo() {
   try {
     const { result, success, code, msg } = await useFetchPost(
-      '/user/' + route.params.id,
-      {}
+      '/user/userInfo',
+      { uid: props.uid, uname: props.uname }
     )
     if (success) {
       userInfo.value = result
       searchParams.uid = result.id
     } else {
-      messageRef.value.error(msg as string)
-      if (code == 222) {
-        await navigateTo('/', { replace: true })
-      }
+      errorMsg.value = msg
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log('=======getUserInfo=======', e)
+  }
 }
 
 async function getUserStatis() {
@@ -307,10 +315,10 @@ async function getUserStatis() {
     })
     if (success) {
       statisInfo.value = result
-    } else {
-      messageRef.value.error(msg as string)
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log('=======getUserStatis=======', e)
+  }
 }
 
 function handleBlogFetchComplete(res: any) {
@@ -322,7 +330,7 @@ function handleTabChange(val: string) {
   searchParams.startTime = ''
   searchParams.endTime = ''
   selectDateRange.value = undefined
-  navigateTo('/user/' + userInfo.value?.id + '?tab=' + val)
+  navigateTo('/user/id/' + userInfo.value?.id + '?tab=' + val)
 }
 
 function handleViewFriends(type: number) {
@@ -361,14 +369,4 @@ function handleSearchPost() {
 }
 </script>
 
-<style lang="postcss" scoped>
-.statis-item {
-  @apply flex items-center py-[5px];
-  .n-icon {
-    @apply mr-[6px];
-  }
-  .statis-num {
-    @apply ml-[6px] text-[18px] font-semibold;
-  }
-}
-</style>
+<style lang="postcss" scoped></style>
