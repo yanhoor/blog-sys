@@ -57,40 +57,47 @@
           v-model:value="checkedList"
           @update:value="handleCheckItem"
         >
-          <div
-            v-for="notification of pageList"
-            :key="notification.id"
-            class="flex items-start gap-[12px]"
-          >
-            <n-checkbox
-              size="large"
-              :value="notification.id"
-              :disabled="!!notification.isRead"
-              v-if="showCheck"
-            ></n-checkbox>
-            <n-card class="overflow-hidden">
-              <div
-                class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
-                :class="{ 'text-gray-400': notification.isRead }"
-              >
-                <slot :notification="notification"></slot>
+          <div v-auto-animate>
+            <div
+              v-for="notification of pageList"
+              :key="notification.id"
+              class="flex items-start gap-[12px]"
+            >
+              <n-checkbox
+                size="large"
+                :value="notification.id"
+                :disabled="!!notification.isRead"
+                v-if="showCheck"
+              ></n-checkbox>
+              <n-card class="overflow-hidden">
+                <div
+                  class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
+                  :class="{ 'text-gray-400': notification.isRead }"
+                >
+                  <slot :notification="notification"></slot>
 
-                <div class="flex w-full items-center justify-between pt-[12px]">
-                  <span v-time="notification.createdAt" class="text-gray-400" />
-                  <n-button
-                    text
-                    type="primary"
-                    class="hidden group-hover:block"
-                    v-if="!notification.isRead"
-                    @click="handleRemarkRead(notification.id)"
-                    >标为已读</n-button
+                  <div
+                    class="flex w-full items-center justify-between pt-[12px]"
                   >
-                  <span class="hidden text-primary group-hover:block" v-else
-                    >已读</span
-                  >
+                    <span
+                      v-time="notification.createdAt"
+                      class="text-gray-400"
+                    />
+                    <n-button
+                      text
+                      type="primary"
+                      class="hidden group-hover:block"
+                      v-if="!notification.isRead"
+                      @click="handleRemarkRead(notification.id)"
+                      >标为已读</n-button
+                    >
+                    <span class="hidden text-primary group-hover:block" v-else
+                      >已读</span
+                    >
+                  </div>
                 </div>
-              </div>
-            </n-card>
+              </n-card>
+            </div>
           </div>
         </n-checkbox-group>
       </template>

@@ -35,6 +35,7 @@
       <n-card :bordered="false">
         <div
           class="flex flex-col divide-y divide-border-light dark:divide-border-dark"
+          v-auto-animate
         >
           <CommentItem
             class="py-[12px]"

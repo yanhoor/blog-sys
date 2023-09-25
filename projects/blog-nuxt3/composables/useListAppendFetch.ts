@@ -31,13 +31,16 @@ export const useListAppendFetch = <T>(
     ...params
   })
 
-  async function fetchPage() {
+  async function fetchPage(resetList = false) {
     try {
       pageLoading.value = true
       const respone = await useFetchPost(url, pageFetchParams.value)
       pageLoading.value = false
       const { result, success } = respone
       if (success) {
+        if (resetList) {
+          pageList.value = initParams.initList ? [...initParams.initList] : []
+        }
         fetchResult.value = result
         for (const item of result.list) {
           if (!initParams.uniqueKey) {
@@ -65,11 +68,7 @@ export const useListAppendFetch = <T>(
 
   async function handlePageChange(page: number) {
     pageFetchParams.value.page = page
-    if (page == 1) {
-      pageList.value = initParams.initList ? [...initParams.initList] : []
-      pageLoadedFinish.value = false
-    }
-    return await fetchPage()
+    return await fetchPage(page == 1)
   }
 
   async function handleLoadNextPage(page?: number) {

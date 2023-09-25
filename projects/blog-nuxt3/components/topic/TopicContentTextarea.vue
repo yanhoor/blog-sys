@@ -17,7 +17,10 @@
       :style="topicListElStyle"
     >
       <n-collapse-transition :show="showTopicList">
-        <div class="max-h-[400px] overflow-auto rounded border border-primary">
+        <div
+          class="max-h-[400px] overflow-auto rounded border border-primary"
+          v-auto-animate
+        >
           <p class="px-[12px] py-[5px] text-primary">想用什么话题</p>
           <p
             v-for="topic of topicList"
@@ -49,7 +52,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
-  placeholder: '请输入内容',
+  placeholder: '请输入内容（输入 # 插入话题）',
   showCount: true,
   autosize: {
     minRows: 5,

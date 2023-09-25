@@ -5,7 +5,11 @@
     ></SkeletonPostList>
 
     <div v-else>
-      <div class="grid grid-cols-1 gap-[12px]" v-loadMore="handleLoadMore">
+      <div
+        class="grid grid-cols-1 gap-[12px]"
+        v-loadMore="handleLoadMore"
+        v-auto-animate
+      >
         <template v-for="(blog, index) of pageList" :key="blog.id">
           <n-card>
             <PostItem

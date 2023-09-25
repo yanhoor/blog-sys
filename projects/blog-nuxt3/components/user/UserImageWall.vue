@@ -14,6 +14,7 @@
       <div
         class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
         v-loadMore="handleLoadNextPage"
+        v-auto-animate
       >
         <div class="img-wrapper" v-for="image of pageList" :key="image.id">
           <div class="img-container" @click="handlePreview(image)">
@@ -78,7 +79,7 @@ function handlePreview(m: Media) {
     @apply relative w-full;
     padding-top: 100%;
     .media-item {
-      @apply absolute top-0 h-full w-full cursor-pointer overflow-clip object-cover;
+      @apply absolute top-0 h-full w-full cursor-pointer overflow-clip object-cover transition duration-300 ease-out hover:z-10 hover:scale-105;
       border-radius: inherit;
     }
   }

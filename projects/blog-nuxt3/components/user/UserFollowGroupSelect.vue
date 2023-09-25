@@ -15,13 +15,15 @@
             class="flex flex-wrap gap-[6px]"
             v-model:value="selectIdList"
           >
-            <n-checkbox
-              class="min-w-[100px]"
-              v-for="group of groupList"
-              :value="group.id"
-              :label="group.name"
-              :id="group.id"
-            />
+            <div v-auto-animate>
+              <n-checkbox
+                class="min-w-[100px]"
+                v-for="group of groupList"
+                :value="group.id"
+                :label="group.name"
+                :id="group.id"
+              />
+            </div>
           </n-checkbox-group>
           <n-input-group v-if="showAdd">
             <n-input

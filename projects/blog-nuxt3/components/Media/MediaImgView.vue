@@ -2,7 +2,9 @@
   <div class="flex items-center justify-center" v-if="loadError">
     <n-icon :component="ImageOff24Regular" size="64"></n-icon>
   </div>
-  <img
+  <NuxtImg
+    format="webp"
+    loading="lazy"
     :class="{ 'cursor-zoom-in': enablePreview }"
     :src="src"
     v-bind="attrs"
@@ -15,7 +17,7 @@
 <script setup lang="ts">
 import defaultImg from '@/assets/images/img_error.jpeg'
 import { NIcon } from 'naive-ui'
-import { ImageOff24Regular, ImageMultiple24Regular } from '@vicons/fluent'
+import { ImageOff24Regular } from '@vicons/fluent'
 import { api as viewerApi } from 'v-viewer'
 
 interface Props {
@@ -32,7 +34,11 @@ const config = useRuntimeConfig()
 const loadError = ref(false)
 const src = computed(() => {
   let res = config.public.imageBase + props.url
-  if (props.ratio) res += '?x-oss-process=image/resize,p_' + props.ratio
+  if (props.ratio) {
+    res += '?x-oss-process=image/resize,p_' + props.ratio + '/format,webp'
+  } else {
+    res += '?x-oss-process=image/format,webp'
+  }
   return props.url ? res : defaultImg
 })
 

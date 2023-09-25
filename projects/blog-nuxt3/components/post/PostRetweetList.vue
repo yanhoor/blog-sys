@@ -5,13 +5,15 @@
       :blog="blog"
       @success="handleRetweetSuccess"
     ></PostTransfer>
-    <PostRetweetItem
-      class="w-full py-[12px]"
-      :blog="retweetItem"
-      v-for="(retweetItem, index) of pageList"
-      @delete="handleDeleteRetweet(index)"
-      :key="retweetItem.id"
-    ></PostRetweetItem>
+    <div v-auto-animate>
+      <PostRetweetItem
+        class="w-full py-[12px]"
+        :blog="retweetItem"
+        v-for="(retweetItem, index) of pageList"
+        @delete="handleDeleteRetweet(index)"
+        :key="retweetItem.id"
+      ></PostRetweetItem>
+    </div>
     <ResultLoading v-if="pageLoading" />
     <div class="text-center" v-else-if="!allowLoadMore && pageTotal > 20">
       <n-divider />

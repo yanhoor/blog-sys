@@ -12,7 +12,7 @@
           <p class="text-[12px] text-gray-400">
             *点击修改分组名称，拖拽调整分组顺序
           </p>
-          <div class="flex flex-wrap gap-[12px]" id="groupSort">
+          <div class="flex flex-wrap gap-[12px]" id="groupSort" v-auto-animate>
             <n-tag
               class="cursor-pointer"
               v-for="group of filterGroupList"

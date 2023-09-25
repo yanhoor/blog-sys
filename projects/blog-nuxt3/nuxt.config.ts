@@ -21,6 +21,7 @@ export default defineNuxtConfig({
         ]
       : ['@juggle/resize-observer'] // https://www.naiveui.com/zh-CN/os-theme/docs/ssr
   },
+
   runtimeConfig: {
     // 私有key，仅服务端可用
     apiSecret: '123', // .env 文件里 NUXT_API_SECRET 的值(即NUXT_ 开头的值)
@@ -35,6 +36,7 @@ export default defineNuxtConfig({
       audioType: '.mp3,.wav,.flac,.aac,.m4a,.ogg,.webm,.mp4'
     }
   },
+
   app: {
     // baseURL: '/blog/',
     head: {
@@ -68,6 +70,7 @@ export default defineNuxtConfig({
     //   mode: 'out-in' // default
     // }
   },
+
   // https://v3.nuxtjs.org/getting-started/deployment
   nitro: {
     preset: 'node-server'
@@ -77,12 +80,16 @@ export default defineNuxtConfig({
     //   routes: ['/']
     // }
   },
+
   modules: [
     '@vueuse/nuxt',
+    '@nuxt/image',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    '@formkit/auto-animate/nuxt', // https://auto-animate.formkit.com/#usage-vue
     '@nuxtjs/color-mode'
   ],
+
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {
     preference: 'system', // default value of $colorMode.preference, dark/light/system
@@ -94,7 +101,9 @@ export default defineNuxtConfig({
     classSuffix: '',
     storageKey: 'nuxt-color-mode'
   },
+
   css: ['@/assets/styles/var.css', '@/assets/styles/global.css'],
+
   postcss: {
     plugins: {
       'tailwindcss/nesting': {},
@@ -104,16 +113,17 @@ export default defineNuxtConfig({
       ...(isProd ? { cssnano: {} } : {})
     }
   },
+
   vite: {
-    build: {
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true
-        }
-      }
-    },
+    // build: {
+    //   minify: 'terser',
+    //   terserOptions: {
+    //     compress: {
+    //       drop_console: true,
+    //       drop_debugger: true
+    //     }
+    //   }
+    // },
     css: {
       preprocessorOptions: {
         // scss: {
@@ -133,6 +143,11 @@ export default defineNuxtConfig({
           : ['sys-types']
     }
   },
+
   // auto import components
-  components: true
+  components: true,
+
+  devtools: {
+    enabled: false
+  }
 })

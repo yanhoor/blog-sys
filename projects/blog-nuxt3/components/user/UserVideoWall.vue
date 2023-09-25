@@ -14,6 +14,7 @@
       <div
         class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
         v-loadMore="handleLoadNextPage"
+        v-auto-animate
       >
         <div class="img-wrapper" v-for="media of pageList" :key="media.id">
           <div class="img-container" @click="handlePreview(media)">

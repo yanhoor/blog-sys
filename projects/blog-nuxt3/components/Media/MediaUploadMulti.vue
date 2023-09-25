@@ -69,7 +69,11 @@
     </div>
 
     <template v-if="modelValue.length">
-      <div class="flex flex-wrap gap-[12px]" v-if="uploadMode === 2">
+      <div
+        class="flex max-h-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
+        v-if="uploadMode === 2"
+        v-auto-animate
+      >
         <div
           v-for="(media, index) of modelValue"
           :key="media.file.url"

@@ -163,10 +163,9 @@ function triggerReply() {
 function handleReplySuccess(reply: Comment) {
   showReply.value = false
   if (currentComment.value.childComments) {
-    currentComment.value.childComments.splice(0, 0, reply)
-  } else {
-    emits('replySuccess', reply)
+    currentComment.value.childComments.unshift(reply)
   }
+  emits('replySuccess', reply)
 }
 
 async function handleDeleteComment() {

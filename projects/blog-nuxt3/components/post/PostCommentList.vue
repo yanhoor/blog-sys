@@ -19,13 +19,15 @@
         >按热度</span
       >
     </div>
-    <CommentItem
-      v-for="comment of pageList"
-      :key="comment.id"
-      class="py-[12px]"
-      :comment="comment"
-      @commentDelete="handleCommentDelete"
-    />
+    <div v-auto-animate>
+      <CommentItem
+        v-for="comment of pageList"
+        :key="comment.id"
+        class="py-[12px]"
+        :comment="comment"
+        @commentDelete="handleCommentDelete"
+      />
+    </div>
     <ResultLoading v-if="pageLoading" />
     <div class="text-center" v-else-if="!allowLoadMore && pageTotal > pageSize">
       <n-divider />

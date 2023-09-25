@@ -26,15 +26,17 @@
             </template>
           </n-button>
         </div>
-        <p
-          class="group-title"
-          :class="{ active: currentGroupId == group.id }"
-          v-for="group of customGroupList"
-          :key="group.id"
-          @click="handleChangeGroup(group.id)"
-        >
-          {{ group.name }}
-        </p>
+        <div v-auto-animate>
+          <p
+            class="group-title"
+            :class="{ active: currentGroupId == group.id }"
+            v-for="group of customGroupList"
+            :key="group.id"
+            @click="handleChangeGroup(group.id)"
+          >
+            {{ group.name }}
+          </p>
+        </div>
       </n-card>
       <PostList
         ref="listRef"
@@ -124,7 +126,7 @@ function handleChangeGroup(gid?: number) {
 
 <style lang="postcss" scoped>
 .group-title {
-  @apply cursor-pointer px-[6px] py-[3px];
+  @apply cursor-pointer px-[6px] py-[8px] text-[15px];
   &:hover {
     @apply rounded bg-gray-200 dark:bg-gray-700;
   }

@@ -1,6 +1,6 @@
 <template>
-  <div class="topic-hot-list" v-if="pageList.length">
-    <n-card>
+  <div class="topic-hot-list">
+    <n-card v-if="pageList.length">
       <div class="flex items-center justify-between">
         <p class="text-[16px] font-semibold">热搜榜</p>
         <n-button
@@ -14,7 +14,7 @@
           点击刷新</n-button
         >
       </div>
-      <div>
+      <div v-auto-animate>
         <p
           v-for="(topic, index) of pageList"
           :title="topic.content"

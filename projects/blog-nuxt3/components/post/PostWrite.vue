@@ -4,24 +4,16 @@
     :close-on-esc="false"
     :show="show"
     @update:show="emit('update:show', $event)"
-    width="500px"
+    width="520px"
   >
     <n-drawer-content title="快捷发布" closable>
       <div class="flex h-full w-full flex-col items-start gap-[12px]">
-        <TopicContentTextarea ref="contentRef" v-model="postForm.content" />
-        <div class="flex items-start gap-[12px]">
-          <n-button
-            round
-            tertiary
-            type="primary"
-            size="medium"
-            @click="handleAddTopic"
-          >
-            <template #icon>#</template>
-            话题
-          </n-button>
-          <MediaUploadMulti v-model="postForm.medias" size="100px" />
-        </div>
+        <TopicContentTextarea v-model="postForm.content" />
+        <MediaUploadMulti
+          class="flex-1"
+          v-model="postForm.medias"
+          size="100px"
+        />
       </div>
 
       <template #footer>
@@ -95,9 +87,5 @@ async function handlePost() {
   } catch (e) {
     isProcessing.value = false
   }
-}
-
-function handleAddTopic() {
-  contentRef.value.handleAddTopic()
 }
 </script>
