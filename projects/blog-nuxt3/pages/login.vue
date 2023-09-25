@@ -32,20 +32,15 @@
 <script setup lang="ts">
 import {
   NButton,
-  NIcon,
-  NGrid,
   NCard,
   NSpace,
-  NGridItem,
   NForm,
   NFormItem,
   NInput,
   FormInst,
-  FormRules,
-  FormItemRule,
-  FormItemInst,
-  createDiscreteApi
+  FormRules
 } from 'naive-ui'
+import { Encrypt } from '~/utils/crypto'
 
 const token = useCookie('token', {
   maxAge: 60 * 60 * 24 * 7
@@ -88,10 +83,10 @@ function handlePost(e: MouseEvent) {
     const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
-        const { result, success, msg } = await useFetchPost(
-          '/user/login',
-          postForm.value
-        )
+        const { result, success, msg } = await useFetchPost('/user/login', {
+          ...postForm.value,
+          password: Encrypt(postForm.value.password)
+        })
         if (success) {
           message.success('登录成功')
 

@@ -52,25 +52,21 @@
 </template>
 
 <script setup lang="ts">
-import { CommentMultiple16Regular, ThumbLike16Regular } from '@vicons/fluent'
 import { useFetchPost } from '@/composables/useBaseFetch'
 import {
   NButton,
-  NIcon,
-  NGrid,
   NCard,
   NSpace,
-  NGridItem,
   NForm,
   NFormItem,
   NInput,
   FormInst,
   FormRules,
   FormItemRule,
-  FormItemInst,
-  createDiscreteApi
+  FormItemInst
 } from 'naive-ui'
 import { useColorMode } from '@vueuse/core'
+import { Encrypt } from '@/utils/crypto'
 
 const colorModel = useColorMode()
 
@@ -161,10 +157,11 @@ function handleRegister(e: MouseEvent) {
     const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
-        const { result, success } = await useFetchPost(
-          '/user/register',
-          registerForm.value
-        )
+        const { result, success } = await useFetchPost('/user/register', {
+          mobile: registerForm.value.mobile,
+          name: registerForm.value.name,
+          password: Encrypt(registerForm.value.password)
+        })
         if (success) {
           message.success('注册成功')
           toLogin()
