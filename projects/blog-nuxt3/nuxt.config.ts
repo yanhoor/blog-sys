@@ -1,7 +1,12 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 
-console.log('===============', process.env.NODE_ENV, process.env.NUXT_API_BASE)
 const isProd = process.env.NODE_ENV === 'production'
+console.log(
+  '======defineNuxtConfig=========',
+  isProd,
+  process.env.NODE_ENV,
+  process.env.NUXT_API_BASE
+)
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
   build: {
@@ -14,7 +19,7 @@ export default defineNuxtConfig({
           '@css-render/vue3-ssr',
           '@juggle/resize-observer'
         ]
-      : ['@juggle/resize-observer']
+      : ['@juggle/resize-observer'] // https://www.naiveui.com/zh-CN/os-theme/docs/ssr
   },
   runtimeConfig: {
     // 私有key，仅服务端可用
@@ -31,10 +36,10 @@ export default defineNuxtConfig({
     }
   },
   app: {
-    baseURL: '/blog/',
+    // baseURL: '/blog/',
     head: {
-      titleTemplate: '%s - Nuxt3 | 博客',
-      title: 'Nuxt3 | 博客',
+      titleTemplate: '%s - Nuxt3 | Vipot',
+      title: 'Nuxt3 | Vipot',
       charset: 'utf-8',
       // meta: [
       //   { name: 'naive-ui-style' },
@@ -66,6 +71,11 @@ export default defineNuxtConfig({
   // https://v3.nuxtjs.org/getting-started/deployment
   nitro: {
     preset: 'node-server'
+    // 预渲染
+    // prerender: {
+    //   crawlLinks: true,
+    //   routes: ['/']
+    // }
   },
   modules: [
     '@vueuse/nuxt',
@@ -75,7 +85,7 @@ export default defineNuxtConfig({
   ],
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {
-    preference: 'system', // default value of $colorMode.preference
+    preference: 'system', // default value of $colorMode.preference, dark/light/system
     fallback: 'light', // fallback value if not system preference found
     // hid: 'nuxt-color-mode-script',
     // globalName: '__NUXT_COLOR_MODE__',
@@ -95,6 +105,15 @@ export default defineNuxtConfig({
     }
   },
   vite: {
+    build: {
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      }
+    },
     css: {
       preprocessorOptions: {
         // scss: {
@@ -103,12 +122,15 @@ export default defineNuxtConfig({
       }
     },
     optimizeDeps: {
-      include: [
-        'naive-ui',
-        'vueuc',
-        'date-fns-tz/esm/formatInTimeZone',
-        'sys-types'
-      ]
+      include:
+        process.env.NODE_ENV === 'development'
+          ? [
+              'naive-ui',
+              'vueuc',
+              'date-fns-tz/esm/formatInTimeZone',
+              'sys-types'
+            ]
+          : ['sys-types']
     }
   },
   // auto import components

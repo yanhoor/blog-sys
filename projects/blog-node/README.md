@@ -372,7 +372,7 @@ prisma.$use(async (params, next) => {
 
 ### ~~prisma.$extends() 查询关系不能选择字段~~
 
-使用 `prisma.$extends()` 增加自定义字段，如果在 `findMany()` 等查询方法的 `select` 选择 `childCommentsCount: true`，则 `childComments` 的 `select` 就无效
+使用 `prisma.$extends()` 增加自定义字段，如果在 `findMany()` 等查询方法的 `needs` 选择 `childCommentsCount: true`，则 `childComments` 的 `select` 就无效。
 ```javascript
 const xprisma = prisma.$extends({
   result: {
@@ -439,3 +439,5 @@ await prisma.blog.findMany({
   }
 })
 ```
+
+解决： 使用 `some` 代替 `every`

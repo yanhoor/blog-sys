@@ -64,9 +64,13 @@ export default defineNuxtConfig({
 })
 ```
 
-### build
+### 依赖安装报错
 
 使用 `pnpm i` 时 需要加 `--shamefully-hoist`，这样打包才不会提示缺少 `vue`
+
+### 部分事件回调没有执行
+
+服务端渲染的 `audio` 元素没有触发 `durationchange` 事件。好像是因为在服务端完成渲染该元素时已经触发，所以在客户端不会再触发，同理 `load` 事件也一样
 
 ### Docker 运行报错 `connect ECONNREFUSED 127.0.0.1:80`
 
@@ -195,3 +199,7 @@ Vue warn]: Unhandled error during execution of scheduler flush. This is likely a
   <div>Page content</div>
 </template>
 ```
+
+### await 与 defineExpose 冲突
+
+在 `<script setup>` 中，调用 `await fn()` 后再通过 `defineExpose()` 暴露组件属性和方法，在父组件通过 `ref` 使用时无法获取到，得到 `undefined`。如 `search.vue` 中通过 `ref` 调用 `PostList.vue` 的方法。原因未知...
