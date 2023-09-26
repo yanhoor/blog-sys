@@ -5,7 +5,7 @@
 ## 预览
 
 [主页](https://niubility.website/blog/)  
-[视频预览](https://niubility.website/blog/search?topicId=08d4c166-8dfd-421f-8527-5c32b2fe7c9e)
+[视频预览](https://niubility.website/blog/search?keyword=预览)
 
 ## 项目运行
 
