@@ -1,5 +1,5 @@
 <template>
-  <div class="user-follow-dropdown">
+  <div class="user-follow-dropdown" v-if="user.id !== myInfo.id">
     <n-dropdown
       :options="userOptions"
       @select="handleDropdownSelect"
@@ -20,7 +20,7 @@
       :round="roundBtn"
       @click="handleFollow(1)"
       :loading="followLoading"
-      v-else-if="user.id !== myInfo.id"
+      v-else
       >关注
       <template #icon>
         <n-icon :component="Add24Regular"></n-icon>

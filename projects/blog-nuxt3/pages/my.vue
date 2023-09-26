@@ -29,14 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  NLayout,
-  NLayoutSider,
-  NCard,
-  NMenu,
-  NIcon,
-  createDiscreteApi
-} from 'naive-ui'
+import { NLayoutSider, NMenu, NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import {
   People24Regular,
@@ -48,15 +41,7 @@ import {
 
 definePageMeta({
   redirect: '/my/follower',
-  middleware: async (to, from) => {
-    const { message } = useDiscreteApi(['message'])
-    const token = useCookie('token')
-    // console.log('=============', token, to.fullPath, from.fullPath)
-    if (!token.value) {
-      message.error('请先登录')
-      return navigateTo({ path: '/', replace: true })
-    }
-  }
+  middleware: ['auth']
 })
 const route = useRoute()
 const activeMenuKey = ref(route.path || '/my/follower')
@@ -94,8 +79,8 @@ function expandIcon() {
   return h(NIcon, null, { default: () => h(CaretDown24Regular) })
 }
 
-function handleMenuSelectChange(key: string) {
+async function handleMenuSelectChange(key: string) {
   activeMenuKey.value = key
-  navigateTo(key)
+  await navigateTo(key)
 }
 </script>

@@ -95,8 +95,8 @@ const referenceMediaList = computed(() => {
   return [currentPost.value.medias, ...rl].flat(2)
 })
 
-function handleToPostDetail(type: string) {
-  navigateTo(`/post/${currentPost.value.id}#${type}`)
+async function handleToPostDetail(type: string) {
+  await navigateTo(`/post/${currentPost.value.id}#${type}`)
 }
 </script>
 

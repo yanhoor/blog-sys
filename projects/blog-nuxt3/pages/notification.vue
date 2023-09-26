@@ -23,15 +23,7 @@ import { useNotificationUnreadAuditCount } from '~/composables/useNotification'
 
 definePageMeta({
   redirect: '/notification/comment',
-  middleware: async (to, from) => {
-    const { message } = useDiscreteApi(['message'])
-    const token = useCookie('token')
-    // console.log('=============', token, to.fullPath, from.fullPath)
-    if (!token.value) {
-      message.error('请先登录')
-      return navigateTo({ path: '/', replace: true })
-    }
-  }
+  middleware: ['auth']
 })
 
 useFetchNotificationCount()
@@ -49,7 +41,7 @@ watch(
   }
 )
 
-function handleChangeTab() {
-  navigateTo(currentTab.value)
+async function handleChangeTab() {
+  await navigateTo(currentTab.value)
 }
 </script>

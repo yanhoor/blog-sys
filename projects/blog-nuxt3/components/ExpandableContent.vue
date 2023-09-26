@@ -6,11 +6,7 @@
         v-bind="info.props"
         v-if="info.type === 'component'"
       ></component>
-      <UserCard
-        class="inline"
-        v-else-if="info.type === 'userName'"
-        :uname="info.content"
-      >
+      <UserCard v-else-if="info.type === 'userName'" :uname="info.content">
         <template #trigger>
           <a
             :href="`${runtimeConfig.app.baseURL}user/name/${info.content}`"
@@ -94,7 +90,7 @@ const showAction = computed(() => {
     // 去掉 [media-id-xx] 再比较是否超出限制长度
     noMediaContent = props.content.replace(mediaReg, '')
   }
-  return noMediaContent.length > props.maxLength
+  return noMediaContent?.length > props.maxLength
 })
 
 const displayContentList = computed(() => {

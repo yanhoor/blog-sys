@@ -60,4 +60,8 @@ function handleDeleteRetweet(index: number) {
 function handleRetweetSuccess(res: Blog) {
   pageList.value.unshift(res)
 }
+
+defineExpose({
+  handleLoadNextPage
+})
 </script>

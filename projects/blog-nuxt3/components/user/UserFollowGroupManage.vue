@@ -71,11 +71,10 @@ import {
   NInput,
   NInputGroup,
   NTag,
-  NCard,
-  createDiscreteApi
+  NCard
 } from 'naive-ui'
 import Sortable from 'sortablejs'
-import { FollowGroup } from '~/types'
+import { FollowGroup } from 'sys-types'
 import {
   Dismiss24Regular,
   Checkmark24Regular,

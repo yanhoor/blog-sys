@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-start pb-[20px]" v-if="userInfo">
+  <div class="flex items-start gap-[12px] pb-[20px]" v-if="userInfo">
     <UserAvatar
       class="mr-[12px]"
       :user="userInfo"

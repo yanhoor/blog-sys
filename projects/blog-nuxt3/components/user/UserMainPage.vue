@@ -20,12 +20,9 @@
           >
             <div class="flex items-center gap-[12px]">
               <div class="flex flex-1 gap-[12px]">
-                <UserAvatar
-                  class="relative -mt-[55px]"
-                  :size="120"
-                  :user="userInfo"
-                  disabled
-                />
+                <div class="-mt-[56px]">
+                  <UserAvatar :size="120" :user="userInfo" disabled />
+                </div>
                 <div class="flex flex-col gap-[6px]">
                   <div class="text-3xl font-bold">{{ userInfo?.name }}</div>
                   <div class="flex gap-[6px]">
@@ -325,23 +322,23 @@ function handleBlogFetchComplete(res: any) {
   blogTotal.value = res.value.total
 }
 
-function handleTabChange(val: string) {
+async function handleTabChange(val: string) {
   searchParams.keyword = ''
   searchParams.startTime = ''
   searchParams.endTime = ''
   selectDateRange.value = undefined
-  navigateTo('/user/id/' + userInfo.value?.id + '?tab=' + val)
+  await navigateTo('/user/id/' + userInfo.value?.id + '?tab=' + val)
 }
 
-function handleViewFriends(type: number) {
+async function handleViewFriends(type: number) {
   if (type === 1) {
     if (userInfo.value?.id === myInfo.value?.id) {
-      navigateTo('/my/following')
+      await navigateTo('/my/following')
     }
   }
   if (type === 2) {
     if (userInfo.value?.id === myInfo.value?.id) {
-      navigateTo('/my/follower')
+      await navigateTo('/my/follower')
     }
   }
 }

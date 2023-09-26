@@ -155,8 +155,8 @@ const actionOptions = computed<DropdownOption[]>(() => {
       label: '查看详情',
       key: 'viewDetail',
       props: {
-        onClick: () => {
-          navigateTo('/post/' + currentPost.value.id)
+        onClick: async () => {
+          await navigateTo('/post/' + currentPost.value.id)
         }
       }
     }

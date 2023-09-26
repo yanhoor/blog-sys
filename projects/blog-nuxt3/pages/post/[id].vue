@@ -55,7 +55,7 @@
           <div
             class="action-item placeholder-text-color"
             :class="{ '!text-primary': showType === 'retweet' }"
-            @click="handleRetweet()"
+            @click="handleSwitchType('retweet')"
           >
             <n-icon size="18" :component="ArrowForward16Regular"></n-icon>
             <span>{{ currentPost.retweetCount || '转发' }}</span>
@@ -107,7 +107,6 @@
               class="w-full"
               allowLoadMore
               :blog="currentPost"
-              v-if="showType === 'comment'"
             />
           </n-collapse-transition>
 
@@ -117,12 +116,12 @@
               :blog-id="currentPost.id"
               url="/blog/actionUserList/1"
               :search-params="{ blogId: currentPost.id }"
-              v-if="showType === 'like'"
             />
           </n-collapse-transition>
 
           <n-collapse-transition :show="showType === 'retweet'">
             <PostRetweetList
+              ref="retweetRef"
               class="w-full"
               allowLoadMore
               :blog="currentPost"
@@ -174,6 +173,7 @@ const loading = ref(false)
 const blogId = route.params.id
 const commentRef = ref()
 const likeRef = ref()
+const retweetRef = ref()
 const showType = ref<ActionType>('comment')
 
 onMounted(() => {
@@ -219,7 +219,7 @@ const actionOptions = computed<DropdownOption[]>(() => {
         onClick: async () => {
           try {
             await handleDeletePost()
-            navigateTo('/', { replace: true })
+            await navigateTo('/', { replace: true })
           } catch (e) {}
         }
       }
@@ -273,10 +273,6 @@ function handleCopyPostUrl() {
     })
 }
 
-function handleRetweet() {
-  showType.value = 'retweet'
-}
-
 async function likeBlog() {
   showType.value = 'like'
 
@@ -306,6 +302,11 @@ function handleSwitchType(val: ActionType) {
     case 'comment':
       showType.value === 'comment'
         ? commentRef.value?.handleLoadNextPage(1)
+        : (showType.value = val)
+      break
+    case 'retweet':
+      showType.value === 'retweet'
+        ? retweetRef.value?.handleLoadNextPage(1)
         : (showType.value = val)
       break
   }

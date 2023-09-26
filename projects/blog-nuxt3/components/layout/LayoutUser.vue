@@ -83,19 +83,19 @@ const userOptions = computed(() => [
   }
 ])
 
-function handleDropdownSelect(key: string | number) {
+async function handleDropdownSelect(key: string | number) {
   switch (key) {
     case 'userHome':
       handleUserHome()
       break
     case 'profile':
-      navigateTo({ name: 'user-profile' })
+      await navigateTo({ name: 'user-profile' })
       break
     case 'myCollection':
-      navigateTo({ name: 'my-collection' })
+      await navigateTo({ name: 'my-collection' })
       break
     case 'myNotification':
-      navigateTo('/notification')
+      await navigateTo('/notification')
       break
     case 'logout':
       handleLogout()

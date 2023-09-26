@@ -80,21 +80,12 @@ import {
   NFormItem,
   NInput,
   FormInst,
-  FormRules,
-  createDiscreteApi
+  FormRules
 } from 'naive-ui'
-import { User } from '~/types'
+import { User } from 'sys-types'
 
 definePageMeta({
-  middleware: async (to, from) => {
-    const { message } = useDiscreteApi(['message'])
-    const token = useCookie('token')
-    // console.log('=============', token, to.fullPath, from.fullPath)
-    if (!token.value) {
-      message.error('请先登录')
-      return navigateTo({ path: '/', replace: true })
-    }
-  }
+  middleware: ['auth']
 })
 useHead({
   title: '个人资料'

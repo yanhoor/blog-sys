@@ -13,21 +13,19 @@
     <n-spin size="small" v-if="loading" />
 
     <div
-      class="flex flex-col items-start gap-[12px] overflow-hidden p-[12px]"
+      class="flex flex-col items-start gap-[12px] overflow-hidden p-[12px] font-normal"
       v-else-if="currentUser"
     >
       <div
-        class="flex max-w-full cursor-pointer items-center gap-[12px]"
+        class="flex max-w-full cursor-pointer items-center gap-[6px]"
         @click="navigateTo({ path: '/user/id/' + currentUser.id })"
       >
         <UserAvatar :user="currentUser" :size="36" disabled />
-        <span class="text-[16px] text-primary">
-          {{ currentUser?.name }}
-        </span>
+        <UserName class="text-[16px]" :user="currentUser" disabled></UserName>
       </div>
       <UserFollowDropdown
         @updateFollow="getUserInfo()"
-        class="w-full"
+        class="w-full text-center"
         :roundBtn="false"
         :user="currentUser"
       >
@@ -96,6 +94,6 @@ async function getUserInfo() {
 
 <style lang="postcss" scoped>
 .statis-item {
-  @apply flex flex-col items-center gap-[8px];
+  @apply flex flex-col items-center gap-[8px] text-[14px];
 }
 </style>

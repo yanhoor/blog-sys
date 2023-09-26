@@ -118,8 +118,8 @@ async function getAllGroup() {
   } catch (e) {}
 }
 
-function handleChangeGroup(gid?: number) {
-  gid ? navigateTo({ path: '/', query: { gid } }) : navigateTo('/')
+async function handleChangeGroup(gid?: number) {
+  gid ? await navigateTo({ path: '/', query: { gid } }) : await navigateTo('/')
   window.scrollTo(0, 0)
 }
 </script>

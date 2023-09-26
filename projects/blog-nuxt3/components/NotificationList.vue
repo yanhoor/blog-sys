@@ -117,16 +117,14 @@
 import {
   NButton,
   NCard,
-  NSpin,
   NIcon,
   NCheckbox,
   NCheckboxGroup,
   NRadioGroup,
   NRadioButton,
-  NBackTop,
-  createDiscreteApi
+  NBackTop
 } from 'naive-ui'
-import { Notification } from '~/types'
+import { Notification } from 'sys-types'
 import { TaskListLtr20Filled } from '@vicons/fluent'
 
 interface Props {

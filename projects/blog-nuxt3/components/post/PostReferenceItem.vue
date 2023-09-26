@@ -74,8 +74,8 @@ const props = defineProps<Props>()
 const currentPost = ref<Blog>(props.blog)
 const topicList = computed(() => currentPost.value.topics?.map((t) => t.topic))
 
-function handleAction(type: string) {
-  navigateTo(`/post/${currentPost.value.id}#${type}`)
+async function handleAction(type: string) {
+  await navigateTo(`/post/${currentPost.value.id}#${type}`)
 }
 </script>
 

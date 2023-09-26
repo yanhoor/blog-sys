@@ -6,7 +6,11 @@
     :disabled="disabled"
   >
     <template #trigger>
-      <span @click="handleUserHome" :class="{ 'cursor-pointer': !disabled }">
+      <div
+        class="leading-[1]"
+        @click="handleUserHome"
+        :class="{ 'cursor-pointer': !disabled }"
+      >
         <n-icon
           :component="PersonCircle20Regular"
           v-if="!user.avatar"
@@ -20,7 +24,7 @@
           :src="config.public.imageBase + user.avatar"
           :render-fallback="renderErrorAvatar"
         ></n-avatar>
-      </span>
+      </div>
     </template>
   </UserCard>
 </template>
