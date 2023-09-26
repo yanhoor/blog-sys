@@ -60,7 +60,7 @@
                 <UserFollowDropdown
                   v-else
                   :user="userInfo"
-                  @update="getUserInfo"
+                  @updateFollow="getUserInfo"
                 />
               </div>
             </div>
@@ -210,7 +210,7 @@ import {
   NTag,
   NDatePicker
 } from 'naive-ui'
-import { User, Media } from '~/types'
+import { User, Media } from 'sys-types'
 import dayjs from 'dayjs'
 
 interface Props {

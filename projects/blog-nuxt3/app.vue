@@ -13,6 +13,7 @@
       <!--<NuxtPage :page-key="getPathKey"/>-->
       <NuxtPage />
     </NuxtLayout>
+    <GlobalComponentWrapper></GlobalComponentWrapper>
   </NConfigProvider>
 </template>
 

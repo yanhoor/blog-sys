@@ -4,7 +4,7 @@
       v-if="pageLoading && pageFetchParams.page === 1"
     ></SkeletonUserList>
 
-    <div class="space-y-[12px]" v-loadMore="handleLoadNextPage">
+    <div class="space-y-[12px]" v-loadMore="handleLoadNextPage" v-auto-animate>
       <div
         class="flex items-center gap-[12px]"
         v-for="user of pageList"
@@ -22,7 +22,10 @@
             >粉丝：{{ user.followerCount }}</span
           >
         </div>
-        <UserFollowDropdown :user="user" @update="handleLoadNextPage(1)" />
+        <UserFollowDropdown
+          :user="user"
+          @updateFollow="handleLoadNextPage(1)"
+        />
       </div>
     </div>
     <ResultLoading v-if="pageLoading" />
@@ -37,7 +40,6 @@
 
 <script setup lang="ts">
 import { User } from 'sys-types'
-import { NSpin } from 'naive-ui'
 
 interface Props {
   url: string

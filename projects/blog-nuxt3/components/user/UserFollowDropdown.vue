@@ -6,14 +6,18 @@
       v-if="user.isFollowing"
     >
       <slot>
-        <n-button type="tertiary" size="small" round :loading="followLoading">{{
-          user.isMutualFollowing ? '互相关注' : '已关注'
-        }}</n-button>
+        <n-button
+          type="tertiary"
+          size="small"
+          :round="roundBtn"
+          :loading="followLoading"
+          >{{ user.isMutualFollowing ? '互相关注' : '已关注' }}</n-button
+        >
       </slot>
     </n-dropdown>
     <n-button
       type="primary"
-      round
+      :round="roundBtn"
       @click="handleFollow(1)"
       :loading="followLoading"
       v-else-if="user.id !== myInfo.id"
@@ -22,30 +26,26 @@
         <n-icon :component="Add24Regular"></n-icon>
       </template>
     </n-button>
-    <UserFollowGroupSelect v-model:show="showGroupSelect" :userId="user.id" />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  NButton,
-  NSpace,
-  NModal,
-  NIcon,
-  NDropdown,
-  createDiscreteApi
-} from 'naive-ui'
-import { User } from '~/types'
+import { NButton, NIcon, NDropdown } from 'naive-ui'
+import { User } from 'sys-types'
 import { Add24Regular } from '@vicons/fluent'
+import { useFollowGroupSelectStore } from '~/store/modules/followGroupSelectStore'
 
 interface Props {
   user: User
+  roundBtn?: boolean
 }
-const props = defineProps<Props>()
-const emit = defineEmits(['update'])
-const followLoading = ref(false)
-const showGroupSelect = ref(false)
+const props = withDefaults(defineProps<Props>(), {
+  roundBtn: true
+})
+const emit = defineEmits(['updateFollow'])
 const myInfo = useUserInfo()
+const followGroupSelectStore = useFollowGroupSelectStore()
+const { followLoading, handleFollowUser } = useUserActions(props.user)
 const userOptions = ref([
   {
     label: '取消关注',
@@ -63,27 +63,16 @@ function handleDropdownSelect(key: string | number) {
       handleFollow(2)
       break
     case 'setGroup':
-      showGroupSelect.value = true
+      followGroupSelectStore.showSelect = true
+      followGroupSelectStore.userId = props.user.id
       break
   }
 }
 
 async function handleFollow(type: number) {
-  followLoading.value = true
-  const { message } = useDiscreteApi(['message'])
   try {
-    const { result, success, code, msg } = await useFetchPost('/user/follow', {
-      id: props.user?.id,
-      type
-    })
-    if (success) {
-      emit('update')
-    } else {
-      message.error(msg as string)
-    }
-    followLoading.value = false
-  } catch (e) {
-    followLoading.value = false
-  }
+    await handleFollowUser(type)
+    emit('updateFollow')
+  } catch (e) {}
 }
 </script>
