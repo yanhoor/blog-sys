@@ -9,6 +9,9 @@ const { defaultLogger, errorLogger } = require('./log')
 const path = require('path')
 const config = require('config-lite')(__dirname)
 const fs = require('fs')
+const cacheControl = require('koa-cache-control')
+const conditional = require('koa-conditional-get')
+const etag = require('koa-etag')
 
 const app = new koa()
 
@@ -20,6 +23,13 @@ try {
   console.log(e)
 }
 
+app.use(
+  cacheControl({
+    maxAge: 5
+  })
+)
+app.use(conditional())
+app.use(etag())
 // app.use(koaBody({ multipart: true }))
 
 app.use(
@@ -30,7 +40,8 @@ app.use(
       // 上传目录
       uploadDir: uploadDir, // 即当前文件路径 + 设置的路径
       // 保留文件扩展名
-      keepExtensions: true
+      keepExtensions: true,
+      maxFileSize: 200 * 1024 * 1024 // 200m
     }
   })
 )

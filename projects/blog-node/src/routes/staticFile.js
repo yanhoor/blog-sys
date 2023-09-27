@@ -25,6 +25,9 @@ router.get('/uploadFile/:filename', async (ctx, next) => {
         ctx.type = 'image/webp' // 修改响应类型
       }
     }
+    ctx.cacheControl = {
+      maxAge: 60
+    }
     defaultLogger.info('========读取静态资源=========', file, mimeType)
     ctx.body = file // 修改响应体
   } catch (e) {
