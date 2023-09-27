@@ -6,6 +6,7 @@ const prisma = require('../database/prisma')
 const md5File = require('md5-file')
 const { FileType } = require('@prisma/client')
 const dayjs = require('dayjs')
+const fs = require('fs')
 
 class UploadController extends BaseController {
   aliOssClient = new OSS(this.globalConfig.aliOss)
@@ -102,12 +103,17 @@ class UploadController extends BaseController {
         } else {
           fullName = await this.handleMultipartUpload(file, m5)
         }
-        const fileType = type || this.getFileType(fullName)
+        const idx = file.filepath.lastIndexOf('/')
+        const localName = file.filepath.slice(idx + 1)
+        // const fileType = type || this.getFileType(fullName)
+        const fileType = type || this.getFileType(localName)
+        console.log('=======新建上传文件信息=======', file.filepath, localName)
         fileRes = await prisma.file.create({
           data: {
             createById: userId,
             md5: m5,
-            url: fullName,
+            // url: fullName,
+            url: localName,
             type: fileType
           },
           select: {
@@ -130,6 +136,40 @@ class UploadController extends BaseController {
         msg: e?.message || e || '上传失败'
       })
     }
+  }
+
+  // 保存文件到本地目录
+  async saveFileToLocal(file) {
+    return new Promise(async (resolve, reject) => {
+      const ext = path.extname(file.originalFilename)
+      // console.log('======file========', file)
+      // if(!config.imgTypeList.includes(ext)){
+      //   return reject(`仅允许以下格式：${config.imgTypeList.join('/')}`)
+      // }
+
+      const hashName = Number(
+        new Date().getTime() + '' + Math.ceil(Math.random() * 10000)
+      ).toString(16)
+      const extname = path.extname(file.originalFilename)
+      const fullName = hashName + extname
+      const savePath = path.join(
+        __dirname,
+        '../../../',
+        config.uploadDir,
+        fullName
+      ) // 相对项目运行的根目录路径
+      try {
+        console.log('=======文件本地路径1111=======', file.filepath, savePath)
+        fs.renameSync(file.filepath, savePath)
+        console.log('=======文件本地路径=======', savePath)
+        // const r = await this.aliUpload(fullName, file.filepath)
+        // return resolve(savePath)
+        return resolve(fullName)
+      } catch (e) {
+        console.log('保存图片失败--------------', e.message)
+        return reject('保存图片失败')
+      }
+    })
   }
 
   // 整体上传
