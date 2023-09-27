@@ -16,7 +16,6 @@
               alt="图像"
               class="image-item border-solid border-green-500"
               :url="media.file.url"
-              ratio="80"
             />
             <div
               class="list-item-mask border-2 border-green-500"

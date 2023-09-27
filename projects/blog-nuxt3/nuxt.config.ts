@@ -1,4 +1,5 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const isProd = process.env.NODE_ENV === 'production'
 console.log(
@@ -29,7 +30,10 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_API_BASE, // 这个好像不会自动获取 NUXT_ 开头的值
       apiBaseDocker: process.env.NUXT_API_BASE_DOCKER,
-      imageBase: 'https://static-buck.oss-cn-shenzhen.aliyuncs.com',
+      // imageBase: 'https://static-buck.oss-cn-shenzhen.aliyuncs.com',
+      imageBase: isProd
+        ? 'https://niubility.website/api/uploadFile/' // 通过 ndoe 访问，如果直接通过 nginx 访问，可以改成 https://niubility.website/uploadFile/
+        : 'http://127.0.0.1:8000/static/uploadFile/',
       wsHost: process.env.NUXT_WS_HOST,
       imageType: '.jpeg,.jpg,.png,.avif,.webp,.bmp,.gif,.svg',
       videoType: '.mp4,.mov,.avi,.mkv',
@@ -115,15 +119,20 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    // build: {
-    //   minify: 'terser',
-    //   terserOptions: {
-    //     compress: {
-    //       drop_console: true,
-    //       drop_debugger: true
-    //     }
-    //   }
-    // },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'naive-ui': ['naive-ui'],
+            'v-viewer': ['v-viewer']
+          }
+        }
+      }
+    },
+    plugins: [visualizer()],
+    esbuild: {
+      drop: ['console', 'debugger']
+    },
     css: {
       preprocessorOptions: {
         // scss: {

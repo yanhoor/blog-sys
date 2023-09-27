@@ -1,6 +1,6 @@
 <template>
   <div class="image-item-container">
-    <MediaImgView class="image-item" :url="url" ratio="80" />
+    <MediaImgView class="image-item" :url="url" ratio="10" />
   </div>
 </template>
 

@@ -3,8 +3,7 @@
     <n-icon :component="ImageOff24Regular" size="64"></n-icon>
   </div>
   <NuxtImg
-    format="webp"
-    loading="lazy"
+    :loading="lazyLoadFlag ? 'lazy' : undefined"
     :class="{ 'cursor-zoom-in': enablePreview }"
     :src="src"
     v-bind="attrs"
@@ -32,12 +31,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const config = useRuntimeConfig()
 const loadError = ref(false)
+const lazyLoadFlag = useLazyLoadFlag()
 const src = computed(() => {
   let res = config.public.imageBase + props.url
   if (props.ratio) {
-    res += '?x-oss-process=image/resize,p_' + props.ratio + '/format,webp'
-  } else {
-    res += '?x-oss-process=image/format,webp'
+    res += '?quality=' + props.ratio
   }
   return props.url ? res : defaultImg
 })

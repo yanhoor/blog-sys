@@ -105,11 +105,11 @@
         @click="handlePreview(media.file, index, true)"
       >
         <div class="image-item-container pt-[100%]" v-if="showAll">
-          <MediaImgView class="image-item" :url="media.file.url" ratio="80" />
+          <MediaImgView class="image-item" :url="media.file.url" ratio="10" />
         </div>
         <template v-else>
           <div class="image-item-container pt-[100%]" v-if="index < 10">
-            <MediaImgView class="image-item" :url="media.file.url" ratio="80" />
+            <MediaImgView class="image-item" :url="media.file.url" ratio="10" />
             <div
               class="list-item-mask bg-gray-200 group-hover:inline-block"
               :class="[index === 9 ? 'num-mask' : 'hidden opacity-10']"

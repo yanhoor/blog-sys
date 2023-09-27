@@ -37,9 +37,10 @@ const uiTheme = useUITheme()
 const route = useRoute()
 const userInfo = useUserInfo()
 const config = useRuntimeConfig()
+const lazyLoadFlag = useLazyLoadFlag()
 
 onMounted(() => {
-  // console.log('=========app mounted=============')
+  console.log('=========app mounted=============')
   // 对于服务端渲染的 naive ui 需要这样才起效？
   setTimeout(() => {
     uiTheme.value = colorMode.value === 'dark' ? darkTheme : null
@@ -48,6 +49,8 @@ onMounted(() => {
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', handleSystemModeChange)
+
+  window.addEventListener('load', handleLoadEvent)
 
   if (userInfo.value) {
     useFetchNotificationCount()
@@ -62,6 +65,7 @@ onUnmounted(() => {
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .removeEventListener('change', handleSystemModeChange)
+  window.removeEventListener('load', handleLoadEvent)
 })
 
 function handleSystemModeChange(e: MediaQueryListEvent) {
@@ -70,7 +74,8 @@ function handleSystemModeChange(e: MediaQueryListEvent) {
   }
 }
 
-function getPathKey() {
-  return route.fullPath
+function handleLoadEvent() {
+  console.log('=========handleLoadEvent=========')
+  lazyLoadFlag.value = true
 }
 </script>
