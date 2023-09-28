@@ -37,18 +37,18 @@
             ></n-input>
             <n-button size="small" @click="handleCreateGroup" type="primary">
               <template #icon>
-                <n-icon :component="Checkmark24Regular" />
+                <Icon name="fluent:checkmark-20-regular"></Icon>
               </template>
             </n-button>
             <n-button size="small" @click="showAdd = false">
               <template #icon>
-                <n-icon :component="Dismiss24Regular" />
+                <Icon name="fluent:dismiss-20-regular"></Icon>
               </template>
             </n-button>
           </n-input-group>
           <n-button size="small" @click="showAdd = true" v-else>
             <template #icon>
-              <n-icon :component="Add24Regular" />
+              <Icon name="fluent:add-20-regular"></Icon>
             </template>
           </n-button>
         </div>
@@ -72,7 +72,6 @@
 import {
   NModal,
   NButton,
-  NIcon,
   NInput,
   NInputGroup,
   NCheckboxGroup,
@@ -80,11 +79,6 @@ import {
   NSpin,
   NCard
 } from 'naive-ui'
-import {
-  Add24Regular,
-  Dismiss24Regular,
-  Checkmark24Regular
-} from '@vicons/fluent'
 import { FollowGroup } from 'sys-types'
 
 interface Props {

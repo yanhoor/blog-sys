@@ -23,16 +23,15 @@
       v-else
       >关注
       <template #icon>
-        <n-icon :component="Add24Regular"></n-icon>
+        <Icon name="fluent:add-20-regular"></Icon>
       </template>
     </n-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton, NIcon, NDropdown } from 'naive-ui'
+import { NButton, NDropdown } from 'naive-ui'
 import { User } from 'sys-types'
-import { Add24Regular } from '@vicons/fluent'
 import { useFollowGroupSelectStore } from '~/store/modules/followGroupSelectStore'
 
 interface Props {

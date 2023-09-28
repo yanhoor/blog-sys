@@ -22,7 +22,11 @@
               class="media-item"
               :src="config.public.imageBase + media.file.url"
             ></video>
-            <n-icon class="play-icon" :component="Play24Filled" size="48" />
+            <Icon
+              name="fluent:play-24-filled"
+              class="play-icon"
+              size="48"
+            ></Icon>
           </div>
         </div>
       </div>
@@ -44,8 +48,7 @@
 
 <script setup lang="ts">
 import { Media } from 'sys-types'
-import { NIcon, NResult, NSkeleton, NSpin } from 'naive-ui'
-import { Play24Filled } from '@vicons/fluent'
+import { NSkeleton } from 'naive-ui'
 
 interface Props {
   userId: string

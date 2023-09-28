@@ -1,27 +1,27 @@
 <template>
   <div class="media-audio-record flex w-full flex-col items-center gap-[12px]">
     <div class="flex items-center gap-[6px]">
-      <n-icon
+      <Icon
         v-if="recordState !== 'recording'"
         class="cursor-pointer"
         size="48"
-        :component="PlayCircle24Regular"
+        name="fluent:play-circle-16-regular"
         @click="handleStart"
-      />
-      <n-icon
+      ></Icon>
+      <Icon
         v-if="recordState === 'recording'"
         class="cursor-pointer"
         size="48"
-        :component="PauseCircle24Regular"
+        name="fluent:pause-circle-20-regular"
         @click="handlePause"
-      />
-      <n-icon
+      ></Icon>
+      <Icon
         v-if="recordState !== 'inactive'"
         class="cursor-pointer"
-        size="48"
-        :component="RecordStop24Regular"
+        size="42"
+        name="fluent:record-stop-16-regular"
         @click="handleStop"
-      />
+      ></Icon>
     </div>
     <span v-if="recordState === 'inactive'">点击录制</span>
     <span v-else>录制时间：{{ formatDuration(recordDuration) }}</span>
@@ -33,13 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  PauseCircle24Regular,
-  PlayCircle24Regular,
-  RecordStop24Regular
-} from '@vicons/fluent'
-import { createDiscreteApi, NIcon } from 'naive-ui'
-
 type RecordState = 'inactive' | 'recording' | 'paused' // inactive--未开始或开始后停止
 
 let stream: MediaStream | null,
@@ -86,7 +79,10 @@ async function initRecorder() {
     // 在媒体开始录制时触发
     mediaRecorder.onstart = () => {
       recordState.value = mediaRecorder?.state
-      audioSrc.value = undefined
+      if (audioSrc.value) {
+        URL.revokeObjectURL(audioSrc.value)
+        audioSrc.value = undefined
+      }
       console.log('=====mediaRecorder onstart======')
     }
 

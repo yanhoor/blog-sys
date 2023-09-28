@@ -15,11 +15,11 @@
         (<span>{{ currentOption.label }}</span
         >)
       </p>
-      <n-icon
+      <Icon
+        name="fluent:chevron-right-20-regular"
         class="transition-transform ease-linear"
         :class="[expand ? 'rotate-90' : '']"
-        :component="ChevronRight12Regular"
-      ></n-icon>
+      ></Icon>
     </div>
     <n-collapse-transition :show="expand" class="ml-[12px]">
       <p
@@ -36,8 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { NIcon, NCollapseTransition } from 'naive-ui'
-import { ChevronRight12Regular } from '@vicons/fluent'
+import { NCollapseTransition } from 'naive-ui'
 
 interface Option {
   label: string

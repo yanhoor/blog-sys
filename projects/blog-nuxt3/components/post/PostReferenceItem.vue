@@ -28,7 +28,7 @@
             class="action-item placeholder-text-color"
             @click="handleAction('retweet')"
           >
-            <n-icon size="18" :component="ArrowForward16Regular"></n-icon>
+            <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
             <span class="text-[12px]">{{
               currentPost._count.referrerBlogs || '转发'
             }}</span>
@@ -37,7 +37,7 @@
             class="action-item placeholder-text-color"
             @click="handleAction('comment')"
           >
-            <n-icon size="18" :component="CommentMultiple16Regular"></n-icon>
+            <Icon name="fluent:comment-multiple-20-regular" size="18"></Icon>
             <span class="text-[12px]">{{
               currentPost._count.comments || '评论'
             }}</span>
@@ -46,7 +46,7 @@
             class="action-item placeholder-text-color"
             @click="handleAction('like')"
           >
-            <n-icon size="18" :component="ThumbLike16Regular"></n-icon>
+            <Icon name="fluent:thumb-like-20-regular" size="18"></Icon>
             <span class="text-[12px]">{{
               currentPost._count.likedBy || '赞'
             }}</span>
@@ -59,12 +59,6 @@
 
 <script setup lang="ts">
 import { Blog } from 'sys-types'
-import {
-  ArrowForward16Regular,
-  CommentMultiple16Regular,
-  ThumbLike16Regular
-} from '@vicons/fluent'
-import { NIcon } from 'naive-ui'
 
 interface Props {
   blog: Blog

@@ -21,18 +21,18 @@
             :border-radius="6"
             @click.stop="handleDeleteImage"
           >
-            <n-icon :component="Delete24Regular" />
+            <Icon name="fluent:delete-24-regular"></Icon>
           </n-icon-wrapper>
           <div
             v-if="showPreviewIcon"
             class="absolute bottom-0 left-0 right-0 top-0 hidden cursor-pointer items-center justify-center gap-4 group-hover:flex"
           >
-            <n-icon
+            <Icon
+              name="fluent:zoom-in-20-regular"
               class="cursor-pointer text-white hover:text-primary"
-              :component="ZoomIn24Regular"
               size="48"
               @click.stop="handlePreview"
-            ></n-icon>
+            ></Icon>
           </div>
         </div>
       </slot>
@@ -44,11 +44,11 @@
       >
         <n-spin size="medium" v-if="uploading" />
         <slot name="trigger" v-else>
-          <n-icon
+          <Icon
+            name="fluent:add-20-regular"
             class="flex cursor-pointer items-center justify-center hover:text-primary"
             size="70"
-            :component="Add24Regular"
-          ></n-icon>
+          ></Icon>
           <span v-if="uploadTxt">{{ uploadTxt }}</span>
         </slot>
       </div>
@@ -57,13 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Add24Regular,
-  ZoomIn24Regular,
-  Edit20Filled,
-  Delete24Regular
-} from '@vicons/fluent'
-import { NIcon, NSpin, createDiscreteApi, NIconWrapper } from 'naive-ui'
+import { NSpin, NIconWrapper } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
 import { MediaFile } from 'sys-types'
 

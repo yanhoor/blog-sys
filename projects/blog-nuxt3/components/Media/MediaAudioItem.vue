@@ -23,24 +23,24 @@
           class="transform-center z-10 flex flex-col items-center justify-center text-white"
         >
           <div class="cursor-pointer">
-            <n-icon
+            <Icon
+              name="fluent:pause-circle-20-regular"
               size="48"
-              :component="PauseCircle24Regular"
               @click="handlePlay"
               v-if="playState === PlayState.playing"
-            />
-            <n-icon
+            ></Icon>
+            <Icon
+              name="fluent:replay-20-regular"
               size="48"
-              :component="Replay20Regular"
               @click="handlePlay"
               v-else-if="playState === PlayState.end"
-            />
-            <n-icon
+            ></Icon>
+            <Icon
+              name="fluent:play-circle-16-regular"
               size="48"
-              :component="PlayCircle24Regular"
               @click="handlePlay"
               v-else
-            />
+            ></Icon>
           </div>
           <span
             >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
@@ -59,24 +59,24 @@
       v-else-if="duration"
     >
       <div class="flex cursor-pointer items-center">
-        <n-icon
+        <Icon
+          name="fluent:pause-circle-20-regular"
           size="24"
-          :component="PauseCircle24Regular"
           @click="handlePlay"
           v-if="playState === PlayState.playing"
-        />
-        <n-icon
+        ></Icon>
+        <Icon
+          name="fluent:replay-20-regular"
           size="24"
-          :component="Replay20Regular"
           @click="handlePlay"
           v-else-if="playState === PlayState.end"
-        />
-        <n-icon
+        ></Icon>
+        <Icon
+          name="fluent:play-circle-16-regular"
           size="24"
-          :component="PlayCircle24Regular"
           @click="handlePlay"
           v-else
-        />
+        ></Icon>
       </div>
       <div class="divide-x divide-gray-400">
         <span class="px-[8px]">{{ formatDuration(currentTime) }}</span>
@@ -87,12 +87,6 @@
 </template>
 
 <script setup lang="ts">
-import { NIcon } from 'naive-ui'
-import {
-  PlayCircle24Regular,
-  PauseCircle24Regular,
-  Replay20Regular
-} from '@vicons/fluent'
 import { PlayState } from 'sys-types'
 import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
@@ -114,11 +108,16 @@ const isInfinityDuration = ref(false)
 const currentTime = ref(0)
 
 const audioSrc = computed(() => {
+  let result = ''
   if (props.isAbsoluteUrl) {
-    return props.url + '?type=audio'
+    result = props.url
   } else {
-    return config.public.imageBase + props.url + '?type=audio'
+    result = config.public.imageBase + props.url
   }
+  if (!result.startsWith('blob:')) {
+    result += '?type=audio'
+  }
+  return result
 })
 
 onMounted(() => {

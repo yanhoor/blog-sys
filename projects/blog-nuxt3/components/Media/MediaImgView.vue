@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center" v-if="loadError">
-    <n-icon :component="ImageOff24Regular" size="64"></n-icon>
+    <Icon name="fluent:image-off-28-regular" size="64"></Icon>
   </div>
   <NuxtImg
     :loading="lazyLoadFlag ? 'lazy' : undefined"
@@ -15,8 +15,6 @@
 
 <script setup lang="ts">
 import defaultImg from '@/assets/images/img_error.jpeg'
-import { NIcon } from 'naive-ui'
-import { ImageOff24Regular } from '@vicons/fluent'
 import { api as viewerApi } from 'v-viewer'
 
 interface Props {

@@ -13,8 +13,8 @@
         @change="handleSearch"
       >
         <template #icon>
-          <n-icon :component="Filter16Regular" size="18"
-        /></template>
+          <Icon name="system-uicons:filtering" size="18"></Icon>
+        </template>
       </CustomCollapse>
       <CustomCollapse
         title="发布时间"
@@ -27,9 +27,7 @@
         v-model="selectTime"
         @change="handleTimeSelect"
       >
-        <template #icon>
-          <n-icon :component="CalendarLtr16Regular" size="18"
-        /></template>
+        <template #icon> <Icon name="ep:calendar" size="18"></Icon></template>
       </CustomCollapse>
       <CustomCollapse
         title="内容类型"
@@ -43,8 +41,8 @@
         @change="handleSearch"
       >
         <template #icon>
-          <n-icon :component="Attach16Regular" size="18"
-        /></template>
+          <Icon name="fluent:attach-16-regular" size="18"></Icon>
+        </template>
       </CustomCollapse>
       <div
         v-if="!searchParams.topicId"
@@ -52,7 +50,7 @@
         @click="handleSearchTopic(1)"
       >
         <div class="flex flex-1 items-center gap-[4px] hover:text-primary">
-          <n-icon :component="NumberSymbolSquare20Regular" size="18" />
+          <Icon name="fluent:number-symbol-square-20-regular" size="18"></Icon>
           <p
             :class="{ 'text-primary': searchParams.isTopic }"
             class="text-left"
@@ -76,13 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { NCard, NButton, NIcon } from 'naive-ui'
-import {
-  Filter16Regular,
-  CalendarLtr16Regular,
-  NumberSymbolSquare20Regular,
-  Attach16Regular
-} from '@vicons/fluent'
+import { NCard, NButton } from 'naive-ui'
 import dayjs from 'dayjs'
 
 useHead({

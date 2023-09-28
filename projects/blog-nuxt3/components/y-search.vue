@@ -7,18 +7,17 @@
     @keyup.enter="handleConfirm"
   >
     <template #prefix>
-      <n-icon
+      <Icon
+        name="fluent:search-20-regular"
         class="cursor-pointer"
-        :component="Search12Regular"
         @click="handleConfirm"
-      />
+      ></Icon>
     </template>
   </n-input>
 </template>
 
 <script setup lang="ts">
-import { NInput, NIcon } from 'naive-ui'
-import { Search12Regular } from '@vicons/fluent'
+import { NInput } from 'naive-ui'
 
 interface Props {
   value: string

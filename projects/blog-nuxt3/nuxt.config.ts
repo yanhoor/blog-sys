@@ -50,7 +50,8 @@ export default defineNuxtConfig({
       meta: [
         {
           'http-equiv': 'Content-Security-Policy',
-          content: "script-src 'self' 'unsafe-inline'; object-src 'none'"
+          content:
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'"
         },
         {
           name: 'keywords',
@@ -98,6 +99,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    'nuxt-icon',
     '@formkit/auto-animate/nuxt', // https://auto-animate.formkit.com/#usage-vue
     '@nuxtjs/color-mode'
   ],

@@ -4,11 +4,11 @@
       <div class="relative h-full w-full pt-[24px]">
         <div class="toolbar-container">
           <div class="toolbar-item" @click="() => (isPreview = false)">
-            <n-icon :component="ZoomOut24Regular" size="20"></n-icon>
+            <Icon name="fluent:zoom-out-24-regular" size="20"></Icon>
             <span>收起</span>
           </div>
           <div class="toolbar-item" @click="handleZoomIn()">
-            <n-icon :component="ImageMultiple24Regular" size="20"></n-icon>
+            <Icon name="fluent:image-multiple-24-regular" size="20"></Icon>
             <span>查看大图</span>
           </div>
         </div>
@@ -126,8 +126,7 @@
 
 <script setup lang="ts">
 import { Media, MediaFile } from 'sys-types'
-import { ImageMultiple24Regular, ZoomOut24Regular } from '@vicons/fluent'
-import { NIcon, NCollapseTransition } from 'naive-ui'
+import { NCollapseTransition } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
 import MediaImgRatioView from '~/components/Media/MediaImgRatioView.vue'
 

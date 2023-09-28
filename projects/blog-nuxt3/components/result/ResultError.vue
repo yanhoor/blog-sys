@@ -1,14 +1,17 @@
 <template>
   <div class="result-empty flex w-full flex-col items-center gap-[12px]">
-    <n-icon :component="ErrorCircle24Filled" :size="size" color="#36ad6a" />
+    <Icon
+      name="fluent:error-circle-24-filled"
+      :size="size"
+      color="#36ad6a"
+    ></Icon>
     <p class="text-[16px] font-semibold">{{ msg }}</p>
     <n-button type="primary" @click="emits('refresh')">刷新</n-button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NIcon, NButton } from 'naive-ui'
-import { ErrorCircle24Filled } from '@vicons/fluent'
+import { NButton } from 'naive-ui'
 
 interface Props {
   size?: string

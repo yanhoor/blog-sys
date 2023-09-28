@@ -15,21 +15,20 @@
           controls
         ></video>
       </template>
-      <n-icon
-        :component="ArrowCircleLeft24Regular"
+      <Icon
+        name="fluent:arrow-circle-left-20-regular"
         color="#fff"
-        :size="48"
+        size="48"
         class="absolute left-[20px] top-[20px] cursor-pointer"
         @click="emit('update:show', false)"
-      />
+      ></Icon>
     </div>
   </n-modal>
 </template>
 
 <script setup lang="ts">
 import { MediaFile } from 'sys-types'
-import { NCard, NModal, NIcon, createDiscreteApi } from 'naive-ui'
-import { ArrowCircleLeft24Regular } from '@vicons/fluent'
+import { NModal } from 'naive-ui'
 
 interface Props {
   file: MediaFile

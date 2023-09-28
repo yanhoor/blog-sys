@@ -3,7 +3,7 @@
     <div class="flex cursor-pointer items-center gap-[6px]" v-if="userInfo">
       <n-button type="primary" @click="showWritePost = true" size="small">
         <template #icon>
-          <n-icon :component="Compose24Regular" />
+          <Icon name="fluent:compose-20-regular"></Icon>
         </template>
       </n-button>
       <n-dropdown :options="userOptions" @select="handleDropdownSelect">
@@ -25,23 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NIcon, NDropdown, DialogOptions, NBadge } from 'naive-ui'
-import {
-  ArrowCircleRight20Regular,
-  CalendarPerson20Regular,
-  PersonCircle12Regular,
-  Compose24Regular,
-  Star48Filled,
-  Chat24Regular
-} from '@vicons/fluent'
-import { Component, h } from 'vue'
+import { NButton, NDropdown, DialogOptions, NBadge } from 'naive-ui'
 import { socketClient } from '@/socketIo'
+import { Icon } from '#components'
 
-const renderIcon = (icon: Component) => {
+const renderIcon = (name: string) => {
   return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    })
+    return h(Icon, { name, size: '18' })
   }
 }
 
@@ -57,29 +47,29 @@ const userOptions = computed(() => [
   {
     label: '个人资料',
     key: 'profile',
-    icon: renderIcon(PersonCircle12Regular)
+    icon: renderIcon('fluent:person-circle-20-regular')
   },
   {
     label: '个人主页',
     key: 'userHome',
-    icon: renderIcon(CalendarPerson20Regular)
+    icon: renderIcon('fluent:calendar-person-20-regular')
   },
   {
     label: '我的收藏',
     key: 'myCollection',
-    icon: renderIcon(Star48Filled)
+    icon: renderIcon('fluent:star-20-filled')
   },
   {
     label: `通知消息${
       notificationUnreadCount.value ? `(${notificationUnreadCount.value})` : ''
     }`,
     key: 'myNotification',
-    icon: renderIcon(Chat24Regular)
+    icon: renderIcon('fluent:chat-20-regular')
   },
   {
     label: '退出登录',
     key: 'logout',
-    icon: renderIcon(ArrowCircleRight20Regular)
+    icon: renderIcon('fluent:arrow-circle-right-20-regular')
   }
 ])
 

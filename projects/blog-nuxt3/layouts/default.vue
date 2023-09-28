@@ -8,7 +8,7 @@
       <div class="flex">
         <n-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
-            <n-icon :size="20" :component="Home24Regular"> </n-icon>
+            <Icon name="fluent:home-20-regular" size="20"></Icon>
           </template>
         </n-button>
       </div>
@@ -33,14 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  NButton,
-  NIcon,
-  NLayout,
-  NLayoutContent,
-  NLayoutHeader
-} from 'naive-ui'
-import { Home24Regular } from '@vicons/fluent'
+import { NButton, NLayout, NLayoutContent, NLayoutHeader } from 'naive-ui'
 
 const config = useRuntimeConfig()
 const userInfo = useUserInfo()

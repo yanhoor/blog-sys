@@ -27,7 +27,7 @@
               </template>
               <n-button size="small" @click="showCheck = true" v-else>
                 <template #icon>
-                  <n-icon :component="TaskListLtr20Filled" size="24" />
+                  <Icon name="fluent:task-list-20-regular" size="24"></Icon>
                 </template>
               </n-button>
             </div>
@@ -117,7 +117,6 @@
 import {
   NButton,
   NCard,
-  NIcon,
   NCheckbox,
   NCheckboxGroup,
   NRadioGroup,
@@ -125,7 +124,6 @@ import {
   NBackTop
 } from 'naive-ui'
 import { Notification } from 'sys-types'
-import { TaskListLtr20Filled } from '@vicons/fluent'
 
 interface Props {
   typeName: string

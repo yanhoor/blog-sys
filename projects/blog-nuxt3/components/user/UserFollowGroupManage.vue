@@ -28,7 +28,7 @@
             </n-tag>
             <n-button size="small" @click="editItem = { name: '' }" round>
               <template #icon>
-                <n-icon :component="Add24Regular" />
+                <Icon name="fluent:add-20-regular"></Icon>
               </template>
               新增分组
             </n-button>
@@ -47,12 +47,12 @@
               ></n-input>
               <n-button size="small" @click="handleSave" type="primary">
                 <template #icon>
-                  <n-icon :component="Checkmark24Regular" />
+                  <Icon name="fluent:checkmark-20-regular"></Icon>
                 </template>
               </n-button>
               <n-button size="small" @click="editItem = undefined">
                 <template #icon>
-                  <n-icon :component="Dismiss24Regular" />
+                  <Icon name="fluent:dismiss-20-regular"></Icon>
                 </template>
               </n-button>
             </n-input-group>
@@ -64,22 +64,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  NModal,
-  NButton,
-  NIcon,
-  NInput,
-  NInputGroup,
-  NTag,
-  NCard
-} from 'naive-ui'
+import { NModal, NButton, NInput, NInputGroup, NTag, NCard } from 'naive-ui'
 import Sortable from 'sortablejs'
 import { FollowGroup } from 'sys-types'
-import {
-  Dismiss24Regular,
-  Checkmark24Regular,
-  Add24Regular
-} from '@vicons/fluent'
 
 interface Props {
   show: boolean

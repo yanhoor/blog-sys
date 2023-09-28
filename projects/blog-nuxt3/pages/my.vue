@@ -29,15 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import { NLayoutSider, NMenu, NIcon } from 'naive-ui'
+import { NLayoutSider, NMenu } from 'naive-ui'
+import { Icon } from '#components'
 import type { MenuOption } from 'naive-ui'
-import {
-  People24Regular,
-  PeopleCheckmark24Regular,
-  Star48Filled,
-  CaretDown24Regular,
-  ThumbLike16Filled
-} from '@vicons/fluent'
 
 definePageMeta({
   redirect: '/my/follower',
@@ -55,28 +49,28 @@ const menuOptions: MenuOption[] = [
   {
     label: '我的关注',
     key: '/my/following',
-    icon: () => h(NIcon, null, { default: () => h(People24Regular) })
+    icon: () => h(Icon, { name: 'fluent:people-20-regular' })
   },
   {
     label: '我的粉丝',
     key: '/my/follower',
-    icon: () => h(NIcon, null, { default: () => h(PeopleCheckmark24Regular) })
+    icon: () => h(Icon, { name: 'fluent:people-checkmark-20-regular' })
   },
   {
     label: '我的点赞',
     key: '/my/like',
-    icon: () => h(NIcon, null, { default: () => h(ThumbLike16Filled) })
+    icon: () => h(Icon, { name: 'fluent:thumb-like-20-filled' })
   },
   {
     label: '我的收藏',
     key: '/my/collection',
-    icon: () => h(NIcon, null, { default: () => h(Star48Filled) })
+    icon: () => h(Icon, { name: 'fluent:star-20-filled' })
   }
 ]
 const collapsed = ref(false)
 
 function expandIcon() {
-  return h(NIcon, null, { default: () => h(CaretDown24Regular) })
+  return h(Icon, { name: 'fluent:caret-down-20-regular' })
 }
 
 async function handleMenuSelectChange(key: string) {

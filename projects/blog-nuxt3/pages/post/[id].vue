@@ -28,7 +28,7 @@
               class="absolute right-0 top-0 cursor-pointer"
             >
               <template #icon>
-                <n-icon :component="ChevronDown24Regular" />
+                <Icon name="fluent:chevron-down-20-regular"></Icon>
               </template>
             </n-button>
           </n-dropdown>
@@ -57,7 +57,7 @@
             :class="{ '!text-primary': showType === 'retweet' }"
             @click="handleSwitchType('retweet')"
           >
-            <n-icon size="18" :component="ArrowForward16Regular"></n-icon>
+            <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
             <span>{{ currentPost.retweetCount || '转发' }}</span>
           </div>
           <div
@@ -65,17 +65,17 @@
             :class="{ '!text-primary': showType === 'comment' }"
             @click="handleSwitchType('comment')"
           >
-            <n-icon
+            <Icon
+              name="fluent:comment-multiple-24-filled"
               class="text-primary"
               size="18"
-              :component="CommentMultiple28Filled"
               v-if="currentPost.commentsCount"
-            ></n-icon>
-            <n-icon
+            ></Icon>
+            <Icon
+              name="fluent:comment-multiple-20-regular"
               size="18"
-              :component="CommentMultiple16Regular"
               v-else
-            ></n-icon>
+            ></Icon>
             <span>{{ currentPost.commentsCount || '评论' }}</span>
           </div>
           <div
@@ -83,19 +83,19 @@
             :class="{ '!text-primary': showType === 'like' }"
             @click="handleSwitchType('like')"
           >
-            <n-icon
+            <Icon
+              name="fluent:thumb-like-20-filled"
               class="text-primary"
               size="18"
-              :component="ThumbLike16Filled"
               @click.stop="likeBlog"
               v-if="currentPost.isLike"
-            ></n-icon>
-            <n-icon
+            ></Icon>
+            <Icon
+              name="fluent:thumb-like-20-regular"
               size="18"
-              :component="ThumbLike16Regular"
               @click.stop="likeBlog"
               v-else
-            ></n-icon>
+            ></Icon>
             <span>{{ currentPost.likedByCount || '赞' }}</span>
           </div>
         </div>
@@ -138,25 +138,12 @@
 <script setup lang="ts">
 import {
   NCard,
-  NTime,
   NBackTop,
-  NIcon,
   NDropdown,
   NButton,
-  NCollapseTransition,
-  DialogOptions
+  NCollapseTransition
 } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
-import {
-  CommentMultiple16Regular,
-  CommentMultiple28Filled,
-  ThumbLike16Regular,
-  ThumbLike16Filled,
-  Star48Regular,
-  Star48Filled,
-  ChevronDown24Regular,
-  ArrowForward16Regular
-} from '@vicons/fluent'
 import { h } from 'vue'
 
 definePageMeta({

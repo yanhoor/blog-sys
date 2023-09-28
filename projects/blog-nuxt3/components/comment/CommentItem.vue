@@ -38,31 +38,39 @@
         ></span>
         <n-button text @click="triggerReply" v-if="userInfo">
           <template #icon>
-            <n-icon :component="showReply ? Chat24Filled : Chat24Regular" />
+            <Icon
+              :name="
+                showReply ? 'fluent:chat-24-filled' : 'fluent:chat-24-regular'
+              "
+              size="18"
+            ></Icon>
           </template>
           {{ showReply ? '取消回复' : '回复' }}
         </n-button>
       </div>
       <div class="flex items-center gap-[12px]">
-        <n-icon
-          class="hidden cursor-pointer text-red-600 group-hover:inline-block"
-          :component="Delete24Regular"
-          size="18"
-          @click="handleDeleteComment"
-          :loading="commentDeleting"
-          v-if="currentComment?.createById === userInfo?.id"
-        />
+        <span
+          class="hidden cursor-pointer leading-[1] text-red-600 group-hover:inline-block"
+        >
+          <Icon
+            name="fluent:delete-24-regular"
+            size="18"
+            @click="handleDeleteComment"
+            :loading="commentDeleting"
+            v-if="currentComment?.createById === userInfo?.id"
+          ></Icon>
+        </span>
         <div
           class="flex cursor-pointer items-center justify-center gap-[6px]"
           @click="handleLikeComment"
         >
-          <n-icon
+          <Icon
+            name="fluent:thumb-like-20-filled"
             class="text-primary"
             size="18"
-            :component="ThumbLike16Filled"
             v-if="currentComment.isLike"
-          ></n-icon>
-          <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
+          ></Icon>
+          <Icon name="fluent:thumb-like-20-regular" size="18" v-else></Icon>
           <span>{{ currentComment.likedByCount || '' }}</span>
         </div>
       </div>
@@ -103,7 +111,7 @@
       >
         共 {{ currentComment.childCommentsCount }} 条回复
         <template #icon>
-          <n-icon :component="ChevronDown24Filled" />
+          <Icon name="fluent:chevron-down-24-filled"></Icon>
         </template>
       </n-button>
     </div>
@@ -124,19 +132,10 @@ import { Comment } from 'sys-types'
 import {
   NButton,
   NCollapseTransition,
-  NIcon,
   NDrawer,
   NDrawerContent,
   DialogOptions
 } from 'naive-ui'
-import {
-  Chat24Regular,
-  Chat24Filled,
-  ChevronDown24Filled,
-  ThumbLike16Filled,
-  ThumbLike16Regular,
-  Delete24Regular
-} from '@vicons/fluent'
 
 // 如果 currentComment.value.topCommentId 存在，currentComment.value 就是评论的回复，即当前组件在第二层
 interface Props {

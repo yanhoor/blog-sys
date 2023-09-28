@@ -35,14 +35,14 @@
       @click="handleNextImagePage(-1)"
       v-if="currentPage > 1"
     >
-      <n-icon :component="ChevronLeft24Regular" size="24" />
+      <Icon name="fluent:chevron-left-20-regular" size="24"></Icon>
     </div>
     <div
       class="absolute -right-[20px] top-0 flex h-full cursor-pointer items-center"
       @click="handleNextImagePage(1)"
       v-if="currentPage < imageTotalPage"
     >
-      <n-icon :component="ChevronRight24Regular" size="24" />
+      <Icon name="fluent:chevron-right-20-regular" size="24"></Icon>
     </div>
   </div>
 </template>

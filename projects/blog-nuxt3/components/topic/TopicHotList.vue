@@ -9,7 +9,7 @@
           @click="handleLoadNextPage(1)"
         >
           <template #icon>
-            <n-icon :component="ArrowClockwise16Regular"></n-icon>
+            <Icon name="fluent:arrow-clockwise-20-regular"></Icon>
           </template>
           点击刷新</n-button
         >
@@ -35,23 +35,13 @@
         </p>
       </div>
       <SkeletonTopicList v-if="pageLoading" />
-      <!--<n-button
-        block
-        round
-        secondary
-        type="tertiary"
-        size="small"
-        class="mt-[12px]"
-        >查看完整榜单</n-button
-      >-->
     </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Topic } from 'sys-types'
-import { NCard, NButton, NIcon } from 'naive-ui'
-import { ArrowClockwise16Regular } from '@vicons/fluent'
+import { NCard, NButton } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 const {

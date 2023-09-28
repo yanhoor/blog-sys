@@ -15,50 +15,53 @@
         v-time="new Date(currentPost.createdAt)"
       ></span>
       <div class="flex items-center gap-[12px]">
-        <n-icon
-          class="hidden cursor-pointer text-red-600 group-hover:inline-block"
-          :component="Delete24Regular"
-          size="18"
-          @click="
-            async () => {
-              await handleDeletePost()
-              emits('delete')
-            }
-          "
-          v-if="currentPost?.createById === userInfo?.id"
-        />
+        <span
+          class="hidden cursor-pointer leading-[1] text-red-600 group-hover:inline-block"
+        >
+          <Icon
+            name="fluent:delete-24-regular"
+            size="18"
+            @click="
+              async () => {
+                await handleDeletePost()
+                emits('delete')
+              }
+            "
+            v-if="currentPost?.createById === userInfo?.id"
+          ></Icon>
+        </span>
         <div
           class="action-item placeholder-text-color"
           @click="handleToPostDetail('retweet')"
         >
-          <n-icon size="18" :component="ArrowForward16Regular"></n-icon>
+          <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
           <span>{{ currentPost.retweetCount || '转发' }}</span>
         </div>
         <div
           class="action-item placeholder-text-color"
           @click="handleToPostDetail('comment')"
         >
-          <n-icon
+          <Icon
+            name="fluent:comment-multiple-24-filled"
             class="text-primary"
             size="18"
-            :component="CommentMultiple28Filled"
             v-if="currentPost.commentsCount"
-          ></n-icon>
-          <n-icon
+          ></Icon>
+          <Icon
+            name="fluent:comment-multiple-20-regular"
             size="18"
-            :component="CommentMultiple16Regular"
             v-else
-          ></n-icon>
+          ></Icon>
           <span>{{ currentPost.commentsCount || '评论' }}</span>
         </div>
         <div class="action-item placeholder-text-color" @click="handlePostLike">
-          <n-icon
+          <Icon
+            name="fluent:thumb-like-20-filled"
             class="text-primary"
             size="18"
-            :component="ThumbLike16Filled"
             v-if="currentPost.isLike"
-          ></n-icon>
-          <n-icon size="18" :component="ThumbLike16Regular" v-else></n-icon>
+          ></Icon>
+          <Icon name="fluent:thumb-like-20-regular" size="18" v-else></Icon>
           <span>{{ currentPost.likedByCount || '赞' }}</span>
         </div>
       </div>
@@ -67,15 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowForward16Regular,
-  CommentMultiple16Regular,
-  CommentMultiple28Filled,
-  ThumbLike16Filled,
-  Delete24Regular,
-  ThumbLike16Regular
-} from '@vicons/fluent'
-import { NIcon } from 'naive-ui'
 import { Blog } from 'sys-types'
 
 interface Props {

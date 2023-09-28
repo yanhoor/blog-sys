@@ -22,7 +22,7 @@
           <p class="my-[6px] flex-1 text-[16px] font-semibold">自定义分组</p>
           <n-button size="small" text @click="showManageGroup = true">
             <template #icon>
-              <n-icon :component="Compose24Regular" size="18" />
+              <Icon name="uil:edit-alt" size="18"></Icon>
             </template>
           </n-button>
         </div>
@@ -65,9 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import { NCard, NButton, NIcon } from 'naive-ui'
+import { NCard, NButton } from 'naive-ui'
 import { FollowGroup } from 'sys-types'
-import { Compose24Regular } from '@vicons/fluent'
 
 useHead({
   title: '首页'

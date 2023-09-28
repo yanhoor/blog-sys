@@ -11,11 +11,11 @@
         @click="handleUserHome"
         :class="{ 'cursor-pointer': !disabled }"
       >
-        <n-icon
-          :component="PersonCircle20Regular"
+        <Icon
+          name="fluent:person-circle-20-regular"
           v-if="!user.avatar"
-          :size="size"
-        ></n-icon>
+          :size="size.toString()"
+        ></Icon>
         <n-avatar
           v-else
           class="flex shrink-0 items-center justify-center"
@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { NAvatar, NIcon } from 'naive-ui'
+import { NAvatar } from 'naive-ui'
 import { h } from 'vue'
-import { PersonCircle20Regular } from '@vicons/fluent'
+import { Icon } from '#components'
 import { User } from 'sys-types'
 
 interface Props {
@@ -52,8 +52,6 @@ async function handleUserHome() {
 }
 
 function renderErrorAvatar() {
-  return h(NIcon, {
-    component: PersonCircle20Regular
-  })
+  return h(Icon, { name: 'fluent:person-circle-20-regular' })
 }
 </script>

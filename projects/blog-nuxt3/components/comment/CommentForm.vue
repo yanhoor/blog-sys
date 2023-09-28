@@ -28,11 +28,11 @@
           height="42px"
         >
           <template #trigger>
-            <n-icon
+            <Icon
+              name="fluent:image-add-24-regular"
               class="cursor-pointer text-primary"
-              :component="ImageAdd24Regular"
-              size="36px"
-            ></n-icon>
+              size="36"
+            ></Icon>
           </template>
         </MediaUploadImg>
         <n-button
@@ -47,8 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NIcon, NButton, NInput } from 'naive-ui'
-import { ImageAdd24Regular } from '@vicons/fluent'
+import { NButton, NInput } from 'naive-ui'
 import { Comment, MediaFile } from 'sys-types'
 
 interface Props {

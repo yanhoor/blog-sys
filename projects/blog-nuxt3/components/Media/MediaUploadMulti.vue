@@ -19,7 +19,7 @@
         @click="handleSelectUploadType(2)"
       >
         <template #icon>
-          <n-icon :component="ImageAdd24Regular" />
+          <Icon name="fluent:image-add-20-regular"></Icon>
         </template>
         图片
       </n-button>
@@ -32,7 +32,7 @@
         @click="handleSelectUploadType(3)"
       >
         <template #icon>
-          <n-icon :component="VideoAdd24Regular" />
+          <Icon name="fluent:video-add-20-regular"></Icon>
         </template>
         视频
       </n-button>
@@ -45,7 +45,7 @@
         @click="handleSelectUploadType(4)"
       >
         <template #icon>
-          <n-icon :component="MusicNote120Regular" />
+          <Icon name="fluent:sound-wave-circle-20-regular"></Icon>
         </template>
         录音
       </n-button>
@@ -90,7 +90,7 @@
             :border-radius="6"
             @click="handleDeleteItem(index)"
           >
-            <n-icon :component="Delete24Regular" />
+            <Icon name="fluent:delete-16-regular"></Icon>
           </n-icon-wrapper>
         </div>
       </div>
@@ -130,13 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VideoAdd24Regular,
-  ImageAdd24Regular,
-  MusicNote120Regular,
-  Delete24Regular
-} from '@vicons/fluent'
-import { NSpin, NIcon, NButton, NIconWrapper } from 'naive-ui'
+import { NSpin, NButton, NIconWrapper } from 'naive-ui'
 import { Media, MediaFile } from 'sys-types'
 
 interface Props {

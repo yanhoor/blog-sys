@@ -97,11 +97,11 @@
                 class="flex items-start gap-[6px]"
                 v-if="userInfo?.introduce"
               >
-                <n-icon :component="DocumentText24Regular" size="20" />
+                <Icon name="fluent:document-text-20-regular" size="20"></Icon>
                 <span>{{ userInfo?.introduce }}</span>
               </div>
               <div class="flex items-start gap-[6px]">
-                <n-icon :component="CalendarLtr24Regular" size="20" />
+                <Icon name="fluent:calendar-ltr-20-regular" size="20"></Icon>
                 <n-time
                   type="date"
                   format="yyyy-MM-dd"
@@ -150,7 +150,7 @@
               v-else
             >
               <template #icon>
-                <n-icon :component="Search12Regular" />
+                <Icon name="fluent:search-20-regular"></Icon>
               </template>
             </n-button>
           </div>
@@ -193,17 +193,11 @@
 
 <script setup lang="ts">
 import {
-  CalendarLtr24Regular,
-  DocumentText24Regular,
-  Search12Regular
-} from '@vicons/fluent'
-import {
   NCollapseTransition,
   NButton,
   NTabs,
   NTab,
   NTime,
-  NIcon,
   NTag,
   NDatePicker
 } from 'naive-ui'
