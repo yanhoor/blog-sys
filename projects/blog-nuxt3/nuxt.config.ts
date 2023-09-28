@@ -32,7 +32,7 @@ export default defineNuxtConfig({
       apiBaseDocker: process.env.NUXT_API_BASE_DOCKER,
       // imageBase: 'https://static-buck.oss-cn-shenzhen.aliyuncs.com',
       imageBase: isProd
-        ? 'https://niubility.website/api/uploadFile/' // 通过 ndoe 访问，如果直接通过 nginx 访问，可以改成 https://niubility.website/uploadFile/
+        ? 'https://niubility.website/static/uploadFile/' // 通过 ndoe 访问，如果直接通过 nginx 访问，可以改成 https://niubility.website/uploadFile/
         : 'http://127.0.0.1:8000/static/uploadFile/',
       wsHost: process.env.NUXT_WS_HOST,
       imageType: '.jpeg,.jpg,.png,.avif,.webp,.bmp,.gif,.svg',
@@ -47,9 +47,17 @@ export default defineNuxtConfig({
       titleTemplate: '%s - Nuxt3 | Vipot',
       title: 'Nuxt3 | Vipot',
       charset: 'utf-8',
-      // meta: [
-      //   { name: 'naive-ui-style' },
-      // ],
+      meta: [
+        {
+          'http-equiv': 'Content-Security-Policy',
+          content: "script-src 'self' 'unsafe-inline'; object-src 'none'"
+        },
+        {
+          name: 'keywords',
+          content: 'vue3, nuxt3, ssr, naive ui, tailwind css'
+        },
+        { name: 'description', content: '基于vue3的nuxt3框架SSR博客站点' }
+      ],
       // 也可以在 server.plugins 目录添加
       // script: [
       //   {

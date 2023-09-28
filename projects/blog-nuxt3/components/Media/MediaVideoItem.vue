@@ -5,7 +5,7 @@
         ref="videoRef"
         class="video-item"
         controls
-        :src="config.public.imageBase + url"
+        :src="config.public.imageBase + url + '?type=video'"
         @play="handlePlaying"
       ></video>
       <template v-if="coverUrl && playState === PlayState.idle">

@@ -70,11 +70,7 @@ import { FollowGroup } from 'sys-types'
 import { Compose24Regular } from '@vicons/fluent'
 
 useHead({
-  title: '首页',
-  meta: [
-    { name: 'keywords', content: 'vue3, nuxt3, ssr, naive ui, tailwind css' },
-    { name: 'description', content: '基于vue3的nuxt3框架SSR博客站点首页' }
-  ]
+  title: '首页'
 })
 definePageMeta({
   pageTransition: false,

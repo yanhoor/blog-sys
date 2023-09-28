@@ -115,9 +115,9 @@ const currentTime = ref(0)
 
 const audioSrc = computed(() => {
   if (props.isAbsoluteUrl) {
-    return props.url
+    return props.url + '?type=audio'
   } else {
-    return config.public.imageBase + props.url
+    return config.public.imageBase + props.url + '?type=audio'
   }
 })
 
