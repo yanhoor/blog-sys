@@ -132,6 +132,7 @@
 <script setup lang="ts">
 import { NSpin, NButton, NIconWrapper } from 'naive-ui'
 import { Media, MediaFile } from 'sys-types'
+import FileUtil from '@/utils/fileUtil'
 
 interface Props {
   modelValue: Media[]
@@ -151,6 +152,8 @@ const audioRecordFile = shallowRef<File>()
 const inputRef = ref<HTMLInputElement>()
 const failedFileList = shallowRef<File[]>([])
 const config = useRuntimeConfig()
+const { handleUploadSingle, handlePartUpload, handleCheckFile } =
+  useUploadFile()
 
 const coverFile = computed<MediaFile>(() => {
   if ([3, 4].includes(uploadMode.value) && props.modelValue.length)
@@ -237,29 +240,31 @@ async function handleUploadFile(file: File, type?: string): Promise<boolean> {
     message.error('不支持的文件类型')
     return false
   }
-  // console.log('==============', md5)
+  const fileUtil = new FileUtil(file)
+  let mediaFile
   try {
-    const formData = { file }
-    if (type) formData.type = type
-    const { success, result, msg } = await useFetchPost(
-      '/upload',
-      formData,
-      true
-    )
-    if (success) {
+    const oldFile = await handleCheckFile(fileUtil)
+
+    if (oldFile) {
+      mediaFile = oldFile
+    } else if (fileUtil.isSplit) {
+      mediaFile = await handlePartUpload(fileUtil, type)
+    } else {
+      mediaFile = await handleUploadSingle({ file, type })
+    }
+    if (mediaFile) {
       lockUploadMode.value = true
       emits('update:modelValue', [
         ...props.modelValue,
-        { fileId: result.id, file: result }
+        { fileId: mediaFile.id, file: mediaFile }
       ])
       return true
     } else {
-      failedFileList.value.push(file)
-      message.error(msg as string)
+      // failedFileList.value.push(file)
       return false
     }
   } catch (e) {
-    failedFileList.value.push(file)
+    // failedFileList.value.push(file)
     message.error('上传失败')
     return false
   }

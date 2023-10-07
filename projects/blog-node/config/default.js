@@ -1,5 +1,8 @@
 // config-lite配置文件，默认加载，其他配置会进行深合并
 const secret = require('./secret')
+const path = require('path')
+
+const uploadDir = path.join(__dirname, '../../', './uploadFile/')
 
 module.exports = {
   imgTypeList: [
@@ -27,7 +30,7 @@ module.exports = {
   uploadVideoMaxSize: 200, // 上传视频最大体积, M
   multiPartUploadSwitchSize: 20, // 开启分片上传临界体积, M
   multiPartPerSize: 20, // 分片上传每部份体积, M
-  uploadDir: './uploadFile/', // 上传目录
+  uploadDir: uploadDir, // 上传目录
   jwtSecret: 'jwt-sec',
   jwtTokenExpired: 60 * 60 * 24 * 7, // 秒
   pageSize: 20, // 默认分页大小

@@ -20,7 +20,7 @@ export const useFetchPost = (
   if (formData) {
     const fd = new FormData()
     Object.keys(data).forEach((k) => {
-      fd.append(k, data[k])
+      if (data[k] !== undefined) fd.append(k, data[k])
     })
     // headers['Content-Type'] = 'multipart/form-data'
     data = fd

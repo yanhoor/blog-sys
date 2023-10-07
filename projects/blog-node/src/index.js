@@ -15,12 +15,21 @@ const etag = require('koa-etag')
 
 const app = new koa()
 
-const uploadDir = path.join(__dirname, '../../', config.uploadDir)
-try {
-  console.log('======filePath======', uploadDir)
-  fs.mkdirSync(uploadDir)
-} catch (e) {
-  console.log(e)
+handleCreateUploadDir()
+
+async function handleCreateUploadDir() {
+  await fs.promises.mkdir(config.uploadDir).catch((e) => {
+    defaultLogger.info('==========创建上传文件目录===========', e)
+  })
+  const filesList = await fs.promises.readdir(config.uploadDir)
+  // 删除所有未合并的分片文件
+  const deleteList = filesList.filter((f) => !f.includes('.'))
+  defaultLogger.info('==========待删除分片文件列表===========', deleteList)
+  deleteList.forEach((d) => {
+    fs.promises.unlink(config.uploadDir + d).catch((e) => {
+      defaultLogger.error('============删除分片文件失败===========', d, e)
+    })
+  })
 }
 
 app.use(
@@ -38,7 +47,7 @@ app.use(
     multipart: true,
     formidable: {
       // 上传目录
-      uploadDir: uploadDir, // 即当前文件路径 + 设置的路径
+      uploadDir: config.uploadDir, // 即当前文件路径 + 设置的路径
       // 保留文件扩展名
       keepExtensions: true,
       maxFileSize: 200 * 1024 * 1024 // 200m

@@ -60,6 +60,7 @@
 import { NSpin, NIconWrapper } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
 import { MediaFile } from 'sys-types'
+import FileUtil from '~/utils/fileUtil'
 
 interface Props {
   modelValue?: string
@@ -78,11 +79,13 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emits = defineEmits<{
   'update:modelValue': [url: string]
-  complete: [result: MediaFile]
+  complete: [result: MediaFile | undefined]
 }>()
 const config = useRuntimeConfig()
 const uploading = ref(false)
 const inputRef = ref<HTMLInputElement>()
+const { handleUploadSingle, handlePartUpload, handleCheckFile } =
+  useUploadFile()
 
 function handleTriggerSelect() {
   if (uploading.value) return
@@ -112,18 +115,22 @@ async function handleUploadFile(file: File) {
   if (!config.public.imageType.includes(getFileExt(file.name))) return
 
   const { message } = useDiscreteApi(['message'])
+  const fileUtil = new FileUtil(file)
   // console.log('==============', md5)
+  let mediaFile
   try {
-    const { success, result, msg } = await useFetchPost(
-      '/upload',
-      { file },
-      true
-    )
-    if (success) {
-      emits('update:modelValue', result.url)
-      emits('complete', result as MediaFile)
+    const oldFile = await handleCheckFile(fileUtil)
+
+    if (oldFile) {
+      mediaFile = oldFile
+    } else if (fileUtil.isSplit) {
+      mediaFile = await handlePartUpload(fileUtil)
     } else {
-      message.error(msg as string)
+      mediaFile = await handleUploadSingle({ file })
+    }
+    if (mediaFile) {
+      emits('update:modelValue', mediaFile.url)
+      emits('complete', mediaFile)
     }
   } catch (e) {
     message.error('上传失败')
