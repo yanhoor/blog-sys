@@ -70,7 +70,7 @@
 
     <template v-if="modelValue.length">
       <div
-        class="flex max-h-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
+        class="flex max-h-full w-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
         v-if="uploadMode === 2"
         v-auto-animate
       >

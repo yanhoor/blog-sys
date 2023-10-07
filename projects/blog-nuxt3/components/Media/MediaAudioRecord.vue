@@ -50,7 +50,9 @@ const supportMimeType = ref('') // 支持的 mime 类型
 const audioExt = ref() // 文件格式
 
 onUnmounted(() => {
-  console.log('=========MediaAudioRecord unmounted==========')
+  if (audioSrc.value) {
+    URL.revokeObjectURL(audioSrc.value)
+  }
   clearDurationTimer()
   closeRecordStream()
   mediaRecorder = null
@@ -177,7 +179,7 @@ function closeRecordStream() {
 }
 
 function startDurationTimer() {
-  recordTimer = setInterval(() => {
+  recordTimer = window.setInterval(() => {
     recordDuration.value++
   }, 1000)
 }

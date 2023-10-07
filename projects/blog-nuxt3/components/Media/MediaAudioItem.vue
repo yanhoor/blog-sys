@@ -15,7 +15,7 @@
     ></audio>
     <div class="w-1/3" v-if="coverUrl">
       <div
-        class="relative h-0 w-full rounded-[3px] bg-black"
+        class="relative h-0 w-full rounded-[15px] bg-black"
         :style="{ 'padding-top': 'calc(100%*9/16)' }"
       >
         <MediaImgView class="media-cover" :url="coverUrl" v-if="coverUrl" />
