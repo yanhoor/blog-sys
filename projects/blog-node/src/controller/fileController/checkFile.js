@@ -1,5 +1,7 @@
 const prisma = require('../../database/prisma')
 const fs = require('fs')
+const config = require('config-lite')(__dirname)
+
 module.exports = async function (ctx, next) {
   const req = ctx.request
   const { md5 } = req.body

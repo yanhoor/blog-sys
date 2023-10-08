@@ -20,12 +20,12 @@ class MySocketIo {
       const handshake = socket.handshake
       // query.client 客户端信息
       const query = handshake.query
-      console.log('==========建立新的客户端连接============', query)
+      // console.log('==========建立新的客户端连接============', query)
       socket.join(query.uid, () => {})
       socket.on('disconnect', (reason) => {
         console.log('==========客户端主动断开连接===========', query, reason)
       })
-      console.log('==========io connection rooms===========', socket.rooms)
+      // console.log('==========io connection rooms===========', socket.rooms)
     })
   }
 }

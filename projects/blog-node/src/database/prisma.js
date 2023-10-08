@@ -32,11 +32,11 @@ prisma.$use(async (params, next) => {
 
   const after = Date.now()
 
-  if (after - before > config.databaseRecordTime) {
-    console.log(
-      `查询 ${params.model}.${params.action} 时间----> ${after - before}ms`
-    )
-  }
+  // if (after - before > config.databaseRecordTime) {
+  //   console.log(
+  //     `查询 ${params.model}.${params.action} 时间----> ${after - before}ms`
+  //   )
+  // }
 
   return result
 })
