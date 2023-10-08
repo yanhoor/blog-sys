@@ -241,6 +241,7 @@ async function handleUploadFile(file: File, type?: string): Promise<boolean> {
     return false
   }
   const fileUtil = new FileUtil(file)
+  await fileUtil.init()
   let mediaFile
   try {
     const oldFile = await handleCheckFile(fileUtil)

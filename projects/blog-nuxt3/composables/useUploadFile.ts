@@ -26,11 +26,14 @@ export const useUploadFile = () => {
     const { message } = useDiscreteApi(['message'])
 
     console.log('=========分片信息===========', fileUtil)
-    const paramList = fileUtil.chunkList.map((chunk) => {
-      return {
-        file: chunk.chunk,
-        isPartFile: 1,
-        chunkPath: chunk.chunkHash
+    const paramList: any[] = []
+    fileUtil.chunkList.forEach((chunk) => {
+      if (!fileUtil.uploadedChunkList.includes(chunk.chunkHash)) {
+        paramList.push({
+          file: chunk.chunk,
+          isPartFile: 1,
+          chunkPath: chunk.chunkHash
+        })
       }
     })
     const failedList = await handleUploadMultipart(paramList, 1)
@@ -60,13 +63,16 @@ export const useUploadFile = () => {
   }
 
   async function handleCheckFile(fileUtil: FileUtil) {
-    const md5 = await fileUtil.getMd5()
     try {
       const { success, result, msg } = await useFetchPost('/checkFile', {
-        md5
+        md5: fileUtil.md5
       })
       if (success) {
-        return result
+        if (result.isChunk) {
+          fileUtil.setUploadedChunkList(result.chunkList)
+        } else {
+          return result.file
+        }
       }
     } catch (e) {}
   }

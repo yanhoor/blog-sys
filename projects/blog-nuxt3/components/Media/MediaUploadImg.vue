@@ -116,6 +116,7 @@ async function handleUploadFile(file: File) {
 
   const { message } = useDiscreteApi(['message'])
   const fileUtil = new FileUtil(file)
+  await fileUtil.init()
   // console.log('==============', md5)
   let mediaFile
   try {

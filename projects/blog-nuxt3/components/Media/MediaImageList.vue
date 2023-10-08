@@ -21,6 +21,7 @@
           <MediaImgView
             class="radius-inherit absolute top-0 h-full w-full cursor-zoom-out object-cover"
             :url="currentPreviewItem.url"
+            ratio="10"
             @click="handleCancelPreview"
           />
         </div>

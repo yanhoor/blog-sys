@@ -5,14 +5,14 @@ const OSS = require('ali-oss')
 const prisma = require('../database/prisma')
 const md5File = require('md5-file')
 const { FileType } = require('@prisma/client')
-const dayjs = require('dayjs')
 const fs = require('fs')
 
 class UploadController extends BaseController {
   aliOssClient = new OSS(this.globalConfig.aliOss)
 
   getFileType = (url) => {
-    const extname = path.extname(url)
+    const idx = url.lastIndexOf('.')
+    const extname = idx > -1 ? url.slice(idx) : '.' + url
     if (config.imgTypeList.includes(extname.toLowerCase())) {
       return FileType.image
     } else if (config.videoTypeList.includes(extname.toLowerCase())) {
@@ -59,20 +59,80 @@ class UploadController extends BaseController {
     })
   }
 
+  // 根据 md5 获取已上传的文件，或已上传的分片
+  checkFile = async (ctx, next) => {
+    const req = ctx.request
+    const { md5 } = req.body
+    // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
+
+    let userId = await this.getAuthUserId(ctx, next)
+    try {
+      if (!userId) throw new Error('未登录')
+      if (!md5) throw new Error('md5 不存在')
+    } catch (e) {
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
+      let fileRes = await prisma.file.findUnique({
+        where: {
+          md5,
+          createById: userId
+        },
+        select: {
+          id: true,
+          md5: true,
+          url: true,
+          createById: true
+        }
+      })
+
+      const filesList = await fs.promises.readdir(config.uploadDir)
+      const chunkList = filesList.filter((f) => f.startsWith(md5))
+
+      if (fileRes) {
+        return (ctx.body = {
+          success: true,
+          result: {
+            isChunk: false,
+            file: fileRes
+          }
+        })
+      } else if (chunkList.length) {
+        return (ctx.body = {
+          success: true,
+          result: {
+            isChunk: true,
+            chunkList
+          }
+        })
+      } else {
+        return (ctx.body = {
+          success: true,
+          msg: '文件不存在'
+        })
+      }
+    } catch (e) {
+      this.errorLogger.error('checkFile--------->', e)
+      return (ctx.body = {
+        success: false,
+        msg: e?.message || e
+      })
+    }
+  }
+
   upload = async (ctx, next) => {
     const req = ctx.request
-    const { type } = req.body
+    const { type, isPartFile = 0 } = req.body
     const file = req.files.file
     // console.log('======upload========', file.size, file.size > 2 * 1024 * 1024)
-    const m5 = await md5File(file.filepath)
-    console.log(
-      '开始处理接收到的文件, md5---->',
-      dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      m5
-    )
-    let userId = await this.getAuthUserId(ctx, next)
-    let fileRes
 
+    this.defaultLogger.info('=========接收到文件========')
+    let userId = await this.getAuthUserId(ctx, next)
     try {
       if (!userId) throw new Error('未登录')
     } catch (e) {
@@ -83,8 +143,16 @@ class UploadController extends BaseController {
       return false
     }
 
+    let fileRes
+
     try {
-      let fullName
+      // 分片上传
+      if (isPartFile) {
+        return this.handleLocalUploadPart(ctx, next)
+      }
+
+      // 其他单文件
+      const m5 = await md5File(file.filepath)
       fileRes = await prisma.file.findUnique({
         where: {
           md5: m5,
@@ -98,11 +166,11 @@ class UploadController extends BaseController {
         }
       })
       if (!fileRes) {
-        if (file.size < config.multiPartUploadSwitchSize * 1024 * 1024) {
-          fullName = await this.handleUpload(file, m5)
-        } else {
-          fullName = await this.handleMultipartUpload(file, m5)
-        }
+        // if (file.size < config.multiPartUploadSwitchSize * 1024 * 1024) {
+        //   fullName = await this.handleUpload(file, m5)
+        // } else {
+        //   fullName = await this.handleMultipartUpload(file, m5)
+        // }
         const idx = file.filepath.lastIndexOf('/')
         const localName = file.filepath.slice(idx + 1)
         // const fileType = type || this.getFileType(fullName)
@@ -134,6 +202,114 @@ class UploadController extends BaseController {
       return (ctx.body = {
         success: false,
         msg: e?.message || e || '上传失败'
+      })
+    }
+  }
+
+  // 对分片文件改名
+  handleLocalUploadPart = async (ctx, next) => {
+    const req = ctx.request
+    const { chunkPath } = req.body
+    const file = req.files.file
+
+    try {
+      const fp = file.filepath
+      const idx = fp.lastIndexOf('/')
+      await fs.promises.rename(fp, fp.slice(0, idx + 1) + chunkPath)
+      return (ctx.body = {
+        success: true
+      })
+    } catch (e) {
+      this.errorLogger.error('分片上传处理失败--------->', e)
+      return (ctx.body = {
+        success: false,
+        msg: e?.message || e || '上传失败'
+      })
+    }
+  }
+
+  // 将分片合并成完整文件
+  mergeMultiPart = async (ctx, next) => {
+    const req = ctx.request
+    const { fileName, ext, type } = req.body
+    let userId = await this.getAuthUserId(ctx, next)
+
+    try {
+      if (!userId) throw new Error('未登录')
+      if (!ext || !fileName) throw new Error('参数错误')
+    } catch (e) {
+      ctx.body = {
+        success: false,
+        msg: e.message
+      }
+      return false
+    }
+
+    try {
+      const outputPath = config.uploadDir + fileName + '.' + ext
+      const filesList = await fs.promises.readdir(config.uploadDir)
+      const chunkList = filesList
+        .filter((f) => f.startsWith(fileName))
+        .sort((a, b) => {
+          const idxa = a.lastIndexOf('-')
+          const idxb = b.lastIndexOf('-')
+          return Number(a.slice(idxa + 1)) - Number(b.slice(idxb + 1))
+        })
+      this.defaultLogger.info(
+        '========mergeMultiPart=========',
+        chunkList,
+        outputPath
+      )
+      if (!chunkList.length) {
+        return (ctx.body = {
+          success: false,
+          msg: '分片不存在'
+        })
+      }
+
+      const writeStream = fs.createWriteStream(outputPath)
+      for (const chunk of chunkList) {
+        const chunkPath = config.uploadDir + chunk
+        const readStream = fs.createReadStream(chunkPath)
+        await new Promise((resolve, reject) => {
+          readStream.pipe(writeStream, { end: false })
+          readStream.on('end', () => {
+            fs.promises.unlink(chunkPath)
+            resolve()
+          })
+          readStream.on('error', reject)
+        })
+      }
+
+      writeStream.end()
+
+      const fileType = type || this.getFileType(ext)
+      const m5 = await md5File(outputPath)
+      this.defaultLogger.info('=======新建上传文件信息=======', m5)
+      let fileRes = await prisma.file.create({
+        data: {
+          createById: userId,
+          md5: m5,
+          url: fileName + '.' + ext,
+          type: fileType
+        },
+        select: {
+          id: true,
+          md5: true,
+          url: true,
+          createById: true
+        }
+      })
+
+      return (ctx.body = {
+        success: true,
+        result: fileRes
+      })
+    } catch (e) {
+      this.errorLogger.error('mergeMultiPart--------->', e)
+      return (ctx.body = {
+        success: false,
+        msg: e?.message || e || '合并文件失败'
       })
     }
   }
