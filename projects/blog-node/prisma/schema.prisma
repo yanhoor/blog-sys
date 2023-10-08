@@ -175,7 +175,7 @@ model File {
   createBy   User     @relation(fields: [createById], references: [id])
   createById String
   md5        String   @db.Text
-  url        String   @unique
+  url        String   @db.Text
   type       FileType
 
   deletedAt  DateTime?

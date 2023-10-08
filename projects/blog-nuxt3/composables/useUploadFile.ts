@@ -6,7 +6,7 @@ export const useUploadFile = () => {
     const { message } = useDiscreteApi(['message'])
     try {
       const { success, result, msg } = await useFetchPost(
-        '/upload',
+        '/file/upload',
         params,
         true
       )
@@ -44,7 +44,7 @@ export const useUploadFile = () => {
 
     try {
       const { success, result, msg } = await useFetchPost(
-        '/mergeMultiPart',
+        '/file/mergeMultiPart',
         {
           fileName: fileUtil.fileHash,
           ext: fileUtil.ext,
@@ -64,7 +64,7 @@ export const useUploadFile = () => {
 
   async function handleCheckFile(fileUtil: FileUtil) {
     try {
-      const { success, result, msg } = await useFetchPost('/checkFile', {
+      const { success, result, msg } = await useFetchPost('/file/checkFile', {
         md5: fileUtil.md5
       })
       if (success) {
@@ -81,7 +81,7 @@ export const useUploadFile = () => {
     return new Promise(async (resolve, reject) => {
       try {
         const { success, result, msg } = await useFetchPost(
-          '/upload',
+          '/file/upload',
           params,
           true
         )

@@ -17,7 +17,6 @@ router.get('/uploadFile/:filename', async (ctx, next) => {
       maxAge: 60 * 60 * 24 * 30 * 3
     }
     const mimeType = mime.getType(filename)
-    defaultLogger.info('========读取文件=========', filename, mimeType, type)
 
     if (mimeType.includes('image')) {
       let file = fs.readFileSync(p)
@@ -58,6 +57,7 @@ router.get('/uploadFile/:filename', async (ctx, next) => {
       return (ctx.body = stream)
     }
 
+    defaultLogger.info('========读取文件=========', filename, mimeType, type)
     const file = fs.readFileSync(p)
     return (ctx.body = file)
     // defaultLogger.info('========读取静态资源=========', file, mimeType)
@@ -65,25 +65,5 @@ router.get('/uploadFile/:filename', async (ctx, next) => {
     errorLogger.error('=====/static/uploadFile=======', e)
   }
 })
-
-function rangeParse(str) {
-  const token = str.split('=')
-  if (!token || token.length !== 2 || token[0] !== 'bytes') {
-    return null
-  }
-  return token[1]
-    .split(',')
-    .map((range) => {
-      return range.split('-').map((value) => {
-        if (value === '') {
-          return Infinity
-        }
-        return Number(value)
-      })
-    })
-    .filter((range) => {
-      return !isNaN(range[0]) && !isNaN(range[1]) && range[0] <= range[1]
-    })
-}
 
 module.exports = router
