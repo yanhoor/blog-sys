@@ -69,7 +69,8 @@ module.exports = async function (ctx, next) {
       // } else {
       //   fullName = await this.handleMultipartUpload(file, m5)
       // }
-      const idx = file.filepath.lastIndexOf('/')
+      let idx = file.filepath.lastIndexOf('/')
+      if(idx < 0) idx = file.filepath.lastIndexOf('\\')
       const localName = file.filepath.slice(idx + 1)
       // const fileType = type || this.getFileType(fullName)
       const fileType = type || this.getFileType(localName)
