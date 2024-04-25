@@ -4,7 +4,7 @@
       id="nInput"
       :value="modelValue"
       @input="handleInput"
-      @blur="showTopicList = false"
+      @blur="handleInputBlur"
       type="textarea"
       :placeholder="placeholder"
       size="large"
@@ -122,6 +122,12 @@ function handleInput(val: string = props.modelValue) {
   } else {
     showTopicList.value = false
   }
+}
+
+function handleInputBlur() {
+  setTimeout(() => {
+    showTopicList.value = false
+  })
 }
 
 function handleSelectTopic(topic: string) {
