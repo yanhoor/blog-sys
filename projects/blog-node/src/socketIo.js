@@ -12,7 +12,7 @@ class MySocketIo {
       /* options */
       // path: '/websocket/' // 默认 /socket.io/
       cors: {
-        origin: 'http://127.0.0.1:3000'
+        origin: ['http://127.0.0.1:3000']
       }
     })
 
