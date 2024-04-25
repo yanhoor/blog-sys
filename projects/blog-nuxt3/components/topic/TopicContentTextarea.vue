@@ -25,7 +25,7 @@
           <p
             v-for="topic of topicList"
             :key="topic.id"
-            class="px-[12px] py-[5px] hover:bg-primary hover:text-white"
+            class="px-[12px] py-[5px] hover:bg-primary hover:text-white cursor-pointer"
             @click="handleSelectTopic(topic.content)"
           >
             {{ topic.content }}
@@ -42,26 +42,23 @@ import type { Topic } from 'sys-types'
 
 interface Props {
   placeholder?: string
-  modelValue?: string
   showCount?: boolean
   autosize?: {
     minRows: number
     maxRows: number
   }
 }
-
+const modelValue = defineModel({
+  default: ""
+})
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
   placeholder: '请输入内容（输入 # 插入话题）',
   showCount: true,
-  autosize: {
+  autosize: () => ({
     minRows: 5,
     maxRows: 15
-  }
+  })
 })
-const emits = defineEmits<{
-  'update:modelValue': [v: string]
-}>()
 const inputEl = ref<HTMLTextAreaElement>()
 const showTopicList = ref(false)
 const topicList = ref<Topic[]>([])
@@ -92,7 +89,7 @@ onMounted(() => {
   inputEl.value = document.querySelector('#nInput textarea')
   // console.log('========topic mounted========', inputEl.value)
   inputEl.value.addEventListener('click', handleFocus)
-  if (props.modelValue) {
+  if (modelValue.value) {
     // 对于转发微博，已经有部分内容，将光标移到前面
     inputEl.value.focus({ preventScroll: true })
     inputEl.value.setSelectionRange(0, 0)
@@ -106,8 +103,8 @@ function handleFocus() {
   handleInput()
 }
 
-function handleInput(val: string = props.modelValue) {
-  emits('update:modelValue', val)
+function handleInput(val: string = modelValue.value) {
+  modelValue.value = val
   const textarea = inputEl.value
   const idx = val.lastIndexOf('#', textarea.selectionEnd - 1)
   const range = val.slice(idx, textarea.selectionEnd) // 获取 # 与 光标之间的文本
@@ -116,8 +113,8 @@ function handleInput(val: string = props.modelValue) {
     showTopicList.value = true
     searchTopicList(range.slice(1))
     handleGetPointerPosition(
-      props.modelValue.slice(0, textarea.selectionEnd),
-      props.modelValue.slice(textarea.selectionEnd)
+      modelValue.value.slice(0, textarea.selectionEnd),
+      modelValue.value.slice(textarea.selectionEnd)
     )
   } else {
     showTopicList.value = false
@@ -132,11 +129,11 @@ function handleInputBlur() {
 
 function handleSelectTopic(topic: string) {
   const textarea = inputEl.value
-  const idx = props.modelValue.lastIndexOf('#', textarea.selectionEnd)
+  const idx = modelValue.value.lastIndexOf('#', textarea.selectionEnd)
   const val = [
-    props.modelValue.slice(0, idx + 1),
+    modelValue.value.slice(0, idx + 1),
     `${topic}# `,
-    props.modelValue.slice(textarea.selectionEnd)
+    modelValue.value.slice(textarea.selectionEnd)
   ].join('')
   showTopicList.value = false
   inputEl.value.focus()
@@ -144,7 +141,7 @@ function handleSelectTopic(topic: string) {
     const index = idx + 3 + topic.length
     textarea.setSelectionRange(index, index)
   })
-  emits('update:modelValue', val)
+  modelValue.value = val
 }
 
 function handleAddTopic() {
@@ -152,19 +149,19 @@ function handleAddTopic() {
   const idx = textarea.selectionEnd
   // 在光标处插入 #
   const val = [
-    props.modelValue.slice(0, idx),
+    modelValue.value.slice(0, idx),
     '#',
-    props.modelValue.slice(idx)
+    modelValue.value.slice(idx)
   ].join('')
-  emits('update:modelValue', val)
+  modelValue.value = val
   // 插入完成后将光标移到 # 后
   textarea.focus()
   nextTick(() => textarea.setSelectionRange(idx + 1, idx + 1))
   showTopicList.value = true
   searchTopicList()
   handleGetPointerPosition(
-    props.modelValue.slice(0, idx),
-    props.modelValue.slice(idx)
+    modelValue.value.slice(0, idx),
+    modelValue.value.slice(idx)
   )
 }
 
