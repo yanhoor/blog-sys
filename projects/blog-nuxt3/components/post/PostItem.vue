@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { Blog } from 'sys-types'
+import type { Blog } from 'sys-types'
 import { NButton, NDropdown, NCollapseTransition } from 'naive-ui'
 import type { DropdownOption } from 'naive-ui'
 import { h } from 'vue'

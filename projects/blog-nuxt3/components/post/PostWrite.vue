@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { NButton, NInput, NDrawer, NDrawerContent, NPopover } from 'naive-ui'
-import { Blog, Topic } from 'sys-types'
+import type { Blog, Topic } from 'sys-types'
 import MediaUploadMulti from '~/components/Media/MediaUploadMulti.vue'
 
 interface BlogForm extends Blog {

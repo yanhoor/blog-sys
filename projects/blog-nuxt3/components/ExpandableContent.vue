@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
-import { Media, Topic } from 'sys-types'
+import type { Media, Topic } from 'sys-types'
 import MediaImgInlineView from '@/components/Media/MediaImgInlineView.vue'
 
 interface Props {

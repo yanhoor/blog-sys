@@ -10,6 +10,7 @@ console.log(
 )
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
+  ssr: false,
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
     transpile: isProd
@@ -156,7 +157,7 @@ export default defineNuxtConfig({
           ? [
               'naive-ui',
               'vueuc',
-              'date-fns-tz/esm/formatInTimeZone',
+              'date-fns-tz/formatInTimeZone',
               'sys-types'
             ]
           : ['sys-types']

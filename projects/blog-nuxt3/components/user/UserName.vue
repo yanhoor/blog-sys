@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 
 interface Props {
   user: User

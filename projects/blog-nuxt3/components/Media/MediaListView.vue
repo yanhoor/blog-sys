@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 
 interface Props {
   list: Media[]

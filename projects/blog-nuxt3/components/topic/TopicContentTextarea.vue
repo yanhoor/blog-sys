@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { NCollapseTransition, NInput } from 'naive-ui'
-import { Topic } from 'sys-types'
+import type { Topic } from 'sys-types'
 
 interface Props {
   placeholder?: string

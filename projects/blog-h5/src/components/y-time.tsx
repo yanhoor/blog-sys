@@ -1,4 +1,4 @@
-import TimeUtils from '@/utils/timeUtils'
+import {toAliasTime, formatTime} from '@/utils/timeUtils'
 
 interface Props {
   time: string
@@ -7,7 +7,7 @@ interface Props {
 export default function YTime({ time, isAlias = true }: Props) {
   return (
     <span className="secondary-text text-[12px]">
-      {isAlias ? TimeUtils.toAliasTime(time) : TimeUtils.formatTime(time)}
+      {isAlias ? toAliasTime(time) : formatTime(time)}
     </span>
   )
 }

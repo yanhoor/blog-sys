@@ -201,7 +201,7 @@ import {
   NTag,
   NDatePicker
 } from 'naive-ui'
-import { User, Media } from 'sys-types'
+import type { User, Media } from 'sys-types'
 import dayjs from 'dayjs'
 
 interface Props {

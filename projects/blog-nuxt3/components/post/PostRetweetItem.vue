@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { Blog } from 'sys-types'
+import type { Blog } from 'sys-types'
 
 interface Props {
   blog: Blog

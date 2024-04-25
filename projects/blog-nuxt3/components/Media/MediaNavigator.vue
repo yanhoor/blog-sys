@@ -49,9 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media, MediaFile } from 'sys-types'
-import { NIcon } from 'naive-ui'
-import { ChevronLeft24Regular, ChevronRight24Regular } from '@vicons/fluent'
+import type { Media, MediaFile } from 'sys-types'
 
 interface Props {
   list: Media[]

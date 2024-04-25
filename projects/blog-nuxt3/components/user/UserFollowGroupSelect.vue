@@ -79,7 +79,7 @@ import {
   NSpin,
   NCard
 } from 'naive-ui'
-import { FollowGroup } from 'sys-types'
+import type { FollowGroup } from 'sys-types'
 
 interface Props {
   show: boolean

@@ -60,6 +60,8 @@ import {
   NForm,
   NFormItem,
   NInput,
+} from 'naive-ui'
+import type {
   FormInst,
   FormRules,
   FormItemRule,

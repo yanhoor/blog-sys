@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { NButton, NDropdown } from 'naive-ui'
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 import { useFollowGroupSelectStore } from '~/store/modules/followGroupSelectStore'
 
 interface Props {

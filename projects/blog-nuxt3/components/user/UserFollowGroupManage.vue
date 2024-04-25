@@ -66,7 +66,7 @@
 <script lang="ts" setup>
 import { NModal, NButton, NInput, NInputGroup, NTag, NCard } from 'naive-ui'
 import Sortable from 'sortablejs'
-import { FollowGroup } from 'sys-types'
+import type { FollowGroup } from 'sys-types'
 
 interface Props {
   show: boolean

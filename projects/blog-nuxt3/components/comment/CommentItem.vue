@@ -128,12 +128,14 @@
 </template>
 
 <script setup lang="ts">
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import {
   NButton,
   NCollapseTransition,
   NDrawer,
-  NDrawerContent,
+  NDrawerContent
+} from 'naive-ui'
+import type {
   DialogOptions
 } from 'naive-ui'
 

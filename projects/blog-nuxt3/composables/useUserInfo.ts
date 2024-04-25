@@ -1,4 +1,4 @@
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 import { initSocketIo, socketClient } from '@/socketIo'
 
 export const useUserInfo = () => {

@@ -1,17 +1,17 @@
 <template>
   <NConfigProvider
-    class="bg-page-light dark:bg-page-dark"
-    :theme="uiTheme"
-    :locale="zhCN"
-    :date-locale="dateZhCN"
-    inline-theme-disabled
-    :theme-overrides="themeOverrides"
+      class="bg-page-light dark:bg-page-dark"
+      :theme="uiTheme"
+      :locale="zhCN"
+      :date-locale="dateZhCN"
+      inline-theme-disabled
+      :theme-overrides="themeOverrides"
   >
-    <NuxtLoadingIndicator />
+    <NuxtLoadingIndicator/>
     <NuxtLayout>
       <!--导航会报错-->
       <!--<NuxtPage :page-key="getPathKey"/>-->
-      <NuxtPage />
+      <NuxtPage/>
     </NuxtLayout>
     <GlobalComponentWrapper></GlobalComponentWrapper>
   </NConfigProvider>
@@ -23,9 +23,11 @@ import {
   darkTheme,
   zhCN,
   dateZhCN,
+} from 'naive-ui'
+import type {
   GlobalThemeOverrides
 } from 'naive-ui'
-import { initSocketIo, socketClient } from '@/socketIo'
+import {initSocketIo, socketClient} from '@/socketIo'
 
 const themeOverrides: GlobalThemeOverrides = {
   common: {
@@ -47,8 +49,8 @@ onMounted(() => {
   }, 300)
 
   window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', handleSystemModeChange)
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', handleSystemModeChange)
 
   window.addEventListener('load', handleLoadEvent)
 
@@ -63,8 +65,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .removeEventListener('change', handleSystemModeChange)
+      .matchMedia('(prefers-color-scheme: dark)')
+      .removeEventListener('change', handleSystemModeChange)
   window.removeEventListener('load', handleLoadEvent)
 })
 

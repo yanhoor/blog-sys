@@ -37,8 +37,10 @@ import {
   NForm,
   NFormItem,
   NInput,
+} from 'naive-ui'
+import type {
   FormInst,
-  FormRules
+  FormRules,
 } from 'naive-ui'
 import { Encrypt } from '~/utils/crypto'
 

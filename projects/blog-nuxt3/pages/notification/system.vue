@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { NTag } from 'naive-ui'
-import { Notification } from 'sys-types'
+import type { Notification } from 'sys-types'
 
 function handleTopicList(notification: Notification) {
   return notification.blog.topics?.map((t) => t.topic)

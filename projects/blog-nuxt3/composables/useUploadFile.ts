@@ -1,5 +1,5 @@
 import FileUtil from '~/utils/fileUtil'
-import { MediaFile } from 'sys-types'
+import type { MediaFile } from 'sys-types'
 
 export const useUploadFile = () => {
   async function handleUploadSingle(params) {

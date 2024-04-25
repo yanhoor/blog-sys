@@ -33,7 +33,7 @@
 import { NAvatar } from 'naive-ui'
 import { h } from 'vue'
 import { Icon } from '#components'
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 
 interface Props {
   user: User

@@ -1,5 +1,7 @@
-import { Blog } from 'sys-types'
-import { DialogOptions } from 'naive-ui'
+import type { Blog } from 'sys-types'
+import type {
+  DialogOptions
+} from 'naive-ui'
 
 export const usePostActions = (blog?: Blog) => {
   const currentPost = ref<Blog | undefined>(blog)

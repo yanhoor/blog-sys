@@ -5,7 +5,7 @@ import { Search } from '@react-vant/icons'
 import { ReactNode, useState } from 'react'
 import PageFetchWrapper from '@/components/page-fetch-wrapper'
 import MediaImageItem from '@/components/media/media-image-item'
-import { Blog, User } from 'sys-types'
+import type { Blog, User } from 'sys-types'
 import YCard from '@/components/y-card'
 import UserAvatar from '@/components/user/user-avatar'
 import defaultBg from '@/assets/images/profile_card_default_bg.jpeg'
@@ -31,7 +31,9 @@ export default function UserPage() {
 
   async function getUserInfo() {
     try {
-      const { msg, success, result } = await $http.post(user_info + params.id)
+      const { msg, success, result } = await $http.post(user_info, {
+        uid: params.id
+      })
       if (success) {
         setUserInfo(result)
       } else {

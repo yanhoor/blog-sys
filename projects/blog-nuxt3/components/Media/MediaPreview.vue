@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { MediaFile } from 'sys-types'
+import type { MediaFile } from 'sys-types'
 import { NModal } from 'naive-ui'
 
 interface Props {

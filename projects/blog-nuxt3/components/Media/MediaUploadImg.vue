@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { NSpin, NIconWrapper } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
-import { MediaFile } from 'sys-types'
+import type { MediaFile } from 'sys-types'
 import FileUtil from '~/utils/fileUtil'
 
 interface Props {

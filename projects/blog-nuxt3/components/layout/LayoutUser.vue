@@ -25,7 +25,10 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NDropdown, DialogOptions, NBadge } from 'naive-ui'
+import { NButton, NDropdown, NBadge } from 'naive-ui'
+import type {
+  DialogOptions
+} from 'naive-ui'
 import { socketClient } from '@/socketIo'
 import { Icon } from '#components'
 

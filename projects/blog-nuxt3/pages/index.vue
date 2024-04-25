@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { NCard, NButton } from 'naive-ui'
-import { FollowGroup } from 'sys-types'
+import type { FollowGroup } from 'sys-types'
 
 useHead({
   title: '首页'

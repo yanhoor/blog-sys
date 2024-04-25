@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { NCard, NBackTop } from 'naive-ui'
-import { Blog } from 'sys-types'
+import type { Blog } from 'sys-types'
 
 interface Props {
   searchParams?: {

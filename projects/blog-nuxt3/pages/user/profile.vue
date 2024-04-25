@@ -79,10 +79,12 @@ import {
   NForm,
   NFormItem,
   NInput,
-  FormInst,
-  FormRules
 } from 'naive-ui'
-import { User } from 'sys-types'
+import type {
+  FormInst,
+  FormRules,
+} from 'naive-ui'
+import type { User } from 'sys-types'
 
 definePageMeta({
   middleware: ['auth']

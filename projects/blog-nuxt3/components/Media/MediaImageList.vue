@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media, MediaFile } from 'sys-types'
+import type { Media, MediaFile } from 'sys-types'
 import { NCollapseTransition } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
 import MediaImgRatioView from '~/components/Media/MediaImgRatioView.vue'

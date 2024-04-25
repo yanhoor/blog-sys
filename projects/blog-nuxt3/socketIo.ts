@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client'
-import { ClientToServerEvents, Notification } from 'sys-types'
+import type { ClientToServerEvents, Notification } from 'sys-types'
 import { useShowNotificationDetail } from '~/composables/useNotification'
 
 const SOCKETEVENTTYPE = {

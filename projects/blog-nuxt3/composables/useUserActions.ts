@@ -1,4 +1,4 @@
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 
 export const useUserActions = (user?: User) => {
   const currentUser = ref<User | undefined>(user)

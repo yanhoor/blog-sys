@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { NButton } from 'naive-ui'
-import { Comment, MediaFile, Blog } from 'sys-types'
+import type { Comment, MediaFile, Blog } from 'sys-types'
 
 interface Props {
   placeholder?: string

@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import { NCard, createDiscreteApi } from 'naive-ui'
 
 interface Props {

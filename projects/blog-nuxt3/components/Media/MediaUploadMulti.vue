@@ -131,7 +131,7 @@
 
 <script setup lang="ts">
 import { NSpin, NButton, NIconWrapper } from 'naive-ui'
-import { Media, MediaFile } from 'sys-types'
+import type { Media, MediaFile } from 'sys-types'
 import FileUtil from '@/utils/fileUtil'
 
 interface Props {

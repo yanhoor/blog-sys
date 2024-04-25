@@ -1,4 +1,4 @@
-import { Notification } from 'sys-types'
+import type { Notification } from 'sys-types'
 import { createDiscreteApi, NButton, NTime } from 'naive-ui'
 import { h } from 'vue'
 

@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 import { NResult, NBackTop, NSpin, NSkeleton } from 'naive-ui'
 
 interface Props {

@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 import { NSkeleton } from 'naive-ui'
 
 interface Props {

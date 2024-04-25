@@ -123,7 +123,7 @@ import {
   NRadioButton,
   NBackTop
 } from 'naive-ui'
-import { Notification } from 'sys-types'
+import type { Notification } from 'sys-types'
 
 interface Props {
   typeName: string

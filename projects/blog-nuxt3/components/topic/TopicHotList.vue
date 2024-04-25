@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { Topic } from 'sys-types'
+import type { Topic } from 'sys-types'
 import { NCard, NButton } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
