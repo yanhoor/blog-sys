@@ -102,7 +102,7 @@
           </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full" ref="interactionRef">
           <n-collapse-transition :show="showType === 'comment'">
             <PostCommentList
                 ref="commentRef"
@@ -163,11 +163,16 @@ const blogId = route.params.id
 const commentRef = ref()
 const likeRef = ref()
 const retweetRef = ref()
+const interactionRef = ref()
 const showType = ref<ActionType>('comment')
 
 onMounted(() => {
   const type = location.hash.slice(1)
   showType.value = type
+
+  setTimeout(() => {
+    if (type) interactionRef.value?.scrollIntoView({behavior: 'smooth'})
+  }, 300)
 })
 const {currentPost, handlePostCollect, handlePostLike, handleDeletePost} =
     usePostActions()

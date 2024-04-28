@@ -1,5 +1,5 @@
 <template>
-  <div class="prose prose-stone dark:prose-invert" v-html="content"></div>
+  <div class="relative prose prose-stone dark:prose-invert" v-html="content"></div>
 </template>
 
 <script setup lang="ts">
