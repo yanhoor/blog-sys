@@ -209,7 +209,7 @@ model Blog {
   longitude   Float?              @db.Double // 经度
 
   // title   String @db.VarChar(255)
-  content String @db.Text
+  content String @db.LongText
 
   deletedAt           DateTime?
   comments            Comment[]
