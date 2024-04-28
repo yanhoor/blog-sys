@@ -4,20 +4,20 @@
       <UserAvatar :user="currentPost.createBy" :size="56"></UserAvatar>
       <div class="flex flex-col items-start">
         <UserName
-          class="text-[18px] font-semibold"
-          :user="currentPost.createBy"
+            class="text-[18px] font-semibold"
+            :user="currentPost.createBy"
         ></UserName>
         <span
-          class="secondary-text-color text-[12px]"
-          v-time="new Date(currentPost.createdAt)"
+            class="secondary-text-color text-[12px]"
+            v-time="new Date(currentPost.createdAt)"
         ></span>
       </div>
       <n-dropdown trigger="click" :options="actionOptions">
         <n-button
-          quaternary
-          circle
-          type="default"
-          class="absolute right-0 top-0 cursor-pointer"
+            quaternary
+            circle
+            type="default"
+            class="absolute right-0 top-0 cursor-pointer"
         >
           <template #icon>
             <Icon name="fluent:chevron-down-20-regular"></Icon>
@@ -26,52 +26,54 @@
       </n-dropdown>
     </div>
 
+    <PostArticle class="line-clamp-3" v-if="currentPost!.contentType == 2" :content="currentPost!.content"/>
     <ExpandableContent
-      :content="currentPost.content"
-      :topicList="topicList"
-      :mediaList="referenceMediaList"
+        v-else
+        :content="currentPost!.content"
+        :topicList="topicList"
+        :mediaList="referenceMediaList"
     ></ExpandableContent>
 
     <MediaListView
-      class="w-full"
-      :list="currentPost.medias"
-      v-if="!currentPost.referenceBlogs?.length"
+        class="w-full"
+        :list="currentPost.medias"
+        v-if="!currentPost.referenceBlogs?.length"
     ></MediaListView>
 
     <PostReferenceItem
-      :blog="currentPost.retweetOriginBlog"
-      v-if="currentPost.retweetOriginBlog"
+        :blog="currentPost.retweetOriginBlog"
+        v-if="currentPost.retweetOriginBlog"
     ></PostReferenceItem>
 
     <div class="grid w-full grid-cols-3">
       <div
-        class="action-item placeholder-text-color"
-        :class="{ '!text-primary': showType === 'retweet' }"
-        @click="handleAction('retweet')"
+          class="action-item placeholder-text-color"
+          :class="{ '!text-primary': showType === 'retweet' }"
+          @click="handleAction('retweet')"
       >
         <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
         <span>{{ currentPost.retweetCount || '转发' }}</span>
       </div>
       <div
-        class="action-item placeholder-text-color"
-        :class="{ '!text-primary': showType === 'comment' }"
-        @click="handleAction('comment')"
+          class="action-item placeholder-text-color"
+          :class="{ '!text-primary': showType === 'comment' }"
+          @click="handleAction('comment')"
       >
         <Icon
-          name="fluent:comment-multiple-24-filled"
-          class="text-primary"
-          size="18"
-          v-if="currentPost.commentsCount"
+            name="fluent:comment-multiple-24-filled"
+            class="text-primary"
+            size="18"
+            v-if="currentPost.commentsCount"
         ></Icon>
         <Icon name="fluent:comment-multiple-20-regular" size="18" v-else></Icon>
         <span>{{ currentPost.commentsCount || '评论' }}</span>
       </div>
       <div class="action-item placeholder-text-color" @click="handlePostLike">
         <Icon
-          name="fluent:thumb-like-20-filled"
-          class="text-primary"
-          size="18"
-          v-if="currentPost.isLike"
+            name="fluent:thumb-like-20-filled"
+            class="text-primary"
+            size="18"
+            v-if="currentPost.isLike"
         ></Icon>
         <Icon name="fluent:thumb-like-20-regular" size="18" v-else></Icon>
         <span>{{ currentPost.likedByCount || '赞' }}</span>
@@ -80,9 +82,9 @@
 
     <n-collapse-transition :show="showType === 'comment'">
       <PostCommentList
-        class="w-full"
-        :blog="currentPost"
-        :page-size="2"
+          class="w-full"
+          :blog="currentPost"
+          :page-size="2"
       ></PostCommentList>
     </n-collapse-transition>
 
@@ -93,10 +95,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Blog } from 'sys-types'
-import { NButton, NDropdown, NCollapseTransition } from 'naive-ui'
-import type { DropdownOption } from 'naive-ui'
-import { h } from 'vue'
+import type {Blog} from 'sys-types'
+import {NButton, NDropdown, NCollapseTransition} from 'naive-ui'
+import type {DropdownOption} from 'naive-ui'
+import {h} from 'vue'
 
 interface Props {
   canEdit?: boolean // 是否能编辑文章
@@ -109,8 +111,8 @@ const props = defineProps<Props>()
 const emit = defineEmits(['delete', 'refresh'])
 const userInfo = useUserInfo()
 const showType = ref<ActionType>()
-const { currentPost, handlePostCollect, handlePostLike, handleDeletePost } =
-  usePostActions(props.blog)
+const {currentPost, handlePostCollect, handlePostLike, handleDeletePost} =
+    usePostActions(props.blog)
 
 const topicList = computed(() => currentPost.value.topics?.map((t) => t.topic))
 const referenceMediaList = computed(() => {
@@ -131,13 +133,13 @@ const actionOptions = computed<DropdownOption[]>(() => {
       key: 'copyLink',
       props: {
         onClick: () => {
-          const { message } = useDiscreteApi(['message'])
+          const {message} = useDiscreteApi(['message'])
           navigator.clipboard
-            .writeText(location.origin + '/blog/post/' + currentPost.value.id)
-            .then((r) => {
-              // console.log('-----------', r)
-              message.success('复制成功')
-            })
+              .writeText(location.origin + '/blog/post/' + currentPost.value.id)
+              .then((r) => {
+                // console.log('-----------', r)
+                message.success('复制成功')
+              })
         }
       }
     },
@@ -154,20 +156,21 @@ const actionOptions = computed<DropdownOption[]>(() => {
   if (currentPost.value?.createById === userInfo.value?.id) {
     result.unshift({
       label: () =>
-        h(
-          'span',
-          { class: 'text-red-500' },
-          {
-            default: () => '删除'
-          }
-        ),
+          h(
+              'span',
+              {class: 'text-red-500'},
+              {
+                default: () => '删除'
+              }
+          ),
       key: 'delete',
       props: {
         onClick: async () => {
           try {
             await handleDeletePost()
             emit('delete')
-          } catch (e) {}
+          } catch (e) {
+          }
         }
       }
     })

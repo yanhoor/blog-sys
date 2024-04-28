@@ -8,15 +8,18 @@ module.exports = async function (ctx, next) {
     content,
     referenceId,
     address,
+    contentType,
     addressName,
     latitude,
     longitude
   } = ctx.request.body
   latitude = Number(latitude)
   longitude = Number(longitude)
+  if(contentType) contentType = Number(contentType)
   let userId = await this.getAuthUserId(ctx, next)
   const newItem = {
     content,
+    contentType,
     updatedAt: new Date()
   }
   let referenceBlog = null

@@ -11,6 +11,7 @@ const blogBaseFieldExpose = {
     createById: true,
     status: true,
     content: true,
+    contentType: true,
     address: true,
     addressName: true,
     latitude: true,

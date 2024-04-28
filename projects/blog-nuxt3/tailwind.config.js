@@ -4,6 +4,9 @@ module.exports = {
     preflight: false // 禁止预设样式
   },
   darkMode: 'class',
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
   theme: {
     extend: {
       colors: {

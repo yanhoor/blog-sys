@@ -8,6 +8,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  // relationMode = "prisma"
 }
 
 // 通知类型
@@ -201,6 +202,7 @@ model Blog {
   auditStatus Int                 @default(0) // 1--审核通过，0--未审核，2--审核不通过
   auditedAt   DateTime? // 审核时间
   status      Int                 @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
+  contentType Int                 @default(1) // 1--普通文本，2--富文本
   address     String?             @db.Text // 详细地址
   addressName String?             @db.Text // 位置名称
   latitude    Float?              @db.Double
