@@ -26,7 +26,9 @@
       </n-dropdown>
     </div>
 
-    <PostArticle class="line-clamp-3" v-if="currentPost!.contentType == 2" :content="currentPost!.content"/>
+    <div class="max-w-full max-h-[300px] overflow-auto" v-if="currentPost!.contentType == 2">
+      <PostArticle class="[&_pre]:w-fit [&_pre]:max-w-none" :content="currentPost!.content"/>
+    </div>
     <ExpandableContent
         v-else
         :content="currentPost!.content"

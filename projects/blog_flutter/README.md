@@ -1,5 +1,7 @@
 # blog_flutter
 
+使用 `Getx` 框架管理路由、状态等，已废弃，在 `blog_vipot` 继续维护。
+
 ## Todo List
 
 - [ ] 主页切换 `tab` 后，上一个 `tab` 页面的滚动状态没有记住

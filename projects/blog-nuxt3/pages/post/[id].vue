@@ -34,7 +34,7 @@
           </n-dropdown>
         </div>
 
-        <PostArticle v-if="currentPost!.contentType == 2" :content="currentPost!.content"/>
+        <PostArticle class="w-full !max-w-full" v-if="currentPost!.contentType == 2" :content="currentPost!.content"/>
         <ExpandableContent
             v-else
             :content="currentPost.content"
