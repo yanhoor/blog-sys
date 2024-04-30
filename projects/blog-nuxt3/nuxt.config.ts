@@ -10,7 +10,6 @@ console.log(
 )
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
-  ssr: false,
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
     transpile: isProd
@@ -70,7 +69,7 @@ export default defineNuxtConfig({
         // { rel: 'stylesheet', href: './prism.css' },
         {
           rel: 'icon',
-          href: 'https://nuxt.com/icon.png'
+          href: './icon.png'
         }
       ]
     }
@@ -154,12 +153,7 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include:
         process.env.NODE_ENV === 'development'
-          ? [
-              'naive-ui',
-              'vueuc',
-              'date-fns-tz/formatInTimeZone',
-              'sys-types'
-            ]
+          ? ['naive-ui', 'vueuc', 'date-fns-tz/formatInTimeZone', 'sys-types']
           : ['sys-types']
     }
   },
@@ -169,5 +163,6 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: false
-  }
+  },
+  workspaceDir: '../'
 })

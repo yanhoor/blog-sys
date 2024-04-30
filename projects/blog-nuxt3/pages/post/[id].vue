@@ -237,7 +237,8 @@ useHead(() => {
 initPage()
 
 async function initPage() {
-  ;({message: messageRef.value} = useDiscreteApi(['message']))
+  const api = useDiscreteApi(['message'])
+  messageRef.value = api.message
   loading.value = true
   await getBlogInfo()
   loading.value = false
@@ -251,8 +252,8 @@ async function getBlogInfo() {
     if (success) {
       currentPost.value = result
     } else if (code === 1) {
-      messageRef.value.error(msg as string)
-      return navigateTo({path: '/', replace: true})
+      messageRef.value?.error(msg as string)
+      return navigateTo({ path: '/', replace: true })
     }
   } catch (e) {
     console.log('=====/blog/info=======', e)
