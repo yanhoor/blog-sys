@@ -1,6 +1,6 @@
-import { Media } from "./media";
-import { User } from "./user";
-import { BlogTopic } from "./blogTopic";
+import type { Media } from "./media";
+import type { User } from "./user";
+import type { BlogTopic } from "./blogTopic";
 export interface Blog {
   id?: number | string;
   createById?: number | string;
@@ -14,6 +14,10 @@ export interface Blog {
   likedByCount?: number;
   collectedByCount?: number;
   commentsCount?: number;
+  retweetCount?: number;
   medias: Media[];
+  retweetOriginBlogId: string;
+  retweetOriginBlog?: Blog;
+  referenceBlogs?: Blog;
   topics: BlogTopic[];
 }

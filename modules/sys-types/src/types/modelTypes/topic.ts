@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import type { User } from "./user";
 
 export interface Topic {
   id?: string;

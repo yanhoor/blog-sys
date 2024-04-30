@@ -1,6 +1,6 @@
-import { User } from "./user";
-import { Blog } from "./blog";
-import { MediaFile } from "./mediaFile";
+import type { User } from "./user";
+import type { Blog } from "./blog";
+import type { MediaFile } from "./mediaFile";
 export interface Comment {
   id: number | string;
   content?: string;

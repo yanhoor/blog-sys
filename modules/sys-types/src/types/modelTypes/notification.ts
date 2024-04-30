@@ -1,6 +1,6 @@
-import { User } from "./user";
-import { Comment } from "./comment";
-import { Blog } from "./blog";
+import type { User } from "./user";
+import type { Comment } from "./comment";
+import type { Blog } from "./blog";
 
 enum Type {
   collect_blog = "collect_blog",

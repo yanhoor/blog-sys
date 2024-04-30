@@ -2,17 +2,25 @@
   "name": "sys-types",
   "version": "1.0.1",
   "description": "",
-  "private": true,
-  "main": "index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "unbuild",
+    "dev": "pnpm run stub",
+    "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
+    "dev2": "unbuild --stub && npm run jiti-fix",
+    "stub": "unbuild --stub"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "dayjs": "^1.11.7"
+    "dayjs": "^1.11.9",
+    "unbuild": "^2.0.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.1.1"
+    "@types/crypto-js": "^4.1.2"
   }
 }
