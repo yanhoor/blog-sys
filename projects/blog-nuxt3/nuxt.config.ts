@@ -100,9 +100,15 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     'nuxt-icon',
-    '@formkit/auto-animate/nuxt', // https://auto-animate.formkit.com/#usage-vue
-    '@nuxtjs/color-mode'
+    // https://auto-animate.formkit.com/#usage-vue
+    '@formkit/auto-animate/nuxt',
+    '@nuxtjs/color-mode',
+    '@element-plus/nuxt'
   ],
+  elementPlus: {
+    imports: ['useLocale'],
+    injectionID: { prefix: 100, current: 1 }
+  },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {
