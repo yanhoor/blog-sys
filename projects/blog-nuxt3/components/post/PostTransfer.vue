@@ -34,11 +34,11 @@
             ></Icon>
           </template>
         </MediaUploadImg>
-        <n-button
+        <el-button
           type="primary"
           @click="commitTransfer"
           :loading="isCommitting"
-          >{{ btnText }}</n-button
+          >{{ btnText }}</el-button
         >
       </div>
     </div>
@@ -46,7 +46,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton } from 'naive-ui'
 import type { Comment, MediaFile, Blog } from 'sys-types'
 
 interface Props {
@@ -72,11 +71,10 @@ const imageFile = ref<MediaFile>()
 const userInfo = useUserInfo()
 
 async function commitTransfer() {
-  const { message } = useDiscreteApi(['message'])
   const content = textContent.value.trim()
 
   if (!content && !imageFile.value) {
-    message.warning('请输入内容')
+    ElMessage.warning('请输入内容')
     return
   }
 
@@ -104,9 +102,9 @@ async function commitTransfer() {
       emit('success', result)
       textContent.value = ''
       imageFile.value = undefined
-      message.success('发表成功')
+      ElMessage.success('发表成功')
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {
     isCommitting.value = false

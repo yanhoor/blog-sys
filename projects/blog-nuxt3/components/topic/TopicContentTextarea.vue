@@ -1,6 +1,6 @@
 <template>
   <div class="relative w-full">
-    <n-input
+    <el-input
       id="nInput"
       :value="modelValue"
       @input="handleInput"
@@ -16,7 +16,7 @@
       class="card-bg-color absolute left-0 top-0 z-10 w-[70%]"
       :style="topicListElStyle"
     >
-      <n-collapse-transition :show="showTopicList">
+      <template v-show="showTopicList">
         <div
           class="max-h-[400px] overflow-auto rounded border border-primary"
           v-auto-animate
@@ -25,19 +25,18 @@
           <p
             v-for="topic of topicList"
             :key="topic.id"
-            class="px-[12px] py-[5px] hover:bg-primary hover:text-white cursor-pointer"
+            class="cursor-pointer px-[12px] py-[5px] hover:bg-primary hover:text-white"
             @click="handleSelectTopic(topic.content)"
           >
             {{ topic.content }}
           </p>
-        </div></n-collapse-transition
+        </div></template
       >
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCollapseTransition, NInput } from 'naive-ui'
 import type { Topic } from 'sys-types'
 
 interface Props {
@@ -49,7 +48,7 @@ interface Props {
   }
 }
 const modelValue = defineModel({
-  default: ""
+  default: ''
 })
 const props = withDefaults(defineProps<Props>(), {
   placeholder: '请输入内容（输入 # 插入话题）',

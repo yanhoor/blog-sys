@@ -1,8 +1,6 @@
 import type { Notification } from 'sys-types'
-import { createDiscreteApi, NButton, NTime } from 'naive-ui'
+import { ElButton } from 'element-plus'
 import { h } from 'vue'
-
-const { notification } = createDiscreteApi(['notification'])
 
 export const useNotification = () => {
   return useState<Notification[]>('notification', () => [])
@@ -64,14 +62,14 @@ export const useFetchNotificationCount = async (params = {}) => {
 // 评论通知弹窗详情显示
 export const useShowNotificationDetail = async (result: Notification) => {
   // todo: Error: [nuxt] A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, Nuxt middleware, or Vue setup function. This is probably not a Nuxt bug.
-  const n = notification?.create({
+  const n = ElNotification.success({
     title: '通知',
-    content: () =>
+    message:
       result.type === 'system_audit'
         ? h('div', null, [
             '你有新的系统审核动态，',
             h(
-              NButton,
+              ElButton,
               {
                 text: true,
                 type: 'primary',
@@ -89,7 +87,7 @@ export const useShowNotificationDetail = async (result: Notification) => {
         : h('div', null, [
             '你的博客有新评论，',
             h(
-              NButton,
+              ElButton,
               {
                 text: true,
                 type: 'primary',
@@ -105,14 +103,14 @@ export const useShowNotificationDetail = async (result: Notification) => {
             )
           ]),
     meta: () =>
-      h(NTime, {
+      h('div', {
         type: 'datetime',
         format: 'MM-dd HH:mm',
         time: new Date(result.createdAt)
       }),
     action: () =>
       h(
-        NButton,
+        ElButton,
         {
           text: true,
           type: 'primary',

@@ -1,6 +1,6 @@
 <template>
   <LayoutMain class="search-result flex items-start gap-[12px]" size="large">
-    <n-card class="sticky top-[80px] w-[240px]">
+    <el-card class="sticky top-[80px] w-[240px]">
       <p class="text-[16px] font-semibold">搜索结果</p>
       <CustomCollapse
         title="排序"
@@ -58,23 +58,22 @@
             话题
           </p>
         </div>
-        <n-button
+        <el-button
           text
           size="tiny"
           class="placeholder-text-color"
           v-if="searchParams.isTopic"
           @click.stop="handleSearchTopic(0)"
-          >清除</n-button
+          >清除</el-button
         >
       </div>
-    </n-card>
+    </el-card>
     <PostList class="flex-1" ref="blogListRef" :searchParams="searchParams" />
     <TopicHotList class="sticky top-[80px] w-[280px]" />
   </LayoutMain>
 </template>
 
 <script setup lang="ts">
-import { NCard, NButton } from 'naive-ui'
 import dayjs from 'dayjs'
 
 useHead({

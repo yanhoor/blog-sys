@@ -10,7 +10,7 @@
     />
 
     <div class="flex items-center justify-center gap-[12px]">
-      <n-button
+      <el-button
         round
         tertiary
         type="primary"
@@ -22,8 +22,8 @@
           <Icon name="fluent:image-add-20-regular"></Icon>
         </template>
         图片
-      </n-button>
-      <n-button
+      </el-button>
+      <el-button
         round
         tertiary
         type="primary"
@@ -35,8 +35,8 @@
           <Icon name="fluent:video-add-20-regular"></Icon>
         </template>
         视频
-      </n-button>
-      <n-button
+      </el-button>
+      <el-button
         round
         tertiary
         type="primary"
@@ -48,7 +48,7 @@
           <Icon name="fluent:sound-wave-circle-20-regular"></Icon>
         </template>
         录音
-      </n-button>
+      </el-button>
     </div>
 
     <MediaAudioRecord
@@ -57,14 +57,14 @@
       v-if="uploadMode === 4"
     />
 
-    <n-spin :size="32" v-if="uploading" />
+    <div v-loading v-if="uploading"></div>
 
     <div
       class="my-[12px] w-full text-center"
       v-if="audioRecordFile && uploadMode === 4"
     >
-      <n-button round type="primary" @click="handleUploadAudio"
-        >上传录音</n-button
+      <el-button round type="primary" @click="handleUploadAudio"
+        >上传录音</el-button
       >
     </div>
 
@@ -84,14 +84,14 @@
             class="overflow-clip object-cover"
             :url="media.file.url"
           />
-          <n-icon-wrapper
+          <el-button
             class="absolute -right-[8px] -top-[8px] cursor-pointer"
-            :size="18"
-            :border-radius="6"
+            circle
+            type="success"
             @click="handleDeleteItem(index)"
           >
-            <Icon name="fluent:delete-16-regular"></Icon>
-          </n-icon-wrapper>
+            <Icon #icon name="fluent:delete-16-regular"></Icon>
+          </el-button>
         </div>
       </div>
 
@@ -114,23 +114,22 @@
         v-if="uploadMode === 3"
       >
         <MediaVideoItem :url="modelValue[0].file.url" />
-        <n-button round type="error" @click="handleDeleteItem(0)"
-          >删除视频</n-button
+        <el-button round type="error" @click="handleDeleteItem(0)"
+          >删除视频</el-button
         >
       </div>
-      <n-button
+      <el-button
         v-if="uploadMode === 4"
         round
         type="error"
         @click="handleDeleteAudio()"
-        >删除录音</n-button
+        >删除录音</el-button
       >
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NSpin, NButton, NIconWrapper } from 'naive-ui'
 import type { Media, MediaFile } from 'sys-types'
 import FileUtil from '@/utils/fileUtil'
 
@@ -234,8 +233,6 @@ async function handleUploadAudio() {
 }
 
 async function handleUploadFile(file: File, type?: string): Promise<boolean> {
-  const { message } = useDiscreteApi(['message'])
-
   if (!handleCheckUploadValid(file)) {
     message.error('不支持的文件类型')
     return false
@@ -266,7 +263,7 @@ async function handleUploadFile(file: File, type?: string): Promise<boolean> {
     }
   } catch (e) {
     // failedFileList.value.push(file)
-    message.error('上传失败')
+    ElMessage.error('上传失败')
     return false
   }
 }

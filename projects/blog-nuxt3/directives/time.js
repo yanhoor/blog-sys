@@ -1,4 +1,4 @@
-import { formatTime, toAliasTime } from '~/utils/timeUtils'
+import { formatTime, toAliasTime } from 'sys-types'
 
 const time = (el, binding) => {
   el.textContent = binding.modifiers?.format

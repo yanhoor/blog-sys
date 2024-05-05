@@ -1,47 +1,41 @@
 <template>
-  <n-card class="form-container">
-    <n-form ref="formRef" :model="postForm" :rules="rules">
-      <n-form-item path="mobile" label="手机号">
-        <n-input
-          v-model:value="postForm.mobile"
+  <el-card class="form-container">
+    <el-form
+      ref="formRef"
+      :model="postForm"
+      :rules="rules"
+      label-position="top"
+    >
+      <el-form-item prop="mobile" label="手机号">
+        <el-input
+          v-model="postForm.mobile"
           @keydown.enter.prevent
           maxlength="11"
           show-count
           clearable
         />
-      </n-form-item>
-      <n-form-item path="password" label="密码">
-        <n-input
-          v-model:value="postForm.password"
+      </el-form-item>
+      <el-form-item prop="password" label="密码">
+        <el-input
+          v-model="postForm.password"
           type="password"
           @keydown.enter.prevent
         />
-      </n-form-item>
-      <n-space vertical>
-        <n-button class="w-full" type="primary" @click="handlePost">
+      </el-form-item>
+      <div class="mt-[20px] flex w-full flex-col gap-[20px]">
+        <el-button class="w-full" type="primary" @click="handlePost">
           登录
-        </n-button>
-        <n-button class="w-full" @click="toRegister">
+        </el-button>
+        <el-button class="!ml-0 w-full" @click="toRegister">
           没有账号，去注册
-        </n-button>
-      </n-space>
-    </n-form>
-  </n-card>
+        </el-button>
+      </div>
+    </el-form>
+  </el-card>
 </template>
 
 <script setup lang="ts">
-import {
-  NButton,
-  NCard,
-  NSpace,
-  NForm,
-  NFormItem,
-  NInput,
-} from 'naive-ui'
-import type {
-  FormInst,
-  FormRules,
-} from 'naive-ui'
+import type { FormInstance, FormRules } from 'element-plus'
 import { Encrypt } from '~/utils/crypto'
 
 const token = useCookie('token', {
@@ -64,7 +58,7 @@ const postForm = ref<ModelType>({
   mobile: '',
   password: ''
 })
-const formRef = ref<FormInst | null>(null)
+const formRef = ref<FormInstance | null>(null)
 const rules: FormRules = {
   mobile: [
     {
@@ -81,8 +75,8 @@ const rules: FormRules = {
 }
 function handlePost(e: MouseEvent) {
   e.preventDefault()
+  console.log('=========handlePost========')
   formRef.value?.validate(async (errors) => {
-    const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
         const { result, success, msg } = await useFetchPost('/user/login', {
@@ -90,18 +84,18 @@ function handlePost(e: MouseEvent) {
           password: Encrypt(postForm.value.password)
         })
         if (success) {
-          message.success('登录成功')
+          ElMessage.success('登录成功')
 
           token.value = result
           await navigateTo('/', { replace: true })
           useFetchNotificationCount()
         } else {
-          message.error(msg as string)
+          ElMessage.error(msg as string)
         }
       } catch (e) {}
     } else {
       console.log(errors)
-      message.error('请将信息填写完整')
+      ElMessage.error('请将信息填写完整')
     }
   })
 }

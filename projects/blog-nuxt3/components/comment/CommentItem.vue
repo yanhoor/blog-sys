@@ -36,7 +36,7 @@
           class="mr-[12px] text-gray-500"
           v-time="new Date(currentComment.createdAt)"
         ></span>
-        <n-button text @click="triggerReply" v-if="userInfo">
+        <el-button text @click="triggerReply" v-if="userInfo">
           <template #icon>
             <Icon
               :name="
@@ -46,7 +46,7 @@
             ></Icon>
           </template>
           {{ showReply ? '取消回复' : '回复' }}
-        </n-button>
+        </el-button>
       </div>
       <div class="flex items-center gap-[12px]">
         <span
@@ -76,16 +76,18 @@
       </div>
     </div>
 
-    <n-collapse-transition :show="showReply">
-      <CommentForm
-        btnText="发布"
-        :placeholder="`回复 ${currentComment.createBy.name}:`"
-        :level="2"
-        :comment="currentComment"
-        :blogId="currentComment.blogId"
-        @success="handleReplySuccess"
-      />
-    </n-collapse-transition>
+    <el-collapse :show="showReply">
+      <el-collapse-item>
+        <CommentForm
+          btnText="发布"
+          :placeholder="`回复 ${currentComment.createBy.name}:`"
+          :level="2"
+          :comment="currentComment"
+          :blogId="currentComment.blogId"
+          @success="handleReplySuccess"
+        />
+      </el-collapse-item>
+    </el-collapse>
 
     <div
       v-if="currentComment.childComments?.length > 0 && showChildren"
@@ -101,7 +103,7 @@
         "
         @commentDelete="getCommentInfo()"
       />
-      <n-button
+      <el-button
         class="mb-[12px]"
         text
         type="primary"
@@ -113,31 +115,23 @@
         <template #icon>
           <Icon name="fluent:chevron-down-24-filled"></Icon>
         </template>
-      </n-button>
+      </el-button>
     </div>
   </div>
 
-  <n-drawer v-model:show="showReplyDetailList" width="500px">
-    <n-drawer-content title="所有回复" body-content-style="padding: 0">
-      <CommentReplyList
-        :comment="currentComment"
-        @commentDelete="handleDeleteTopComment"
-      />
-    </n-drawer-content>
-  </n-drawer>
+  <el-drawer v-model="showReplyDetailList" width="500px">
+    <template #header>
+      <h3>所有回复</h3>
+    </template>
+    <CommentReplyList
+      :comment="currentComment"
+      @commentDelete="handleDeleteTopComment"
+    />
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
 import type { Comment } from 'sys-types'
-import {
-  NButton,
-  NCollapseTransition,
-  NDrawer,
-  NDrawerContent
-} from 'naive-ui'
-import type {
-  DialogOptions
-} from 'naive-ui'
 
 // 如果 currentComment.value.topCommentId 存在，currentComment.value 就是评论的回复，即当前组件在第二层
 interface Props {
@@ -170,13 +164,11 @@ function handleReplySuccess(reply: Comment) {
 }
 
 async function handleDeleteComment() {
-  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
-  dialog.error({
-    title: '删除',
-    content: '确定删除该评论？该评论下的所有回复也将被删除',
-    positiveText: '删除',
-    negativeText: '取消',
-    onPositiveClick: async () => {
+  ElMessageBox.error('确定删除该评论？该评论下的所有回复也将被删除', '删除', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消'
+  })
+    .then(async () => {
       try {
         commentDeleting.value = true
         const { result, success, msg } = await useFetchPost('/comment/delete', {
@@ -184,18 +176,17 @@ async function handleDeleteComment() {
         })
         commentDeleting.value = false
         if (success) {
-          message.success('删除成功')
+          ElMessage.success('删除成功')
           emits('commentDelete', currentComment.value)
         } else {
-          message.error(msg as string)
+          ElMessage.error(msg as string)
         }
       } catch (e) {
         commentDeleting.value = false
         console.log('=====/comment/delete=======', e)
       }
-    },
-    onNegativeClick: async () => {}
-  } as DialogOptions)
+    })
+    .catch()
 }
 
 function handleDeleteTopComment(comment: Comment) {
@@ -204,7 +195,6 @@ function handleDeleteTopComment(comment: Comment) {
 }
 
 async function getCommentInfo() {
-  const { message } = useDiscreteApi(['message'])
   try {
     commentDeleting.value = true
     const { result, success, msg } = await useFetchPost('/comment/info', {
@@ -213,7 +203,7 @@ async function getCommentInfo() {
     if (success) {
       currentComment.value = result
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {
     console.log('=====/comment/info=======', e)
@@ -221,9 +211,8 @@ async function getCommentInfo() {
 }
 
 async function handleLikeComment() {
-  const { message } = useDiscreteApi(['message'])
   if (!userInfo.value || likeLoading.value) {
-    return message.info('请先登录')
+    return ElMessage.info('请先登录')
   }
 
   try {

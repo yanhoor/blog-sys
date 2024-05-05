@@ -1,19 +1,29 @@
 <template>
   <div class="layout-user">
     <div class="flex cursor-pointer items-center gap-[6px]" v-if="userInfo">
-      <n-button type="primary" @click="showWritePost = true" size="small">
+      <el-button type="primary" @click="showWritePost = true" size="small">
         <template #icon>
           <Icon name="fluent:compose-20-regular"></Icon>
         </template>
-      </n-button>
-      <n-dropdown :options="userOptions" @select="handleDropdownSelect">
-        <n-badge :value="notificationUnreadCount" :max="99">
+      </el-button>
+      <el-dropdown @command="handleDropdownSelect">
+        <el-badge :value="notificationUnreadCount" :max="99">
           <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
-        </n-badge>
-      </n-dropdown>
+        </el-badge>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              v-for="action of userOptions"
+              :key="action.key"
+              :command="action.key"
+              >{{ action.label }}</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
-    <n-button type="primary" v-else @click="navigateTo('/login')"
-      >登录</n-button
+    <el-button type="primary" v-else @click="navigateTo('/login')"
+      >登录</el-button
     >
 
     <PostWrite
@@ -25,10 +35,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NDropdown, NBadge } from 'naive-ui'
-import type {
-  DialogOptions
-} from 'naive-ui'
 import { socketClient } from '@/socketIo'
 import { Icon } from '#components'
 
@@ -101,17 +107,15 @@ async function handleUserHome() {
 }
 
 async function handleLogout() {
-  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
-  dialog.error({
-    title: '退出登录',
-    content: '确定退出？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
+  ElMessageBox.error('确定退出？', '退出登录', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  })
+    .then(async () => {
       try {
         const { success, result, msg } = await useFetchPost('/user/logout', {})
         if (!success) {
-          message.error(msg as string)
+          ElMessage.error(msg as string)
         } else {
           token.value = ''
           userInfo.value = null
@@ -119,9 +123,8 @@ async function handleLogout() {
           checkCurrentPath()
         }
       } catch (e) {}
-    },
-    onNegativeClick: () => {}
-  } as DialogOptions)
+    })
+    .catch(() => {})
 }
 
 // 假如当前在需要登录的页面

@@ -8,14 +8,14 @@
     }"
   >
     <div class="flex flex-col gap-[12px]">
-      <n-card :bordered="false" v-if="topComment">
+      <el-card :bordered="false" v-if="topComment">
         <CommentItem
           :showChildren="false"
           :comment="topComment"
           @replySuccess="handleInit"
           @commentDelete="emits('commentDelete', topComment)"
         />
-      </n-card>
+      </el-card>
 
       <div class="mx-[12px] flex gap-[12px] text-[16px]">
         <span
@@ -32,7 +32,7 @@
         >
       </div>
 
-      <n-card :bordered="false">
+      <el-card :bordered="false">
         <div
           class="flex flex-col divide-y divide-border-light dark:divide-border-dark"
           v-auto-animate
@@ -57,14 +57,13 @@
           @refresh="handleLoadNextPage(1)"
         />
         <ResultNoMore v-else-if="pageLoadedFinish" />
-      </n-card>
+      </el-card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Comment } from 'sys-types'
-import { NCard, createDiscreteApi } from 'naive-ui'
 
 interface Props {
   comment: Comment
@@ -98,8 +97,6 @@ function handleInit() {
 }
 
 async function getTopCommentDetail() {
-  const { message } = useDiscreteApi(['message', 'dialog'])
-
   try {
     const { result, success, msg } = await useFetchPost('/comment/info', {
       id: props.comment.id
@@ -107,7 +104,7 @@ async function getTopCommentDetail() {
     if (success) {
       topComment.value = result
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {
     console.log('=====/comment/delete=======', e)

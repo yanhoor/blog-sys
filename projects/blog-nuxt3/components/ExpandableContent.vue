@@ -25,18 +25,17 @@
       :url="imgUrl"
     ></MediaImgInlineView>
 
-    <n-button
+    <el-button
       text
       type="primary"
       @click.stop="handleExpand"
       v-if="showAction"
-      >{{ isExpanded ? '收起' : '展开' }}</n-button
+      >{{ isExpanded ? '收起' : '展开' }}</el-button
     >
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
 import type { Media, Topic } from 'sys-types'
 import MediaImgInlineView from '@/components/Media/MediaImgInlineView.vue'
 

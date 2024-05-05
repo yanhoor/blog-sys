@@ -4,13 +4,13 @@
     <div v-if="notification.commentId">
       <div>
         您的评论审核
-        <n-tag
+        <el-tag
           :type="
             notification.content.auditStatusText === '审核通过'
               ? 'primary'
               : 'error'
           "
-          >{{ notification.content.auditStatusText }}</n-tag
+          >{{ notification.content.auditStatusText }}</el-tag
         >
         <span>，审核意见：{{ notification.content.auditTip || '无' }}</span>
       </div>
@@ -21,13 +21,13 @@
     <div v-else>
       <div>
         您的博客审核
-        <n-tag
+        <el-tag
           :type="
             notification.content.auditStatusText === '审核通过'
               ? 'primary'
               : 'error'
           "
-          >{{ notification.content.auditStatusText }}</n-tag
+          >{{ notification.content.auditStatusText }}</el-tag
         >
         <span>，审核意见：{{ notification.content.auditTip || '无' }}</span>
       </div>
@@ -54,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import { NTag } from 'naive-ui'
 import type { Notification } from 'sys-types'
 
 function handleTopicList(notification: Notification) {

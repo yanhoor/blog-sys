@@ -1,5 +1,6 @@
 :root{
-  --primary-color: theme('colors.green.500');
+  --primary-color: theme('colors.green.600');
+  --el-color-primary: theme('colors.green.600');
 }
 html.dark{
   @apply bg-page-dark;

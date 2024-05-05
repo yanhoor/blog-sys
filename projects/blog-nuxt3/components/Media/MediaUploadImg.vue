@@ -15,14 +15,14 @@
             class="h-full w-full object-cover"
             :url="props.modelValue"
           />
-          <n-icon-wrapper
+          <el-button
             class="absolute -right-[8px] -top-[8px] cursor-pointer"
-            :size="18"
-            :border-radius="6"
+            circle
+            type="success"
             @click.stop="handleDeleteImage"
           >
-            <Icon name="fluent:delete-24-regular"></Icon>
-          </n-icon-wrapper>
+            <Icon #icon name="fluent:delete-24-regular"></Icon>
+          </el-button>
           <div
             v-if="showPreviewIcon"
             class="absolute bottom-0 left-0 right-0 top-0 hidden cursor-pointer items-center justify-center gap-4 group-hover:flex"
@@ -42,7 +42,7 @@
         class="limit-size flex flex-col items-center justify-center gap-[6px]"
         :class="{ 'upload-action': showBorder }"
       >
-        <n-spin size="medium" v-if="uploading" />
+        <div v-loading v-if="uploading"></div>
         <slot name="trigger" v-else>
           <Icon
             name="fluent:add-20-regular"
@@ -57,7 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import { NSpin, NIconWrapper } from 'naive-ui'
 import { api as viewerApi } from 'v-viewer'
 import type { MediaFile } from 'sys-types'
 import FileUtil from '~/utils/fileUtil'
@@ -114,7 +113,6 @@ async function handleSelectFileChange(e: Event) {
 async function handleUploadFile(file: File) {
   if (!config.public.imageType.includes(getFileExt(file.name))) return
 
-  const { message } = useDiscreteApi(['message'])
   const fileUtil = new FileUtil(file)
   await fileUtil.init()
   // console.log('==============', md5)
@@ -134,7 +132,7 @@ async function handleUploadFile(file: File) {
       emits('complete', mediaFile)
     }
   } catch (e) {
-    message.error('上传失败')
+    ElMessage.error('上传失败')
   }
 }
 

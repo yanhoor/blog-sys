@@ -1,7 +1,7 @@
 <template>
   <LayoutMain size="large">
     <div class="flex items-start gap-[12px]">
-      <n-card class="sticky top-[80px] w-[180px]" v-if="myInfo">
+      <el-card class="sticky top-[80px] w-[180px]" v-if="myInfo">
         <p
           class="group-title"
           :class="{ active: !currentGroupId }"
@@ -20,11 +20,11 @@
         </p>
         <div class="flex items-center" v-if="customGroupList.length">
           <p class="my-[6px] flex-1 text-[16px] font-semibold">自定义分组</p>
-          <n-button size="small" text @click="showManageGroup = true">
+          <el-button size="small" text @click="showManageGroup = true">
             <template #icon>
               <Icon name="uil:edit-alt" size="18"></Icon>
             </template>
-          </n-button>
+          </el-button>
         </div>
         <div v-auto-animate>
           <p
@@ -37,7 +37,7 @@
             {{ group.name }}
           </p>
         </div>
-      </n-card>
+      </el-card>
       <PostList
         ref="listRef"
         class="flex-1"
@@ -65,7 +65,6 @@
 </template>
 
 <script setup lang="ts">
-import { NCard, NButton } from 'naive-ui'
 import type { FollowGroup } from 'sys-types'
 
 useHead({
@@ -89,7 +88,6 @@ getAllGroup()
 async function getAllGroup() {
   if (!myInfo.value) return
 
-  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],
@@ -108,7 +106,7 @@ async function getAllGroup() {
         }
       })
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {}
 }

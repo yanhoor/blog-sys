@@ -1,24 +1,29 @@
 <template>
   <LayoutMain>
-    <n-tabs
+    <el-tabs
       class="sticky top-[60px] z-10 -mt-[20px] mb-[12px] bg-card-light px-[24px] dark:bg-card-dark"
       type="line"
-      v-model:value="currentTab"
-      @update:value="handleChangeTab"
+      v-model="currentTab"
+      @tab-change="handleChangeTab"
     >
-      <n-tab name="/notification/comment">评论({{ unreadCommentCount }})</n-tab>
-      <n-tab name="/notification/like">点赞({{ unreadLikeCount }})</n-tab>
-      <n-tab name="/notification/collect">收藏({{ unreadCollectCount }})</n-tab>
-      <n-tab name="/notification/system"
-        >系统审核({{ unreadAuditCount }})</n-tab
+      <el-tab-pane name="/notification/comment"
+        >评论({{ unreadCommentCount }})</el-tab-pane
       >
-    </n-tabs>
+      <el-tab-pane name="/notification/like"
+        >点赞({{ unreadLikeCount }})</el-tab-pane
+      >
+      <el-tab-pane name="/notification/collect"
+        >收藏({{ unreadCollectCount }})</el-tab-pane
+      >
+      <el-tab-pane name="/notification/system"
+        >系统审核({{ unreadAuditCount }})</el-tab-pane
+      >
+    </el-tabs>
     <NuxtPage :pageKey="route.fullPath" />
   </LayoutMain>
 </template>
 
 <script setup lang="ts">
-import { NTabs, NTab, createDiscreteApi } from 'naive-ui'
 import { useNotificationUnreadAuditCount } from '~/composables/useNotification'
 
 definePageMeta({

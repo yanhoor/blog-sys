@@ -1,16 +1,16 @@
 <template>
-  <n-popover
+  <el-popover
     trigger="hover"
-    @update:show="handleShow"
+    @show="handleShow"
     class="max-w-[280px]"
-    :delay="500"
+    :show-after="500"
     :disabled="disabled"
   >
-    <template #trigger>
+    <template #reference>
       <slot name="trigger"></slot>
     </template>
 
-    <n-spin size="small" v-if="loading" />
+    <div class="h-[64px] w-[64px]" v-loading v-if="loading"></div>
 
     <div
       class="flex flex-col items-start gap-[12px] overflow-hidden p-[12px] font-normal"
@@ -44,12 +44,10 @@
       </div>
     </div>
     <p v-else>暂无信息</p>
-  </n-popover>
+  </el-popover>
 </template>
 
 <script setup lang="ts">
-import { NPopover, NSpin } from 'naive-ui'
-
 interface Props {
   uid?: string
   uname?: string
@@ -70,7 +68,6 @@ function handleShow(val: boolean) {
 }
 async function getUserInfo() {
   loading.value = true
-  const { message } = useDiscreteApi(['message'])
   try {
     const { result, success, code, msg } = await useFetchPost(
       '/user/userInfo',
@@ -82,7 +79,7 @@ async function getUserInfo() {
     if (success) {
       currentUser.value = result
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
     loading.value = false
   } catch (e) {

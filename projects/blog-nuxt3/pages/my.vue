@@ -1,26 +1,29 @@
 <template>
   <LayoutMain class="flex items-start gap-[12px]">
-    <n-layout-sider
+    <el-menu
       class="sticky top-[62px]"
-      bordered
-      collapse-mode="width"
-      :collapsed-width="64"
-      :width="240"
-      :collapsed="collapsed"
-      show-trigger
-      @collapse="collapsed = true"
-      @expand="collapsed = false"
+      :collapse="collapsed"
+      @close="collapsed = true"
+      @open="collapsed = false"
+      @select="handleMenuSelectChange"
     >
-      <n-menu
-        :value="activeMenuKey"
-        :collapsed="collapsed"
-        :collapsed-width="64"
-        :collapsed-icon-size="22"
-        :options="menuOptions"
-        :expand-icon="expandIcon"
-        @update:value="handleMenuSelectChange"
-      />
-    </n-layout-sider>
+      <el-menu-item index="/my/following">
+        <Icon name="fluent:people-20-regular"></Icon>
+        <template #title>我的关注</template>
+      </el-menu-item>
+      <el-menu-item index="/my/follower">
+        <Icon name="fluent:people-checkmark-20-regular"></Icon>
+        <template #title>我的粉丝</template>
+      </el-menu-item>
+      <el-menu-item index="/my/like">
+        <Icon name="fluent:thumb-like-20-filled"></Icon>
+        <template #title>我的点赞</template>
+      </el-menu-item>
+      <el-menu-item index="/my/collection">
+        <Icon name="fluent:star-20-filled"></Icon>
+        <template #title>我的收藏</template>
+      </el-menu-item>
+    </el-menu>
 
     <div class="flex-1">
       <NuxtPage />
@@ -29,9 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NLayoutSider, NMenu } from 'naive-ui'
 import { Icon } from '#components'
-import type { MenuOption } from 'naive-ui'
 
 definePageMeta({
   redirect: '/my/follower',
@@ -45,28 +46,6 @@ watch(
     activeMenuKey.value = val
   }
 )
-const menuOptions: MenuOption[] = [
-  {
-    label: '我的关注',
-    key: '/my/following',
-    icon: () => h(Icon, { name: 'fluent:people-20-regular' })
-  },
-  {
-    label: '我的粉丝',
-    key: '/my/follower',
-    icon: () => h(Icon, { name: 'fluent:people-checkmark-20-regular' })
-  },
-  {
-    label: '我的点赞',
-    key: '/my/like',
-    icon: () => h(Icon, { name: 'fluent:thumb-like-20-filled' })
-  },
-  {
-    label: '我的收藏',
-    key: '/my/collection',
-    icon: () => h(Icon, { name: 'fluent:star-20-filled' })
-  }
-]
 const collapsed = ref(false)
 
 function expandIcon() {

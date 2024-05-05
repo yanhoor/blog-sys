@@ -3,7 +3,6 @@ import type { MediaFile } from 'sys-types'
 
 export const useUploadFile = () => {
   async function handleUploadSingle(params) {
-    const { message } = useDiscreteApi(['message'])
     try {
       const { success, result, msg } = await useFetchPost(
         '/file/upload',
@@ -14,7 +13,7 @@ export const useUploadFile = () => {
       if (success) {
         return result
       } else {
-        message.error(msg || '上传失败')
+        ElMessage.error(msg || '上传失败')
       }
     } catch (e) {}
   }
@@ -23,8 +22,6 @@ export const useUploadFile = () => {
     fileUtil: FileUtil,
     type?: string
   ): Promise<MediaFile | undefined> {
-    const { message } = useDiscreteApi(['message'])
-
     console.log('=========分片信息===========', fileUtil)
     const paramList: any[] = []
     fileUtil.chunkList.forEach((chunk) => {
@@ -38,7 +35,7 @@ export const useUploadFile = () => {
     })
     const failedList = await handleUploadMultipart(paramList, 1)
     if (failedList?.length) {
-      message.error('分片上传失败')
+      ElMessage.error('分片上传失败')
       return
     }
 
@@ -55,10 +52,10 @@ export const useUploadFile = () => {
       if (success) {
         return result
       } else {
-        message.error(msg as string)
+        ElMessage.error(msg as string)
       }
     } catch (e) {
-      message.error(e?.toString() || '分片上传失败')
+      ElMessage.error(e?.toString() || '分片上传失败')
     }
   }
 

@@ -1,9 +1,9 @@
 <template>
   <div class="topic-hot-list">
-    <n-card v-if="pageList.length">
+    <el-card v-if="pageList.length">
       <div class="flex items-center justify-between">
         <p class="text-[16px] font-semibold">热搜榜</p>
-        <n-button
+        <el-button
           text
           class="placeholder-text-color text-[12px]"
           @click="handleLoadNextPage(1)"
@@ -11,7 +11,7 @@
           <template #icon>
             <Icon name="fluent:arrow-clockwise-20-regular"></Icon>
           </template>
-          点击刷新</n-button
+          点击刷新</el-button
         >
       </div>
       <div v-auto-animate>
@@ -35,13 +35,12 @@
         </p>
       </div>
       <SkeletonTopicList v-if="pageLoading" />
-    </n-card>
+    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Topic } from 'sys-types'
-import { NCard, NButton } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 const {

@@ -1,72 +1,70 @@
 <template>
-  <n-card
-    class="relative left-1/2 top-1/2 w-[350px]"
-    style="transform: translate(-50%, -50%)"
+  <el-card
+    class="relative left-1/2 top-1/2 w-[350px] -translate-x-1/2 -translate-y-1/2"
   >
-    <n-form ref="formRef" :model="registerForm" :rules="rules">
-      <n-form-item path="name" label="名称">
-        <n-input
-          v-model:value="registerForm.name"
+    <el-form
+      ref="formRef"
+      :model="registerForm"
+      :rules="rules"
+      label-position="top"
+    >
+      <el-form-item prop="name" label="名称">
+        <el-input
+          v-model="registerForm.name"
           @keydown.enter.prevent
           maxlength="20"
           show-count
         />
-      </n-form-item>
-      <n-form-item path="mobile" label="手机号">
-        <n-input
-          v-model:value="registerForm.mobile"
+      </el-form-item>
+      <el-form-item prop="mobile" label="手机号">
+        <el-input
+          v-model="registerForm.mobile"
           @keydown.enter.prevent
           maxlength="11"
           show-count
         />
-      </n-form-item>
-      <n-form-item path="password" label="密码">
-        <n-input
-          v-model:value="registerForm.password"
+      </el-form-item>
+      <el-form-item prop="password" label="密码">
+        <el-input
+          v-model="registerForm.password"
           type="password"
           @input="handlePasswordInput"
           @keydown.enter.prevent
         />
-      </n-form-item>
-      <n-form-item
+      </el-form-item>
+      <el-form-item
         ref="rPasswordFormItemRef"
         first
         path="reenteredPassword"
         label="重复密码"
       >
-        <n-input
-          v-model:value="registerForm.reenteredPassword"
+        <el-input
+          v-model="registerForm.reenteredPassword"
           :disabled="!registerForm.password"
           type="password"
           @keydown.enter.prevent
         />
-      </n-form-item>
-      <n-space vertical>
-        <n-button class="w-full" type="primary" @click="handleRegister">
+      </el-form-item>
+      <div class="mt-[20px] flex w-full flex-col gap-[20px]">
+        <el-button class="w-full" type="primary" @click="handleRegister">
           注册
-        </n-button>
-        <n-button class="w-full" @click="toLogin"> 已有账号，去登录 </n-button>
-      </n-space>
-    </n-form>
-  </n-card>
+        </el-button>
+        <el-button class="!ml-0 w-full" @click="toLogin">
+          已有账号，去登录
+        </el-button>
+      </div>
+    </el-form>
+  </el-card>
 </template>
 
 <script setup lang="ts">
 import { useFetchPost } from '@/composables/useBaseFetch'
-import {
-  NButton,
-  NCard,
-  NSpace,
-  NForm,
-  NFormItem,
-  NInput,
-} from 'naive-ui'
 import type {
-  FormInst,
+  FormInstance,
   FormRules,
   FormItemRule,
-  FormItemInst
-} from 'naive-ui'
+  FormItemInstance
+} from 'element-plus'
 import { useColorMode } from '@vueuse/core'
 import { Encrypt } from '@/utils/crypto'
 
@@ -97,8 +95,8 @@ const registerForm = ref<ModelType>({
   password: '',
   reenteredPassword: ''
 })
-const formRef = ref<FormInst | null>(null)
-const rPasswordFormItemRef = ref<FormItemInst | null>(null)
+const formRef = ref<FormInstance | null>(null)
+const rPasswordFormItemRef = ref<FormItemInstance | null>(null)
 const rules: FormRules = {
   name: [
     {
@@ -156,7 +154,6 @@ function validatePasswordSame(rule: FormItemRule, value: string): boolean {
 function handleRegister(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    const { message } = useDiscreteApi(['message'])
     if (!errors) {
       try {
         const { result, success } = await useFetchPost('/user/register', {
@@ -165,13 +162,13 @@ function handleRegister(e: MouseEvent) {
           password: Encrypt(registerForm.value.password)
         })
         if (success) {
-          message.success('注册成功')
+          ElMessage.success('注册成功')
           toLogin()
         }
       } catch (e) {}
     } else {
       console.log(errors)
-      message.error('请将信息填写完整')
+      ElMessage.error('请将信息填写完整')
     }
   })
 }

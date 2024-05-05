@@ -1,7 +1,4 @@
 import type { Blog } from 'sys-types'
-import type {
-  DialogOptions
-} from 'naive-ui'
 
 export const usePostActions = (blog?: Blog) => {
   const currentPost = ref<Blog | undefined>(blog)
@@ -9,13 +6,12 @@ export const usePostActions = (blog?: Blog) => {
   const collectLoading = ref(false)
   const deleteLoading = ref(false)
   const userInfo = useUserInfo()
-  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
 
   function handlePostLike(handleResult = true): Promise<void> {
     return new Promise(async (resolve, reject) => {
       if (!userInfo.value || likeLoading.value) {
         reject()
-        return message.info('请先登录')
+        return ElMessage.info('请先登录')
       }
 
       try {
@@ -46,7 +42,7 @@ export const usePostActions = (blog?: Blog) => {
     return new Promise(async (resolve, reject) => {
       if (!userInfo.value || collectLoading.value) {
         reject()
-        return message.info('请先登录')
+        return ElMessage.info('请先登录')
       }
 
       try {
@@ -75,12 +71,11 @@ export const usePostActions = (blog?: Blog) => {
 
   function handleDeletePost(): Promise<void> {
     return new Promise((resolve, reject) => {
-      dialog.error({
-        title: '删除博客',
-        content: '确定删除？',
-        positiveText: '确定',
-        negativeText: '取消',
-        onPositiveClick: async () => {
+      ElMessageBox.error('确定删除？', '删除博客', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      })
+        .then(async () => {
           if (deleteLoading.value) return
 
           try {
@@ -90,7 +85,7 @@ export const usePostActions = (blog?: Blog) => {
             })
             deleteLoading.value = false
             if (success) {
-              message.success('已删除')
+              ElMessage.success('已删除')
               return resolve()
             }
             reject()
@@ -98,9 +93,8 @@ export const usePostActions = (blog?: Blog) => {
             deleteLoading.value = false
             reject()
           }
-        },
-        onNegativeClick: () => {}
-      } as DialogOptions)
+        })
+        .catch(() => {})
     })
   }
 

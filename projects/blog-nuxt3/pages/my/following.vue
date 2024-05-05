@@ -1,25 +1,15 @@
 <template>
   <div>
-    <n-card>
+    <el-card>
       <UserList
         url="/user/friends"
         :search-params="{ relateType: 1, uid: myInfo?.id }"
       />
-    </n-card>
+    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  NCard,
-  NButton,
-  NIcon,
-  NInput,
-  NInputGroup,
-  NTag,
-  createDiscreteApi
-} from 'naive-ui'
-
 const myInfo = useUserInfo()
 
 useHead(() => {

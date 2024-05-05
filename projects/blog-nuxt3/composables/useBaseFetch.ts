@@ -1,5 +1,3 @@
-import { createDiscreteApi } from 'naive-ui'
-
 interface HttpResponseType {
   success: boolean
   result?: any
@@ -53,8 +51,7 @@ export const useFetchPost = (
       const { code, success, msg } = response._data || {}
       if (process.client && (code === 111 || code === 999)) {
         token.value = null
-        const { message } = createDiscreteApi(['message'])
-        message.error(msg)
+        ElMessage.error(msg)
       }
     },
     onResponseError({ request, response, options }) {
@@ -101,8 +98,7 @@ export const useFetchGet = (
       const { code, success, msg } = response._data || {}
       if (process.client && (code === 111 || code === 999)) {
         token.value = null
-        const { message } = createDiscreteApi(['message'])
-        message.error(msg)
+        ElMessage.error(msg)
       }
     },
     onResponseError({ request, response, options }) {

@@ -1,5 +1,3 @@
-import { createDiscreteApi } from 'naive-ui'
-
 const WEBSOCKET_MESSAGE_TYPE = {
   notification: 'notification',
   heart_beat: 'heart_beat'
@@ -69,11 +67,10 @@ class WS {
 
   // 失败重连
   reconnect = () => {
-    const { message } = createDiscreteApi(['message'])
     clearTimeout(this.reconnectTimer)
     this.reconnectTimer = window.setTimeout(() => {
       if (this.reconnectCount === 5) {
-        message.error('网络连接异常，请检查网络连接，刷新页面')
+        ElMessage.error('网络连接异常，请检查网络连接，刷新页面')
         this.reconnectTime = 5000
       }
       if (this.reconnectCount === 20) return

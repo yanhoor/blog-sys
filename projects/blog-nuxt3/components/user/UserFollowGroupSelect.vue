@@ -1,22 +1,18 @@
 <template>
-  <n-modal :show="show">
-    <n-card
-      title="设置分组"
-      size="large"
-      closable
-      @close="emit('update:show', false)"
-      class="flex max-h-screen w-1/3 flex-col"
-      content-style="flex: 1; overflow: hidden; display: flex; flex-direction: column"
-    >
+  <el-dialog
+    :model-value="show"
+    title="设置分组"
+    @close="emit('update:show', false)"
+  >
+    <div class="flex max-h-screen w-1/3 flex-col">
       <div class="overflow-auto">
-        <n-spin v-if="loading" />
-        <div class="flex flex-wrap gap-[6px]" v-else>
-          <n-checkbox-group
+        <div class="flex flex-wrap gap-[6px]" v-loading="loading">
+          <el-checkbox-group
             class="flex flex-wrap gap-[6px]"
-            v-model:value="selectIdList"
+            v-model="selectIdList"
           >
             <div v-auto-animate>
-              <n-checkbox
+              <el-checkbox
                 class="min-w-[100px]"
                 v-for="group of groupList"
                 :value="group.id"
@@ -24,61 +20,51 @@
                 :id="group.id"
               />
             </div>
-          </n-checkbox-group>
-          <n-input-group v-if="showAdd">
-            <n-input
+          </el-checkbox-group>
+          <div v-if="showAdd">
+            <el-input
               placeholder="分组名称"
-              v-model:value="groupForm.name"
+              v-model="groupForm.name"
               clearable
               show-count
               maxlength="8"
               size="small"
               @keyup.enter="handleCreateGroup"
-            ></n-input>
-            <n-button size="small" @click="handleCreateGroup" type="primary">
+            ></el-input>
+            <el-button size="small" @click="handleCreateGroup" type="primary">
               <template #icon>
                 <Icon name="fluent:checkmark-20-regular"></Icon>
               </template>
-            </n-button>
-            <n-button size="small" @click="showAdd = false">
+            </el-button>
+            <el-button size="small" @click="showAdd = false">
               <template #icon>
                 <Icon name="fluent:dismiss-20-regular"></Icon>
               </template>
-            </n-button>
-          </n-input-group>
-          <n-button size="small" @click="showAdd = true" v-else>
+            </el-button>
+          </div>
+          <el-button size="small" @click="showAdd = true" v-else>
             <template #icon>
               <Icon name="fluent:add-20-regular"></Icon>
             </template>
-          </n-button>
+          </el-button>
         </div>
       </div>
       <template #footer>
         <div class="text-right">
-          <n-button
+          <el-button
             type="primary"
             size="small"
             @click="handleConfirm"
             :loading="confirmLoading"
-            >确定</n-button
+            >确定</el-button
           >
         </div>
       </template>
-    </n-card>
-  </n-modal>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import {
-  NModal,
-  NButton,
-  NInput,
-  NInputGroup,
-  NCheckboxGroup,
-  NCheckbox,
-  NSpin,
-  NCard
-} from 'naive-ui'
 import type { FollowGroup } from 'sys-types'
 
 interface Props {
@@ -117,7 +103,6 @@ async function InitPage() {
 }
 
 async function handleCreateGroup() {
-  const { message } = useDiscreteApi(['message'])
   groupForm.value.name = groupForm.value.name.trim()
   if (adding.value) return
   adding.value = true
@@ -131,7 +116,7 @@ async function handleCreateGroup() {
       getAllGroup()
       showAdd.value = false
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
     adding.value = false
   } catch (e) {
@@ -140,9 +125,8 @@ async function handleCreateGroup() {
 }
 
 async function handleConfirm() {
-  const { message } = useDiscreteApi(['message'])
   if (!selectIdList.value.length) {
-    message.warning('请选择分组')
+    ElMessage.warning('请选择分组')
     return
   }
   confirmLoading.value = true
@@ -154,7 +138,7 @@ async function handleConfirm() {
     if (success) {
       emit('update:show', false)
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
     confirmLoading.value = false
   } catch (e) {
@@ -163,7 +147,6 @@ async function handleConfirm() {
 }
 
 async function getAllGroup() {
-  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],
@@ -174,13 +157,12 @@ async function getAllGroup() {
     if (success) {
       groupList.value = result
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {}
 }
 
 async function getContainGroupList() {
-  const { message } = useDiscreteApi(['message'])
   try {
     const {
       result = [],
@@ -191,7 +173,7 @@ async function getContainGroupList() {
     if (success) {
       selectIdList.value = result.map((g) => g.id)
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {}
 }

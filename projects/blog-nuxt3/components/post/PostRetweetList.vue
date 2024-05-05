@@ -16,9 +16,9 @@
     </div>
     <ResultLoading v-if="pageLoading" />
     <div class="text-center" v-else-if="!allowLoadMore && pageTotal > 20">
-      <n-divider />
-      <n-button text @click="navigateTo(`/post/${blog.id}#retweet`)"
-        >查看全部 {{ pageTotal }} 条转发</n-button
+      <el-divider />
+      <el-button text @click="navigateTo(`/post/${blog.id}#retweet`)"
+        >查看全部 {{ pageTotal }} 条转发</el-button
       >
     </div>
     <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)" />
@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import type { Blog } from 'sys-types'
-import { NButton, NDivider } from 'naive-ui'
 
 interface Props {
   blog: Blog

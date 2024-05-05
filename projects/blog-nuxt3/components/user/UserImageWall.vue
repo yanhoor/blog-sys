@@ -6,7 +6,11 @@
     >
       <div class="img-wrapper" v-for="i of 30">
         <div class="img-container">
-          <n-skeleton width="100%" height="100%" class="absolute top-0" />
+          <el-skeleton class="absolute top-0 h-full w-full">
+            <template #template>
+              <el-skeleton-item variant="image" class="h-full w-full" />
+            </template>
+          </el-skeleton>
         </div>
       </div>
     </div>
@@ -30,7 +34,7 @@
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
     </div>
-    <n-back-top :right="50" />
+    <el-back-top :right="50" />
     <MediaPreview
       :file="curMedia?.file"
       v-model:show="showPreview"
@@ -42,7 +46,6 @@
 
 <script setup lang="ts">
 import type { Media } from 'sys-types'
-import { NResult, NBackTop, NSpin, NSkeleton } from 'naive-ui'
 
 interface Props {
   userId: string

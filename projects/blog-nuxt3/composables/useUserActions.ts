@@ -3,7 +3,6 @@ import type { User } from 'sys-types'
 export const useUserActions = (user?: User) => {
   const currentUser = ref<User | undefined>(user)
   const followLoading = ref(false)
-  const { message } = useDiscreteApi(['message'])
 
   async function handleFollowUser(type: number): Promise<void> {
     return new Promise(async (resolve, reject) => {
@@ -20,7 +19,7 @@ export const useUserActions = (user?: User) => {
         if (success) {
           return resolve()
         } else {
-          message.error(msg as string)
+          ElMessage.error(msg as string)
           reject()
         }
       } catch (e) {

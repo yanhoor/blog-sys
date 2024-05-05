@@ -11,13 +11,13 @@
         v-auto-animate
       >
         <template v-for="(blog, index) of pageList" :key="blog.id">
-          <n-card>
+          <el-card>
             <PostItem
               :blog="blog"
               v-bind="$attrs"
               @delete="handlePostDelete(index)"
             />
-          </n-card>
+          </el-card>
         </template>
       </div>
       <ResultLoading v-if="pageLoading" />
@@ -27,13 +27,12 @@
         @refresh="handleLoadNextPage(1)"
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
-      <n-back-top :right="50" />
+      <el-backtop :right="50" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCard, NBackTop } from 'naive-ui'
 import type { Blog } from 'sys-types'
 
 interface Props {
@@ -75,15 +74,14 @@ defineExpose({
 
 await handleLoadNextPage()
   .then((r) => {
-    const { message } = useDiscreteApi(['message'])
     if (r?.success) {
       emit('fetchComplete', fetchResult)
     } else {
-      message.error(r?.msg || '请求出错')
+      ElMessage.error(r?.msg || '请求出错')
     }
   })
   .catch((e) => {
-    console.log('-------', e.message)
+    console.log('----handleLoadNextPage---', e.message)
   })
 
 watch(fetchNewPost, (val) => {

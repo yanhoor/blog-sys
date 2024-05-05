@@ -48,11 +48,11 @@
                 </div>
               </div>
               <div class="flex items-end" v-if="myInfo">
-                <n-button
+                <el-button
                   type="primary"
                   @click="navigateTo({ name: 'user-profile' })"
                   v-if="myInfo?.id === userInfo.id"
-                  >编辑资料</n-button
+                  >编辑资料</el-button
                 >
                 <UserFollowDropdown
                   v-else
@@ -64,29 +64,29 @@
 
             <div class="flex justify-between">
               <div class="flex gap-[12px]">
-                <n-tag type="success" round v-if="userInfo.isMyFan">
+                <el-tag type="success" round v-if="userInfo.isMyFan">
                   <div class="flex items-center gap-[6px]">
                     <span>您的粉丝</span>
                   </div>
-                </n-tag>
-                <n-tag type="success" round>
+                </el-tag>
+                <el-tag type="success" round>
                   <div class="flex items-center gap-[6px]">
                     <span>阅读数</span>
                     <span>{{ statisInfo.readCount }}</span>
                   </div>
-                </n-tag>
-                <n-tag type="success" round>
+                </el-tag>
+                <el-tag type="success" round>
                   <div class="flex items-center gap-[6px]">
                     <span>点赞</span>
                     <span>{{ statisInfo.likeCount }}</span>
                   </div>
-                </n-tag>
-                <n-tag type="success" round>
+                </el-tag>
+                <el-tag type="success" round>
                   <div class="flex items-center gap-[6px]">
                     <span>被收藏</span>
                     <span>{{ statisInfo.collectCount }}</span>
                   </div>
-                </n-tag>
+                </el-tag>
               </div>
             </div>
 
@@ -102,27 +102,23 @@
               </div>
               <div class="flex items-start gap-[6px]">
                 <Icon name="fluent:calendar-ltr-20-regular" size="20"></Icon>
-                <n-time
-                  type="date"
-                  format="yyyy-MM-dd"
-                  :time="new Date(userInfo.createdAt)"
-                ></n-time>
+                <div>{{ formatTime(userInfo.createdAt) }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <div class="my-[12px]">
-          <n-tabs
+          <el-tabs
             type="line"
             :value="contentType"
-            @update:value="handleTabChange"
+            @tab-change="handleTabChange"
           >
-            <n-tab name="1">精选</n-tab>
-            <n-tab name="2">博客</n-tab>
-            <n-tab name="3">视频</n-tab>
-            <n-tab name="4">图片</n-tab>
-          </n-tabs>
+            <el-tab-pane name="1">精选</el-tab-pane>
+            <el-tab-pane name="2">博客</el-tab-pane>
+            <el-tab-pane name="3">视频</el-tab-pane>
+            <el-tab-pane name="4">图片</el-tab-pane>
+          </el-tabs>
         </div>
         <template v-if="contentType == 1">
           <PostList
@@ -133,15 +129,15 @@
         <template v-if="contentType == 2">
           <div class="mb-[12px] flex items-center justify-between">
             <div>全部博客({{ blogTotal }})</div>
-            <n-button
+            <el-button
               quaternary
               size="small"
               type="primary"
               v-if="showSearch"
               @click="showSearch = false"
-              >取消</n-button
+              >取消</el-button
             >
-            <n-button
+            <el-button
               size="small"
               type="primary"
               quaternary
@@ -152,26 +148,26 @@
               <template #icon>
                 <Icon name="fluent:search-20-regular"></Icon>
               </template>
-            </n-button>
+            </el-button>
           </div>
-          <n-collapse-transition class="mb-[12px]" :show="showSearch">
+          <div class="mb-[12px]" v-show="showSearch">
             <div class="flex items-center gap-[12px]">
               <y-search
                 v-model:value="searchParams.keyword"
                 @confirm="handleSearchPost"
               />
-              <n-date-picker
-                v-model:value="selectDateRange"
+              <el-date-picker
+                v-model="selectDateRange"
                 :shortcuts="rangeShortcuts"
-                :is-date-disabled="(ts) => ts > Date.now()"
+                :disabled-date="(ts) => ts > Date.now()"
                 type="daterange"
                 clearable
               />
-              <n-button size="small" type="primary" @click="handleSearchPost"
-                >确定</n-button
+              <el-button size="small" type="primary" @click="handleSearchPost"
+                >确定</el-button
               >
             </div>
-          </n-collapse-transition>
+          </div>
           <PostList
             ref="blogListRef"
             :search-params="searchParams"
@@ -192,16 +188,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NCollapseTransition,
-  NButton,
-  NTabs,
-  NTab,
-  NTime,
-  NTag,
-  NDatePicker
-} from 'naive-ui'
 import type { User, Media } from 'sys-types'
+import { formatTime } from 'sys-types'
 import dayjs from 'dayjs'
 
 interface Props {
@@ -268,8 +256,8 @@ useHead(() => {
     title: loading.value
       ? '加载中...'
       : userInfo.value?.name
-      ? `@${userInfo.value?.name}的个人主页`
-      : errorMsg.value || '🤬用户不存在'
+        ? `@${userInfo.value?.name}的个人主页`
+        : errorMsg.value || '🤬用户不存在'
   }
 })
 
@@ -338,7 +326,6 @@ async function handleViewFriends(type: number) {
 }
 
 function handleSearchPost() {
-  const { message } = useDiscreteApi(['message'])
   if (selectDateRange.value?.length) {
     const diff = dayjs(selectDateRange.value[1]).diff(
       dayjs(selectDateRange.value[0]),
@@ -346,7 +333,7 @@ function handleSearchPost() {
       true
     )
     if (diff > 12) {
-      message.warning('时长不能超过一年')
+      ElMessage.warning('时长不能超过一年')
       return
     }
     searchParams.startTime = new Date(selectDateRange.value[0]).toString()

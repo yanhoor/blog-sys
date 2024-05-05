@@ -6,13 +6,11 @@
       color="#36ad6a"
     ></Icon>
     <p class="text-[16px] font-semibold">{{ msg }}</p>
-    <n-button type="primary" @click="emits('refresh')">刷新</n-button>
+    <el-button type="primary" @click="emits('refresh')">刷新</el-button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NButton } from 'naive-ui'
-
 interface Props {
   size?: string
   msg?: string

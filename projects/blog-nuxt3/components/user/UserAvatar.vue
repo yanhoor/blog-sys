@@ -16,21 +16,20 @@
           v-if="!user.avatar"
           :size="size.toString()"
         ></Icon>
-        <n-avatar
+        <el-avatar
           v-else
           class="flex shrink-0 items-center justify-center"
           round
           :size="size"
           :src="config.public.imageBase + user.avatar"
           :render-fallback="renderErrorAvatar"
-        ></n-avatar>
+        ></el-avatar>
       </div>
     </template>
   </UserCard>
 </template>
 
 <script setup lang="ts">
-import { NAvatar } from 'naive-ui'
 import { h } from 'vue'
 import { Icon } from '#components'
 import type { User } from 'sys-types'

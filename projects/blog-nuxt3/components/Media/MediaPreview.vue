@@ -1,8 +1,8 @@
 <template>
-  <n-modal
-    :show="show"
+  <el-dialog
+    :model-value="show"
     class="w-[100vw]] h-[100vh]"
-    @update:show="emit('update:show', false)"
+    @close="emit('update:show', false)"
   >
     <div class="relative h-full w-full bg-black pt-[calc(100%*9/16)]">
       <template v-if="isImg">
@@ -23,12 +23,11 @@
         @click="emit('update:show', false)"
       ></Icon>
     </div>
-  </n-modal>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import type { MediaFile } from 'sys-types'
-import { NModal } from 'naive-ui'
 
 interface Props {
   file: MediaFile

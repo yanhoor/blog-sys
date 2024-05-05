@@ -1,5 +1,5 @@
 <template>
-  <n-popover>
+  <el-popover trigger="hover" :teleported="true" placement="bottom-start">
     <div class="flex flex-col">
       <div
         class="action-item"
@@ -26,7 +26,7 @@
         <span>跟随系统</span>
       </div>
     </div>
-    <template #trigger>
+    <template #reference>
       <div class="cursor-pointer">
         <Icon
           size="24"
@@ -41,27 +41,15 @@
         <Icon size="24" name="fluent:desktop-16-regular" v-else></Icon>
       </div>
     </template>
-  </n-popover>
+  </el-popover>
 </template>
 
 <script setup lang="ts">
-import { NPopover, darkTheme } from 'naive-ui'
-
 // colorMode.value 为 dark/light，colorMode.preference 为 dark/light/system
 const colorMode = useColorMode()
-const uiTheme = useUITheme()
 
 function handleChangeColorMode(v: string) {
   colorMode.preference = v
-  nextTick(
-    () => (uiTheme.value = colorMode.value === 'dark' ? darkTheme : null)
-  )
-  // console.log(
-  //   '=======handleChangeColorMode========',
-  //   v,
-  //   colorMode.preference,
-  //   colorMode.value
-  // )
 }
 </script>
 

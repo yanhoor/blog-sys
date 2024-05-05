@@ -1,5 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import { visualizer } from 'rollup-plugin-visualizer'
+import { nodePolyfills } from 'vite-plugin-node-polyfills' // https://stackoverflow.com/questions/78115258/module-has-been-externalized-for-browser-compatibility-error
 
 const isProd = process.env.NODE_ENV === 'production'
 console.log(
@@ -12,15 +13,7 @@ console.log(
 export default defineNuxtConfig({
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
-    transpile: isProd
-      ? [
-          'naive-ui',
-          'vueuc',
-          'v-viewer',
-          '@css-render/vue3-ssr',
-          '@juggle/resize-observer'
-        ]
-      : ['@juggle/resize-observer'] // https://www.naiveui.com/zh-CN/os-theme/docs/ssr
+    transpile: isProd ? ['v-viewer'] : []
   },
 
   runtimeConfig: {
@@ -103,11 +96,13 @@ export default defineNuxtConfig({
     // https://auto-animate.formkit.com/#usage-vue
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/color-mode',
-    '@element-plus/nuxt'
+    '@element-plus/nuxt',
+    'nuxt-icon'
   ],
   elementPlus: {
     imports: ['useLocale'],
-    injectionID: { prefix: 100, current: 1 }
+    injectionID: { prefix: 1024, current: 0 },
+    themes: ['dark']
   },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
@@ -139,13 +134,12 @@ export default defineNuxtConfig({
       rollupOptions: {
         output: {
           manualChunks: {
-            'naive-ui': ['naive-ui'],
             'v-viewer': ['v-viewer']
           }
         }
       }
     },
-    plugins: [visualizer()],
+    plugins: [visualizer(), nodePolyfills()],
     esbuild: {
       drop: ['console', 'debugger']
     },
@@ -157,10 +151,7 @@ export default defineNuxtConfig({
       }
     },
     optimizeDeps: {
-      include:
-        process.env.NODE_ENV === 'development'
-          ? ['naive-ui', 'vueuc', 'date-fns-tz/formatInTimeZone', 'sys-types']
-          : ['sys-types']
+      include: ['sys-types']
     }
   },
 
@@ -170,5 +161,5 @@ export default defineNuxtConfig({
   devtools: {
     enabled: false
   },
-  workspaceDir: '../'
+  workspaceDir: '../../'
 })

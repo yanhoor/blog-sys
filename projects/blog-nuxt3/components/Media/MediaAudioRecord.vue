@@ -67,8 +67,6 @@ function handleClearAudio() {
 }
 
 async function initRecorder() {
-  const { message } = useDiscreteApi(['message'])
-
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: true
@@ -136,10 +134,10 @@ async function initRecorder() {
     console.log('=====handleStartRecord======', e.name, stream, mediaRecorder)
     switch (e.name) {
       case 'NotAllowedError':
-        message.error('录音权限被禁止，请先授权')
+        ElMessage.error('录音权限被禁止，请先授权')
         break
       case 'NotFoundError':
-        message.error('没有可用的麦克风设备')
+        ElMessage.error('没有可用的麦克风设备')
         break
     }
   }

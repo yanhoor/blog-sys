@@ -7,12 +7,12 @@
       disabled
     ></UserAvatar>
     <div class="flex flex-1 flex-col gap-[12px]">
-      <n-input
+      <el-input
         :placeholder="placeholder"
         type="textarea"
         size="small"
         @keyup.shift.enter="commitComment"
-        v-model:value="commentContent"
+        v-model="commentContent"
         :autosize="{
           minRows: 3,
           maxRows: 5
@@ -35,11 +35,11 @@
             ></Icon>
           </template>
         </MediaUploadImg>
-        <n-button
+        <el-button
           type="primary"
           @click="commitComment"
           :loading="commentCommitting"
-          >{{ btnText }}</n-button
+          >{{ btnText }}</el-button
         >
       </div>
     </div>
@@ -47,7 +47,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NInput } from 'naive-ui'
 import type { Comment, MediaFile } from 'sys-types'
 
 interface Props {
@@ -69,11 +68,10 @@ const imageFile = ref<MediaFile>()
 const userInfo = useUserInfo()
 
 async function commitComment() {
-  const { message } = useDiscreteApi(['message'])
   const content = commentContent.value.trim()
 
   if (!content && !imageFile.value) {
-    message.warning('请输入内容')
+    ElMessage.warning('请输入内容')
     return
   }
 
@@ -103,9 +101,9 @@ async function commitComment() {
       emit('success', result)
       commentContent.value = ''
       imageFile.value = undefined
-      message.success('发表成功')
+      ElMessage.success('发表成功')
     } else {
-      message.error(msg as string)
+      ElMessage.error(msg as string)
     }
   } catch (e) {
     commentCommitting.value = false

@@ -8,54 +8,54 @@
           <template v-if="pageList.length > 0 && fetchResult.unreadTotal > 0">
             <div class="flex items-center gap-[6px]">
               <template v-if="showCheck">
-                <n-checkbox
+                <el-checkbox
                   size="large"
-                  @update:checked="handleCheckAll"
-                  v-model:checked="checkAll"
+                  @change="handleCheckAll"
+                  v-model="checkAll"
                   :indeterminate="isIndeterminate"
-                ></n-checkbox>
-                <n-button size="small" @click="handleCancelCheck"
-                  >取消</n-button
+                ></el-checkbox>
+                <el-button size="small" @click="handleCancelCheck"
+                  >取消</el-button
                 >
-                <n-button
+                <el-button
                   size="small"
                   :type="checkedList.length > 0 ? 'primary' : 'tertiary'"
                   @click="handleMultiRemark(false)"
                   :disabled="batchProcessing"
-                  >标为已读</n-button
+                  >标为已读</el-button
                 >
               </template>
-              <n-button size="small" @click="showCheck = true" v-else>
+              <el-button size="small" @click="showCheck = true" v-else>
                 <template #icon>
                   <Icon name="fluent:task-list-20-regular" size="24"></Icon>
                 </template>
-              </n-button>
+              </el-button>
             </div>
-            <n-button
+            <el-button
               size="small"
               @click="handleMultiRemark(true)"
               :disabled="batchProcessing"
-              >全部标为已读</n-button
+              >全部标为已读</el-button
             >
           </template>
         </div>
-        <n-radio-group
-          v-model:value="pageFetchParams.isRead"
-          @update:value="handleLoadNextPage(1)"
+        <el-radio-group
+          v-model="pageFetchParams.isRead"
+          @change="handleLoadNextPage(1)"
           size="small"
         >
-          <n-radio-button :value="0" label="未读"></n-radio-button>
-          <n-radio-button
+          <el-radio-button :value="0" label="未读"></el-radio-button>
+          <el-radio-button
             :value="3"
             :label="`全部(${fetchResult?.total || 0})`"
-          ></n-radio-button>
-        </n-radio-group>
+          ></el-radio-button>
+        </el-radio-group>
       </div>
       <template v-if="pageList.length">
-        <n-checkbox-group
+        <el-checkbox-group
           class="grid grid-cols-1 gap-[12px] overflow-hidden"
-          v-model:value="checkedList"
-          @update:value="handleCheckItem"
+          v-model="checkedList"
+          @change="handleCheckItem"
         >
           <div v-auto-animate>
             <div
@@ -63,13 +63,13 @@
               :key="notification.id"
               class="flex items-start gap-[12px]"
             >
-              <n-checkbox
+              <el-checkbox
                 size="large"
                 :value="notification.id"
                 :disabled="!!notification.isRead"
                 v-if="showCheck"
-              ></n-checkbox>
-              <n-card class="overflow-hidden">
+              ></el-checkbox>
+              <el-card class="overflow-hidden">
                 <div
                   class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
                   :class="{ 'text-gray-400': notification.isRead }"
@@ -83,23 +83,23 @@
                       v-time="notification.createdAt"
                       class="text-gray-400"
                     />
-                    <n-button
+                    <el-button
                       text
                       type="primary"
                       class="hidden group-hover:block"
                       v-if="!notification.isRead"
                       @click="handleRemarkRead(notification.id)"
-                      >标为已读</n-button
+                      >标为已读</el-button
                     >
                     <span class="hidden text-primary group-hover:block" v-else
                       >已读</span
                     >
                   </div>
                 </div>
-              </n-card>
+              </el-card>
             </div>
           </div>
-        </n-checkbox-group>
+        </el-checkbox-group>
       </template>
       <ResultLoading v-if="pageLoading" />
       <ResultError v-else-if="!fetchResult" @refresh="handleLoadNextPage(1)" />
@@ -108,21 +108,12 @@
         @refresh="handleLoadNextPage(1)"
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
-      <n-back-top :right="50" />
+      <el-back-top :right="50" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  NButton,
-  NCard,
-  NCheckbox,
-  NCheckboxGroup,
-  NRadioGroup,
-  NRadioButton,
-  NBackTop
-} from 'naive-ui'
 import type { Notification } from 'sys-types'
 
 interface Props {
@@ -214,23 +205,24 @@ async function handleRemarkRead(id: string, isAll = false) {
 }
 
 async function handleMultiRemark(isAll: boolean) {
-  const { message, dialog } = useDiscreteApi(['message', 'dialog'])
   if (isAll) {
-    dialog.warning({
-      title: '全部标为已读',
-      content: `确定将所有未读${props.typeName}通知标为已读?`,
-      positiveText: '确定',
-      negativeText: '取消',
-      onPositiveClick: async () => {
+    ElMessageBox.warning(
+      `确定将所有未读${props.typeName}通知标为已读?`,
+      '全部标为已读',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }
+    )
+      .then(async () => {
         batchProcessing.value = true
         const r = await handleRemarkRead('', true)
         if (r) {
-          message.success('操作成功')
+          ElMessage.success('操作成功')
         }
         batchProcessing.value = false
-      },
-      onNegativeClick: () => {}
-    })
+      })
+      .catch(() => {})
   } else {
     const s = checkedList.value.toString()
     batchProcessing.value = true

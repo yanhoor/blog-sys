@@ -1,21 +1,31 @@
 <template>
   <div class="user-follow-dropdown" v-if="user.id !== myInfo.id">
-    <n-dropdown
+    <el-dropdown
       :options="userOptions"
-      @select="handleDropdownSelect"
+      @command="handleDropdownSelect"
       v-if="user.isFollowing"
     >
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item
+            v-for="action of userOptions"
+            :key="action.key"
+            :command="action.key"
+            >{{ action.label }}</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </template>
       <slot>
-        <n-button
+        <el-button
           type="tertiary"
           size="small"
           :round="roundBtn"
           :loading="followLoading"
-          >{{ user.isMutualFollowing ? '互相关注' : '已关注' }}</n-button
+          >{{ user.isMutualFollowing ? '互相关注' : '已关注' }}</el-button
         >
       </slot>
-    </n-dropdown>
-    <n-button
+    </el-dropdown>
+    <el-button
       type="primary"
       :round="roundBtn"
       @click="handleFollow(1)"
@@ -25,12 +35,11 @@
       <template #icon>
         <Icon name="fluent:add-20-regular"></Icon>
       </template>
-    </n-button>
+    </el-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton, NDropdown } from 'naive-ui'
 import type { User } from 'sys-types'
 import { useFollowGroupSelectStore } from '~/store/modules/followGroupSelectStore'
 

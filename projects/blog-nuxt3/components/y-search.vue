@@ -1,8 +1,8 @@
 <template>
-  <n-input
+  <el-input
     placeholder="搜索关键字"
     :value="value"
-    @update:value="handleValueUpdate"
+    @change="handleValueUpdate"
     clearable
     @keyup.enter="handleConfirm"
   >
@@ -13,12 +13,10 @@
         @click="handleConfirm"
       ></Icon>
     </template>
-  </n-input>
+  </el-input>
 </template>
 
 <script setup lang="ts">
-import { NInput } from 'naive-ui'
-
 interface Props {
   value: string
 }

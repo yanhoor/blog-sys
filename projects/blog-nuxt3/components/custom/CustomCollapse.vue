@@ -21,7 +21,7 @@
         :class="[expand ? 'rotate-90' : '']"
       ></Icon>
     </div>
-    <n-collapse-transition :show="expand" class="ml-[12px]">
+    <div v-show="expand" class="ml-[12px]">
       <p
         class="ellipsis-text cursor-pointer py-[5px] hover:text-primary"
         :class="{ 'text-primary': currentOption?.value === option.value }"
@@ -31,13 +31,11 @@
       >
         {{ option.label }}
       </p>
-    </n-collapse-transition>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCollapseTransition } from 'naive-ui'
-
 interface Option {
   label: string
   value: any
