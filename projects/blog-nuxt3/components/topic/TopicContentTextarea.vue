@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-full">
     <el-input
-      id="nInput"
+      id="textAreaInput"
       :value="modelValue"
       @input="handleInput"
       @blur="handleInputBlur"
@@ -16,7 +16,7 @@
       class="card-bg-color absolute left-0 top-0 z-10 w-[70%]"
       :style="topicListElStyle"
     >
-      <template v-show="showTopicList">
+      <template v-if="showTopicList">
         <div
           class="max-h-[400px] overflow-auto rounded border border-primary"
           v-auto-animate
@@ -85,9 +85,11 @@ const topicListElStyle = computed(() => {
 defineExpose({ handleAddTopic })
 
 onMounted(() => {
-  inputEl.value = document.querySelector('#nInput textarea')
+  inputEl.value = document.querySelector('#textAreaInput')
+  if (!inputEl.value) return
+
   // console.log('========topic mounted========', inputEl.value)
-  inputEl.value.addEventListener('click', handleFocus)
+  inputEl.value?.addEventListener('click', handleFocus)
   if (modelValue.value) {
     // 对于转发微博，已经有部分内容，将光标移到前面
     inputEl.value.focus({ preventScroll: true })

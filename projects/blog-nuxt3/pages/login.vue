@@ -75,9 +75,9 @@ const rules: FormRules = {
 }
 function handlePost(e: MouseEvent) {
   e.preventDefault()
-  console.log('=========handlePost========')
-  formRef.value?.validate(async (errors) => {
-    if (!errors) {
+  formRef.value?.validate(async (valid, fields) => {
+    console.log('=========handlePost========', valid, fields, postForm.value)
+    if (valid) {
       try {
         const { result, success, msg } = await useFetchPost('/user/login', {
           ...postForm.value,
@@ -94,7 +94,7 @@ function handlePost(e: MouseEvent) {
         }
       } catch (e) {}
     } else {
-      console.log(errors)
+      console.log(valid, fields)
       ElMessage.error('请将信息填写完整')
     }
   })

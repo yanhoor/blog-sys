@@ -120,9 +120,11 @@ async function handleChangeGroup(gid?: number) {
 <style lang="postcss" scoped>
 .group-title {
   @apply cursor-pointer px-[6px] py-[8px] text-[15px];
+
   &:hover {
     @apply rounded bg-gray-200 dark:bg-gray-700;
   }
+
   &.active {
     @apply text-green-600;
   }

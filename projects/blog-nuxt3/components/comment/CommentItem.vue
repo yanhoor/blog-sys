@@ -119,15 +119,17 @@
     </div>
   </div>
 
-  <el-drawer v-model="showReplyDetailList" width="500px">
-    <template #header>
-      <h3>所有回复</h3>
-    </template>
-    <CommentReplyList
-      :comment="currentComment"
-      @commentDelete="handleDeleteTopComment"
-    />
-  </el-drawer>
+  <client-only>
+    <el-drawer v-model="showReplyDetailList" width="500px">
+      <template #header>
+        <h3>所有回复</h3>
+      </template>
+      <CommentReplyList
+        :comment="currentComment"
+        @commentDelete="handleDeleteTopComment"
+      />
+    </el-drawer>
+  </client-only>
 </template>
 
 <script setup lang="ts">

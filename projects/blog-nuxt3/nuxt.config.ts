@@ -99,11 +99,11 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     'nuxt-icon'
   ],
-  elementPlus: {
-    imports: ['useLocale'],
-    injectionID: { prefix: 1024, current: 0 },
-    themes: ['dark']
-  },
+  // elementPlus: {
+  //   imports: ['useLocale'],
+  //   injectionID: { prefix: 1024, current: 0 },
+  //   themes: ['dark']
+  // },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {

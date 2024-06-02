@@ -15,13 +15,15 @@
       <div class="flex items-center gap-[12px]">
         <LayoutSearch />
 
-        <LayoutUser />
+        <client-only>
+          <LayoutUser />
 
-        <LayoutColorMode />
+          <LayoutColorMode />
+        </client-only>
       </div>
     </el-header>
     <el-main
-      class="mx-auto mt-[80px] w-auto overflow-visible bg-page-light dark:bg-page-dark"
+      class="mx-auto mt-[80px] w-auto bg-page-light [overflow:initial_!important] dark:bg-page-dark"
     >
       <div class="flex items-start">
         <div class="flex max-w-full flex-1 justify-center">
