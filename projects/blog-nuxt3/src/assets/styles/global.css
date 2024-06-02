@@ -1,3 +1,7 @@
+@import 'element-plus/dist/index.css';
+@import 'element-plus/theme-chalk/dark/css-vars.css';
+@import "var.css";
+@import "tailwind.css";
 @import 'viewerjs/dist/viewer.css';
 
 html,body,#__nuxt,.n-config-provider{

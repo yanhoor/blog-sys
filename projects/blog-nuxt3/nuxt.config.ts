@@ -11,6 +11,7 @@ console.log(
 )
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
+  srcDir: 'src/',
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
     transpile: isProd ? ['v-viewer'] : []
@@ -99,11 +100,12 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     'nuxt-icon'
   ],
-  // elementPlus: {
-  //   imports: ['useLocale'],
-  //   injectionID: { prefix: 1024, current: 0 },
-  //   themes: ['dark']
-  // },
+  elementPlus: {
+    importStyle: false
+    // imports: ['useLocale'],
+    // injectionID: { prefix: 1024, current: 0 },
+    // themes: ['dark'] // global.css 已经手动引入
+  },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {
@@ -117,7 +119,13 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode'
   },
 
-  css: ['@/assets/styles/var.css', '@/assets/styles/global.css'],
+  css: ['@/assets/styles/global.css'],
+
+  tailwindcss: {
+    // https://tailwindcss.nuxtjs.org/getting-started/configuration
+    // cssPath: ['~/assets/styles/tailwind.css', { injectPosition: 'last' }]
+    cssPath: false // tailwindcss 的 HMR 会失效，需要手动刷新
+  },
 
   postcss: {
     plugins: {
