@@ -12,6 +12,7 @@
   },
   "files": ["dist"],
   "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "unbuild",
@@ -29,6 +30,7 @@
     "unbuild": "^2.0.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2"
+    "@types/crypto-js": "^4.2.2",
+    "@types/mime": "^3.0.4"
   }
 }
