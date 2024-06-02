@@ -29,13 +29,13 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item prop="birthday" label="生日">
-            <el-date-picker
+            <lazy-el-date-picker
               type="date"
               v-model="postForm.birthday"
               :is-date-disabled="(ts) => ts > Date.now()"
               clearable
             >
-            </el-date-picker>
+            </lazy-el-date-picker>
           </el-form-item>
           <el-form-item prop="introduce" label="个人简介">
             <el-input
@@ -116,8 +116,8 @@ async function getProfile() {
 }
 
 async function handleSave() {
-  formRef.value?.validate(async (errors) => {
-    if (!errors) {
+  formRef.value?.validate(async (valid) => {
+    if (valid) {
       try {
         isProcessing.value = true
         const { result, success, msg } = await useFetchPost(
@@ -134,7 +134,7 @@ async function handleSave() {
         isProcessing.value = false
       }
     } else {
-      console.log(errors)
+      console.log(valid)
       ElMessage.error('请将信息填写完整')
     }
   })

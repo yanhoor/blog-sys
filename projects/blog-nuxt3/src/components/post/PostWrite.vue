@@ -4,7 +4,7 @@
     :close-on-press-escape="false"
     :model-value="show"
     @close="emit('update:show', $event)"
-    size="60%"
+    size="40%"
     title="快捷发布"
   >
     <div class="flex h-full w-full flex-col items-start gap-[12px]">
@@ -46,7 +46,6 @@
 
 <script setup lang="ts">
 import type { Blog } from 'sys-types'
-import MediaUploadMulti from '~/components/Media/MediaUploadMulti.vue'
 
 interface BlogForm extends Blog {
   isPost?: number

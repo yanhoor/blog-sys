@@ -42,7 +42,7 @@
     </div>
 
     <div
-      class="max-h-[300px] max-w-full overflow-auto"
+      class="max-h-[300px] w-full max-w-full overflow-auto"
       v-if="currentPost!.contentType == 2"
     >
       <PostArticle

@@ -253,13 +253,6 @@ const statisInfo = ref({
   collectCount: 0
 })
 
-watch(
-  () => route.query,
-  (val) => {
-    contentType.value = val.tab || '1'
-  }
-)
-
 useHead(() => {
   return {
     title: loading.value
