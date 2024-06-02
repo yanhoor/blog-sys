@@ -1,4 +1,4 @@
-:root{
+body{
   --primary-color: theme('colors.green.600');
   --el-color-primary: theme('colors.green.600');
 }

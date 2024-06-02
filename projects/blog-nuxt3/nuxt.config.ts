@@ -12,9 +12,14 @@ console.log(
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
   srcDir: 'src/',
+  devtools: { enabled: true },
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
-    transpile: isProd ? ['v-viewer'] : []
+    transpile: isProd ? ['v-viewer'] : [],
+    analyze: {
+      open: true // nuxt analyze 时打开分析结果页面
+      // template: 'sunburst', // sunburst, treemap, network, raw-data, list
+    }
   },
 
   runtimeConfig: {
@@ -101,10 +106,10 @@ export default defineNuxtConfig({
     'nuxt-icon'
   ],
   elementPlus: {
-    importStyle: false
+    // importStyle: false
     // imports: ['useLocale'],
     // injectionID: { prefix: 1024, current: 0 },
-    // themes: ['dark'] // global.css 已经手动引入
+    themes: ['dark'] // global.css 已经手动引入
   },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
@@ -119,7 +124,7 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode'
   },
 
-  css: ['@/assets/styles/global.css'],
+  // css: ['@/assets/styles/index.css'],
 
   tailwindcss: {
     // https://tailwindcss.nuxtjs.org/getting-started/configuration
