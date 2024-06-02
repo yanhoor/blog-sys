@@ -34,7 +34,7 @@
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
     </div>
-    <el-back-top :right="50" />
+    <el-backtop :right="50" />
     <MediaPreview
       :file="curMedia?.file"
       v-model:show="showPreview"

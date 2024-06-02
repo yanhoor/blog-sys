@@ -6,8 +6,12 @@
           <Icon name="fluent:compose-20-regular"></Icon>
         </template>
       </el-button>
-      <el-dropdown @command="handleDropdownSelect">
-        <el-badge :value="notificationUnreadCount" :max="99">
+      <lazy-el-dropdown @command="handleDropdownSelect">
+        <el-badge
+          :value="notificationUnreadCount"
+          :max="99"
+          :hidden="!notificationUnreadCount"
+        >
           <UserAvatar :title="userInfo.name" :user="userInfo" disabled />
         </el-badge>
         <template #dropdown>
@@ -20,7 +24,7 @@
             >
           </el-dropdown-menu>
         </template>
-      </el-dropdown>
+      </lazy-el-dropdown>
     </div>
     <el-button type="primary" v-else @click="navigateTo('/login')"
       >登录</el-button
@@ -107,7 +111,8 @@ async function handleUserHome() {
 }
 
 async function handleLogout() {
-  ElMessageBox.error('确定退出？', '退出登录', {
+  ElMessageBox.confirm('确定退出？', '退出登录', {
+    type: 'error',
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   })

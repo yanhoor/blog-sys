@@ -109,78 +109,75 @@
         </div>
 
         <div class="my-[12px]">
-          <el-tabs
-            type="line"
-            :value="contentType"
-            @tab-change="handleTabChange"
-          >
-            <el-tab-pane name="1">精选</el-tab-pane>
-            <el-tab-pane name="2">博客</el-tab-pane>
-            <el-tab-pane name="3">视频</el-tab-pane>
-            <el-tab-pane name="4">图片</el-tab-pane>
+          <el-tabs v-model="contentType" @tab-change="handleTabChange">
+            <el-tab-pane name="1" label="精选" lazy>
+              <PostList
+                :search-params="{ uid: searchParams.uid, sort: '3' }"
+                canEdit
+              />
+            </el-tab-pane>
+            <el-tab-pane name="2" label="博客" lazy>
+              <div class="mb-[12px] flex items-center justify-between">
+                <div>全部博客({{ blogTotal }})</div>
+                <el-button
+                  quaternary
+                  size="small"
+                  type="primary"
+                  v-if="showSearch"
+                  @click="showSearch = false"
+                  >取消</el-button
+                >
+                <el-button
+                  size="small"
+                  type="primary"
+                  quaternary
+                  circle
+                  @click="showSearch = true"
+                  v-else
+                >
+                  <template #icon>
+                    <Icon name="fluent:search-20-regular"></Icon>
+                  </template>
+                </el-button>
+              </div>
+              <div class="mb-[12px]" v-show="showSearch">
+                <div class="flex items-center gap-[12px]">
+                  <y-search
+                    v-model="searchParams.keyword"
+                    @confirm="handleSearchPost"
+                  />
+                  <client-only>
+                    <el-date-picker
+                      v-model="selectDateRange"
+                      :shortcuts="rangeShortcuts"
+                      :disabled-date="(ts) => ts > Date.now()"
+                      type="daterange"
+                      clearable
+                    />
+                  </client-only>
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="handleSearchPost"
+                    >确定</el-button
+                  >
+                </div>
+              </div>
+              <PostList
+                ref="blogListRef"
+                :search-params="searchParams"
+                @fetchComplete="handleBlogFetchComplete"
+                canEdit
+              />
+            </el-tab-pane>
+            <el-tab-pane name="3" label="视频" lazy>
+              <UserVideoWall :user-id="userInfo.id" />
+            </el-tab-pane>
+            <el-tab-pane name="4" label="图片" lazy>
+              <UserImageWall :user-id="userInfo.id" />
+            </el-tab-pane>
           </el-tabs>
         </div>
-        <template v-if="contentType == 1">
-          <PostList
-            :search-params="{ uid: searchParams.uid, sort: '3' }"
-            canEdit
-          />
-        </template>
-        <template v-if="contentType == 2">
-          <div class="mb-[12px] flex items-center justify-between">
-            <div>全部博客({{ blogTotal }})</div>
-            <el-button
-              quaternary
-              size="small"
-              type="primary"
-              v-if="showSearch"
-              @click="showSearch = false"
-              >取消</el-button
-            >
-            <el-button
-              size="small"
-              type="primary"
-              quaternary
-              circle
-              @click="showSearch = true"
-              v-else
-            >
-              <template #icon>
-                <Icon name="fluent:search-20-regular"></Icon>
-              </template>
-            </el-button>
-          </div>
-          <div class="mb-[12px]" v-show="showSearch">
-            <div class="flex items-center gap-[12px]">
-              <y-search
-                v-model:value="searchParams.keyword"
-                @confirm="handleSearchPost"
-              />
-              <el-date-picker
-                v-model="selectDateRange"
-                :shortcuts="rangeShortcuts"
-                :disabled-date="(ts) => ts > Date.now()"
-                type="daterange"
-                clearable
-              />
-              <el-button size="small" type="primary" @click="handleSearchPost"
-                >确定</el-button
-              >
-            </div>
-          </div>
-          <PostList
-            ref="blogListRef"
-            :search-params="searchParams"
-            @fetchComplete="handleBlogFetchComplete"
-            canEdit
-          />
-        </template>
-        <template v-if="contentType == 3">
-          <UserVideoWall :user-id="userInfo.id" />
-        </template>
-        <template v-if="contentType == 4">
-          <UserImageWall :user-id="userInfo.id" />
-        </template>
       </div>
     </div>
     <ResultError :msg="errorMsg" @refresh="handlePageInit" v-else></ResultError>
@@ -206,28 +203,40 @@ const loading = ref(false)
 const showSearch = ref(false)
 const errorMsg = ref()
 const selectDateRange = ref<[number, number]>()
-const rangeShortcuts = {
-  昨天: () => {
-    const start = dayjs().subtract(1, 'd').startOf('date').valueOf()
-    const end = dayjs().startOf('date').valueOf()
-    return [start, end] as const
+const rangeShortcuts = [
+  {
+    text: '昨天',
+    value: () => {
+      const start = dayjs().subtract(1, 'd').startOf('date').valueOf()
+      const end = dayjs().startOf('date').valueOf()
+      return [start, end] as const
+    }
   },
-  上周: () => {
-    const start = dayjs().subtract(1, 'w').startOf('w').valueOf()
-    const end = dayjs().subtract(1, 'w').endOf('w').valueOf()
-    return [start, end] as const
+  {
+    text: '上周',
+    value: () => {
+      const start = dayjs().subtract(1, 'w').startOf('w').valueOf()
+      const end = dayjs().subtract(1, 'w').endOf('w').valueOf()
+      return [start, end] as const
+    }
   },
-  上个月: () => {
-    const start = dayjs().subtract(1, 'M').startOf('M').valueOf()
-    const end = dayjs().subtract(1, 'M').endOf('M').valueOf()
-    return [start, end] as const
+  {
+    text: '上个月',
+    value: () => {
+      const start = dayjs().subtract(1, 'M').startOf('M').valueOf()
+      const end = dayjs().subtract(1, 'M').endOf('M').valueOf()
+      return [start, end] as const
+    }
   },
-  今年: () => {
-    const start = dayjs().startOf('y').valueOf()
-    const end = dayjs().valueOf()
-    return [start, end] as const
+  {
+    text: '今年',
+    value: () => {
+      const start = dayjs().startOf('y').valueOf()
+      const end = dayjs().valueOf()
+      return [start, end] as const
+    }
   }
-}
+]
 const blogListRef = ref()
 const blogTotal = ref(0)
 const imageList = ref<Media[]>([])
@@ -309,7 +318,9 @@ async function handleTabChange(val: string) {
   searchParams.startTime = ''
   searchParams.endTime = ''
   selectDateRange.value = undefined
-  await navigateTo('/user/id/' + userInfo.value?.id + '?tab=' + val)
+  await navigateTo('/user/id/' + userInfo.value?.id + '?tab=' + val, {
+    replace: true
+  })
 }
 
 async function handleViewFriends(type: number) {

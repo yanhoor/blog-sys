@@ -1,9 +1,7 @@
 <template>
   <LayoutMain>
     <div v-if="loading">
-      <el-card shadow="never">
-        <SkeletonBlog></SkeletonBlog>
-      </el-card>
+      <SkeletonBlog></SkeletonBlog>
     </div>
 
     <el-card v-else>
@@ -35,7 +33,7 @@
                   >复制博客地址</el-dropdown-item
                 >
                 <el-dropdown-item
-                  v-if="currentPost?.createById === userInfo?.id"
+                  v-if="currentPost?.createById === myInfo?.id"
                   @click="handleDelete"
                   >删除</el-dropdown-item
                 >
@@ -147,7 +145,7 @@
       </div>
     </el-card>
 
-    <el-back-top :right="50" />
+    <el-backtop :right="50" />
   </LayoutMain>
 </template>
 

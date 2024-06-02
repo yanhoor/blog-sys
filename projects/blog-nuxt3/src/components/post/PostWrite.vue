@@ -4,7 +4,7 @@
     :close-on-press-escape="false"
     :model-value="show"
     @close="emit('update:show', $event)"
-    width="520px"
+    size="60%"
     title="快捷发布"
   >
     <div class="flex h-full w-full flex-col items-start gap-[12px]">

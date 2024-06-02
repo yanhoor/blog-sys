@@ -166,7 +166,8 @@ function handleReplySuccess(reply: Comment) {
 }
 
 async function handleDeleteComment() {
-  ElMessageBox.error('确定删除该评论？该评论下的所有回复也将被删除', '删除', {
+  ElMessageBox.confirm('确定删除该评论？该评论下的所有回复也将被删除', '删除', {
+    type: 'error',
     confirmButtonText: '删除',
     cancelButtonText: '取消'
   })

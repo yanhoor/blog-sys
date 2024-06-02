@@ -2,7 +2,7 @@
   <div class="relative w-full">
     <el-input
       id="textAreaInput"
-      :value="modelValue"
+      :modelValue="modelValue"
       @input="handleInput"
       @blur="handleInputBlur"
       type="textarea"
@@ -26,7 +26,7 @@
             v-for="topic of topicList"
             :key="topic.id"
             class="cursor-pointer px-[12px] py-[5px] hover:bg-primary hover:text-white"
-            @click="handleSelectTopic(topic.content)"
+            @click.capture="handleSelectTopic(topic.content)"
           >
             {{ topic.content }}
           </p>
@@ -85,19 +85,21 @@ const topicListElStyle = computed(() => {
 defineExpose({ handleAddTopic })
 
 onMounted(() => {
-  inputEl.value = document.querySelector('#textAreaInput')
-  if (!inputEl.value) return
+  nextTick(() => {
+    inputEl.value = document.querySelector('#textAreaInput')
+    if (!inputEl.value) return
 
-  // console.log('========topic mounted========', inputEl.value)
-  inputEl.value?.addEventListener('click', handleFocus)
-  if (modelValue.value) {
-    // 对于转发微博，已经有部分内容，将光标移到前面
-    inputEl.value.focus({ preventScroll: true })
-    inputEl.value.setSelectionRange(0, 0)
-  }
+    // console.log('========topic mounted========', inputEl.value)
+    inputEl.value?.addEventListener('click', handleFocus)
+    if (modelValue.value) {
+      // 对于转发微博，已经有部分内容，将光标移到前面
+      inputEl.value.focus({ preventScroll: true })
+      inputEl.value.setSelectionRange(0, 0)
+    }
+  })
 })
 onUnmounted(() => {
-  inputEl.value.removeEventListener('click', handleFocus)
+  inputEl.value?.removeEventListener('click', handleFocus)
 })
 
 function handleFocus() {
@@ -129,6 +131,7 @@ function handleInputBlur() {
 }
 
 function handleSelectTopic(topic: string) {
+  console.log('======handleSelectTopic=========', topic)
   const textarea = inputEl.value
   const idx = modelValue.value.lastIndexOf('#', textarea.selectionEnd)
   const val = [

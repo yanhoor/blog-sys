@@ -108,7 +108,7 @@
         @refresh="handleLoadNextPage(1)"
       />
       <ResultNoMore v-else-if="pageLoadedFinish" />
-      <el-back-top :right="50" />
+      <el-backtop :right="50" />
     </div>
   </div>
 </template>

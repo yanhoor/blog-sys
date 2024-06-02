@@ -1,6 +1,13 @@
 body{
   --primary-color: theme('colors.green.600');
   --el-color-primary: theme('colors.green.600');
+  --el-color-primary-light-3: theme('colors.green.500');
+  --el-color-primary-light-5: theme('colors.green.400');
+  --el-color-primary-light-7: theme('colors.green.300');
+  --el-color-primary-light-8: theme('colors.green.200');
+  --el-color-primary-light-9: theme('colors.green.100');
+  --el-menu-active-color: var(--el-color-primary);
+  --el-menu-hover-bg-color: var(--el-color-primary-light-9);
 }
 html.dark{
   @apply bg-page-dark;

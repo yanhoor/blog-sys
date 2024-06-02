@@ -71,7 +71,8 @@ export const usePostActions = (blog?: Blog) => {
 
   function handleDeletePost(): Promise<void> {
     return new Promise((resolve, reject) => {
-      ElMessageBox.error('确定删除？', '删除博客', {
+      ElMessageBox.confirm('确定删除？', '删除博客', {
+        type: 'error',
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })

@@ -1,5 +1,5 @@
 <template>
-  <y-search v-model:value="searchWord" @confirm="handleSearch" />
+  <y-search v-model="searchWord" @confirm="handleSearch" />
 </template>
 
 <script setup lang="ts">

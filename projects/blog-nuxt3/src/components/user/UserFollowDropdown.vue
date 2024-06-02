@@ -1,6 +1,6 @@
 <template>
   <div class="user-follow-dropdown" v-if="user.id !== myInfo.id">
-    <el-dropdown
+    <lazy-el-dropdown
       :options="userOptions"
       @command="handleDropdownSelect"
       v-if="user.isFollowing"
@@ -17,14 +17,14 @@
       </template>
       <slot>
         <el-button
-          type="tertiary"
+          round
           size="small"
           :round="roundBtn"
           :loading="followLoading"
           >{{ user.isMutualFollowing ? '互相关注' : '已关注' }}</el-button
         >
       </slot>
-    </el-dropdown>
+    </lazy-el-dropdown>
     <el-button
       type="primary"
       :round="roundBtn"

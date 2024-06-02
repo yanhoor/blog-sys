@@ -27,8 +27,7 @@
               <el-dropdown-item @click="handleCopyLink"
                 >复制博客地址</el-dropdown-item
               >
-              <el-dropdown-item
-                @click="navigateTo('/post/' + currentPost.value.id)"
+              <el-dropdown-item @click="navigateTo('/post/' + currentPost.id)"
                 >查看详情</el-dropdown-item
               >
               <el-dropdown-item
@@ -105,14 +104,14 @@
     </div>
 
     <PostCommentList
-      v-show="showType === 'comment'"
+      v-if="showType === 'comment'"
       class="w-full"
       :blog="currentPost"
       :page-size="2"
     ></PostCommentList>
 
     <PostRetweetList
-      v-show="showType === 'retweet'"
+      v-if="showType === 'retweet'"
       class="w-full"
       :blog="currentPost"
     ></PostRetweetList>

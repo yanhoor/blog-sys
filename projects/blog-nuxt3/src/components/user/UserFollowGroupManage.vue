@@ -1,8 +1,9 @@
 <template>
   <div>
-    <el-dialog
+    <lazy-el-dialog
       :model-value="show"
       title="管理分组"
+      append-to-body
       @close="emit('update:show', false)"
     >
       <div class="flex flex-col gap-[12px]">
@@ -32,28 +33,30 @@
         </div>
         <template v-if="editItem">
           <span>{{ editItem.id ? '修改分组' : '新增分组' }}</span>
-          <el-input
-            placeholder="分组名称"
-            v-model="editItem.name"
-            clearable
-            show-count
-            maxlength="8"
-            size="small"
-            @keyup.enter="handleSave"
-          ></el-input>
-          <el-button size="small" @click="handleSave" type="primary">
-            <template #icon>
-              <Icon name="fluent:checkmark-20-regular"></Icon>
-            </template>
-          </el-button>
-          <el-button size="small" @click="editItem = undefined">
-            <template #icon>
-              <Icon name="fluent:dismiss-20-regular"></Icon>
-            </template>
-          </el-button>
+          <div class="flex items-center gap-[12px]">
+            <el-input
+              placeholder="分组名称"
+              v-model="editItem.name"
+              clearable
+              show-count
+              maxlength="8"
+              size="small"
+              @keyup.enter="handleSave"
+            ></el-input>
+            <el-button size="small" @click="handleSave" type="primary">
+              <template #icon>
+                <Icon name="fluent:checkmark-20-regular"></Icon>
+              </template>
+            </el-button>
+            <el-button size="small" @click="editItem = undefined" class="!ml-0">
+              <template #icon>
+                <Icon name="fluent:dismiss-20-regular"></Icon>
+              </template>
+            </el-button>
+          </div>
         </template>
       </div>
-    </el-dialog>
+    </lazy-el-dialog>
   </div>
 </template>
 
@@ -120,7 +123,8 @@ async function handleSortGroup(list: FollowGroup[]) {
 }
 
 async function handleDeleteGroup(id: number) {
-  ElMessageBox.error('确定删除该分组？', '删除', {
+  ElMessageBox.confirm('确定删除该分组？', '删除', {
+    type: 'error',
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   })

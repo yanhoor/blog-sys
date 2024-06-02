@@ -14,7 +14,6 @@
         round
         tertiary
         type="primary"
-        size="medium"
         :disabled="lockUploadMode && uploadMode !== 2"
         @click="handleSelectUploadType(2)"
       >
@@ -27,7 +26,6 @@
         round
         tertiary
         type="primary"
-        size="medium"
         :disabled="lockUploadMode && uploadMode !== 3"
         @click="handleSelectUploadType(3)"
       >
@@ -40,7 +38,6 @@
         round
         tertiary
         type="primary"
-        size="medium"
         :disabled="lockUploadMode && uploadMode !== 4"
         @click="handleSelectUploadType(4)"
       >
@@ -114,14 +111,14 @@
         v-if="uploadMode === 3"
       >
         <MediaVideoItem :url="modelValue[0].file.url" />
-        <el-button round type="error" @click="handleDeleteItem(0)"
+        <el-button round type="danger" @click="handleDeleteItem(0)"
           >删除视频</el-button
         >
       </div>
       <el-button
         v-if="uploadMode === 4"
         round
-        type="error"
+        type="danger"
         @click="handleDeleteAudio()"
         >删除录音</el-button
       >
