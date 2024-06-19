@@ -4,5 +4,9 @@
 @tailwind utilities;
 
 *{
-  @apply hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-thin;
+  @apply hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar-thumb-gray-400 scrollbar-track-gray-300 scrollbar-thin;
+}
+
+html.dark,html.dark *{
+  @apply scrollbar-thumb-gray-500 scrollbar-track-gray-700;
 }
