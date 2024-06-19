@@ -10,7 +10,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -25,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browser-md5-file": "^1.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.11",
     "unbuild": "^2.0.0"

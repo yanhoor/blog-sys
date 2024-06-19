@@ -13,7 +13,6 @@ export function formatTime(value: string, format = "YYYY-MM-DD HH:mm") {
 
 export function toAliasTime(value: string): string {
   const t = new Date(value);
-  console.log("==========toAliasTime============", value, t);
   const sec = dayjs().diff(dayjs(t), "second");
   if (sec < 30) {
     return "刚刚";

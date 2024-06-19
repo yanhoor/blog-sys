@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { api as viewerApi } from 'v-viewer'
 import type { MediaFile } from 'sys-types'
-import FileUtil from '~/utils/fileUtil'
+import { FileUtil } from 'sys-types'
 
 interface Props {
   modelValue?: string

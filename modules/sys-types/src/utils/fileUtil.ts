@@ -6,7 +6,7 @@ interface ChunkProps {
   chunkHash: string
 }
 
-class FileUtil {
+export class FileUtil {
   chunkSize = 2.5 * 1024 * 1024 // 每个分片大小
   maxChunkCount = 50 // 最多分片数
   chunkCount: number = 0 // 实际分片数量
@@ -33,7 +33,7 @@ class FileUtil {
     return new Promise((resolve, reject) => {
       const bmf = new BMF()
       console.log('========开始计算文件 md5=========')
-      bmf.md5(this.file, (err, md5: string) => {
+      bmf.md5(this.file, (err: any, md5: string) => {
         console.log('========文件 md5 计算完成=========')
         resolve(md5)
       })
@@ -82,4 +82,3 @@ class FileUtil {
   }
 }
 
-export default FileUtil

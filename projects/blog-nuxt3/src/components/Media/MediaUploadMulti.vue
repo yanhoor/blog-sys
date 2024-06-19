@@ -128,7 +128,7 @@
 
 <script setup lang="ts">
 import type { Media, MediaFile } from 'sys-types'
-import FileUtil from '@/utils/fileUtil'
+import { FileUtil } from 'sys-types'
 
 interface Props {
   modelValue: Media[]

@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
-import { Encrypt } from '~/utils/crypto'
+import { Encrypt } from 'sys-types'
 
 const token = useCookie('token', {
   maxAge: 60 * 60 * 24 * 7
