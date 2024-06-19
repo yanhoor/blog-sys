@@ -5,6 +5,10 @@
 @import "reset-element-plus.css";
 @import 'viewerjs/dist/viewer.css';
 
+*{
+  @apply dark:bg-page-dark hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-thin;
+}
+
 html,body,#__nuxt,.n-config-provider{
   @apply bg-page-light dark:bg-page-dark;
   margin: 0;

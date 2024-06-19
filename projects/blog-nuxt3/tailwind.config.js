@@ -6,6 +6,7 @@ module.exports = {
   darkMode: 'class',
   plugins: [
     require('@tailwindcss/typography'),
+    require('tailwind-scrollbar'),
   ],
   theme: {
     extend: {
