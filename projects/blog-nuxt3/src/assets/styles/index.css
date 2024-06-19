@@ -1,13 +1,16 @@
 /*@import 'element-plus/dist/index.css';*/
 /*@import 'element-plus/theme-chalk/dark/css-vars.css';*/
 @import "var.css";
-@import "tailwind.css";
+@import "global-class.css";
 @import "reset-element-plus.css";
 @import 'viewerjs/dist/viewer.css';
 
-*{
-  @apply dark:bg-page-dark hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-thin;
+
+html.dark{
+  @apply bg-page-dark;
+  color-scheme: light dark;
 }
+
 
 html,body,#__nuxt,.n-config-provider{
   @apply bg-page-light dark:bg-page-dark;
@@ -15,74 +18,4 @@ html,body,#__nuxt,.n-config-provider{
   padding: 0;
   width: 100%;
   height: 100%;
-}
-
-.custom-border{
-  @apply border-solid border-color;
-}
-
-.radius-inherit{
-  border-radius: inherit;
-}
-
-.media-tag {
-  @apply text-gray-500;
-  padding: 0 8px;
-  background: hsla(0, 0%, 100%, .6);
-  text-align: center;
-  display: inline-block;
-}
-
-.transform-center {
-  @apply absolute top-1/2 left-1/2;
-  transform: translate(-50%, -50%);
-}
-
-.page-enter-active,.page-leave-active {
-  transition: all 0.4s;
-}
-.page-enter-from,.page-leave-to {
-  opacity: 0;
-  filter: blur(1rem);
-}
-
-.layout-enter-active,.layout-leave-active {
-  transition: all 0.4s;
-}
-.layout-enter-from,.layout-leave-to {
-  filter: grayscale(1);
-}
-
-.ellipsis-text{
-  @apply text-ellipsis whitespace-nowrap overflow-hidden;
-}
-
-.regular-text-color{
-  @apply text-regular-light dark:text-regular-dark;
-}
-.secondary-text-color{
-  @apply text-secondary-light dark:text-secondary-dark;
-}
-.placeholder-text-color{
-  @apply text-placeholder-light dark:text-placeholder-dark;
-}
-
-.bg-block-section{
-  @apply bg-gray-100 dark:bg-block-dark;
-}
-
-.border-color{
-  @apply border-border-light dark:border-border-dark;
-}
-
-.divide-color{
-  @apply divide-border-light dark:divide-border-dark;
-}
-
-.block-bg-color{
-  @apply bg-block-light dark:bg-block-dark;
-}
-
-.card-bg-color{
-  @apply bg-card-light dark:bg-card-dark;
 }

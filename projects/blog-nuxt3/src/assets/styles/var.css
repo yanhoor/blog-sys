@@ -6,10 +6,7 @@ body{
   --el-color-primary-light-7: theme('colors.green.300');
   --el-color-primary-light-8: theme('colors.green.200');
   --el-color-primary-light-9: theme('colors.green.100');
+  --el-color-primary-dark-2: theme('colors.green.700');
   --el-menu-active-color: var(--el-color-primary);
   --el-menu-hover-bg-color: var(--el-color-primary-light-9);
-}
-html.dark{
-  @apply bg-page-dark;
-  color-scheme: light dark;
 }

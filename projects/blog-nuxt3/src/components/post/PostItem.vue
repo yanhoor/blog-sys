@@ -46,7 +46,7 @@
       v-if="currentPost!.contentType == 2"
     >
       <PostArticle
-        class="[&_pre]:w-fit [&_pre]:max-w-none"
+        class="[&_pre]:w-full [&_pre]:max-w-full w-full max-w-full"
         :content="currentPost!.content"
       />
     </div>

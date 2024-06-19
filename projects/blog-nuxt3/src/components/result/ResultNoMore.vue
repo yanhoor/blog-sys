@@ -3,7 +3,7 @@
     <div
       class="custom-border border-t flex-1 !border-gray-300 dark:!border-gray-700"
     ></div>
-    <p class="text-center my-[12px] mx-[24px]">{{ tip }}</p>
+    <p class="text-center my-[12px] mx-[24px] regular-text-color">{{ tip }}</p>
     <div
       class="custom-border border-t flex-1 !border-gray-300 dark:!border-gray-700"
     ></div>

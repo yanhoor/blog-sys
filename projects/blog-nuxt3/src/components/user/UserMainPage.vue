@@ -24,14 +24,14 @@
                   <UserAvatar :size="120" :user="userInfo" disabled />
                 </div>
                 <div class="flex flex-col gap-[6px]">
-                  <div class="text-3xl font-bold">{{ userInfo?.name }}</div>
+                  <div class="text-3xl font-bold regular-text-color">{{ userInfo?.name }}</div>
                   <div class="flex gap-[6px]">
                     <div
                       class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(2)"
                     >
                       <span class="secondary-text-color">粉丝</span>
-                      <span class="text-[18px] font-semibold">{{
+                      <span class="text-[18px] font-semibold regular-text-color">{{
                         userInfo.followerCount
                       }}</span>
                     </div>
@@ -40,7 +40,7 @@
                       @click="handleViewFriends(1)"
                     >
                       <span class="secondary-text-color">关注</span>
-                      <span class="text-[18px] font-semibold">{{
+                      <span class="text-[18px] font-semibold regular-text-color">{{
                         userInfo.followingCount
                       }}</span>
                     </div>
@@ -118,7 +118,7 @@
             </el-tab-pane>
             <el-tab-pane name="2" label="博客" lazy>
               <div class="mb-[12px] flex items-center justify-between">
-                <div>全部博客({{ blogTotal }})</div>
+                <div class="regular-text-color">全部博客({{ blogTotal }})</div>
                 <el-button
                   quaternary
                   size="small"

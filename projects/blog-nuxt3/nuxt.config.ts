@@ -124,12 +124,12 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode'
   },
 
-  // css: ['@/assets/styles/index.css'],
+  css: ['@/assets/styles/index.css'],
 
   tailwindcss: {
     // https://tailwindcss.nuxtjs.org/getting-started/configuration
-    // cssPath: ['~/assets/styles/tailwind.css', { injectPosition: 'last' }]
-    cssPath: false // tailwindcss 的 HMR 会失效，需要手动刷新
+    cssPath: ['~/assets/styles/tailwind.css', { injectPosition: 'last' }]
+    // cssPath: false // tailwindcss 的 HMR 会失效，需要手动刷新
   },
 
   postcss: {
@@ -171,8 +171,5 @@ export default defineNuxtConfig({
   // auto import components
   components: true,
 
-  devtools: {
-    enabled: false
-  },
   workspaceDir: '../../'
 })

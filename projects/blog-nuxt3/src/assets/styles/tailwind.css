@@ -2,3 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*{
+  @apply hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-thin;
+}
