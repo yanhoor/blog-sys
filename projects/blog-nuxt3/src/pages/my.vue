@@ -35,8 +35,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '#components'
-
 definePageMeta({
   redirect: '/my/follower',
   middleware: ['auth']

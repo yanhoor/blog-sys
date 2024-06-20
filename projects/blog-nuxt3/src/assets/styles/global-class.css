@@ -8,11 +8,8 @@
 }
 
 .media-tag {
-  @apply text-gray-500;
-  padding: 0 8px;
-  background: hsla(0, 0%, 100%, .6);
-  text-align: center;
-  display: inline-block;
+  @apply text-gray-600 text-[12px] py-[2px] px-[8px] text-center inline-block;
+  background: hsla(0, 0%, 100%, .55);
 }
 
 .transform-center {
