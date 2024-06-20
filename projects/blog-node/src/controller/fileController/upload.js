@@ -1,6 +1,7 @@
 const md5File = require('md5-file')
 const prisma = require('../../database/prisma')
 const fs = require('fs')
+const path = require('path');
 
 // 对分片文件改名
 const handleLocalUploadPart = async (ctx, next) => {
@@ -10,7 +11,7 @@ const handleLocalUploadPart = async (ctx, next) => {
 
   try {
     const fp = file.filepath
-    const idx = fp.lastIndexOf('/')
+    const idx = fp.lastIndexOf(path.sep)
     await fs.promises.rename(fp, fp.slice(0, idx + 1) + chunkPath)
     return (ctx.body = {
       success: true
@@ -69,8 +70,7 @@ module.exports = async function (ctx, next) {
       // } else {
       //   fullName = await this.handleMultipartUpload(file, m5)
       // }
-      let idx = file.filepath.lastIndexOf('/')
-      if(idx < 0) idx = file.filepath.lastIndexOf('\\')
+      const idx = file.filepath.lastIndexOf(path.sep)
       const localName = file.filepath.slice(idx + 1)
       // const fileType = type || this.getFileType(fullName)
       const fileType = type || this.getFileType(localName)
