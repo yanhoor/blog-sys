@@ -1,12 +1,12 @@
 export interface User {
-  id?: number | string;
+  id?: string;
   mobile: string;
   name: string;
   avatar?: string;
   profileCardBg?: string;
   introduce?: string;
   gender: string | number;
-  birthday?: string | number;
+  birthday?: string;
   lock: number;
   followerCount?: number;
   followingCount?: number;
