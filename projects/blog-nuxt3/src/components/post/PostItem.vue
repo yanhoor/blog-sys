@@ -12,33 +12,31 @@
           v-time="currentPost.createdAt"
         ></span>
       </div>
-      <client-only>
-        <el-dropdown class="!absolute right-0 top-0" trigger="click">
-          <el-button quaternary circle type="default" class="cursor-pointer">
-            <template #icon>
-              <Icon name="fluent:chevron-down-20-regular"></Icon>
-            </template>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="handlePostCollect">{{
+      <el-dropdown class="!absolute right-0 top-0" trigger="click">
+        <el-button quaternary circle type="default" class="cursor-pointer">
+          <template #icon>
+            <Icon name="fluent:chevron-down-20-regular"></Icon>
+          </template>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="handlePostCollect">{{
                 currentPost.isCollect ? '取消收藏' : '收藏'
               }}</el-dropdown-item>
-              <el-dropdown-item @click="handleCopyLink"
-                >复制博客地址</el-dropdown-item
-              >
-              <el-dropdown-item @click="navigateTo('/post/' + currentPost.id)"
-                >查看详情</el-dropdown-item
-              >
-              <el-dropdown-item
+            <el-dropdown-item @click="handleCopyLink"
+            >复制博客地址</el-dropdown-item
+            >
+            <el-dropdown-item @click="navigateTo('/post/' + currentPost.id)"
+            >查看详情</el-dropdown-item
+            >
+            <el-dropdown-item
                 v-if="currentPost?.createById === userInfo?.id"
                 @click="handleDelete"
-                >删除</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </client-only>
+            >删除</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
 
     <div

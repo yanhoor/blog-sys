@@ -57,7 +57,7 @@
           v-model="checkedList"
           @change="handleCheckItem"
         >
-          <div v-auto-animate>
+          <div v-auto-animate class="[&_div+div]:mt-[24px]">
             <div
               v-for="notification of pageList"
               :key="notification.id"
@@ -69,7 +69,7 @@
                 :disabled="!!notification.isRead"
                 v-if="showCheck"
               ></el-checkbox>
-              <el-card class="overflow-hidden">
+              <el-card class="overflow-hidden w-full">
                 <div
                   class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
                   :class="{ 'text-gray-400': notification.isRead }"

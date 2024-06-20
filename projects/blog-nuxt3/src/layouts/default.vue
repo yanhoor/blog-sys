@@ -31,6 +31,7 @@
         </div>
       </div>
     </el-main>
+    <GlobalComponentWrapper />
   </el-container>
 </template>
 

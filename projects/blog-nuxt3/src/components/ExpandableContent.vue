@@ -1,5 +1,5 @@
 <template>
-  <div class="whitespace-pre-wrap break-words" v-auto-animate>
+  <div class="whitespace-pre-wrap break-words text-[14px]" v-auto-animate>
     <template v-for="(info, index) of displayContentList" :key="index">
       <component
         :is="info.content"

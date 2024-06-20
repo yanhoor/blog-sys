@@ -4,6 +4,7 @@
       :options="userOptions"
       @command="handleDropdownSelect"
       v-if="user.isFollowing"
+      :teleported="false"
     >
       <template #dropdown>
         <el-dropdown-menu>
@@ -79,6 +80,15 @@ function handleDropdownSelect(key: string | number) {
 
 async function handleFollow(type: number) {
   try {
+    await ElMessageBox.confirm(
+        '确定取消关注吗？',
+        '取消关注',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+    )
     await handleFollowUser(type)
     emit('updateFollow')
   } catch (e) {}

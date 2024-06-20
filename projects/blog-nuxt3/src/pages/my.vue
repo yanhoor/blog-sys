@@ -1,7 +1,8 @@
 <template>
   <LayoutMain class="flex items-start gap-[12px]">
     <el-menu
-      class="sticky top-[62px]"
+      class="!sticky top-[62px] !border-none"
+      :default-active="activeMenuKey"
       :collapse="collapsed"
       @close="collapsed = true"
       @open="collapsed = false"

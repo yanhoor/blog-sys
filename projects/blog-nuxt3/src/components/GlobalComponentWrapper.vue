@@ -1,8 +1,12 @@
 <template>
-  <UserFollowGroupSelect
-    v-model:show="followGroupSelectStore.showSelect"
-    :userId="followGroupSelectStore.userId"
-  />
+  <div>
+    <client-only>
+      <UserFollowGroupSelect
+          v-model:show="followGroupSelectStore.showSelect"
+          :userId="followGroupSelectStore.userId"
+      />
+    </client-only>
+  </div>
 </template>
 
 <script setup lang="ts">

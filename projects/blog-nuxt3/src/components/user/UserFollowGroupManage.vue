@@ -10,20 +10,22 @@
         <p class="text-[12px] text-gray-400">
           *点击修改分组名称，拖拽调整分组顺序
         </p>
-        <div class="flex flex-wrap gap-[12px]" id="groupSort" v-auto-animate>
-          <el-tag
-            class="cursor-pointer"
-            v-for="group of filterGroupList"
-            :key="group.id"
-            round
-            type="primary"
-            closable
-            @close="handleDeleteGroup(group.id)"
-            @click="handleEditGroup(group)"
-          >
-            {{ group.name }}
-            <span v-if="group.memberCount">({{ group.memberCount }})</span>
-          </el-tag>
+        <div class="flex flex-wrap gap-[12px]">
+          <div class="flex flex-wrap gap-[12px]" id="groupSort" v-auto-animate>
+            <el-tag
+                class="cursor-pointer"
+                v-for="group of filterGroupList"
+                :key="group.id"
+                round
+                type="primary"
+                closable
+                @close="handleDeleteGroup(group.id)"
+                @click="handleEditGroup(group)"
+            >
+              {{ group.name }}
+              <span v-if="group.memberCount">({{ group.memberCount }})</span>
+            </el-tag>
+          </div>
           <el-button size="small" @click="editItem = { name: '' }" round>
             <template #icon>
               <Icon name="fluent:add-20-regular"></Icon>
