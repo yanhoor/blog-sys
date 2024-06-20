@@ -23,8 +23,8 @@ export const useFetchPost = (
     // headers['Content-Type'] = 'multipart/form-data'
     data = fd
   }
-  // console.log('======useFetchPost====', runTimeConfig.public.apiBase)
-  // console.log('=======useFetchPost.key======', url + json)
+  // console.log('======$HttpUtils.post====', runTimeConfig.public.apiBase)
+  // console.log('=======$HttpUtils.post.key======', url + json)
   return $fetch(url, {
     baseURL: runTimeConfig.public.apiBase,
     // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
@@ -75,8 +75,8 @@ export const useFetchGet = (
   let Authorization = ''
   const token = useCookie('token')
   if (token.value) Authorization = 'Bearer ' + token.value
-  // console.log('=======useFetchPost.key======', url + json)
-  // console.log('======useFetchGet====', url, process.client, process.server, token.value)
+  // console.log('=======$HttpUtils.post.key======', url + json)
+  // console.log('======$HttpUtils.get====', url, process.client, process.server, token.value)
   return $fetch(url, {
     baseURL: runTimeConfig.public.apiBase,
     // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,

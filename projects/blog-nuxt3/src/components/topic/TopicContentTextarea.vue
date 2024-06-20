@@ -199,7 +199,7 @@ function handleGetPointerPosition(startStr: string, endStr: string) {
 
 async function searchTopicList(keyword?: string) {
   try {
-    const { result, success, msg } = await useFetchPost('/topic/list', {
+    const { result, success, msg } = await $HttpUtils.post('/topic/list', {
       keyword
     })
     if (success) {

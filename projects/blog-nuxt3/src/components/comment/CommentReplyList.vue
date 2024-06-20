@@ -98,7 +98,7 @@ function handleInit() {
 
 async function getTopCommentDetail() {
   try {
-    const { result, success, msg } = await useFetchPost('/comment/info', {
+    const { result, success, msg } = await $HttpUtils.post('/comment/info', {
       id: props.comment.id
     })
     if (success) {

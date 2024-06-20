@@ -1,13 +1,15 @@
-import FileUtil from '~/utils/fileUtil'
-import type { MediaFile } from 'sys-types'
+import {FileUtil} from 'sys-types'
+import type {MediaFile} from 'sys-types'
 
 export const useUploadFile = () => {
-  async function handleUploadSingle(params) {
+  async function handleUploadSingle(params: any) {
     try {
-      const { success, result, msg } = await useFetchPost(
+      const {success, result, msg} = await $HttpUtils.post(
         '/file/upload',
         params,
-        true
+        {
+          isFormData: true
+        }
       )
 
       if (success) {
@@ -15,7 +17,8 @@ export const useUploadFile = () => {
       } else {
         ElMessage.error(msg || '上传失败')
       }
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 
   async function handlePartUpload(
@@ -40,17 +43,19 @@ export const useUploadFile = () => {
     }
 
     try {
-      const { success, result, msg } = await useFetchPost(
+      const {success, result, msg} = await $HttpUtils.post<MediaFile>(
         '/file/mergeMultiPart',
         {
           fileName: fileUtil.fileHash,
           ext: fileUtil.ext,
           type
         },
-        true
+        {
+          isFormData: true
+        }
       )
       if (success) {
-        return result
+        return result as MediaFile
       } else {
         ElMessage.error(msg as string)
       }
@@ -61,7 +66,7 @@ export const useUploadFile = () => {
 
   async function handleCheckFile(fileUtil: FileUtil) {
     try {
-      const { success, result, msg } = await useFetchPost('/file/checkFile', {
+      const {success, result, msg} = await $HttpUtils.post<any>('/file/checkFile', {
         md5: fileUtil.md5
       })
       if (success) {
@@ -71,16 +76,19 @@ export const useUploadFile = () => {
           return result.file
         }
       }
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 
-  async function handleUploadPart(params) {
+  async function handleUploadPart(params: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const { success, result, msg } = await useFetchPost(
+        const {success, result, msg} = await $HttpUtils.post(
           '/file/upload',
           params,
-          true
+          {
+            isFormData: true
+          }
         )
         if (success) {
           resolve(result)

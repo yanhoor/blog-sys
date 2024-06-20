@@ -58,7 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFetchPost } from '@/composables/useBaseFetch'
 import type {
   FormInstance,
   FormRules,
@@ -66,7 +65,7 @@ import type {
   FormItemInstance
 } from 'element-plus'
 import { useColorMode } from '@vueuse/core'
-import { Encrypt } from '@/utils/crypto'
+import { Encrypt } from 'sys-types'
 
 const colorModel = useColorMode()
 
@@ -156,7 +155,7 @@ function handleRegister(e: MouseEvent) {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { result, success } = await useFetchPost('/user/register', {
+        const { result, success } = await $HttpUtils.post('/user/register', {
           mobile: registerForm.value.mobile,
           name: registerForm.value.name,
           password: Encrypt(registerForm.value.password)

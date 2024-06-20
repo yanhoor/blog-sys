@@ -94,7 +94,7 @@ async function getAllGroup() {
       success,
       code,
       msg
-    } = await useFetchPost('/followGroup/all', {})
+    } = await $HttpUtils.post('/followGroup/all', {})
     if (success) {
       systemGroupList.value = []
       customGroupList.value = []

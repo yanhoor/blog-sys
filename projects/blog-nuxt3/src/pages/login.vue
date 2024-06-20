@@ -79,7 +79,7 @@ function handlePost(e: MouseEvent) {
     console.log('=========handlePost========', valid, fields, postForm.value)
     if (valid) {
       try {
-        const { result, success, msg } = await useFetchPost('/user/login', {
+        const { result, success, msg } = await $HttpUtils.post('/user/login', {
           ...postForm.value,
           password: Encrypt(postForm.value.password)
         })
