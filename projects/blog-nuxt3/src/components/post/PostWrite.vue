@@ -80,7 +80,7 @@ async function handlePost() {
   postForm.value.content.trim()
   try {
     isProcessing.value = true
-    const { result, success, msg } = await $HttpUtils.post(
+    const { result, success, msg } = await useFetchPost(
       '/blog/edit',
       postForm.value
     )

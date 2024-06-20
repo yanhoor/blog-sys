@@ -93,7 +93,7 @@ async function commitTransfer() {
 
   try {
     isCommitting.value = true
-    const { result, success, msg } = await $HttpUtils.post(
+    const { result, success, msg } = await useFetchPost(
       '/blog/edit',
       postParams
     )

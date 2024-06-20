@@ -155,7 +155,7 @@ function handleRegister(e: MouseEvent) {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { result, success } = await $HttpUtils.post('/user/register', {
+        const { result, success } = await useFetchPost('/user/register', {
           mobile: registerForm.value.mobile,
           name: registerForm.value.name,
           password: Encrypt(registerForm.value.password)

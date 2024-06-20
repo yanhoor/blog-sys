@@ -18,7 +18,7 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
   async function fetchPage() {
     try {
       pageLoading.value = true
-      const { result, success } = await $HttpUtils.post<any>(url, pageFetchParams)
+      const { result, success } = await useFetchPost<any>(url, pageFetchParams)
       if (success) {
         fetchResult.value = result
         pageList.value = result.list

@@ -104,7 +104,7 @@ async function handleCreateGroup() {
   if (adding.value) return
   adding.value = true
   try {
-    const { result, success, code, msg } = await $HttpUtils.post(
+    const { result, success, code, msg } = await useFetchPost(
       '/followGroup/edit',
       groupForm.value
     )
@@ -128,7 +128,7 @@ async function handleConfirm() {
   }
   confirmLoading.value = true
   try {
-    const { result, success, code, msg } = await $HttpUtils.post(
+    const { result, success, code, msg } = await useFetchPost(
       '/user/setGroup',
       { groupId: selectIdList.value.toString(), userId: props.userId }
     )
@@ -150,7 +150,7 @@ async function getAllGroup() {
       success,
       code,
       msg
-    } = await $HttpUtils.post<any[]>('/followGroup/all', {})
+    } = await useFetchPost<any[]>('/followGroup/all', {})
     if (success) {
       groupList.value = result
     } else {
@@ -166,7 +166,7 @@ async function getContainGroupList() {
       success,
       code,
       msg
-    } = await $HttpUtils.post<any[]>('/followGroup/containList', { userId: props.userId })
+    } = await useFetchPost<any[]>('/followGroup/containList', { userId: props.userId })
     if (success) {
       selectIdList.value = result.map((g) => g.id)
     } else {

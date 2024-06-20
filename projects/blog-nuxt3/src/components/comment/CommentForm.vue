@@ -92,7 +92,7 @@ async function commitComment() {
 
   try {
     commentCommitting.value = true
-    const { result, success, msg } = await $HttpUtils.post(
+    const { result, success, msg } = await useFetchPost(
       '/comment/commit',
       postParams
     )

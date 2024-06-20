@@ -118,7 +118,7 @@ async function handleLogout() {
   })
     .then(async () => {
       try {
-        const { success, result, msg } = await $HttpUtils.post('/user/logout', {})
+        const { success, result, msg } = await useFetchPost('/user/logout', {})
         if (!success) {
           ElMessage.error(msg as string)
         } else {

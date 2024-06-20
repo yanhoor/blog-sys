@@ -174,7 +174,7 @@ async function handleDeleteComment() {
     .then(async () => {
       try {
         commentDeleting.value = true
-        const { result, success, msg } = await $HttpUtils.post('/comment/delete', {
+        const { result, success, msg } = await useFetchPost('/comment/delete', {
           id: currentComment.value.id
         })
         commentDeleting.value = false
@@ -200,7 +200,7 @@ function handleDeleteTopComment(comment: Comment) {
 async function getCommentInfo() {
   try {
     commentDeleting.value = true
-    const { result, success, msg } = await $HttpUtils.post('/comment/info', {
+    const { result, success, msg } = await useFetchPost('/comment/info', {
       id: currentComment.value.id
     })
     if (success) {
@@ -220,7 +220,7 @@ async function handleLikeComment() {
 
   try {
     likeLoading.value = true
-    const { result, success } = await $HttpUtils.post('/comment/like', {
+    const { result, success } = await useFetchPost('/comment/like', {
       id: currentComment.value.id,
       isLike: currentComment.value.isLike ? 0 : 1
     })

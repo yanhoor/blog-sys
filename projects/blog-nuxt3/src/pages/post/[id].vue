@@ -35,7 +35,7 @@
                 </el-dropdown-item
                 >
                 <el-dropdown-item
-                    v-if="currentPost??.createById === myInfo?.id"
+                    v-if="currentPost?.createById === myInfo?.id"
                     @click="handleDelete"
                 >删除
                 </el-dropdown-item
@@ -47,8 +47,8 @@
 
         <PostArticle
             class="w-full !max-w-full"
-            v-if="currentPost?!.contentType == 2"
-            :content="currentPost?!.content"
+            v-if="currentPost!.contentType == 2"
+            :content="currentPost!.content"
         />
         <ExpandableContent
             v-else
@@ -123,7 +123,7 @@
                 ref="commentRef"
                 class="w-full"
                 allowLoadMore
-                :blog="currentPost?"
+                :blog="currentPost"
             />
           </template>
 
@@ -141,7 +141,7 @@
                 ref="retweetRef"
                 class="w-full"
                 allowLoadMore
-                :blog="currentPost?"
+                :blog="currentPost"
             ></PostRetweetList>
           </template>
         </div>
@@ -209,7 +209,7 @@ async function initPage() {
 
 async function getBlogInfo() {
   try {
-    const {result, success, msg, code} = await $HttpUtils.post<Blog>('/blog/info', {
+    const {result, success, msg, code} = await useFetchPost<Blog>('/blog/info', {
       id: blogId
     })
     if (success) {

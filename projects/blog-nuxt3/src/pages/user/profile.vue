@@ -105,7 +105,7 @@ getProfile()
 
 async function getProfile() {
   try {
-    const { result, success, code, msg } = await $HttpUtils.get('/user/info', {})
+    const { result, success, code, msg } = await useFetchGet('/user/info', {})
     if (success) {
       if (result.birthday) result.birthday = new Date(result.birthday).getTime()
       postForm.value = result
@@ -120,7 +120,7 @@ async function handleSave() {
     if (valid) {
       try {
         isProcessing.value = true
-        const { result, success, msg } = await $HttpUtils.post(
+        const { result, success, msg } = await useFetchPost(
           '/user/update',
           postForm.value
         )

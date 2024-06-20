@@ -75,7 +75,7 @@ function handleShow(val: boolean) {
 async function getUserInfo() {
   loading.value = true
   try {
-    const { result, success, code, msg } = await $HttpUtils.post(
+    const { result, success, code, msg } = await useFetchPost(
       '/user/userInfo',
       {
         uid: props.uid,

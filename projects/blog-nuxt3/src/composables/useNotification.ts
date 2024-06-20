@@ -44,7 +44,7 @@ export const useFetchNotificationCount = async (params = {}) => {
   const unreadCollectCount = useNotificationUnreadCollectCount()
   const unreadAuditCount = useNotificationUnreadAuditCount()
   try {
-    const { result, success } = await $HttpUtils.post<any>(
+    const { result, success } = await useFetchPost<any>(
       '/notification/count',
       params
     )
@@ -128,7 +128,7 @@ export const useShowNotificationDetail = async (result: Notification) => {
 
   async function setRead(id: number) {
     try {
-      const { result, success } = await $HttpUtils.post('/notification/read', {
+      const { result, success } = await useFetchPost('/notification/read', {
         id
       })
       if (success) {

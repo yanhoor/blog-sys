@@ -1,114 +1,101 @@
-interface HttpResponseType {
-  success: boolean
-  result?: any
-  code?: number
-  msg?: string
+import type {NitroFetchOptions, NitroFetchRequest} from 'nitropack';
+
+// 后端返回的数据类型
+export interface FetchRes<T> {
+  result?: T;
+  code?: number;
+  msg?: string;
+  success: boolean;
 }
 
-export const useFetchPost = (
-  url: string,
-  data: any,
-  formData = false
-): Promise<HttpResponseType> => {
+export type UtilFetchOptions = NitroFetchOptions<NitroFetchRequest> & {
+  isFormData?: boolean;
+  isSilent?: boolean;
+  silentCodeList?: string[];
+};
+
+interface BasePost{
+  <T>(
+    url: string,
+    body?:BodyInit | Record<string, any>,
+    option?: Omit<UtilFetchOptions, 'method'>,
+  ): Promise<FetchRes<T>>
+}
+
+interface BaseGet{
+  <T>(
+    url: string,
+    params?: Record<string, any>,
+    option?: Omit<UtilFetchOptions, 'method'>,
+  ): Promise<FetchRes<T>>
+}
+
+enum StatusCode {
+  success = 10000, // 成功
+  notLogin = 40001, // 未登录
+  illegalPath = 40002, // 非法路径
+  tokenExpired = 20023, // token 过期
+}
+
+function commitFetch<T>(url: string, option: UtilFetchOptions) {
+  // 从运行时配置中获取代理和平台信息
   const runTimeConfig = useRuntimeConfig()
-  const json = JSON.stringify(data)
   let Authorization = ''
   const token = useCookie('token')
   if (token.value) Authorization = 'Bearer ' + token.value
-  if (formData) {
+
+  const oFetch = $fetch.create({
+    baseURL: runTimeConfig.public.apiBase,
+    headers: {
+      Authorization: Authorization
+    },
+    onRequest({options}) {
+      options.query = options.query || {};
+    },
+    onRequestError({request, error}) {
+      console.log('Fetch request error', request, error);
+    },
+    onResponse({response}) {
+      const {code, success, msg} = response._data || {}
+      if (process.client && (code === 111 || code === 999)) {
+        token.value = null
+        ElMessage.error(msg)
+      }
+    },
+  });
+
+  // todo: 这个传入的 option 应该是 NitroFetchOptions
+  return oFetch<FetchRes<T>>(url, option);
+}
+
+export const useFetchPost: BasePost = <T>(
+  url: string,
+  body?:  BodyInit | Record<string, any>,
+  option?: UtilFetchOptions
+) => {
+  const {isFormData = false} = option || {}
+  if (isFormData && body && typeof body === 'object' && body.constructor === Object) {
     const fd = new FormData()
-    Object.keys(data).forEach((k) => {
-      if (data[k] !== undefined) fd.append(k, data[k])
+    Object.keys(body).forEach((k: string) => {
+      if ((body as Record<string, any>)[k] !== undefined) fd.append(k, (body as Record<string, any>)[k])
     })
-    // headers['Content-Type'] = 'multipart/form-data'
-    data = fd
+    body = fd
   }
-  // console.log('======$HttpUtils.post====', runTimeConfig.public.apiBase)
-  // console.log('=======$HttpUtils.post.key======', url + json)
-  return $fetch(url, {
-    baseURL: runTimeConfig.public.apiBase,
-    // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
-    headers: {
-      Authorization: Authorization
-    },
-    method: 'POST',
-    body: data,
-    // key: url + json, // 相同的 key 不会再请求
-    // initialCache: false, // 默认true，false 时不会缓存请求，即每次都会请求，即使 key 一样，false 避免出错后刷新无效
-    // transform(res: any){
-    //   console.log('===========tt=====', res)
-    //   return res
-    // },
-
-    onRequestError({ request, options, error }) {
-      // Log error
-      console.log('[fetch request error]', request, error)
-    },
-    onResponse({ request, response, options }) {
-      // console.log('-------onResponse----------', url, process.server)
-      // Log response
-      // console.log('[fetch response]', response._data)
-      const { code, success, msg } = response._data || {}
-      if (process.client && (code === 111 || code === 999)) {
-        token.value = null
-        ElMessage.error(msg)
-      }
-    },
-    onResponseError({ request, response, options }) {
-      // Log error
-      console.log(
-        '[fetch response error]',
-        request,
-        response.status,
-        response.body
-      )
-    }
-  })
+  return commitFetch<T>(url, {
+    method: 'post',
+    body,
+    ...option,
+  });
 }
 
-export const useFetchGet = (
+export const useFetchGet: BaseGet = <T>(
   url: string,
-  data: any
-): Promise<HttpResponseType> => {
-  const runTimeConfig = useRuntimeConfig()
-  const json = JSON.stringify(data)
-  let Authorization = ''
-  const token = useCookie('token')
-  if (token.value) Authorization = 'Bearer ' + token.value
-  // console.log('=======$HttpUtils.post.key======', url + json)
-  // console.log('======$HttpUtils.get====', url, process.client, process.server, token.value)
-  return $fetch(url, {
-    baseURL: runTimeConfig.public.apiBase,
-    // baseURL: (process.server ? runTimeConfig.apiBaseDocker : runTimeConfig.apiBase) || runTimeConfig.apiBase,
-    method: 'GET',
-    params: data,
-    // key: url + json,
-    // initialCache: false,
-    headers: {
-      Authorization: Authorization
-    },
-    onRequestError({ request, options, error }) {
-      // Log error
-      console.log('[fetch request error]', request, error)
-    },
-    onResponse({ request, response, options }) {
-      // console.log('-------onResponse----------', url, process.server)
-      // Log response
-      // console.log('[fetch response]', response._data)
-      const { code, success, msg } = response._data || {}
-      if (process.client && (code === 111 || code === 999)) {
-        token.value = null
-        ElMessage.error(msg)
-      }
-    },
-    onResponseError({ request, response, options }) {
-      // Log error
-      console.log(
-        '[fetch response error]',
-        request,
-        response.status,
-        response.body
-      )
-    }
-  })
+  params?:  Record<string, any>,
+  option?: UtilFetchOptions
+) => {
+  return commitFetch<T>(url, {
+    method: 'get',
+    params,
+    ...option,
+  });
 }

@@ -191,7 +191,7 @@ async function handleRemarkRead(id: string, isAll = false) {
     params = { id }
   }
   try {
-    const { result, success } = await $HttpUtils.post('/notification/read', params)
+    const { result, success } = await useFetchPost('/notification/read', params)
     if (success) {
       useFetchNotificationCount()
       handleLoadNextPage(1)

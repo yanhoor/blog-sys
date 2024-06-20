@@ -16,7 +16,7 @@ export const usePostActions = (blog?: Blog) => {
 
       try {
         likeLoading.value = true
-        const { result, success } = await $HttpUtils.post('/blog/like', {
+        const { result, success } = await useFetchPost('/blog/like', {
           id: currentPost.value.id,
           isLike: currentPost.value.isLike ? 0 : 1
         })
@@ -47,7 +47,7 @@ export const usePostActions = (blog?: Blog) => {
 
       try {
         collectLoading.value = true
-        const { result, success } = await $HttpUtils.post('/blog/collect', {
+        const { result, success } = await useFetchPost('/blog/collect', {
           id: currentPost.value.id,
           isCollect: currentPost.value.isCollect ? 0 : 1
         })
@@ -81,7 +81,7 @@ export const usePostActions = (blog?: Blog) => {
 
           try {
             deleteLoading.value = true
-            const { result, success } = await $HttpUtils.post('/blog/delete', {
+            const { result, success } = await useFetchPost('/blog/delete', {
               id: currentPost.value.id
             })
             deleteLoading.value = false
