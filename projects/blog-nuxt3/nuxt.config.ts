@@ -1,6 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
-import { visualizer } from 'rollup-plugin-visualizer'
 import { nodePolyfills } from 'vite-plugin-node-polyfills' // https://stackoverflow.com/questions/78115258/module-has-been-externalized-for-browser-compatibility-error
+import viteCompression from 'vite-plugin-compression'
 
 const isProd = process.env.NODE_ENV === 'production'
 console.log(
@@ -9,6 +9,37 @@ console.log(
   process.env.NODE_ENV,
   process.env.NUXT_API_BASE
 )
+
+// 第一项是分组名，第二项是归属该分组的包名或包名数组
+const packageMapList: [string, string | string[]][] = [
+  ['lodash-es', ['lodash-es', 'nuxt-lodash']],
+  ['vueI18n', ['vue-i18n', '@nuxtjs/i18n']],
+  ['vue-router', 'vue-router'],
+  ['tinymce', 'tinymce'],
+  ['prismjs', 'prismjs'],
+  ['sys-types', 'sys-types'],
+  ['sortablejs', 'sortablejs'],
+  ['v-viewer', 'v-viewer'],
+  ['socket', 'socket.io-client'],
+  ['vueuse', ['@vueuse', '@vueuse/nuxt']],
+  ['vue', ['vue', '@vue']],
+  ['pina', ['pina', '@pinia/nuxt']],
+  // ['nuxt', 'nuxt'], // 报错
+  ['lucky-canvas', '@lucky-canvas/vue'],
+  [
+    'element-plus',
+    ['element-plus', '@element-plus/icons-vue', '@element-plus/nuxt']
+  ],
+  ['vant', ['vant', '@vant/nuxt']],
+  ['tailwindcss', ['tailwindcss', '@nuxtjs/tailwindcss']],
+  ['swiper', ['swiper', 'nuxt-swiper']],
+  ['nuxt-vendor', ['@nuxt/image', 'nuxt-icons', '@nuxtjs/color-mode']],
+  [
+    'vendor',
+    ['ofetch', 'countup.js', 'async-validator', 'ohash', 'aos', 'dayjs']
+  ] // 其他具体列出
+]
+
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
   srcDir: 'src/',
@@ -40,6 +71,46 @@ export default defineNuxtConfig({
     }
   },
 
+  hooks: {
+    // https://github.com/nuxt/nuxt/issues/22127#issuecomment-1635925362
+    'vite:extendConfig'(config: any) {
+      config.build.rollupOptions.output.manualChunks = function (id: string) {
+        const isStyleFile = /\.(less|scss|css)$/.test(id)
+        // if (isStyleFile) {
+        //   console.log('===========isStyleFile==========', id);
+        //   return 'style';
+        // }
+        for (const pair of packageMapList) {
+          const packVal = pair[1]
+          const packValList = Array.isArray(packVal) ? packVal : [packVal]
+          const packList = packValList.map((s) => s.replace(/\//g, '\\/'))
+          const reg = new RegExp(
+            `[\\\\/]node_modules[\\\\/](${packList.join('|')})[\\\\/]`
+          )
+          // swiper 的样式文件单独出来就会影响样式覆盖
+          // if (id.includes('countup.js')) {
+          //   console.log('==============vendor============', pair[0], reg.test(id), reg, id);
+          // }
+          if (reg.test(id) && !isStyleFile) {
+            // console.log(pair[0], '=========匹配到============', id);
+            // if (pair[0] === 'vendor') console.log('==============vendor============', id);
+
+            return pair[0]
+          }
+        }
+        // 报错
+        // if (id.includes('packages/common-base') || id.includes('point-mall/common')) {
+        //   return '@smallrig';
+        // }
+        // todo: 报错，应该是把 nuxt 抽出来就有问题
+        // 其他
+        // if (/[\\/]node_modules[\\/]/.test(id)) {
+        //   return 'vendor';
+        // }
+      }
+    }
+  },
+
   app: {
     // baseURL: '/blog/',
     head: {
@@ -50,7 +121,7 @@ export default defineNuxtConfig({
         {
           'http-equiv': 'Content-Security-Policy',
           content:
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'"
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; object-src 'none'"
         },
         {
           name: 'keywords',
@@ -103,7 +174,8 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/color-mode',
     '@element-plus/nuxt',
-    'nuxt-icon'
+    'nuxt-icon',
+    '@nuxt/scripts'
   ],
   elementPlus: {
     // importStyle: false
@@ -146,13 +218,23 @@ export default defineNuxtConfig({
     build: {
       rollupOptions: {
         output: {
-          manualChunks: {
-            'v-viewer': ['v-viewer']
-          }
+          // manualChunks: {
+          //   'v-viewer': ['v-viewer']
+          // }
         }
       }
     },
-    plugins: [visualizer(), nodePolyfills()],
+    plugins: [
+      nodePolyfills(),
+      viteCompression({
+        verbose: true,
+        disable: false,
+        ext: '.gz',
+        algorithm: 'gzip', // 压缩格式：gzip、brotliCompress,
+        threshold: 10240, // 只处理比这个值大的资源，按字节算
+        deleteOriginFile: false // 是否删除原文件
+      })
+    ],
     esbuild: {
       drop: ['console', 'debugger']
     },
@@ -167,9 +249,6 @@ export default defineNuxtConfig({
       include: ['sys-types']
     }
   },
-
-  // auto import components
-  components: true,
 
   workspaceDir: '../../'
 })
