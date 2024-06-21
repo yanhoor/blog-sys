@@ -6,7 +6,7 @@
           <Icon name="fluent:compose-20-regular"></Icon>
         </template>
       </el-button>
-      <lazy-el-dropdown @command="handleDropdownSelect">
+      <el-dropdown @command="handleDropdownSelect">
         <el-badge
           :value="notificationUnreadCount"
           :max="99"
@@ -24,13 +24,13 @@
             >
           </el-dropdown-menu>
         </template>
-      </lazy-el-dropdown>
+      </el-dropdown>
     </div>
     <el-button type="primary" v-else @click="navigateTo('/login')"
       >登录</el-button
     >
 
-    <PostWrite
+    <LazyPostWrite
       :show="showWritePost"
       @update:show="handleWritePostShowUpdate"
       :key="writePostKey"
@@ -118,7 +118,10 @@ async function handleLogout() {
   })
     .then(async () => {
       try {
-        const { success, result, msg } = await $HttpUtils.post('/user/logout', {})
+        const { success, result, msg } = await $HttpUtils.post(
+          '/user/logout',
+          {}
+        )
         if (!success) {
           ElMessage.error(msg as string)
         } else {

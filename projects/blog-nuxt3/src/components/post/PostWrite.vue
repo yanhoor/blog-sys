@@ -16,10 +16,10 @@
         inactive-text="简单文本"
       >
       </el-switch>
-      <TextareaEditor
+      <LazyTextareaEditor
         v-if="postForm.contentType == 2"
         v-model="postForm.content"
-      ></TextareaEditor>
+      ></LazyTextareaEditor>
       <TopicContentTextarea v-else v-model="postForm.content" />
       <MediaUploadMulti
         v-if="postForm.contentType == 1"
