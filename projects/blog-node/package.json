@@ -32,7 +32,6 @@
     "redis": "^4.6.13"
   },
   "dependencies": {
-    "@img/sharp-linux-x64": "^0.33.4",
     "ali-oss": "^6.20.0",
     "axios": "^1.6.8",
     "config-lite": "^4.0.0",
