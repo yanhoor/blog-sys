@@ -125,7 +125,7 @@ export default defineNuxtConfig({
         },
         {
           name: 'keywords',
-          content: 'vue3, nuxt3, ssr, naive ui, tailwind css'
+          content: 'vue3, nuxt3, ssr, element-plus, tailwind css'
         },
         { name: 'description', content: '基于vue3的nuxt3框架SSR博客站点' }
       ],
@@ -139,7 +139,7 @@ export default defineNuxtConfig({
         // { rel: 'stylesheet', href: './prism.css' },
         {
           rel: 'icon',
-          href: './icon.png'
+          href: './icon.ico'
         }
       ]
     }

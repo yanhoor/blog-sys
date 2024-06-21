@@ -87,7 +87,7 @@ const initOptions = computed((): RawEditorSettings => {
     menubar: 'file edit insert view format table',
     plugins,
     contextmenu: '',
-    language_url: publicPath + 'tinymce/langs/zh_CN.js',
+    language_url: publicPath + '/tinymce/langs/zh_CN.js',
     language: 'zh_CN',
     branding: false,
     default_link_target: '_blank',
@@ -101,9 +101,9 @@ const initOptions = computed((): RawEditorSettings => {
     custom_elements: 'style,link,~link,script',
     content_style:
       'td::before {content: "";display: inline-block;height: 1px;width: 0;visibility: hidden;} img {margin: 0;padding: 0;}img {max-width: 100%;vertical-align: middle;}video {vertical-align: middle;}a {text-decoration: underline;} table, table tr, table td {border: 1px solid;text-align: center; } ul { list-style-type: disc;} ol {list-style-type: decimal;}',
-    skin_url: publicPath + 'tinymce/skins/ui/' + skinName.value,
+    skin_url: publicPath + '/tinymce/skins/ui/' + skinName.value,
     content_css:
-      publicPath + 'tinymce/skins/ui/' + skinName.value + '/content.min.css',
+      publicPath + '/tinymce/skins/ui/' + skinName.value + '/content.min.css',
     ...options,
     setup: (editor: Editor) => {
       editorRef.value = editor
