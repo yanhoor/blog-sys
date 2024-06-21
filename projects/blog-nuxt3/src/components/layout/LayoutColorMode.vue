@@ -27,7 +27,7 @@
       </div>
     </div>
     <template #reference>
-      <div class="cursor-pointer regular-text-color">
+      <div class="regular-text-color cursor-pointer">
         <Icon
           size="24"
           name="fluent:weather-moon-16-regular"

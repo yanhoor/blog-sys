@@ -15,11 +15,9 @@
       <div class="flex items-center gap-[12px]">
         <LayoutSearch />
 
-        <client-only>
-          <LayoutUser />
+        <LayoutUser />
 
-          <LayoutColorMode />
-        </client-only>
+        <LayoutColorMode />
       </div>
     </el-header>
     <el-main
