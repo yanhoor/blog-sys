@@ -12,7 +12,7 @@ export const useRefreshUserInfo = async () => {
   // console.log('==================', websocket.ws)
   if (token.value && !userInfo.value) {
     try {
-      const { result, success, code, msg } = await useFetchGet<User>('/user/info', {})
+      const { result, success, code, msg } = await $HttpUtils.get<User>('/user/info', {})
       if (success) {
         userInfo.value = result
         initSocketIo(config.public.wsHost, userInfo.value?.id as string)

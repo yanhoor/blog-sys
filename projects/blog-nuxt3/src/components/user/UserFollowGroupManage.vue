@@ -115,7 +115,7 @@ async function handleSortGroup(list: FollowGroup[]) {
       success,
       code,
       msg
-    } = await useFetchPost('/followGroup/sort', { ids: idList.toString() })
+    } = await $HttpUtils.post('/followGroup/sort', { ids: idList.toString() })
     if (success) {
       emit('change')
     } else {
@@ -137,7 +137,7 @@ async function handleDeleteGroup(id: number) {
           success,
           code,
           msg
-        } = await useFetchPost('/followGroup/delete', { id })
+        } = await $HttpUtils.post('/followGroup/delete', { id })
         if (success) {
           ElMessage.success('已删除')
           emit('change')
@@ -160,7 +160,7 @@ async function handleSave() {
   if (saveLoading.value) return
   saveLoading.value = true
   try {
-    const { result, success, code, msg } = await useFetchPost(
+    const { result, success, code, msg } = await $HttpUtils.post(
       '/followGroup/edit',
       editItem.value
     )

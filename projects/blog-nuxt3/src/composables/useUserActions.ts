@@ -8,7 +8,7 @@ export const useUserActions = (user?: User) => {
     return new Promise(async (resolve, reject) => {
       followLoading.value = true
       try {
-        const { result, success, code, msg } = await useFetchPost(
+        const { result, success, code, msg } = await $HttpUtils.post(
           '/user/follow',
           {
             id: currentUser.value!.id,

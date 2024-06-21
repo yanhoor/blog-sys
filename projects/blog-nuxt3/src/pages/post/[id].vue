@@ -209,7 +209,7 @@ async function initPage() {
 
 async function getBlogInfo() {
   try {
-    const {result, success, msg, code} = await useFetchPost<Blog>('/blog/info', {
+    const {result, success, msg, code} = await $HttpUtils.post<Blog>('/blog/info', {
       id: blogId
     })
     if (success) {

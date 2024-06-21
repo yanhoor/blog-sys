@@ -274,7 +274,7 @@ async function handlePageInit() {
 
 async function getUserInfo() {
   try {
-    const { result, success, code, msg } = await useFetchPost<User>(
+    const { result, success, code, msg } = await $HttpUtils.post<User>(
       '/user/userInfo',
       { uid: props.uid, uname: props.uname }
     )
@@ -291,7 +291,7 @@ async function getUserInfo() {
 
 async function getUserStatis() {
   try {
-    const { result, success, code, msg } = await useFetchPost<any>('/statis/user', {
+    const { result, success, code, msg } = await $HttpUtils.post<any>('/statis/user', {
       id: userInfo.value?.id
     })
     if (success) {

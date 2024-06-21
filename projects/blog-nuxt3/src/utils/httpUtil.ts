@@ -1,11 +1,27 @@
 import type {NitroFetchOptions, NitroFetchRequest} from 'nitropack';
 
 // 后端返回的数据类型
-export interface FetchRes<T> {
+interface FetchRes<T> {
   result?: T;
   code?: number;
   msg?: string;
   success: boolean;
+}
+
+interface BasePost {
+  <T>(
+    url: string,
+    body?: BodyInit | Record<string, any>,
+    option?: Omit<UtilFetchOptions, 'method'>,
+  ): Promise<FetchRes<T>>
+}
+
+interface BaseGet {
+  <T>(
+    url: string,
+    params?: Record<string, any>,
+    option?: Omit<UtilFetchOptions, 'method'>,
+  ): Promise<FetchRes<T>>
 }
 
 export type UtilFetchOptions = NitroFetchOptions<NitroFetchRequest> & {
@@ -14,20 +30,10 @@ export type UtilFetchOptions = NitroFetchOptions<NitroFetchRequest> & {
   silentCodeList?: string[];
 };
 
-interface BasePost{
-  <T>(
-    url: string,
-    body?:BodyInit | Record<string, any>,
-    option?: Omit<UtilFetchOptions, 'method'>,
-  ): Promise<FetchRes<T>>
-}
+interface HttpUtils {
+  post: BasePost;
 
-interface BaseGet{
-  <T>(
-    url: string,
-    params?: Record<string, any>,
-    option?: Omit<UtilFetchOptions, 'method'>,
-  ): Promise<FetchRes<T>>
+  get: BaseGet;
 }
 
 enum StatusCode {
@@ -68,34 +74,30 @@ function commitFetch<T>(url: string, option: UtilFetchOptions) {
   return oFetch<FetchRes<T>>(url, option);
 }
 
-export const useFetchPost: BasePost = <T>(
-  url: string,
-  body?:  BodyInit | Record<string, any>,
-  option?: UtilFetchOptions
-) => {
-  const {isFormData = false} = option || {}
-  if (isFormData && body && typeof body === 'object' && body.constructor === Object) {
-    const fd = new FormData()
-    Object.keys(body).forEach((k: string) => {
-      if ((body as Record<string, any>)[k] !== undefined) fd.append(k, (body as Record<string, any>)[k])
-    })
-    body = fd
-  }
-  return commitFetch<T>(url, {
-    method: 'post',
-    body,
-    ...option,
-  });
-}
+const $HttpUtils: HttpUtils = {
+  post<T>(url: string, body?: BodyInit | Record<string, any>, option?: UtilFetchOptions) {
+    const {isFormData = false} = option || {}
+    if (isFormData && body && typeof body === 'object' && body.constructor === Object) {
+      const fd = new FormData()
+      Object.keys(body).forEach((k: string) => {
+        if ((body as Record<string, any>)[k] !== undefined) fd.append(k, (body as Record<string, any>)[k])
+      })
+      body = fd
+    }
 
-export const useFetchGet: BaseGet = <T>(
-  url: string,
-  params?:  Record<string, any>,
-  option?: UtilFetchOptions
-) => {
-  return commitFetch<T>(url, {
-    method: 'get',
-    params,
-    ...option,
-  });
-}
+    return commitFetch<T>(url, {
+      method: 'post',
+      body,
+      ...option,
+    });
+  },
+  get<T>(url: string, params?: Record<string, any>, option?: UtilFetchOptions) {
+    return commitFetch<T>(url, {
+      method: 'get',
+      params,
+      ...option,
+    });
+  },
+};
+
+export {$HttpUtils};

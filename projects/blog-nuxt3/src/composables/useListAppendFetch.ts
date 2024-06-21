@@ -34,7 +34,7 @@ export const useListAppendFetch = <T>(
   async function fetchPage(resetList = false) {
     try {
       pageLoading.value = true
-      const respone = await useFetchPost<any>(url, pageFetchParams.value)
+      const respone = await $HttpUtils.post<any>(url, pageFetchParams.value)
       pageLoading.value = false
       const { result, success } = respone
       if (success) {

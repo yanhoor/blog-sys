@@ -4,7 +4,7 @@ import type {MediaFile} from 'sys-types'
 export const useUploadFile = () => {
   async function handleUploadSingle(params: any) {
     try {
-      const {success, result, msg} = await useFetchPost(
+      const {success, result, msg} = await $HttpUtils.post(
         '/file/upload',
         params,
         {
@@ -43,7 +43,7 @@ export const useUploadFile = () => {
     }
 
     try {
-      const {success, result, msg} = await useFetchPost<MediaFile>(
+      const {success, result, msg} = await $HttpUtils.post<MediaFile>(
         '/file/mergeMultiPart',
         {
           fileName: fileUtil.fileHash,
@@ -66,7 +66,7 @@ export const useUploadFile = () => {
 
   async function handleCheckFile(fileUtil: FileUtil) {
     try {
-      const {success, result, msg} = await useFetchPost<any>('/file/checkFile', {
+      const {success, result, msg} = await $HttpUtils.post<any>('/file/checkFile', {
         md5: fileUtil.md5
       })
       if (success) {
@@ -83,7 +83,7 @@ export const useUploadFile = () => {
   async function handleUploadPart(params: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const {success, result, msg} = await useFetchPost(
+        const {success, result, msg} = await $HttpUtils.post(
           '/file/upload',
           params,
           {
