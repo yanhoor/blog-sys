@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { PlayState } from 'sys-types'
+import { PlayState, formatDuration } from 'sys-types'
 import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
 interface Props {

@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDuration } from 'sys-types'
 type RecordState = 'inactive' | 'recording' | 'paused' // inactive--未开始或开始后停止
 
 let stream: MediaStream | null,

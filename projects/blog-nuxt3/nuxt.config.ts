@@ -119,7 +119,7 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       meta: [
         {
-          'http-equiv': 'Content-Security-Policy',
+          'http-equiv': 'content-security-policy',
           content:
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; object-src 'none'"
         },
