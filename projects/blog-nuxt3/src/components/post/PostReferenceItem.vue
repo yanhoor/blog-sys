@@ -12,9 +12,11 @@
         show-at
       />
       <PostArticle
-        class="line-clamp-3"
+          class="h-[300px] [&_pre]:w-full [&_pre]:max-w-full w-full max-w-full max-h-full overflow-hidden"
         v-if="currentPost!.contentType == 2"
         :content="currentPost!.content"
+        hideMore
+        @seeMore="navigateTo('/post/' + currentPost.id)"
       />
       <ExpandableContent
         v-else

@@ -40,12 +40,14 @@
     </div>
 
     <div
-      class="max-h-[300px] w-full max-w-full overflow-auto"
+      class="h-[300px] w-full max-w-full"
       v-if="currentPost!.contentType == 2"
     >
       <PostArticle
-        class="[&_pre]:w-full [&_pre]:max-w-full w-full max-w-full"
+        class="[&_pre]:w-full [&_pre]:max-w-full w-full max-w-full max-h-full overflow-hidden"
         :content="currentPost!.content"
+        hideMore
+        @seeMore="navigateTo('/post/' + currentPost.id)"
       />
     </div>
     <ExpandableContent
