@@ -1,5 +1,4 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
-import { nodePolyfills } from 'vite-plugin-node-polyfills' // https://stackoverflow.com/questions/78115258/module-has-been-externalized-for-browser-compatibility-error
 import viteCompression from 'vite-plugin-compression'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -225,7 +224,6 @@ export default defineNuxtConfig({
       }
     },
     plugins: [
-      nodePolyfills(),
       viteCompression({
         verbose: true,
         disable: false,
