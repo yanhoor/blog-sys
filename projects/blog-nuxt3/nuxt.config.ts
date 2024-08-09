@@ -243,9 +243,9 @@ export default defineNuxtConfig({
         // }
       }
     },
-    optimizeDeps: {
-      include: ['sys-types']
-    }
+    // optimizeDeps: {
+    //   include: ['sys-types']
+    // }
   },
 
   workspaceDir: '../../'
