@@ -17,7 +17,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "unbuild",
+    "build": "unbuild --minify",
     "dev": "pnpm run stub",
     "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
     "dev2": "unbuild --stub && npm run jiti-fix",
@@ -27,12 +27,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ali-oss": "^6.20.0",
     "browser-md5-file": "^1.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.11",
     "unbuild": "^2.0.0"
   },
   "devDependencies": {
+    "@types/ali-oss": "^6.16.11",
     "@types/crypto-js": "^4.2.2",
     "@types/mime": "^3.0.4"
   }
