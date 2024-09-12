@@ -17,7 +17,7 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.min'
 
 interface Props {
   content: string
-  hideMore: boolean
+  hideMore?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {

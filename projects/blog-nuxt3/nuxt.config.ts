@@ -139,7 +139,7 @@ export default defineNuxtConfig({
         // { rel: 'stylesheet', href: './prism.css' },
         {
           rel: 'icon',
-          href: './icon.ico'
+          href: `${process.env.NUXT_APP_BASE_URL}icon.ico`
         }
       ]
     }
