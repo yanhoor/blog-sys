@@ -194,6 +194,7 @@ interface Props {
   uname?: string
 }
 
+const {$HttpUtils} = useNuxtApp()
 const props = defineProps<Props>()
 const config = useRuntimeConfig()
 const route = useRoute()

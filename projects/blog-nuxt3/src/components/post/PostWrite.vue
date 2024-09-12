@@ -61,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['complete', 'update:show'])
 const fetchNewPost = useFetchNewPost()
+const {$HttpUtils} = useNuxtApp()
 const postForm = ref<BlogForm>({
   id: '',
   content: '',

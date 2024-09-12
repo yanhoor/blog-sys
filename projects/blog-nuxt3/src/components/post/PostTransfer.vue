@@ -61,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['success'])
 
+const {$HttpUtils} = useNuxtApp()
 const textContent = ref(
   props.blog.retweetOriginBlogId
     ? `//@${props.blog.createBy.name}:${props.blog.content}`

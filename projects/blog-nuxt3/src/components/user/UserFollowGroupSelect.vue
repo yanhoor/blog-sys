@@ -71,6 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update:show'])
+const {$HttpUtils} = useNuxtApp()
 const currentUser = useUserInfo()
 const loading = ref(false)
 const adding = ref(false)

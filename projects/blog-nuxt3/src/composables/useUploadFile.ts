@@ -2,6 +2,8 @@ import {FileUtil} from 'sys-types'
 import type {MediaFile} from 'sys-types'
 
 export const useUploadFile = () => {
+  const {$HttpUtils} = useNuxtApp()
+
   async function handleUploadSingle(params: any) {
     try {
       const {success, result, msg} = await $HttpUtils.post(

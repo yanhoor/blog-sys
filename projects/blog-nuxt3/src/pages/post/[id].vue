@@ -162,6 +162,7 @@ definePageMeta({
 
 type ActionType = 'like' | 'comment' | 'retweet' | undefined
 
+const {$HttpUtils} = useNuxtApp()
 const route = useRoute()
 const myInfo = useUserInfo()
 const loading = ref(false)

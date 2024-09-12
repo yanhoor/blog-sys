@@ -76,18 +76,18 @@
       </div>
     </div>
 
-    <el-collapse :show="showReply">
-      <el-collapse-item>
-        <CommentForm
+    <Transition appear mode="out-in">
+      <CommentForm
+          v-if="showReply"
+          class="w-full"
           btnText="发布"
           :placeholder="`回复 ${currentComment.createBy.name}:`"
           :level="2"
           :comment="currentComment"
           :blogId="currentComment.blogId"
           @success="handleReplySuccess"
-        />
-      </el-collapse-item>
-    </el-collapse>
+      />
+    </Transition>
 
     <div
       v-if="currentComment.childComments?.length > 0 && showChildren"

@@ -1,6 +1,7 @@
 import type { User } from 'sys-types'
 
 export const useUserActions = (user?: User) => {
+  const {$HttpUtils} = useNuxtApp()
   const currentUser = ref<User | undefined>(user)
   const followLoading = ref(false)
 

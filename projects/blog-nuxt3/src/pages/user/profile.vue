@@ -79,6 +79,7 @@ useHead({
   title: '个人资料'
 })
 
+const {$HttpUtils} = useNuxtApp()
 const postForm = ref<User>({
   name: '',
   avatar: '',

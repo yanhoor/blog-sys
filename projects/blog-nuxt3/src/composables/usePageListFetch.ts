@@ -4,6 +4,7 @@ interface PageFetchParams {
   [x: string]: any
 }
 export const usePageListFetch = async <T>(url: string, params: any = {}) => {
+  const {$HttpUtils} = useNuxtApp()
   const pageTotal = ref(0)
   const pageList = ref<T[]>([])
   const pageLoading = ref(false)

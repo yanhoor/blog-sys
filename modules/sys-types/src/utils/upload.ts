@@ -13,7 +13,7 @@ const ossConfig = {
 
 const projectName = "blog-sys";
 
-const ossClient = new AliOSS(ossConfig);
+// const ossClient = new AliOSS(ossConfig);
 
 interface UploadOptions {
   file: File;
@@ -30,19 +30,19 @@ export async function commonMultipartUpload({
   const ext = fileUtil.getFileExt(true);
   if (!fileName) fileName = fileUtil.getRandomFileName() + ext;
 
-  return ossClient.multipartUpload(`blog-sys/${fileName}`, file, {
-    // 获取分片上传进度、断点和返回值。
-    progress: (p, cpt, res) => {
-      console.log("===========commonMultipartUpload==========", p, cpt, res);
-    },
-    // 设置并发上传的分片数量。
-    parallel: 4,
-    // 设置分片大小。默认值为1 MB，最小值为100 KB。
-    partSize: 1024 * 1024,
-    // headers,
-    // 自定义元数据，通过HeadObject接口可以获取Object的元数据。
-    // meta: { year: 2020, people: "test" },
-    // mime: "text/plain",
-    ...otherOptions,
-  });
+  // return ossClient.multipartUpload(`blog-sys/${fileName}`, file, {
+  //   // 获取分片上传进度、断点和返回值。
+  //   progress: (p, cpt, res) => {
+  //     console.log("===========commonMultipartUpload==========", p, cpt, res);
+  //   },
+  //   // 设置并发上传的分片数量。
+  //   parallel: 4,
+  //   // 设置分片大小。默认值为1 MB，最小值为100 KB。
+  //   partSize: 1024 * 1024,
+  //   // headers,
+  //   // 自定义元数据，通过HeadObject接口可以获取Object的元数据。
+  //   // meta: { year: 2020, people: "test" },
+  //   // mime: "text/plain",
+  //   ...otherOptions,
+  // });
 }

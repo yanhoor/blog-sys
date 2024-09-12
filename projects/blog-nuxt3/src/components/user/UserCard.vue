@@ -63,6 +63,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   disabled: false
 })
+const {$HttpUtils} = useNuxtApp()
 const myInfo = useUserInfo()
 const loading = ref(false)
 const currentUser = ref()

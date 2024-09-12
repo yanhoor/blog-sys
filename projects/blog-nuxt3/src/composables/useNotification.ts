@@ -43,6 +43,7 @@ export const useFetchNotificationCount = async (params = {}) => {
   const unreadLikeCount = useNotificationUnreadLikeCount()
   const unreadCollectCount = useNotificationUnreadCollectCount()
   const unreadAuditCount = useNotificationUnreadAuditCount()
+  const {$HttpUtils} = useNuxtApp()
   try {
     const { result, success } = await $HttpUtils.post<any>(
       '/notification/count',

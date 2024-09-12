@@ -6,6 +6,7 @@ export const useUserInfo = () => {
 }
 
 export const useRefreshUserInfo = async () => {
+  const {$HttpUtils} = useNuxtApp()
   const userInfo = useUserInfo()
   const config = useRuntimeConfig()
   const token = useCookie('token')

@@ -88,6 +88,7 @@ interface ModelType {
   reenteredPassword: string | null
 }
 
+const {$HttpUtils} = useNuxtApp()
 const registerForm = ref<ModelType>({
   mobile: '',
   name: '',

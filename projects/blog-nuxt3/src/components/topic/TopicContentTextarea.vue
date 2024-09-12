@@ -59,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
   })
 })
 const inputEl = ref<HTMLTextAreaElement>()
+const {$HttpUtils} = useNuxtApp()
 const showTopicList = ref(false)
 const topicList = ref<Topic[]>([])
 const topicPosition = reactive({

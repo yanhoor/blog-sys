@@ -73,6 +73,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update:show', 'change'])
+const {$HttpUtils} = useNuxtApp()
 const sortableIns = ref()
 const saveLoading = ref(false)
 const showAdd = ref(false)

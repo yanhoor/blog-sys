@@ -155,6 +155,7 @@ const {
   { type: fetchType, isRead: 0 },
   {}
 )
+const {$HttpUtils} = useNuxtApp()
 const showCheck = ref(false)
 const checkAll = ref(false)
 const isIndeterminate = ref(false)

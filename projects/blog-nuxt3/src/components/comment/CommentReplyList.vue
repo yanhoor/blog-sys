@@ -71,6 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emits = defineEmits(['commentDelete'])
+const {$HttpUtils} = useNuxtApp()
 const sortType = ref(2) // 1--按时间，2--按热度
 const topComment = ref<Comment>()
 const {

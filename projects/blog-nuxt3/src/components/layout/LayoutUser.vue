@@ -49,6 +49,7 @@ const renderIcon = (name: string) => {
 }
 
 const config = useRuntimeConfig()
+const {$HttpUtils} = useNuxtApp()
 const notificationUnreadCount = useNotificationUnreadCount()
 const userInfo = useUserInfo()
 const route = useRoute()

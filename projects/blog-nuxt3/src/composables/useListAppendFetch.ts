@@ -18,6 +18,7 @@ export const useListAppendFetch = <T>(
   params: Object = {},
   initParams: InitParams<T>
 ) => {
+  const {$HttpUtils} = useNuxtApp()
   const pageTotal = ref(0)
   const pageList = ref<T[]>(
     initParams.initList ? [...initParams.initList] : []

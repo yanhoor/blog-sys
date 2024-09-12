@@ -54,6 +54,7 @@ interface ModelType {
   password: string | null
 }
 
+const {$HttpUtils} = useNuxtApp()
 const postForm = ref<ModelType>({
   mobile: '',
   password: ''

@@ -62,6 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['success'])
 
+const {$HttpUtils} = useNuxtApp()
 const commentContent = ref('')
 const commentCommitting = ref(false)
 const imageFile = ref<MediaFile>()

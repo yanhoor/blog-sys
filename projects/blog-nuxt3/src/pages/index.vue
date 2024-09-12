@@ -75,6 +75,7 @@ definePageMeta({
   key: (route) => route.fullPath
 })
 
+const {$HttpUtils} = useNuxtApp()
 const route = useRoute()
 const customGroupList = ref<FollowGroup[]>([])
 const systemGroupList = ref<FollowGroup[]>([])
