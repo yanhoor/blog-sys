@@ -1,6 +1,7 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import viteCompression from 'vite-plugin-compression'
 
+const baseURL = '/blog'
 const isProd = process.env.NODE_ENV === 'production'
 console.log(
   '======defineNuxtConfig=========',
@@ -112,7 +113,7 @@ export default defineNuxtConfig({
   },
 
   app: {
-    // baseURL: '/blog/',
+    baseURL,
     head: {
       titleTemplate: '%s - Nuxt3 | Vipot',
       title: 'Nuxt3 | Vipot',
@@ -139,7 +140,7 @@ export default defineNuxtConfig({
         // { rel: 'stylesheet', href: './prism.css' },
         {
           rel: 'icon',
-          href: `${process.env.NUXT_APP_BASE_URL}icon.ico`
+          href: `${baseURL}/icon.ico`
         }
       ]
     }
