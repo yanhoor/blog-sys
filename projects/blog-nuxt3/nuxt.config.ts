@@ -43,6 +43,7 @@ const packageMapList: [string, string | string[]][] = [
 export default defineNuxtConfig({
   srcDir: 'src/',
   devtools: { enabled: true },
+
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
     transpile: isProd ? ['v-viewer'] : [],
@@ -176,6 +177,7 @@ export default defineNuxtConfig({
     'nuxt-icon',
     '@nuxt/scripts'
   ],
+
   elementPlus: {
     // importStyle: false
     // imports: ['useLocale'],
@@ -248,5 +250,6 @@ export default defineNuxtConfig({
     // }
   },
 
-  workspaceDir: '../../'
+  workspaceDir: '../../',
+  compatibilityDate: '2024-09-12'
 })
