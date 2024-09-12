@@ -15,7 +15,7 @@ export const useRefreshUserInfo = async () => {
     try {
       const { result, success, code, msg } = await $HttpUtils.get<User>('/user/info', {})
       if (success) {
-        userInfo.value = result
+        userInfo.value = result as User
         initSocketIo(config.public.wsHost, userInfo.value?.id as string)
       }
       if (code === 111 || code === 999) {

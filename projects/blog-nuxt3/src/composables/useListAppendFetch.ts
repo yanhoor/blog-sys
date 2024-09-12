@@ -1,5 +1,5 @@
 // 无限加载
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
 type InitParams<T> = {
   initList?: T[]
