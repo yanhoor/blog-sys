@@ -12,7 +12,7 @@ async function handleSearch() {
 
   // await navigateTo({ path: '/search', query: { keyword: searchWord.value } })
   window.open(
-    `${runtimeConfig.app.baseURL}search?keyword=${searchWord.value}`,
+    `${runtimeConfig.app.baseURL}/search?keyword=${searchWord.value}`,
     '_blank'
   )
 }

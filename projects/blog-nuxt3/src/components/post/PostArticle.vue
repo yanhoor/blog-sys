@@ -5,7 +5,7 @@
         v-html="content"
         ref="containerRef"
     ></div>
-    <div class="absolute top-0 left-0 right-0 bottom-0 more-mask" v-if="showHideMore">
+    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-[#fff0] to-[#fff] dark:to-[#000]" v-if="showHideMore">
       <el-button class="absolute bottom-[24px] left-1/2 -translate-x-1/2" link type="primary" @click="emits('seeMore')">点击查看更多</el-button>
     </div>
   </div>
@@ -60,7 +60,4 @@ function handleHighlightCode() {
 <style lang="css" scoped>
 @import 'prismjs/plugins/line-numbers/prism-line-numbers.min.css';
 
-.more-mask{
-  background: linear-gradient(180deg,hsla(0,0%,100%,0) 7%,#fff);
-}
 </style>

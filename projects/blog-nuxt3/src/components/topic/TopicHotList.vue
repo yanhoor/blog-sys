@@ -55,6 +55,6 @@ const {
 await handleLoadNextPage(1)
 
 function handleClickTopic(topicId: string) {
-  window.open(`${runtimeConfig.app.baseURL}search?topicId=${topicId}`, '_blank')
+  window.open(`${runtimeConfig.app.baseURL}/search?topicId=${topicId}`, '_blank')
 }
 </script>

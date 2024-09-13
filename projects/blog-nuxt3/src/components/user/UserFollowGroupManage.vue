@@ -1,6 +1,6 @@
 <template>
   <div>
-    <lazy-el-dialog
+    <el-dialog
       :model-value="show"
       title="管理分组"
       append-to-body
@@ -58,7 +58,7 @@
           </div>
         </template>
       </div>
-    </lazy-el-dialog>
+    </el-dialog>
   </div>
 </template>
 

@@ -60,7 +60,7 @@
         </div>
         <el-button
           text
-          size="tiny"
+          size="small"
           class="placeholder-text-color"
           v-if="searchParams.isTopic"
           @click.stop="handleSearchTopic(0)"
@@ -75,6 +75,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import type {PostList} from "#components";
 
 useHead({
   title: '搜索'
@@ -84,7 +85,7 @@ definePageMeta({
 })
 const route = useRoute()
 const selectTime = ref('0')
-const blogListRef = ref(null)
+const blogListRef = ref<InstanceType<typeof PostList>>()
 const searchParams = reactive({
   keyword: route.query.keyword,
   topicId: route.query.topicId,
@@ -120,7 +121,7 @@ function handleTimeSelect() {
   handleSearch()
 }
 async function handleSearch() {
-  blogListRef.value.handleChangeFetchParams(searchParams)
+  blogListRef.value?.handleChangeFetchParams(searchParams)
 }
 
 function handleSearchTopic(val: number) {

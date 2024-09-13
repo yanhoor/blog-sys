@@ -9,7 +9,7 @@
       <UserCard v-else-if="info.type === 'userName'" :uname="info.content">
         <template #trigger>
           <a
-            :href="`${runtimeConfig.app.baseURL}user/name/${info.content}`"
+            :href="`${runtimeConfig.app.baseURL}/user/name/${info.content}`"
             class="text-primary"
             >@{{ info.content }}</a
           >
@@ -210,7 +210,7 @@ function handleTopicContent(str: string) {
       const topic = props.topicList.find((t) => t.content === topicContent)
       result = {
         type: 'html',
-        content: `<a href="${runtimeConfig.app.baseURL}search?topicId=${topic?.id}" class="text-primary" target="_blank">${str}</a>`
+        content: `<a href="${runtimeConfig.app.baseURL}/search?topicId=${topic?.id}" class="text-primary" target="_blank">${str}</a>`
       }
     }
   }

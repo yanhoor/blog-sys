@@ -46,21 +46,13 @@
       <TopicHotList class="relative sticky top-[80px] w-[280px]"/>
     </div>
 
-    <div class="mt-[20px] text-center text-gray-400">
-      <a
-          href="https://beian.miit.gov.cn"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-primary"
-      >粤ICP备2022151349号</a
-      >
-    </div>
-
-    <UserFollowGroupManage
-        v-model:show="showManageGroup"
-        @change="getAllGroup"
-        :groupList="customGroupList"
-    />
+    <client-only>
+      <UserFollowGroupManage
+          v-model:show="showManageGroup"
+          @change="getAllGroup"
+          :groupList="customGroupList"
+      />
+    </client-only>
   </LayoutMain>
 </template>
 

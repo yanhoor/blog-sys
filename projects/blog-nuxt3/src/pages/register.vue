@@ -153,8 +153,8 @@ function validatePasswordSame(rule: FormItemRule, value: string): boolean {
 }
 function handleRegister(e: MouseEvent) {
   e.preventDefault()
-  formRef.value?.validate(async (errors) => {
-    if (!errors) {
+  formRef.value?.validate(async (isValid, invalidFields) => {
+    if (isValid) {
       try {
         const { result, success } = await $HttpUtils.post('/user/register', {
           mobile: registerForm.value.mobile,
@@ -167,7 +167,7 @@ function handleRegister(e: MouseEvent) {
         }
       } catch (e) {}
     } else {
-      console.log(errors)
+      console.log(invalidFields)
       ElMessage.error('请将信息填写完整')
     }
   })

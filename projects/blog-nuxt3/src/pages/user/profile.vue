@@ -117,7 +117,7 @@ async function getProfile() {
 }
 
 async function handleSave() {
-  formRef.value?.validate(async (valid) => {
+  formRef.value?.validate(async (valid, invalidFields) => {
     if (valid) {
       try {
         isProcessing.value = true
@@ -135,7 +135,7 @@ async function handleSave() {
         isProcessing.value = false
       }
     } else {
-      console.log(valid)
+      console.log(invalidFields)
       ElMessage.error('请将信息填写完整')
     }
   })

@@ -19,7 +19,7 @@
                 >
                 <el-button
                   size="small"
-                  :type="checkedList.length > 0 ? 'primary' : 'tertiary'"
+                  :type="checkedList.length > 0 ? 'primary' : 'default'"
                   @click="handleMultiRemark(false)"
                   :disabled="batchProcessing"
                   >标为已读</el-button

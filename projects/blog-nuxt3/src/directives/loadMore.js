@@ -13,14 +13,12 @@ function handleScroll(el, binding, vnode, prevVnode) {
     bottomOffset = document.documentElement.clientHeight
   }
   let timer
-  if (process.client) {
-    el.scrollEl = scrollElSelector
-      ? document.querySelector(scrollElSelector)
-      : window
-  }
+  el.scrollEl = scrollElSelector
+    ? document.querySelector(scrollElSelector)
+    : window
 
   el.callback = () => {
-    if (process.client && typeof handler === 'function') {
+    if (import.meta.client && typeof handler === 'function') {
       clearTimeout(timer)
       timer = setTimeout(() => {
         const info = el.getBoundingClientRect()

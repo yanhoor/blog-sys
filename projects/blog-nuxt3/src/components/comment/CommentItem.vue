@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <Transition appear mode="out-in">
+    <Transition name="fade">
       <CommentForm
           v-if="showReply"
           class="w-full"
@@ -90,7 +90,7 @@
     </Transition>
 
     <div
-      v-if="currentComment.childComments?.length > 0 && showChildren"
+      v-if="currentComment.childComments!.length > 0 && showChildren"
       class="min-w-full rounded-[5px] bg-content-light px-[12px] dark:bg-content-dark"
     >
       <CommentItem
@@ -99,7 +99,7 @@
         :comment="reply"
         :key="reply.id"
         @replySuccess="
-          (rep) => currentComment.childComments.splice(index, 0, rep)
+          (rep) => currentComment.childComments?.splice(index, 0, rep)
         "
         @commentDelete="getCommentInfo()"
       />
@@ -108,7 +108,7 @@
         text
         type="primary"
         icon-placement="right"
-        v-if="currentComment.childCommentsCount > 2"
+        v-if="currentComment.childCommentsCount! > 2"
         @click="showReplyDetailList = true"
       >
         共 {{ currentComment.childCommentsCount }} 条回复
@@ -146,6 +146,7 @@ const props = withDefaults(defineProps<Props>(), {
   showChildren: true
 })
 const emits = defineEmits(['replySuccess', 'commentDelete'])
+const {$HttpUtils} = useNuxtApp()
 const userInfo = useUserInfo()
 const showReply = ref(false)
 const likeLoading = ref(false)
@@ -200,11 +201,11 @@ function handleDeleteTopComment(comment: Comment) {
 async function getCommentInfo() {
   try {
     commentDeleting.value = true
-    const { result, success, msg } = await $HttpUtils.post('/comment/info', {
+    const { result, success, msg } = await $HttpUtils.post<Comment>('/comment/info', {
       id: currentComment.value.id
     })
     if (success) {
-      currentComment.value = result
+      currentComment.value = result as Comment
     } else {
       ElMessage.error(msg as string)
     }
