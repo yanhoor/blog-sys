@@ -11,13 +11,13 @@ enum Type {
 }
 
 export interface Notification {
-  id: number | string;
+  id: string;
   createdAt: string;
   content: any;
   createBy: User;
-  createById: string | number;
+  createById: string;
   receiveUser: User;
-  receiveUserId: string | number;
+  receiveUserId: string;
   blogId: number;
   isRead: number | string;
   type: Type;

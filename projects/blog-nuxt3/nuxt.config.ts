@@ -1,6 +1,7 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
-import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
 
+const baseURL = '/blog'
 const isProd = process.env.NODE_ENV === 'production'
 console.log(
   '======defineNuxtConfig=========',
@@ -8,19 +9,49 @@ console.log(
   process.env.NODE_ENV,
   process.env.NUXT_API_BASE
 )
+
+// 第一项是分组名，第二项是归属该分组的包名或包名数组
+const packageMapList: [string, string | string[]][] = [
+  ['lodash-es', ['lodash-es', 'nuxt-lodash']],
+  ['vueI18n', ['vue-i18n', '@nuxtjs/i18n']],
+  ['vue-router', 'vue-router'],
+  ['tinymce', 'tinymce'],
+  ['prismjs', 'prismjs'],
+  ['sys-types', 'sys-types'],
+  ['sortablejs', 'sortablejs'],
+  ['v-viewer', 'v-viewer'],
+  ['socket', 'socket.io-client'],
+  ['vueuse', ['@vueuse', '@vueuse/nuxt']],
+  ['vue', ['vue', '@vue']],
+  ['pina', ['pina', '@pinia/nuxt']],
+  // ['nuxt', 'nuxt'], // 报错
+  ['lucky-canvas', '@lucky-canvas/vue'],
+  [
+    'element-plus',
+    ['element-plus', '@element-plus/icons-vue', '@element-plus/nuxt']
+  ],
+  ['vant', ['vant', '@vant/nuxt']],
+  ['tailwindcss', ['tailwindcss', '@nuxtjs/tailwindcss']],
+  ['swiper', ['swiper', 'nuxt-swiper']],
+  ['nuxt-vendor', ['@nuxt/image', 'nuxt-icons', '@nuxtjs/color-mode']],
+  [
+    'vendor',
+    ['ofetch', 'countup.js', 'async-validator', 'ohash', 'aos', 'dayjs']
+  ] // 其他具体列出
+]
+
 // const prodRoot = location.protocol + '//' + location.host
 export default defineNuxtConfig({
+  srcDir: 'src/',
+  devtools: { enabled: true },
+
   build: {
     // 解决生产环境第三方包引入可能报错，参考 https://nuxt.com/docs/guide/concepts/esm#transpiling-libraries
-    transpile: isProd
-      ? [
-          'naive-ui',
-          'vueuc',
-          'v-viewer',
-          '@css-render/vue3-ssr',
-          '@juggle/resize-observer'
-        ]
-      : ['@juggle/resize-observer'] // https://www.naiveui.com/zh-CN/os-theme/docs/ssr
+    transpile: isProd ? ['v-viewer'] : [],
+    analyze: {
+      open: true // nuxt analyze 时打开分析结果页面
+      // template: 'sunburst', // sunburst, treemap, network, raw-data, list
+    }
   },
 
   runtimeConfig: {
@@ -41,21 +72,61 @@ export default defineNuxtConfig({
     }
   },
 
+  hooks: {
+    // https://github.com/nuxt/nuxt/issues/22127#issuecomment-1635925362
+    'vite:extendConfig'(config: any) {
+      config.build.rollupOptions.output.manualChunks = function (id: string) {
+        const isStyleFile = /\.(less|scss|css)$/.test(id)
+        // if (isStyleFile) {
+        //   console.log('===========isStyleFile==========', id);
+        //   return 'style';
+        // }
+        for (const pair of packageMapList) {
+          const packVal = pair[1]
+          const packValList = Array.isArray(packVal) ? packVal : [packVal]
+          const packList = packValList.map((s) => s.replace(/\//g, '\\/'))
+          const reg = new RegExp(
+            `[\\\\/]node_modules[\\\\/](${packList.join('|')})[\\\\/]`
+          )
+          // swiper 的样式文件单独出来就会影响样式覆盖
+          // if (id.includes('countup.js')) {
+          //   console.log('==============vendor============', pair[0], reg.test(id), reg, id);
+          // }
+          if (reg.test(id) && !isStyleFile) {
+            // console.log(pair[0], '=========匹配到============', id);
+            // if (pair[0] === 'vendor') console.log('==============vendor============', id);
+
+            return pair[0]
+          }
+        }
+        // 报错
+        // if (id.includes('packages/common-base') || id.includes('point-mall/common')) {
+        //   return '@smallrig';
+        // }
+        // todo: 报错，应该是把 nuxt 抽出来就有问题
+        // 其他
+        // if (/[\\/]node_modules[\\/]/.test(id)) {
+        //   return 'vendor';
+        // }
+      }
+    }
+  },
+
   app: {
-    // baseURL: '/blog/',
+    baseURL,
     head: {
       titleTemplate: '%s - Nuxt3 | Vipot',
       title: 'Nuxt3 | Vipot',
       charset: 'utf-8',
       meta: [
         {
-          'http-equiv': 'Content-Security-Policy',
+          'http-equiv': 'content-security-policy',
           content:
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'"
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; object-src 'none'"
         },
         {
           name: 'keywords',
-          content: 'vue3, nuxt3, ssr, naive ui, tailwind css'
+          content: 'vue3, nuxt3, ssr, element-plus, tailwind css'
         },
         { name: 'description', content: '基于vue3的nuxt3框架SSR博客站点' }
       ],
@@ -69,7 +140,7 @@ export default defineNuxtConfig({
         // { rel: 'stylesheet', href: './prism.css' },
         {
           rel: 'icon',
-          href: './icon.png'
+          href: `${baseURL}/icon.ico`
         }
       ]
     }
@@ -100,9 +171,20 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     'nuxt-icon',
-    '@formkit/auto-animate/nuxt', // https://auto-animate.formkit.com/#usage-vue
-    '@nuxtjs/color-mode'
+    // https://auto-animate.formkit.com/#usage-vue
+    '@formkit/auto-animate/nuxt',
+    '@nuxtjs/color-mode',
+    '@element-plus/nuxt',
+    'nuxt-icon',
+    '@nuxt/scripts'
   ],
+
+  elementPlus: {
+    // importStyle: false
+    // imports: ['useLocale'],
+    // injectionID: { prefix: 1024, current: 0 },
+    themes: ['dark'] // global.css 已经手动引入
+  },
 
   // @nuxtjs/color-mode 配置，参考 https://color-mode.nuxtjs.org/#configuration
   colorMode: {
@@ -116,7 +198,13 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode'
   },
 
-  css: ['@/assets/styles/var.css', '@/assets/styles/global.css'],
+  css: ['@/assets/styles/index.css'],
+
+  tailwindcss: {
+    // https://tailwindcss.nuxtjs.org/getting-started/configuration
+    cssPath: ['~/assets/styles/tailwind.css', { injectPosition: 'last' }]
+    // cssPath: false // tailwindcss 的 HMR 会失效，需要手动刷新
+  },
 
   postcss: {
     plugins: {
@@ -132,14 +220,22 @@ export default defineNuxtConfig({
     build: {
       rollupOptions: {
         output: {
-          manualChunks: {
-            'naive-ui': ['naive-ui'],
-            'v-viewer': ['v-viewer']
-          }
+          // manualChunks: {
+          //   'v-viewer': ['v-viewer']
+          // }
         }
       }
     },
-    plugins: [visualizer()],
+    plugins: [
+      viteCompression({
+        verbose: true,
+        disable: false,
+        ext: '.gz',
+        algorithm: 'gzip', // 压缩格式：gzip、brotliCompress,
+        threshold: 10240, // 只处理比这个值大的资源，按字节算
+        deleteOriginFile: false // 是否删除原文件
+      })
+    ],
     esbuild: {
       drop: ['console', 'debugger']
     },
@@ -150,19 +246,11 @@ export default defineNuxtConfig({
         // }
       }
     },
-    optimizeDeps: {
-      include:
-        process.env.NODE_ENV === 'development'
-          ? ['naive-ui', 'vueuc', 'date-fns-tz/formatInTimeZone', 'sys-types']
-          : ['sys-types']
-    }
+    // optimizeDeps: {
+    //   include: ['sys-types']
+    // }
   },
 
-  // auto import components
-  components: true,
-
-  devtools: {
-    enabled: false
-  },
-  workspaceDir: '../'
+  workspaceDir: '../../',
+  compatibilityDate: '2024-09-12'
 })

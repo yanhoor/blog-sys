@@ -2,12 +2,12 @@ import type { Media } from "./media";
 import type { User } from "./user";
 import type { BlogTopic } from "./blogTopic";
 export interface Blog {
-  id?: number | string;
-  createById?: number | string;
+  id?: string;
+  createById?: string;
   createBy: User;
   content: string;
   createdAt: string;
-  cateId?: string | number;
+  cateId?: string;
   status?: string | number;
   isLike?: boolean;
   isCollect?: boolean;

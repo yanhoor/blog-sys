@@ -1,0 +1,12 @@
+@import "preflight.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  @apply hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar-thumb-gray-400 scrollbar-track-gray-300 scrollbar-thin;
+}
+
+html.dark,html.dark *{
+  @apply scrollbar-thumb-gray-500 scrollbar-track-gray-700;
+}

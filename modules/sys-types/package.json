@@ -2,11 +2,22 @@
   "name": "sys-types",
   "version": "1.0.1",
   "description": "",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "unbuild",
+    "build": "unbuild --minify",
     "dev": "pnpm run stub",
     "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
     "dev2": "unbuild --stub && npm run jiti-fix",
@@ -16,11 +27,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "crypto-js": "^4.1.1",
-    "dayjs": "^1.11.9",
+    "ali-oss": "^6.21.0",
+    "browser-md5-file": "^1.1.1",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
     "unbuild": "^2.0.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.1.2"
+    "@types/ali-oss": "^6.16.11",
+    "@types/crypto-js": "^4.2.2",
+    "@types/mime": "^3.0.4"
   }
 }

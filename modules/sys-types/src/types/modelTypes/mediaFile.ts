@@ -1,6 +1,6 @@
 export interface MediaFile {
-  id?: number | string
-  createById?: number | string
+  id?: string
+  createById?: string
   md5: string
   type: string
   url: string

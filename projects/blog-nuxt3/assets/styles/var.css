@@ -1,7 +1,0 @@
-:root{
-  --primary-color: theme('colors.green.500');
-}
-html.dark{
-  @apply bg-page-dark;
-  color-scheme: light dark;
-}
