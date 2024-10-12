@@ -1,4 +1,5 @@
-const manageRouter = require('koa-router')()
+const Router = require('@koa/router')
+const manageRouter = new Router()
 const jwt = require('koa-jwt')
 const config = require('config-lite')(__dirname)
 const uploadRouter = require('./upload')

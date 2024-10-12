@@ -1,5 +1,6 @@
+const Router = require('@koa/router')
+const router = new Router()
 const fs = require('fs')
-const router = require('koa-router')()
 const { defaultLogger, errorLogger } = require('../log')
 const sharp = require('sharp')
 const mime = require('mime')
