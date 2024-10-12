@@ -1,14 +1,22 @@
-import {io} from 'socket.io-client'
+import {io, Socket} from 'socket.io-client'
+import type {ClientToServerEvents, Notification} from "sys-types";
 
 enum SOCKETEVENTTYPE {
   notification = 'notification'
 }
 
+interface ServerToClientEvents {
+  new_comment_notification: (n: Notification) => void;
+  blog_notification: (n: Notification) => void;
+}
+
+type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>
+
 export default defineNuxtPlugin(({$pinia}) => {
   const {handleFetchNotificationCount} = useFetchNotificationCount()
   const {handleShowNotificationDetail} = useShowNotificationDetail()
 
-  let socketClient: SocketClient | undefined
+  let socketClient: SocketClient
 
   function initSocketIo(host: string, uid: string) {
     // console.log('=======initSocketIo========', uid)
@@ -40,7 +48,16 @@ export default defineNuxtPlugin(({$pinia}) => {
     })
   }
 
+  function handleDisconnect(){
+    socketClient?.disconnect()
+  }
+
   return {
-    provide: {initSocketIo, socketClient}
+    provide: {
+      webSocketClient: {
+        initSocketIo,
+        handleDisconnect
+      }
+    }
   }
 })

@@ -5,7 +5,7 @@ export const useUserInfo = () => {
 }
 
 export const useRefreshUserInfo = async () => {
-  const {$initSocketIo, $socketClient, $HttpUtils} = useNuxtApp()
+  const {$webSocketClient, $HttpUtils} = useNuxtApp()
   const userInfo = useUserInfo()
   const config = useRuntimeConfig()
   const token = useCookie('token')
@@ -15,12 +15,12 @@ export const useRefreshUserInfo = async () => {
       const { result, success, code, msg } = await $HttpUtils.get<User>('/user/info', {})
       if (success) {
         userInfo.value = result as User
-        $initSocketIo(config.public.wsHost, userInfo.value?.id as string)
+        $webSocketClient?.initSocketIo(config.public.wsHost, userInfo.value?.id as string)
       }
     } catch (e) {
       console.log('===============', e)
     }
-  } else if (userInfo.value && !$socketClient) {
-    $initSocketIo(config.public.wsHost, userInfo.value?.id as string)
+  } else if (userInfo.value) {
+    $webSocketClient?.initSocketIo(config.public.wsHost, userInfo.value?.id as string)
   }
 }

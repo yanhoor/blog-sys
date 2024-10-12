@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { Icon } from '#components'
 
-const { $socketClient} = useNuxtApp()
+const { $webSocketClient} = useNuxtApp()
 const renderIcon = (name: string) => {
   return () => {
     return h(Icon, { name, size: '18' })
@@ -128,7 +128,7 @@ async function handleLogout() {
         } else {
           token.value = null
           userInfo.value = null
-          $socketClient?.disconnect()
+          $webSocketClient?.handleDisconnect()
           checkCurrentPath()
         }
       } catch (e) {}

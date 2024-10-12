@@ -1,9 +1,6 @@
 import type {NitroFetchOptions, NitroFetchRequest} from "nitropack";
-import {Socket} from "socket.io-client";
-import type {ClientToServerEvents, Notification} from "sys-types";
 
-
-declare global{
+declare global {
   declare type UtilFetchOptions = NitroFetchOptions<NitroFetchRequest> & {
     isFormData?: boolean;
     isSilent?: boolean;
@@ -40,26 +37,24 @@ declare global{
     get: BaseGet;
   }
 
-  interface ServerToClientEvents {
-    new_comment_notification: (n: Notification) => void
-    blog_notification: (n: Notification) => void
+  declare interface WebSocketClient {
+    handleDisconnect: () => void;
+    initSocketIo: (host: string, uid: string) => void;
   }
-  declare type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>
+
 }
 
 declare module '#app' {
   interface NuxtApp {
-    $HttpUtils: HttpUtils
-    $socketClient: SocketClient
-    $initSocketIo: (host: string, uid: string) => void
+    $HttpUtils: HttpUtils;
+    $webSocketClient: WebSocketClient;
   }
 }
 
 declare module 'vue' {
   interface ComponentCustomProperties {
-    $HttpUtils: HttpUtils
-    $socketClient: SocketClient
-    $initSocketIo: (host: string, uid: string) => void
+    $HttpUtils: HttpUtils;
+    $webSocketClient: WebSocketClient;
   }
 }
 
