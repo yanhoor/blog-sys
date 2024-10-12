@@ -56,9 +56,9 @@ export default defineNuxtPlugin(({ $pinia }) => {
     },
     onResponse({response}) {
       const {code, success, msg} = response._data || {}
-      // if([111, 999].includes(code)){
-      //   token.value = null
-      // }
+      if([111, 999].includes(code)){
+        token.value = null
+      }
       if (import.meta.client && !success && msg) {
         ElMessage.error(msg)
       }
