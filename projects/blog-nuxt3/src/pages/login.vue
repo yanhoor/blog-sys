@@ -88,8 +88,11 @@ function handlePost(e: MouseEvent) {
           ElMessage.success('登录成功')
 
           token.value = result as string
-          await navigateTo('/', { replace: true })
-          handleFetchNotificationCount()
+          // todo: 不延迟的话后面的请求获取不到 token
+          setTimeout(async () => {
+            await navigateTo('/', { replace: true })
+            handleFetchNotificationCount()
+          }, 300)
         } else {
           ElMessage.error(msg as string)
         }
