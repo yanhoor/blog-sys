@@ -32,13 +32,14 @@ definePageMeta({
   middleware: ['auth']
 })
 
-useFetchNotificationCount()
+const {handleFetchNotificationCount} = useFetchNotificationCount()
 const route = useRoute()
 const unreadCommentCount = useNotificationUnreadCommentCount()
 const unreadLikeCount = useNotificationUnreadLikeCount()
 const unreadCollectCount = useNotificationUnreadCollectCount()
 const unreadAuditCount = useNotificationUnreadAuditCount()
 const currentTab = ref(route.path)
+handleFetchNotificationCount()
 
 watch(
   () => route.path,

@@ -126,7 +126,7 @@ async function handleLogout() {
         if (!success) {
           ElMessage.error(msg as string)
         } else {
-          token.value = ''
+          token.value = null
           userInfo.value = null
           socketClient?.disconnect()
           checkCurrentPath()

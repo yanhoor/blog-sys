@@ -12,6 +12,7 @@ import { initSocketIo, socketClient } from '@/socketIo'
 const colorMode = useColorMode()
 const userInfo = useUserInfo()
 const config = useRuntimeConfig()
+const {handleFetchNotificationCount} = useFetchNotificationCount()
 
 onMounted(() => {
   window
@@ -19,7 +20,7 @@ onMounted(() => {
     .addEventListener('change', handleSystemModeChange)
 
   if (userInfo.value) {
-    useFetchNotificationCount()
+    handleFetchNotificationCount()
   }
 
   if (userInfo.value && !socketClient) {

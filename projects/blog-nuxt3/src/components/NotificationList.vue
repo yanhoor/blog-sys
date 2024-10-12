@@ -155,6 +155,7 @@ const {
   { type: fetchType, isRead: 0 },
   {}
 )
+const {handleFetchNotificationCount} = useFetchNotificationCount()
 const {$HttpUtils} = useNuxtApp()
 const showCheck = ref(false)
 const checkAll = ref(false)
@@ -194,7 +195,7 @@ async function handleRemarkRead(id: string, isAll = false) {
   try {
     const { result, success } = await $HttpUtils.post('/notification/read', params)
     if (success) {
-      useFetchNotificationCount()
+      handleFetchNotificationCount()
       handleLoadNextPage(1)
       handleCancelCheck()
       return true

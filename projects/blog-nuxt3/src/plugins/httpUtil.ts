@@ -39,13 +39,11 @@ interface HttpUtils {
 export default defineNuxtPlugin(({ $pinia }) => {
   // 从运行时配置中获取代理和平台信息
   const runTimeConfig = useRuntimeConfig()
-  // todo: 放这里为什么拿不到
-  // const token = useCookie('token')
+  const token = useCookie('token')
 
   const oFetch = $fetch.create({
     baseURL: runTimeConfig.public.apiBase,
     onRequest({options}) {
-      const token = useCookie('token')
       // console.log('========onRequest========', token.value)
       if (token.value) {
         const Authorization = 'Bearer ' + token.value
@@ -57,11 +55,10 @@ export default defineNuxtPlugin(({ $pinia }) => {
       console.log('Fetch request error', request, error);
     },
     onResponse({response}) {
-      const token = useCookie('token')
       const {code, success, msg} = response._data || {}
-      if([111, 999].includes(code)){
-        token.value = null
-      }
+      // if([111, 999].includes(code)){
+      //   token.value = null
+      // }
       if (import.meta.client && !success && msg) {
         ElMessage.error(msg)
       }
