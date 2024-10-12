@@ -70,76 +70,79 @@ export const useFetchNotificationCount = (params = {}) => {
 }
 
 // 评论通知弹窗详情显示
-export const useShowNotificationDetail = async (result: Notification) => {
+export const useShowNotificationDetail = () => {
   const {$HttpUtils} = useNuxtApp()
   const {handleFetchNotificationCount} = useFetchNotificationCount()
-  // todo: Error: [nuxt] A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, Nuxt middleware, or Vue setup function. This is probably not a Nuxt bug.
-  const datetime = h('div', {
-    type: 'datetime',
-    format: 'MM-dd HH:mm',
-    time: new Date(result.createdAt)
-  })
-  const readBtn = h(
-    ElButton,
-    {
-      text: true,
-      type: 'primary',
-      onClick: async () => {
-        setRead(result.id as unknown as number)
-        n.close()
+
+  function handleShowNotificationDetail(result: Notification) {
+    const datetime = h('div', {
+      type: 'datetime',
+      format: 'MM-dd HH:mm',
+      time: new Date(result.createdAt)
+    })
+    const readBtn = h(
+      ElButton,
+      {
+        text: true,
+        type: 'primary',
+        onClick: async () => {
+          setRead(result.id as unknown as number)
+          n.close()
+        }
+      },
+      {
+        default: () => '已读'
       }
-    },
-    {
-      default: () => '已读'
-    }
-  )
-  const n = ElNotification.success({
-    title: '通知',
-    message:
-      result.type === 'system_audit'
-        ? h('div', null, [
-          '你有新的系统审核动态，',
-          datetime,
-          h(
-            ElButton,
-            {
-              text: true,
-              type: 'primary',
-              onClick: () => {
-                setRead(result.blogId)
-                n.close()
-                navigateTo('/notification/system')
+    )
+
+    const n = ElNotification.success({
+      title: '通知',
+      message:
+        result.type === 'system_audit'
+          ? h('div', null, [
+            '你有新的系统审核动态，',
+            datetime,
+            h(
+              ElButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  setRead(result.blogId)
+                  n.close()
+                  navigateTo('/notification/system')
+                }
+              },
+              {
+                default: () => '去查看'
               }
-            },
-            {
-              default: () => '去查看'
-            }
-          ),
-          readBtn
-        ])
-        : h('div', null, [
-          '你的博客有新评论，',
-          datetime,
-          h(
-            ElButton,
-            {
-              text: true,
-              type: 'primary',
-              onClick: () => {
-                setRead(result.blogId)
-                n.close()
-                navigateTo('/post/' + result.blogId)
+            ),
+            readBtn
+          ])
+          : h('div', null, [
+            '你的博客有新评论，',
+            datetime,
+            h(
+              ElButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  setRead(result.blogId)
+                  n.close()
+                  navigateTo('/post/' + result.blogId)
+                }
+              },
+              {
+                default: () => '查看详情'
               }
-            },
-            {
-              default: () => '查看详情'
-            }
-          ),
-          readBtn
-        ]),
-    onClose: () => {
-    }
-  })
+            ),
+            readBtn
+          ]),
+      onClose: () => {
+      }
+    })
+  }
 
   async function setRead(id: number) {
     try {
@@ -151,5 +154,9 @@ export const useShowNotificationDetail = async (result: Notification) => {
       }
     } catch (e) {
     }
+  }
+
+  return {
+    handleShowNotificationDetail
   }
 }

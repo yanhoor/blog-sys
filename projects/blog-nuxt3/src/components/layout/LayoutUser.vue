@@ -39,9 +39,9 @@
 </template>
 
 <script lang="ts" setup>
-import { socketClient } from '@/socketIo'
 import { Icon } from '#components'
 
+const { $socketClient} = useNuxtApp()
 const renderIcon = (name: string) => {
   return () => {
     return h(Icon, { name, size: '18' })
@@ -128,7 +128,7 @@ async function handleLogout() {
         } else {
           token.value = null
           userInfo.value = null
-          socketClient?.disconnect()
+          $socketClient?.disconnect()
           checkCurrentPath()
         }
       } catch (e) {}

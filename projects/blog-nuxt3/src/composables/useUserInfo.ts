@@ -1,12 +1,11 @@
 import type { User } from 'sys-types'
-import { initSocketIo, socketClient } from '@/socketIo'
 
 export const useUserInfo = () => {
   return useState<User | null>('userInfo', () => null)
 }
 
 export const useRefreshUserInfo = async () => {
-  const {$HttpUtils} = useNuxtApp()
+  const {$initSocketIo, $socketClient, $HttpUtils} = useNuxtApp()
   const userInfo = useUserInfo()
   const config = useRuntimeConfig()
   const token = useCookie('token')
@@ -16,15 +15,12 @@ export const useRefreshUserInfo = async () => {
       const { result, success, code, msg } = await $HttpUtils.get<User>('/user/info', {})
       if (success) {
         userInfo.value = result as User
-        initSocketIo(config.public.wsHost, userInfo.value?.id as string)
-      }
-      if (code === 111 || code === 999) {
-        token.value = null
+        $initSocketIo(config.public.wsHost, userInfo.value?.id as string)
       }
     } catch (e) {
       console.log('===============', e)
     }
-  } else if (userInfo.value && !socketClient) {
-    initSocketIo(config.public.wsHost, userInfo.value?.id as string)
+  } else if (userInfo.value && !$socketClient) {
+    $initSocketIo(config.public.wsHost, userInfo.value?.id as string)
   }
 }
