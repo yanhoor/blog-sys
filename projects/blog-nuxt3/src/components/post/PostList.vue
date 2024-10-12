@@ -72,16 +72,16 @@ defineExpose({
   handleChangeFetchParams
 })
 
-await handleLoadNextPage()
+await handleLoadNextPage(1)
   .then((r) => {
     if (r?.success) {
       emit('fetchComplete', fetchResult)
-    } else {
+    } else if(import.meta.client){
       ElMessage.error(r?.msg || '请求出错')
     }
   })
   .catch((e) => {
-    console.log('----handleLoadNextPage---', e.message)
+    console.log('----handleLoadNextPage---', e)
   })
 
 watch(fetchNewPost, (val) => {

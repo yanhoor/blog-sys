@@ -69,16 +69,16 @@ export const useListAppendFetch = <T>(
 
   async function handlePageChange(page: number) {
     pageFetchParams.value.page = page
-    return await fetchPage(page == 1)
+    return fetchPage(page == 1)
   }
 
   async function handleLoadNextPage(page?: number) {
     if (page) {
-      return await handlePageChange(page)
+      return handlePageChange(page)
     }
     if (pageLoadedFinish.value) return
     pageFetchParams.value.page++
-    return await fetchPage()
+    return fetchPage()
   }
 
   function handleChangeFetchParams(params: Object = {}) {
