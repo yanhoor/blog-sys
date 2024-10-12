@@ -39,22 +39,25 @@ interface HttpUtils {
 export default defineNuxtPlugin(({ $pinia }) => {
   // 从运行时配置中获取代理和平台信息
   const runTimeConfig = useRuntimeConfig()
-  let Authorization = ''
-  const token = useCookie('token')
-  if (token.value) Authorization = 'Bearer ' + token.value
+  // todo: 放这里为什么拿不到
+  // const token = useCookie('token')
 
   const oFetch = $fetch.create({
     baseURL: runTimeConfig.public.apiBase,
-    headers: {
-      Authorization: Authorization
-    },
     onRequest({options}) {
+      const token = useCookie('token')
+      // console.log('========onRequest========', token.value)
+      if (token.value) {
+        const Authorization = 'Bearer ' + token.value
+        options.headers.append('Authorization', Authorization)
+      }
       options.query = options.query || {};
     },
     onRequestError({request, error}) {
       console.log('Fetch request error', request, error);
     },
     onResponse({response}) {
+      const token = useCookie('token')
       const {code, success, msg} = response._data || {}
       if([111, 999].includes(code)){
         token.value = null
@@ -66,8 +69,8 @@ export default defineNuxtPlugin(({ $pinia }) => {
   });
 
   const $HttpUtils: HttpUtils = {
-    post<T>(url: string, body?: BodyInit | Record<string, any>, option?: UtilFetchOptions) {
-      const {isFormData = false} = option || {}
+    post<T>(url: string, body?: BodyInit | Record<string, any>, option: UtilFetchOptions = {}) {
+      const {isFormData = false} = option
       if (isFormData && body && typeof body === 'object' && body.constructor === Object) {
         const fd = new FormData()
         Object.keys(body).forEach((k: string) => {
@@ -82,7 +85,7 @@ export default defineNuxtPlugin(({ $pinia }) => {
         ...option,
       });
     },
-    get<T>(url: string, params?: Record<string, any>, option?: UtilFetchOptions) {
+    get<T>(url: string, params?: Record<string, any>, option: UtilFetchOptions = {}) {
       return oFetch<FetchRes<T>>(url, {
         method: 'get',
         params,

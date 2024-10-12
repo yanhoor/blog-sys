@@ -236,9 +236,9 @@ export default defineNuxtConfig({
         deleteOriginFile: false // 是否删除原文件
       })
     ],
-    esbuild: {
-      drop: ['console', 'debugger']
-    },
+    // esbuild: {
+    //   drop: ['console', 'debugger']
+    // },
     css: {
       preprocessorOptions: {
         // scss: {

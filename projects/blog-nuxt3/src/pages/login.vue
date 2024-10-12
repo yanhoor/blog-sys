@@ -87,7 +87,7 @@ function handlePost(e: MouseEvent) {
         if (success) {
           ElMessage.success('登录成功')
 
-          token.value = result
+          token.value = result as string
           await navigateTo('/', { replace: true })
           useFetchNotificationCount()
         } else {
