@@ -33,7 +33,7 @@
             查看详情
           </div>
           <div
-            class="post-action-item"
+            class="post-action-item text-red-700"
             v-if="currentPost?.createById === userInfo?.id"
             @click="handleDelete"
           >

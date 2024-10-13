@@ -18,31 +18,31 @@
                 v-time.format="new Date(currentPost?.createdAt)"
             ></span>
           </div>
-          <el-dropdown class="!absolute right-0 top-0" trigger="click">
-            <el-button quaternary circle type="default" class="cursor-pointer">
-              <template #icon>
-                <Icon name="fluent:chevron-down-20-regular"></Icon>
-              </template>
-            </el-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item @click="collectBlog">{{
-                    currentPost?.isCollect ? '取消收藏' : '收藏'
-                  }}
-                </el-dropdown-item>
-                <el-dropdown-item @click="handleCopyPostUrl"
-                >复制博客地址
-                </el-dropdown-item
-                >
-                <el-dropdown-item
-                    v-if="currentPost?.createById === myInfo?.id"
-                    @click="handleDelete"
-                >删除
-                </el-dropdown-item
-                >
-              </el-dropdown-menu>
+          <virtual-el-popover width="auto" class="!absolute tip-0 right-0" trigger="hover">
+            <template #trigger>
+              <el-button quaternary circle class="cursor-pointer">
+                <template #icon>
+                  <Icon name="fluent:chevron-down-20-regular"></Icon>
+                </template>
+              </el-button>
             </template>
-          </el-dropdown>
+            <div>
+              <div class="post-action-item" @click="collectBlog">
+                {{ currentPost?.isCollect ? '取消收藏' : '收藏' }}
+              </div>
+              <div class="post-action-item" @click="handleCopyPostUrl"
+              >
+                复制博客地址
+              </div>
+              <div
+                class="post-action-item text-red-700"
+                v-if="currentPost?.createById === myInfo?.id"
+                @click="handleDelete"
+              >
+                删除
+              </div>
+            </div>
+          </virtual-el-popover>
         </div>
 
         <PostArticle
@@ -283,5 +283,8 @@ async function handleDelete() {
 <style lang="postcss" scoped>
 .action-item {
   @apply flex cursor-pointer items-center justify-center gap-[6px] hover:text-primary;
+}
+.post-action-item{
+  @apply py-[4px] cursor-pointer hover:text-primary;
 }
 </style>

@@ -43,13 +43,13 @@
             ></Icon>
           </div>
           <span
-            >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
+          >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
             {{ formatDuration(duration) }}</span
           >
         </div>
         <span
           class="media-tag absolute right-0 top-0 rounded-bl-[3px] rounded-tr-[3px]"
-          >录音</span
+        >录音</span
         >
       </div>
     </div>
@@ -87,8 +87,8 @@
 </template>
 
 <script setup lang="ts">
-import { PlayState, formatDuration } from 'sys-types'
-import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
+import {PlayState, formatDuration} from 'sys-types'
+import {useMediaPlayStore} from '~/store/modules/mediaPlayStore'
 
 interface Props {
   url: string
@@ -166,7 +166,7 @@ function handlePlayEnd() {
 // chrome 获取的时长可能是Infinity，需要这样处理
 function handleUnknownDuration() {
   // console.log('======handleUnknownDuration=====', props.url, duration.value)
-  if (duration.value === Infinity || isNaN(Number(duration.value))) {
+  if (audioRef.value && (duration.value === Infinity || isNaN(Number(duration.value)))) {
     isInfinityDuration.value = true
     audioRef.value.currentTime = 1e101 // 设置一个极大的时间，能显示后再在 handleTimeUpdate 设置回开始
   }
