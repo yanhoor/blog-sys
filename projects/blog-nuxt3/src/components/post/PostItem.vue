@@ -12,31 +12,35 @@
           v-time="currentPost.createdAt"
         ></span>
       </div>
-      <el-dropdown :teleported="false" class="!absolute right-0 top-0" trigger="click">
-        <el-button quaternary circle class="cursor-pointer">
-          <template #icon>
-            <Icon name="fluent:chevron-down-20-regular"></Icon>
-          </template>
-        </el-button>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item @click="handlePostCollect">{{
-                currentPost.isCollect ? '取消收藏' : '收藏'
-              }}</el-dropdown-item>
-            <el-dropdown-item @click="handleCopyLink"
-            >复制博客地址</el-dropdown-item
-            >
-            <el-dropdown-item @click="navigateTo('/post/' + currentPost.id)"
-            >查看详情</el-dropdown-item
-            >
-            <el-dropdown-item
-                v-if="currentPost?.createById === userInfo?.id"
-                @click="handleDelete"
-            >删除</el-dropdown-item
-            >
-          </el-dropdown-menu>
+      <virtual-el-popover width="auto" class="!absolute tip-0 right-0" trigger="hover">
+        <template #trigger>
+          <el-button quaternary circle class="cursor-pointer">
+            <template #icon>
+              <Icon name="fluent:chevron-down-20-regular"></Icon>
+            </template>
+          </el-button>
         </template>
-      </el-dropdown>
+        <div>
+          <div class="post-action-item" @click="handlePostCollect">
+            {{ currentPost.isCollect ? '取消收藏' : '收藏' }}
+          </div>
+          <div class="post-action-item" @click="handleCopyLink"
+          >
+            复制博客地址
+          </div>
+          <div class="post-action-item" @click="navigateTo('/post/' + currentPost.id)"
+          >
+            查看详情
+          </div>
+          <div
+            class="post-action-item"
+            v-if="currentPost?.createById === userInfo?.id"
+            @click="handleDelete"
+          >
+            删除
+          </div>
+        </div>
+      </virtual-el-popover>
     </div>
 
     <div
@@ -119,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Blog } from 'sys-types'
+import type {Blog} from 'sys-types'
 
 interface Props {
   canEdit?: boolean // 是否能编辑文章
@@ -132,7 +136,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['delete', 'refresh'])
 const userInfo = useUserInfo()
 const showType = ref<ActionType>()
-const { currentPost, handlePostCollect, handlePostLike, handleDeletePost } =
+const {currentPost, handlePostCollect, handlePostLike, handleDeletePost} =
   usePostActions(props.blog)
 
 const topicList = computed(() => currentPost.value.topics?.map((t) => t.topic))
@@ -162,12 +166,17 @@ async function handleDelete() {
   try {
     await handleDeletePost()
     emit('delete')
-  } catch (e) {}
+  } catch (e) {
+  }
 }
 </script>
 
 <style lang="postcss" scoped>
 .action-item {
   @apply flex cursor-pointer items-center justify-center gap-[6px] hover:text-primary;
+}
+
+.post-action-item{
+  @apply py-[4px] cursor-pointer hover:text-primary;
 }
 </style>
