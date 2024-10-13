@@ -1,20 +1,16 @@
 <template>
   <div>
-    <div ref="buttonRef" @mouseenter="showPopover = true" :key="showPopover">
-      <slot name="trigger"></slot>
-    </div>
-    <el-popover
-      v-if="showPopover"
-      ref="popoverRef"
+    <virtual-el-popover
       trigger="hover"
       @show="handleShow"
       class="max-w-[280px]"
       :show-after="500"
       :teleported="false"
-      virtual-triggering
-      :virtual-ref="buttonRef"
       :disabled="disabled"
     >
+      <template #trigger>
+        <slot name="trigger"></slot>
+      </template>
 
       <div class="h-[64px] w-[64px]" v-loading v-if="loading"></div>
 
@@ -55,7 +51,7 @@
         </div>
       </div>
       <p v-else>暂无信息</p>
-    </el-popover>
+    </virtual-el-popover>
   </div>
 </template>
 
@@ -73,9 +69,6 @@ const {$HttpUtils} = useNuxtApp()
 const myInfo = useUserInfo()
 const loading = ref(false)
 const currentUser = ref()
-const buttonRef = ref()
-const popoverRef = ref()
-const showPopover = ref(false)
 
 function handleShow(val: boolean) {
   if (val) {

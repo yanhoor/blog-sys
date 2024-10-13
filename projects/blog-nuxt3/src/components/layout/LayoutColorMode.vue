@@ -1,5 +1,20 @@
 <template>
-  <el-popover trigger="hover" :teleported="true" placement="bottom-start">
+  <virtual-el-popover trigger="hover" :teleported="true" placement="bottom-start">
+    <template #trigger>
+      <div class="regular-text-color cursor-pointer">
+        <Icon
+          size="24"
+          name="fluent:weather-moon-16-regular"
+          v-if="$colorMode.preference === 'dark'"
+        ></Icon>
+        <Icon
+          size="24"
+          name="fluent:weather-sunny-16-regular"
+          v-else-if="$colorMode.preference === 'light'"
+        ></Icon>
+        <Icon size="24" name="fluent:desktop-16-regular" v-else></Icon>
+      </div>
+    </template>
     <div class="flex flex-col">
       <div
         class="action-item"
@@ -26,22 +41,7 @@
         <span>跟随系统</span>
       </div>
     </div>
-    <template #reference>
-      <div class="regular-text-color cursor-pointer">
-        <Icon
-          size="24"
-          name="fluent:weather-moon-16-regular"
-          v-if="$colorMode.preference === 'dark'"
-        ></Icon>
-        <Icon
-          size="24"
-          name="fluent:weather-sunny-16-regular"
-          v-else-if="$colorMode.preference === 'light'"
-        ></Icon>
-        <Icon size="24" name="fluent:desktop-16-regular" v-else></Icon>
-      </div>
-    </template>
-  </el-popover>
+  </virtual-el-popover>
 </template>
 
 <script setup lang="ts">
