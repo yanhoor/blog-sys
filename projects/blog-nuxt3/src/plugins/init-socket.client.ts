@@ -1,7 +1,7 @@
 import {io, Socket} from 'socket.io-client'
 import type {ClientToServerEvents, Notification} from "sys-types";
 
-enum SOCKETEVENTTYPE {
+enum SOCKET_EVENT_TYPE {
   notification = 'notification'
 }
 
@@ -41,7 +41,7 @@ export default defineNuxtPlugin(({$pinia}) => {
       ) // false
     })
 
-    socketClient.on(SOCKETEVENTTYPE.notification as any, (arg: any) => {
+    socketClient.on(SOCKET_EVENT_TYPE.notification as any, (arg: any) => {
       handleFetchNotificationCount()
       handleShowNotificationDetail(arg)
       // console.log('===========new-comment-notification=============', arg) //

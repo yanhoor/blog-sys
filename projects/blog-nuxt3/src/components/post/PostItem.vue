@@ -12,8 +12,8 @@
           v-time="currentPost.createdAt"
         ></span>
       </div>
-      <el-dropdown class="!absolute right-0 top-0" trigger="click">
-        <el-button quaternary circle type="default" class="cursor-pointer">
+      <el-dropdown :teleported="false" class="!absolute right-0 top-0" trigger="click">
+        <el-button quaternary circle class="cursor-pointer">
           <template #icon>
             <Icon name="fluent:chevron-down-20-regular"></Icon>
           </template>
