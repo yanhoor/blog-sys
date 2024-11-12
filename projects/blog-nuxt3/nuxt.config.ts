@@ -33,7 +33,7 @@ const packageMapList: [string, string | string[]][] = [
   ['vant', ['vant', '@vant/nuxt']],
   ['tailwindcss', ['tailwindcss', '@nuxtjs/tailwindcss']],
   ['swiper', ['swiper', 'nuxt-swiper']],
-  ['nuxt-vendor', ['@nuxt/image', 'nuxt-icons', '@nuxtjs/color-mode']],
+  ['nuxt-vendor', ['@nuxt/image', '@nuxt/icon', '@nuxtjs/color-mode']],
   [
     'vendor',
     ['ofetch', 'countup.js', 'async-validator', 'ohash', 'aos', 'dayjs']
@@ -170,14 +170,17 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    'nuxt-icon',
     // https://auto-animate.formkit.com/#usage-vue
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/color-mode',
     '@element-plus/nuxt',
-    'nuxt-icon',
+    '@nuxt/icon',
     '@nuxt/scripts'
   ],
+
+  icon: {
+    mode: 'css'
+  },
 
   elementPlus: {
     // importStyle: false
