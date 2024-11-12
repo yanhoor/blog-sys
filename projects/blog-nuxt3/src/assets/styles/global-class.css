@@ -31,14 +31,16 @@
 .layout-enter-from,.layout-leave-to {
   filter: grayscale(1);
 }
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: all .3s ease-in-out;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: translateX(30px);
 }
 
 .ellipsis-text{

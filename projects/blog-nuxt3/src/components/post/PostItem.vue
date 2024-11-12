@@ -1,15 +1,15 @@
 <template>
   <div class="flex flex-col items-start gap-[12px]">
     <div class="relative flex w-full items-center gap-[6px]">
-      <UserAvatar :user="currentPost.createBy" :size="56"></UserAvatar>
+      <UserAvatar :user="currentPost!.createBy" :size="56"></UserAvatar>
       <div class="flex flex-col items-start">
         <UserName
           class="text-[18px] font-semibold"
-          :user="currentPost.createBy"
+          :user="currentPost!.createBy"
         ></UserName>
         <span
           class="secondary-text-color text-[12px]"
-          v-time="currentPost.createdAt"
+          v-time="currentPost!.createdAt"
         ></span>
       </div>
       <virtual-el-popover width="auto" class="!absolute tip-0 right-0" trigger="hover">
@@ -45,13 +45,13 @@
 
     <div
       class="h-[300px] w-full max-w-full"
-      v-if="currentPost!.contentType == 2"
+      v-if="currentPost!.contentType == BlogContentType.richTxt"
     >
       <PostArticle
         class="[&_pre]:w-full [&_pre]:max-w-full w-full max-w-full max-h-full overflow-hidden"
         :content="currentPost!.content"
         hideMore
-        @seeMore="navigateTo('/post/' + currentPost.id)"
+        @seeMore="navigateTo('/post/' + currentPost!.id)"
       />
     </div>
     <ExpandableContent
@@ -63,8 +63,8 @@
 
     <MediaListView
       class="w-full"
-      :list="currentPost.medias"
-      v-if="!currentPost.referenceBlogs?.length"
+      :list="currentPost!.medias"
+      v-if="!currentPost!.referenceBlogs?.length"
     ></MediaListView>
 
     <PostReferenceItem
@@ -75,16 +75,16 @@
     <div class="grid w-full grid-cols-3">
       <div
         class="action-item placeholder-text-color"
-        :class="{ '!text-primary': showType === 'retweet' }"
-        @click="handleAction('retweet')"
+        :class="{ '!text-primary': showType === ActionType.retweet }"
+        @click="handleAction(ActionType.retweet)"
       >
         <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
         <span>{{ currentPost.retweetCount || '转发' }}</span>
       </div>
       <div
         class="action-item placeholder-text-color"
-        :class="{ '!text-primary': showType === 'comment' }"
-        @click="handleAction('comment')"
+        :class="{ '!text-primary': showType === ActionType.comment }"
+        @click="handleAction(ActionType.comment)"
       >
         <Icon
           name="fluent:comment-multiple-24-filled"
@@ -107,30 +107,36 @@
       </div>
     </div>
 
-    <PostCommentList
-      v-if="showType === 'comment'"
-      class="w-full"
-      :blog="currentPost"
-      :page-size="2"
-    ></PostCommentList>
+    <TransitionGroup name="fade">
+      <PostCommentList
+          v-if="showType === ActionType.comment"
+          class="w-full"
+          :blog="currentPost!"
+          :page-size="2"
+      ></PostCommentList>
 
-    <PostRetweetList
-      v-if="showType === 'retweet'"
-      class="w-full"
-      :blog="currentPost"
-    ></PostRetweetList>
+      <PostRetweetList
+          v-if="showType === ActionType.retweet"
+          class="w-full"
+          :blog="currentPost!"
+      ></PostRetweetList>
+    </TransitionGroup>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {Blog} from 'sys-types'
+import {BlogContentType, type Blog} from "sys-types";
 
 interface Props {
   canEdit?: boolean // 是否能编辑文章
   blog: Blog
 }
 
-type ActionType = 'like' | 'comment' | 'retweet' | undefined
+enum ActionType  {
+  like = 'like',
+  comment = 'comment',
+  retweet = 'retweet'
+}
 
 const props = defineProps<Props>()
 const emit = defineEmits(['delete', 'refresh'])
@@ -141,11 +147,11 @@ const {currentPost, handlePostCollect, handlePostLike, handleDeletePost} =
 
 const topicList = computed(() => currentPost.value.topics?.map((t) => t.topic))
 const referenceMediaList = computed(() => {
-  const rl = currentPost.value.referenceBlogs?.map((b) => b.medias) || []
+  const rl = currentPost.value.referenceBlogs?.map((b: Blog) => b.medias) || []
   return [currentPost.value.medias, ...rl].flat(2)
 })
 
-function handleAction(type: string) {
+function handleAction(type: ActionType) {
   if (showType.value === type) {
     showType.value = undefined
   } else {

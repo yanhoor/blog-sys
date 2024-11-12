@@ -140,29 +140,29 @@
                   </template>
                 </el-button>
               </div>
-              <div class="mb-[12px]" v-show="showSearch">
-                <div class="flex items-center gap-[12px]">
-                  <y-search
-                    v-model="searchParams.keyword"
-                    @confirm="handleSearchPost"
-                  />
-                  <client-only>
-                    <el-date-picker
-                      v-model="selectDateRange"
-                      :shortcuts="rangeShortcuts"
-                      :disabled-date="(ts) => ts > Date.now()"
-                      type="daterange"
-                      clearable
+              <Transition name="fade" >
+                <div class="mb-[12px] transition-all duration-300" v-if="showSearch">
+                  <div class="flex items-center gap-[12px]">
+                    <y-search
+                        v-model="searchParams.keyword"
+                        @confirm="handleSearchPost"
                     />
-                  </client-only>
-                  <el-button
-                    size="small"
-                    type="primary"
-                    @click="handleSearchPost"
+                    <el-date-picker
+                        v-model="selectDateRange"
+                        :shortcuts="rangeShortcuts"
+                        :disabled-date="(ts: Date) => ts.getTime() > Date.now()"
+                        type="daterange"
+                        clearable
+                    />
+                    <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleSearchPost"
                     >确定</el-button
-                  >
+                    >
+                  </div>
                 </div>
-              </div>
+              </Transition>
               <PostList
                 ref="blogListRef"
                 :search-params="searchParams"
