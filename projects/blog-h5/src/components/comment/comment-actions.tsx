@@ -1,4 +1,4 @@
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import { Popover, Toast, Dialog } from 'react-vant'
 import {
   GoodJob,

@@ -7,7 +7,7 @@ import {
   Setting,
   Avatar
 } from '@element-plus/icons-vue'
-import { Component } from 'vue'
+import type { Component } from 'vue'
 
 interface MenuProps {
   group?: string

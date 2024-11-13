@@ -1,7 +1,7 @@
 const md5File = require('md5-file')
 const prisma = require('../../database/prisma')
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 
 // 对分片文件改名
 const handleLocalUploadPart = async (ctx, next) => {

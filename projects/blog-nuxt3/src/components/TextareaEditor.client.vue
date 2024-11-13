@@ -1,6 +1,6 @@
 <template>
   <div class="tinymce-container" :style="{ width }">
-    <textarea :id="tinymceId" ref="elRef"></textarea>
+    <textarea :id="tinymceId" ref="elRef" />
   </div>
 </template>
 

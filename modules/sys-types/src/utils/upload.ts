@@ -1,34 +1,34 @@
-import AliOSS from "ali-oss";
-import { FileUtil } from "./fileUtil";
+import type AliOSS from 'ali-oss'
+import { FileUtil } from './fileUtil'
 
 const ossConfig = {
   // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
-  region: "oss-cn-shenzhen",
+  region: 'oss-cn-shenzhen',
   // 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。
-  accessKeyId: "",
-  accessKeySecret: "",
-  bucket: "static-buck",
-  endpoint: "oss-cn-shenzhen.aliyuncs.com",
-};
+  accessKeyId: '',
+  accessKeySecret: '',
+  bucket: 'static-buck',
+  endpoint: 'oss-cn-shenzhen.aliyuncs.com'
+}
 
-const projectName = "blog-sys";
+const projectName = 'blog-sys'
 
 // const ossClient = new AliOSS(ossConfig);
 
 interface UploadOptions {
-  file: File;
-  fileName?: string;
+  file: File
+  fileName?: string
 }
-type MultipartUploadOptions = UploadOptions & AliOSS.MultipartUploadOptions;
+type MultipartUploadOptions = UploadOptions & AliOSS.MultipartUploadOptions
 
 export async function commonMultipartUpload({
   file,
   fileName,
   ...otherOptions
 }: MultipartUploadOptions) {
-  const fileUtil = new FileUtil(file);
-  const ext = fileUtil.getFileExt(true);
-  if (!fileName) fileName = fileUtil.getRandomFileName() + ext;
+  const fileUtil = new FileUtil(file)
+  const ext = fileUtil.getFileExt(true)
+  if (!fileName) fileName = fileUtil.getRandomFileName() + ext
 
   // return ossClient.multipartUpload(`blog-sys/${fileName}`, file, {
   //   // 获取分片上传进度、断点和返回值。

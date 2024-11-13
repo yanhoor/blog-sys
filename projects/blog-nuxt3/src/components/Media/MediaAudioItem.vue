@@ -1,9 +1,9 @@
 <template>
   <div class="media-audio-item">
     <audio
+      ref="audioRef"
       class="hidden"
       :src="audioSrc"
-      ref="audioRef"
       @pause="
         () => {
           playState = PlayState.paused
@@ -12,71 +12,71 @@
       @ended="handlePlayEnd"
       @loadedmetadata="handleGetDuration"
       @timeupdate="handleTimeUpdate"
-    ></audio>
-    <div class="w-1/3" v-if="coverUrl">
+    />
+    <div v-if="coverUrl" class="w-1/3">
       <div
         class="relative h-0 w-full rounded-[15px] bg-black"
         :style="{ 'padding-top': 'calc(100%*9/16)' }"
       >
-        <MediaImgView class="media-cover" :url="coverUrl" v-if="coverUrl" />
+        <MediaImgView v-if="coverUrl" class="media-cover" :url="coverUrl" />
         <div
           class="transform-center z-10 flex flex-col items-center justify-center text-white"
         >
           <div class="cursor-pointer">
             <Icon
+              v-if="playState === PlayState.playing"
               name="fluent:pause-circle-20-regular"
               size="48"
               @click="handlePlay"
-              v-if="playState === PlayState.playing"
-            ></Icon>
+            />
             <Icon
+              v-else-if="playState === PlayState.end"
               name="fluent:replay-20-regular"
               size="48"
               @click="handlePlay"
-              v-else-if="playState === PlayState.end"
-            ></Icon>
+            />
             <Icon
+              v-else
               name="fluent:play-circle-16-regular"
               size="48"
               @click="handlePlay"
-              v-else
-            ></Icon>
+            />
           </div>
           <span
-          >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
+            >{{ currentTime > 0 ? `${formatDuration(currentTime)} | ` : '' }}
             {{ formatDuration(duration) }}</span
           >
         </div>
         <span
           class="media-tag absolute right-0 top-0 rounded-bl-[3px] rounded-tr-[3px]"
-        >录音</span
+          >录音</span
         >
       </div>
     </div>
 
     <div
-      class="flex w-fit items-center rounded-[6px] bg-gray-200 px-[12px] py-[5px] dark:bg-gray-600"
       v-else-if="duration"
+      class="flex w-fit items-center rounded-[6px] bg-gray-200 px-[12px] py-[5px] dark:bg-gray-600"
     >
       <div class="flex cursor-pointer items-center">
         <Icon
+          v-if="playState === PlayState.playing"
           name="fluent:pause-circle-20-regular"
           size="24"
           @click="handlePlay"
-          v-if="playState === PlayState.playing"
-        ></Icon>
+        />
         <Icon
+          v-else-if="playState === PlayState.end"
           name="fluent:replay-20-regular"
           size="24"
           @click="handlePlay"
-          v-else-if="playState === PlayState.end"
-        ></Icon>
+        />
         <Icon
+          v-else
           name="fluent:play-circle-16-regular"
           size="24"
           @click="handlePlay"
-          v-else
-        ></Icon>
+        />
       </div>
       <div class="divide-x divide-gray-400">
         <span class="px-[8px]">{{ formatDuration(currentTime) }}</span>
@@ -87,8 +87,8 @@
 </template>
 
 <script setup lang="ts">
-import {PlayState, formatDuration} from 'sys-types'
-import {useMediaPlayStore} from '~/store/modules/mediaPlayStore'
+import { PlayState, formatDuration } from 'sys-types'
+import { useMediaPlayStore } from '~/store/modules/mediaPlayStore'
 
 interface Props {
   url: string
@@ -166,7 +166,10 @@ function handlePlayEnd() {
 // chrome 获取的时长可能是Infinity，需要这样处理
 function handleUnknownDuration() {
   // console.log('======handleUnknownDuration=====', props.url, duration.value)
-  if (audioRef.value && (duration.value === Infinity || isNaN(Number(duration.value)))) {
+  if (
+    audioRef.value &&
+    (duration.value === Infinity || isNaN(Number(duration.value)))
+  ) {
     isInfinityDuration.value = true
     audioRef.value.currentTime = 1e101 // 设置一个极大的时间，能显示后再在 handleTimeUpdate 设置回开始
   }

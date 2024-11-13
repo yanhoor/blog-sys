@@ -7,7 +7,7 @@
         controls
         :src="config.public.imageBase + url + '?type=video'"
         @play="handlePlaying"
-      ></video>
+      />
       <template v-if="coverUrl && playState === PlayState.idle">
         <MediaImgView class="video-cover" :url="coverUrl" />
         <Icon
@@ -15,7 +15,7 @@
           size="72"
           class="transform-center z-10 cursor-pointer text-white"
           @click="handlePlay"
-        ></Icon>
+        />
         <span
           class="media-tag absolute right-0 top-0 rounded-bl-[5px] rounded-tr-[5px]"
           >视频</span

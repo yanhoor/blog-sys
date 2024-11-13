@@ -10,7 +10,7 @@
         name="fluent:search-20-regular"
         class="cursor-pointer"
         @click="handleConfirm"
-      ></Icon>
+      />
     </template>
   </el-input>
 </template>

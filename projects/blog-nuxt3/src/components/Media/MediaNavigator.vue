@@ -6,10 +6,10 @@
         :style="{ transform: `translateX(-${(currentPage - 1) * 100}%)` }"
       >
         <div
-          class="relative shrink-0 pl-[6px]"
-          :style="`width: calc(100% / ${pageSize})`"
           v-for="(media, index) of list"
           :key="media.file.url"
+          class="relative shrink-0 pl-[6px]"
+          :style="`width: calc(100% / ${pageSize})`"
         >
           <div class="image-item-container">
             <MediaImgView
@@ -19,31 +19,31 @@
               ratio="5"
             />
             <div
-              class="list-item-mask border-2 border-green-500"
               v-if="modelValue === media.file"
-            ></div>
+              class="list-item-mask border-2 border-green-500"
+            />
             <div
-              class="list-item-mask cursor-pointer bg-gray-600 opacity-30"
               v-if="modelValue !== media.file"
+              class="list-item-mask cursor-pointer bg-gray-600 opacity-30"
               @click="handlePreview(media.file, index)"
-            ></div>
+            />
           </div>
         </div>
       </div>
     </div>
     <div
+      v-if="currentPage > 1"
       class="absolute -left-[20px] top-0 flex h-full cursor-pointer items-center"
       @click="handleNextImagePage(-1)"
-      v-if="currentPage > 1"
     >
-      <Icon name="fluent:chevron-left-20-regular" size="24"></Icon>
+      <Icon name="fluent:chevron-left-20-regular" size="24" />
     </div>
     <div
+      v-if="currentPage < imageTotalPage"
       class="absolute -right-[20px] top-0 flex h-full cursor-pointer items-center"
       @click="handleNextImagePage(1)"
-      v-if="currentPage < imageTotalPage"
     >
-      <Icon name="fluent:chevron-right-20-regular" size="24"></Icon>
+      <Icon name="fluent:chevron-right-20-regular" size="24" />
     </div>
   </div>
 </template>

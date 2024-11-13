@@ -1,6 +1,6 @@
-import type {Notification} from 'sys-types'
-import {ElButton} from 'element-plus'
-import {h} from 'vue'
+import type { Notification } from 'sys-types'
+import { ElButton } from 'element-plus'
+import { h } from 'vue'
 
 export const useNotification = () => {
   return useState<Notification[]>('notification', () => [])
@@ -43,11 +43,11 @@ export const useFetchNotificationCount = (params = {}) => {
   const unreadLikeCount = useNotificationUnreadLikeCount()
   const unreadCollectCount = useNotificationUnreadCollectCount()
   const unreadAuditCount = useNotificationUnreadAuditCount()
-  const {$HttpUtils} = useNuxtApp()
+  const { $HttpUtils } = useNuxtApp()
 
   async function handleFetchNotificationCount() {
     try {
-      const {result, success} = await $HttpUtils.post<any>(
+      const { result, success } = await $HttpUtils.post<any>(
         '/notification/count',
         params
       )
@@ -71,8 +71,8 @@ export const useFetchNotificationCount = (params = {}) => {
 
 // 评论通知弹窗详情显示
 export const useShowNotificationDetail = () => {
-  const {$HttpUtils} = useNuxtApp()
-  const {handleFetchNotificationCount} = useFetchNotificationCount()
+  const { $HttpUtils } = useNuxtApp()
+  const { handleFetchNotificationCount } = useFetchNotificationCount()
 
   function handleShowNotificationDetail(result: Notification) {
     const datetime = h('div', {
@@ -100,60 +100,58 @@ export const useShowNotificationDetail = () => {
       message:
         result.type === 'system_audit'
           ? h('div', null, [
-            '你有新的系统审核动态，',
-            datetime,
-            h(
-              ElButton,
-              {
-                text: true,
-                type: 'primary',
-                onClick: () => {
-                  setRead(result.blogId)
-                  n.close()
-                  navigateTo('/notification/system')
+              '你有新的系统审核动态，',
+              datetime,
+              h(
+                ElButton,
+                {
+                  text: true,
+                  type: 'primary',
+                  onClick: () => {
+                    setRead(result.blogId)
+                    n.close()
+                    navigateTo('/notification/system')
+                  }
+                },
+                {
+                  default: () => '去查看'
                 }
-              },
-              {
-                default: () => '去查看'
-              }
-            ),
-            readBtn
-          ])
+              ),
+              readBtn
+            ])
           : h('div', null, [
-            '你的博客有新评论，',
-            datetime,
-            h(
-              ElButton,
-              {
-                text: true,
-                type: 'primary',
-                onClick: () => {
-                  setRead(result.blogId)
-                  n.close()
-                  navigateTo('/post/' + result.blogId)
+              '你的博客有新评论，',
+              datetime,
+              h(
+                ElButton,
+                {
+                  text: true,
+                  type: 'primary',
+                  onClick: () => {
+                    setRead(result.blogId)
+                    n.close()
+                    navigateTo('/post/' + result.blogId)
+                  }
+                },
+                {
+                  default: () => '查看详情'
                 }
-              },
-              {
-                default: () => '查看详情'
-              }
-            ),
-            readBtn
-          ]),
-      onClose: () => {
-      }
+              ),
+              readBtn
+            ]),
+      onClose: () => {}
     })
   }
 
   async function setRead(id: number) {
     try {
-      const {result, success} = await $HttpUtils.post('/notification/read', {
+      const { result, success } = await $HttpUtils.post('/notification/read', {
         id
       })
       if (success) {
         handleFetchNotificationCount()
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   return {

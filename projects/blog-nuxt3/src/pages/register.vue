@@ -11,17 +11,17 @@
       <el-form-item prop="name" label="名称">
         <el-input
           v-model="registerForm.name"
-          @keydown.enter.prevent
           maxlength="20"
           show-count
+          @keydown.enter.prevent
         />
       </el-form-item>
       <el-form-item prop="mobile" label="手机号">
         <el-input
           v-model="registerForm.mobile"
-          @keydown.enter.prevent
           maxlength="11"
           show-count
+          @keydown.enter.prevent
         />
       </el-form-item>
       <el-form-item prop="password" label="密码">
@@ -88,7 +88,7 @@ interface ModelType {
   reenteredPassword: string | null
 }
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const registerForm = ref<ModelType>({
   mobile: '',
   name: '',

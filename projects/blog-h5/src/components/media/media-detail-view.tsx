@@ -1,5 +1,5 @@
 import { ActionSheet, ImagePreview, Swiper, Toast } from 'react-vant'
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 import MediaImageItem from '@/components/media/media-image-item'
 import ExpandableContent from '@/components/expandable-content'
 import { useNavigate } from 'react-router-dom'

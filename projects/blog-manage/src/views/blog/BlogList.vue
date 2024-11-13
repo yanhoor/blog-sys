@@ -4,40 +4,40 @@
       <el-row :gutter="24">
         <el-col :span="6">
           <el-input
-            placeholder="内容"
             v-model="filterForm.keyword"
+            placeholder="内容"
             clearable
             @keyup.enter="handleSearch"
             @clear="handleSearch"
-          ></el-input>
+          />
         </el-col>
         <el-col :span="6">
           <el-input
-            placeholder="用户名"
             v-model="filterForm.uname"
+            placeholder="用户名"
             clearable
             @keyup.enter="handleSearch"
             @clear="handleSearch"
-          ></el-input>
+          />
         </el-col>
         <el-col :span="6">
           <el-select
+            v-model="filterForm.status"
             class="w-full"
             placeholder="状态"
-            v-model="filterForm.status"
             @change="handleSearch"
           >
-            <el-option :value="0" label="全部"></el-option>
-            <el-option :value="1" label="未审核"></el-option>
-            <el-option :value="2" label="审核通过"></el-option>
-            <el-option :value="3" label="审核不通过"></el-option>
-            <el-option :value="4" label="删除"></el-option>
+            <el-option :value="0" label="全部" />
+            <el-option :value="1" label="未审核" />
+            <el-option :value="2" label="审核通过" />
+            <el-option :value="3" label="审核不通过" />
+            <el-option :value="4" label="删除" />
           </el-select>
         </el-col>
         <el-col :span="6">
           <el-date-picker
-            class="max-w-full"
             v-model="dateRange"
+            class="max-w-full"
             type="daterange"
             unlink-panels
             start-placeholder="开始时间"
@@ -55,24 +55,19 @@
 
     <template #table>
       <el-table
+        v-loading="listLoading"
         border
         stripe
         :data="pageList"
         height="100%"
-        v-loading="listLoading"
       >
-        <el-table-column
-          key="seq"
-          type="index"
-          width="60"
-          label="#"
-        ></el-table-column>
+        <el-table-column key="seq" type="index" width="60" label="#" />
         <el-table-column key="createBy" label="作者">
           <template #default="{ row }">
             <div class="flex items-center">
               <!--<image :src="IMG_HOST + row.avatar" class="w-[60px] h-[60px] mr-8" />-->
-              <el-avatar :src="IMG_HOST + row.createBy?.avatar"></el-avatar>
-              <span class="truncate flex-1 ml-3">{{ row.createBy?.name }}</span>
+              <el-avatar :src="IMG_HOST + row.createBy?.avatar" />
+              <span class="ml-3 flex-1 truncate">{{ row.createBy?.name }}</span>
             </div>
           </template>
         </el-table-column>
@@ -128,20 +123,20 @@
         <el-table-column key="operate" label="操作" min-width="120">
           <template #default="{ row }">
             <el-button
-              @click="handleAudit(row.id, 1)"
+              v-if="!row.deletedAt && row.auditStatus !== 1"
               link
               type="success"
-              v-if="!row.deletedAt && row.auditStatus !== 1"
+              @click="handleAudit(row.id, 1)"
               >审核通过</el-button
             >
             <el-button
-              @click="handleAudit(row.id, 2)"
+              v-if="!row.deletedAt && row.auditStatus !== 2"
               link
               type="warning"
-              v-if="!row.deletedAt && row.auditStatus !== 2"
+              @click="handleAudit(row.id, 2)"
               >审核不通过</el-button
             >
-            <el-button @click="viewItem(row.id)" link type="primary"
+            <el-button link type="primary" @click="viewItem(row.id)"
               >查看</el-button
             >
           </template>
@@ -151,7 +146,7 @@
 
     <template #tablePagination>
       <el-pagination
-        v-model:currentPage="pageFetchParams.page"
+        v-model:current-page="pageFetchParams.page"
         v-model:page-size="pageFetchParams.pageSize"
         :page-sizes="pageState.pageSizeList"
         :background="true"
@@ -167,7 +162,7 @@
   <el-dialog v-model="showAudit" title="审核" width="300px">
     <el-form label-position="top">
       <el-form-item label="审核意见">
-        <el-input v-model="auditForm.auditTip"></el-input>
+        <el-input v-model="auditForm.auditTip" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -175,8 +170,8 @@
         <el-button @click="showAudit = false">取消</el-button>
         <el-button
           type="primary"
-          @click="handleConfirmAudit"
           :loading="auditLoading"
+          @click="handleConfirmAudit"
         >
           确定
         </el-button>

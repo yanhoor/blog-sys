@@ -13,7 +13,7 @@
           class="media-item"
           :src="config.public.imageBase + file.url"
           controls
-        ></video>
+        />
       </template>
       <Icon
         name="fluent:arrow-circle-left-20-regular"
@@ -21,7 +21,7 @@
         size="48"
         class="absolute left-[20px] top-[20px] cursor-pointer"
         @click="emit('update:show', false)"
-      ></Icon>
+      />
     </div>
   </el-dialog>
 </template>

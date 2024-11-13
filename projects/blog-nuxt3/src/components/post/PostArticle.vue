@@ -1,12 +1,21 @@
 <template>
-  <div class="relative" ref="wrapperRef">
+  <div ref="wrapperRef" class="relative">
     <div
-        class="line-numbers prism prose prose-stone relative whitespace-pre-wrap dark:prose-invert w-full max-w-full"
-        v-html="content"
-        ref="containerRef"
-    ></div>
-    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-[#fff0] to-[#fff] dark:to-[#000]" v-if="showHideMore">
-      <el-button class="absolute bottom-[24px] left-1/2 -translate-x-1/2" link type="primary" @click="emits('seeMore')">点击查看更多</el-button>
+      ref="containerRef"
+      class="line-numbers prism prose prose-stone dark:prose-invert relative w-full max-w-full whitespace-pre-wrap"
+      v-html="content"
+    />
+    <div
+      v-if="showHideMore"
+      class="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-b from-[#fff0] to-[#fff] dark:to-[#000]"
+    >
+      <el-button
+        class="absolute bottom-[24px] left-1/2 -translate-x-1/2"
+        link
+        type="primary"
+        @click="emits('seeMore')"
+        >点击查看更多</el-button
+      >
     </div>
   </div>
 </template>
@@ -33,7 +42,8 @@ const colorMode = useColorMode()
 watch(colorMode, handleHighlightCode)
 
 onMounted(() => {
-  const overHeight = wrapperRef.value.clientHeight < containerRef.value.offsetHeight
+  const overHeight =
+    wrapperRef.value.clientHeight < containerRef.value.offsetHeight
   showHideMore.value = overHeight && props.hideMore
   handleHighlightCode()
 })
@@ -59,5 +69,4 @@ function handleHighlightCode() {
 
 <style lang="css" scoped>
 @import 'prismjs/plugins/line-numbers/prism-line-numbers.min.css';
-
 </style>

@@ -6,5 +6,5 @@ export enum PageState {
   finish, // 加载完成
   more, // 对于列表还有更多，否则 finish
   empty, // 数据为空
-  error, // 加载错误
+  error // 加载错误
 }

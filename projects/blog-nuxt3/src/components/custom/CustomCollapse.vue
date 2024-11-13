@@ -5,12 +5,12 @@
       @click="expand = !expand"
     >
       <div class="flex items-center gap-[4px]">
-        <slot name="icon"></slot>
+        <slot name="icon" />
         <p class="whitespace-nowrap">{{ title }}</p>
       </div>
       <p
-        class="placeholder-text-color ellipsis-text flex-1"
         v-if="currentOption"
+        class="placeholder-text-color ellipsis-text flex-1"
       >
         (<span>{{ currentOption.label }}</span
         >)
@@ -19,14 +19,14 @@
         name="fluent:chevron-right-20-regular"
         class="transition-transform ease-linear"
         :class="[expand ? 'rotate-90' : '']"
-      ></Icon>
+      />
     </div>
     <div v-show="expand" class="ml-[12px]">
       <p
-        class="ellipsis-text cursor-pointer py-[5px] hover:text-primary"
-        :class="{ 'text-primary': currentOption?.value === option.value }"
         v-for="option of options"
         :key="option.label"
+        class="ellipsis-text hover:text-primary cursor-pointer py-[5px]"
+        :class="{ 'text-primary': currentOption?.value === option.value }"
         @click="handleClickOption(option)"
       >
         {{ option.label }}

@@ -9,7 +9,7 @@
           @click="handleLoadNextPage(1)"
         >
           <template #icon>
-            <Icon name="fluent:arrow-clockwise-20-regular"></Icon>
+            <Icon name="fluent:arrow-clockwise-20-regular" />
           </template>
           点击刷新</el-button
         >
@@ -17,10 +17,10 @@
       <div v-auto-animate>
         <p
           v-for="(topic, index) of pageList"
-          :title="topic.content"
           :key="topic.id"
+          :title="topic.content"
+          class="hover:text-primary flex max-w-full cursor-pointer items-center justify-start p-[6px]"
           @click="handleClickTopic(topic.id)"
-          class="flex max-w-full cursor-pointer items-center justify-start p-[6px] hover:text-primary"
         >
           <span
             class="mr-[6px] inline-block w-[20px] text-center text-[18px]"
@@ -55,6 +55,9 @@ const {
 await handleLoadNextPage(1)
 
 function handleClickTopic(topicId: string) {
-  window.open(`${runtimeConfig.app.baseURL}/search?topicId=${topicId}`, '_blank')
+  window.open(
+    `${runtimeConfig.app.baseURL}/search?topicId=${topicId}`,
+    '_blank'
+  )
 }
 </script>

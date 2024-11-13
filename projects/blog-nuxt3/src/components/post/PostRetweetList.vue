@@ -1,21 +1,17 @@
 <template>
   <div v-loadMore="allowLoadMore ? handleLoadNextPage : null">
-    <PostTransfer
-      class="w-full"
-      :blog="blog"
-      @success="handleRetweetSuccess"
-    ></PostTransfer>
+    <PostTransfer class="w-full" :blog="blog" @success="handleRetweetSuccess" />
     <div v-auto-animate>
       <PostRetweetItem
+        v-for="(retweetItem, index) of pageList"
+        :key="retweetItem.id"
         class="w-full py-[12px]"
         :blog="retweetItem"
-        v-for="(retweetItem, index) of pageList"
         @delete="handleDeleteRetweet(index)"
-        :key="retweetItem.id"
-      ></PostRetweetItem>
+      />
     </div>
     <ResultLoading v-if="pageLoading" />
-    <div class="text-center" v-else-if="!allowLoadMore && pageTotal > 20">
+    <div v-else-if="!allowLoadMore && pageTotal > 20" class="text-center">
       <el-divider />
       <el-button text @click="navigateTo(`/post/${blog.id}#retweet`)"
         >查看全部 {{ pageTotal }} 条转发</el-button

@@ -1,4 +1,4 @@
-import {toAliasTime, formatTime} from '@/utils/timeUtils'
+import { toAliasTime, formatTime } from '@/utils/timeUtils'
 
 interface Props {
   time: string

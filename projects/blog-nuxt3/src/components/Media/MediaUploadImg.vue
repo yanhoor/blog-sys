@@ -1,15 +1,15 @@
 <template>
   <div class="media-upload-img">
     <input
+      ref="inputRef"
       class="hidden"
       type="file"
       :accept="config.public.imageType"
-      ref="inputRef"
       @change="handleSelectFileChange"
     />
 
     <div class="h-full w-full" @click="handleTriggerSelect">
-      <slot name="preview" v-if="props.modelValue">
+      <slot v-if="props.modelValue" name="preview">
         <div class="upload-action limit-size group relative">
           <MediaImgView
             class="h-full w-full object-cover"
@@ -21,7 +21,7 @@
             type="success"
             @click.stop="handleDeleteImage"
           >
-            <Icon #icon name="fluent:delete-24-regular"></Icon>
+            <Icon #icon name="fluent:delete-24-regular" />
           </el-button>
           <div
             v-if="showPreviewIcon"
@@ -29,10 +29,10 @@
           >
             <Icon
               name="fluent:zoom-in-20-regular"
-              class="cursor-pointer text-white hover:text-primary"
+              class="hover:text-primary cursor-pointer text-white"
               size="48"
               @click.stop="handlePreview"
-            ></Icon>
+            />
           </div>
         </div>
       </slot>
@@ -42,13 +42,13 @@
         class="limit-size flex flex-col items-center justify-center gap-[6px]"
         :class="{ 'upload-action': showBorder }"
       >
-        <div v-loading v-if="uploading"></div>
-        <slot name="trigger" v-else>
+        <div v-if="uploading" v-loading />
+        <slot v-else name="trigger">
           <Icon
             name="fluent:add-20-regular"
-            class="flex cursor-pointer items-center justify-center hover:text-primary"
+            class="hover:text-primary flex cursor-pointer items-center justify-center"
             size="70"
-          ></Icon>
+          />
           <span v-if="uploadTxt">{{ uploadTxt }}</span>
         </slot>
       </div>

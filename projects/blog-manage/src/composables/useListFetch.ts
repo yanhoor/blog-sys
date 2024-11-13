@@ -1,7 +1,7 @@
 import { ref, reactive, watchEffect } from 'vue'
 import $http from '@/http'
 
-export default function useListFetch<T>(url: string, params: Object = {}) {
+export default function useListFetch<T>(url: string, params: object = {}) {
   const pageTotal = ref(0)
   const pageList = ref<T[]>([])
   const listLoading = ref(false)
@@ -16,7 +16,7 @@ export default function useListFetch<T>(url: string, params: Object = {}) {
     getList()
   }
 
-  function handleChangeFetchParams(params: Object = {}) {
+  function handleChangeFetchParams(params: object = {}) {
     pageFetchParams.value = {
       ...pageFetchParams.value,
       ...params

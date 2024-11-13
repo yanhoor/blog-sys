@@ -24,26 +24,26 @@
     </div>
 
     <MediaImgView
-      :url="currentComment.image.url"
       v-if="currentComment.image"
-      enablePreview
+      :url="currentComment.image.url"
+      enable-preview
       class="max-h-[135px] max-w-[180px] object-contain"
     />
 
     <div class="group flex w-full items-center justify-between">
       <div class="flex flex-1 items-center">
         <span
-          class="mr-[12px] text-gray-500"
           v-time="new Date(currentComment.createdAt)"
-        ></span>
-        <el-button text @click="triggerReply" v-if="userInfo">
+          class="mr-[12px] text-gray-500"
+        />
+        <el-button v-if="userInfo" text @click="triggerReply">
           <template #icon>
             <Icon
               :name="
                 showReply ? 'fluent:chat-24-filled' : 'fluent:chat-24-regular'
               "
               size="18"
-            ></Icon>
+            />
           </template>
           {{ showReply ? '取消回复' : '回复' }}
         </el-button>
@@ -53,24 +53,24 @@
           class="hidden cursor-pointer leading-[1] text-red-600 group-hover:inline-block"
         >
           <Icon
+            v-if="currentComment?.createById === userInfo?.id"
             name="fluent:delete-24-regular"
             size="18"
-            @click="handleDeleteComment"
             :loading="commentDeleting"
-            v-if="currentComment?.createById === userInfo?.id"
-          ></Icon>
+            @click="handleDeleteComment"
+          />
         </span>
         <div
           class="flex cursor-pointer items-center justify-center gap-[6px]"
           @click="handleLikeComment"
         >
           <Icon
+            v-if="currentComment.isLike"
             name="fluent:thumb-like-20-filled"
             class="text-primary"
             size="18"
-            v-if="currentComment.isLike"
-          ></Icon>
-          <Icon name="fluent:thumb-like-20-regular" size="18" v-else></Icon>
+          />
+          <Icon v-else name="fluent:thumb-like-20-regular" size="18" />
           <span>{{ currentComment.likedByCount || '' }}</span>
         </div>
       </div>
@@ -78,42 +78,42 @@
 
     <Transition name="fade">
       <CommentForm
-          v-if="showReply"
-          class="w-full"
-          btnText="发布"
-          :placeholder="`回复 ${currentComment.createBy.name}:`"
-          :level="2"
-          :comment="currentComment"
-          :blogId="currentComment.blogId"
-          @success="handleReplySuccess"
+        v-if="showReply"
+        class="w-full"
+        btn-text="发布"
+        :placeholder="`回复 ${currentComment.createBy.name}:`"
+        :level="2"
+        :comment="currentComment"
+        :blog-id="currentComment.blogId"
+        @success="handleReplySuccess"
       />
     </Transition>
 
     <div
       v-if="currentComment.childComments!.length > 0 && showChildren"
-      class="min-w-full rounded-[5px] bg-content-light px-[12px] dark:bg-content-dark"
+      class="bg-content-light dark:bg-content-dark min-w-full rounded-[5px] px-[12px]"
     >
       <CommentItem
         v-for="(reply, index) of currentComment.childComments"
+        :key="reply.id"
         class="py-[12px]"
         :comment="reply"
-        :key="reply.id"
-        @replySuccess="
+        @reply-success="
           (rep) => currentComment.childComments?.splice(index, 0, rep)
         "
-        @commentDelete="getCommentInfo()"
+        @comment-delete="getCommentInfo()"
       />
       <el-button
+        v-if="currentComment.childCommentsCount! > 2"
         class="mb-[12px]"
         text
         type="primary"
         icon-placement="right"
-        v-if="currentComment.childCommentsCount! > 2"
         @click="showReplyDetailList = true"
       >
         共 {{ currentComment.childCommentsCount }} 条回复
         <template #icon>
-          <Icon name="fluent:chevron-down-24-filled"></Icon>
+          <Icon name="fluent:chevron-down-24-filled" />
         </template>
       </el-button>
     </div>
@@ -126,7 +126,7 @@
       </template>
       <CommentReplyList
         :comment="currentComment"
-        @commentDelete="handleDeleteTopComment"
+        @comment-delete="handleDeleteTopComment"
       />
     </el-drawer>
   </client-only>
@@ -146,7 +146,7 @@ const props = withDefaults(defineProps<Props>(), {
   showChildren: true
 })
 const emits = defineEmits(['replySuccess', 'commentDelete'])
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const userInfo = useUserInfo()
 const showReply = ref(false)
 const likeLoading = ref(false)
@@ -175,9 +175,12 @@ async function handleDeleteComment() {
     .then(async () => {
       try {
         commentDeleting.value = true
-        const { result, success, msg } = await $HttpUtils.post('/comment/delete', {
-          id: currentComment.value.id
-        })
+        const { result, success, msg } = await $HttpUtils.post(
+          '/comment/delete',
+          {
+            id: currentComment.value.id
+          }
+        )
         commentDeleting.value = false
         if (success) {
           ElMessage.success('删除成功')
@@ -201,9 +204,12 @@ function handleDeleteTopComment(comment: Comment) {
 async function getCommentInfo() {
   try {
     commentDeleting.value = true
-    const { result, success, msg } = await $HttpUtils.post<Comment>('/comment/info', {
-      id: currentComment.value.id
-    })
+    const { result, success, msg } = await $HttpUtils.post<Comment>(
+      '/comment/info',
+      {
+        id: currentComment.value.id
+      }
+    )
     if (success) {
       currentComment.value = result as Comment
     } else {

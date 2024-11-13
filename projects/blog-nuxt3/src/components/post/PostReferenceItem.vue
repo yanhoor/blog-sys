@@ -12,31 +12,31 @@
         show-at
       />
       <PostArticle
-          class="h-[300px] [&_pre]:w-full [&_pre]:max-w-full w-full max-w-full max-h-full overflow-hidden"
         v-if="currentPost!.contentType == 2"
+        class="h-[300px] max-h-full w-full max-w-full overflow-hidden [&_pre]:w-full [&_pre]:max-w-full"
         :content="currentPost!.content"
-        hideMore
-        @seeMore="navigateTo('/post/' + currentPost.id)"
+        hide-more
+        @see-more="navigateTo('/post/' + currentPost.id)"
       />
       <ExpandableContent
         v-else
         :content="currentPost.content"
-        :topicList="topicList"
+        :topic-list="topicList"
       />
 
       <MediaListView class="w-full" :list="currentPost.medias" />
 
       <div class="flex w-full items-center justify-between">
         <span
-          class="secondary-text-color text-[12px]"
           v-time="new Date(currentPost.createdAt)"
-        ></span>
+          class="secondary-text-color text-[12px]"
+        />
         <div class="flex items-center gap-[12px]">
           <div
             class="action-item placeholder-text-color"
             @click="handleAction('retweet')"
           >
-            <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
+            <Icon name="fluent:arrow-forward-20-regular" size="18" />
             <span class="text-[12px]">{{
               currentPost._count.referrerBlogs || '转发'
             }}</span>
@@ -45,7 +45,7 @@
             class="action-item placeholder-text-color"
             @click="handleAction('comment')"
           >
-            <Icon name="fluent:comment-multiple-20-regular" size="18"></Icon>
+            <Icon name="fluent:comment-multiple-20-regular" size="18" />
             <span class="text-[12px]">{{
               currentPost._count.comments || '评论'
             }}</span>
@@ -54,7 +54,7 @@
             class="action-item placeholder-text-color"
             @click="handleAction('like')"
           >
-            <Icon name="fluent:thumb-like-20-regular" size="18"></Icon>
+            <Icon name="fluent:thumb-like-20-regular" size="18" />
             <span class="text-[12px]">{{
               currentPost._count.likedBy || '赞'
             }}</span>
@@ -83,6 +83,6 @@ async function handleAction(type: string) {
 
 <style lang="postcss" scoped>
 .action-item {
-  @apply flex cursor-pointer items-center justify-center gap-[6px] hover:text-primary;
+  @apply hover:text-primary flex cursor-pointer items-center justify-center gap-[6px];
 }
 </style>

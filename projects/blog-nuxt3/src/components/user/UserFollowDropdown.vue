@@ -1,10 +1,10 @@
 <template>
-  <div class="user-follow-dropdown" v-if="user.id !== myInfo.id">
+  <div v-if="user.id !== myInfo.id" class="user-follow-dropdown">
     <el-dropdown
-      :options="userOptions"
-      @command="handleDropdownSelect"
       v-if="user.isFollowing"
+      :options="userOptions"
       :teleported="false"
+      @command="handleDropdownSelect"
     >
       <template #dropdown>
         <el-dropdown-menu>
@@ -27,14 +27,14 @@
       </slot>
     </el-dropdown>
     <el-button
+      v-else
       type="primary"
       :round="roundBtn"
-      @click="handleFollow(1)"
       :loading="followLoading"
-      v-else
+      @click="handleFollow(1)"
       >关注
       <template #icon>
-        <Icon name="fluent:add-20-regular"></Icon>
+        <Icon name="fluent:add-20-regular" />
       </template>
     </el-button>
   </div>
@@ -80,16 +80,13 @@ function handleDropdownSelect(key: string | number) {
 
 async function handleFollow(type: number) {
   try {
-    if(type === 2){
-      await ElMessageBox.confirm(
-        '确定取消关注吗？',
-        {
-          title: '取消关注',
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
+    if (type === 2) {
+      await ElMessageBox.confirm('确定取消关注吗？', {
+        title: '取消关注',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
     }
     await handleFollowUser(type)
     emit('updateFollow')

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-[12px] px-[6px]">
-    <div class="flex items-center gap-[12px]" v-for="i in 20" :key="i">
+    <div v-for="i in 20" :key="i" class="flex items-center gap-[12px]">
       <el-skeleton style="--el-skeleton-circle-size: 64px">
         <template #template>
           <el-skeleton-item variant="circle" />

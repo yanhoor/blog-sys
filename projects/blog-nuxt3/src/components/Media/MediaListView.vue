@@ -1,6 +1,6 @@
 <template>
-  <div class="media-list-view" v-if="list.length">
-    <div v-if="!mediaType"></div>
+  <div v-if="list.length" class="media-list-view">
+    <div v-if="!mediaType" />
     <MediaImageList v-else-if="mediaType === 'image'" :image-list="list" />
     <MediaVideoItem
       v-else-if="mediaType === 'video'"

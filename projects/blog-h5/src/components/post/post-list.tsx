@@ -1,7 +1,7 @@
-import { Blog } from 'sys-types'
+import type { Blog } from 'sys-types'
 import AppendListWrapper from '@/components/append-list-wrapper'
 import PostItem from '@/components/post/post-item'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface Props {
   url?: string

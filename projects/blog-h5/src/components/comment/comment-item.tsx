@@ -1,4 +1,4 @@
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import UserAvatar from '@/components/user/user-avatar'
 import UserName from '@/components/user/user-name'
 import ExpandableContent from '@/components/expandable-content'
@@ -86,7 +86,7 @@ export default function CommentItem({
               </div>
             ))}
             {comment.childCommentsCount! > 2 ? (
-              <div className="flex items-center gap-[2px] text-primary">
+              <div className="text-primary flex items-center gap-[2px]">
                 <span>共 {comment.childCommentsCount} 条回复</span>
                 <ArrowDown />
               </div>

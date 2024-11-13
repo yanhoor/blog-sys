@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" v-loading="loading"></div>
+  <div v-if="loading" v-loading="loading" />
   <div v-else class="home-container flex h-full w-full flex-col gap-12">
     <div class="flex w-full gap-6">
       <NumberBoard
@@ -99,7 +99,7 @@ async function getWeekCountDetail() {
         smooth: true,
         data: []
       }
-      for (let info of valueList) {
+      for (const info of valueList) {
         blogCountInfo.data.push(info.blogCount)
         userCountInfo.data.push(info.userRegisterCount)
       }

@@ -2,11 +2,11 @@
   <LayoutMain>
     <el-card>
       <div class="text-4xl font-bold">个人资料</div>
-      <el-divider></el-divider>
+      <el-divider />
       <div class="mt-12">
         <el-form
-          class="flex-1"
           ref="formRef"
+          class="flex-1"
           :model="postForm"
           :rules="rules"
           label-placement="left"
@@ -15,10 +15,10 @@
           <el-form-item prop="name" label="名称">
             <el-input
               v-model="postForm.name"
-              @keydown.enter.prevent
               maxlength="8"
               show-count
               clearable
+              @keydown.enter.prevent
             />
           </el-form-item>
           <el-form-item prop="gender" label="性别">
@@ -30,21 +30,20 @@
           </el-form-item>
           <el-form-item prop="birthday" label="生日">
             <lazy-el-date-picker
-              type="date"
               v-model="postForm.birthday"
+              type="date"
               :is-date-disabled="(ts) => ts > Date.now()"
               clearable
-            >
-            </lazy-el-date-picker>
+            />
           </el-form-item>
           <el-form-item prop="introduce" label="个人简介">
             <el-input
               v-model="postForm.introduce"
               type="textarea"
-              @keydown.enter.prevent
               maxlength="80"
               show-count
               clearable
+              @keydown.enter.prevent
             />
           </el-form-item>
           <el-form-item prop="avatar" label="头像">
@@ -79,7 +78,7 @@ useHead({
   title: '个人资料'
 })
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const postForm = ref<User>({
   name: '',
   avatar: '',
@@ -106,7 +105,10 @@ getProfile()
 
 async function getProfile() {
   try {
-    const { result, success, code, msg } = await $HttpUtils.get('/user/info', {})
+    const { result, success, code, msg } = await $HttpUtils.get(
+      '/user/info',
+      {}
+    )
     if (success) {
       if (result.birthday) result.birthday = new Date(result.birthday).getTime()
       postForm.value = result

@@ -1,19 +1,19 @@
 <template>
   <div
     id="replyModalContent"
-    class="h-full overflow-y-auto bg-page-light dark:bg-page-dark"
     v-loadMore="{
       handler: handleLoadNextPage,
       scrollElSelector: '#replyModalContent'
     }"
+    class="bg-page-light dark:bg-page-dark h-full overflow-y-auto"
   >
     <div class="flex flex-col gap-[12px]">
-      <el-card :bordered="false" v-if="topComment">
+      <el-card v-if="topComment" :bordered="false">
         <CommentItem
-          :showChildren="false"
+          :show-children="false"
           :comment="topComment"
-          @replySuccess="handleInit"
-          @commentDelete="emits('commentDelete', topComment)"
+          @reply-success="handleInit"
+          @comment-delete="emits('commentDelete', topComment)"
         />
       </el-card>
 
@@ -34,16 +34,16 @@
 
       <el-card :bordered="false">
         <div
-          class="flex flex-col divide-y divide-border-light dark:divide-border-dark"
           v-auto-animate
+          class="divide-border-light dark:divide-border-dark flex flex-col divide-y"
         >
           <CommentItem
-            class="py-[12px]"
-            :comment="reply"
             v-for="reply of pageList"
             :key="reply.id"
-            @replySuccess="handleInit"
-            @commentDelete="handleLoadNextPage(1)"
+            class="py-[12px]"
+            :comment="reply"
+            @reply-success="handleInit"
+            @comment-delete="handleLoadNextPage(1)"
           />
         </div>
 
@@ -71,7 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emits = defineEmits(['commentDelete'])
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const sortType = ref(2) // 1--按时间，2--按热度
 const topComment = ref<Comment>()
 const {

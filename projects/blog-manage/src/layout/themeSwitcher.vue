@@ -5,8 +5,8 @@
     inline-prompt
     :active-icon="Moon"
     :inactive-icon="Sunny"
-    @change="handleChange"
     size="large"
+    @change="handleChange"
   />
 </template>
 

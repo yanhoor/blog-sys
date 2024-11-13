@@ -1,10 +1,10 @@
 <template>
   <div class="user-video-wall">
     <div
-      class="flex h-full w-full flex-wrap"
       v-if="pageLoading && pageFetchParams.page === 1"
+      class="flex h-full w-full flex-wrap"
     >
-      <div class="img-wrapper" v-for="i of 30">
+      <div v-for="i of 30" class="img-wrapper">
         <div class="img-container">
           <el-skeleton class="absolute top-0 h-full w-full">
             <template #template>
@@ -16,21 +16,17 @@
     </div>
     <div v-else>
       <div
-        class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
         v-loadMore="handleLoadNextPage"
         v-auto-animate
+        class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
       >
-        <div class="img-wrapper" v-for="media of pageList" :key="media.id">
+        <div v-for="media of pageList" :key="media.id" class="img-wrapper">
           <div class="img-container" @click="handlePreview(media)">
             <video
               class="media-item"
               :src="config.public.imageBase + media.file.url"
-            ></video>
-            <Icon
-              name="fluent:play-24-filled"
-              class="play-icon"
-              size="48"
-            ></Icon>
+            />
+            <Icon name="fluent:play-24-filled" class="play-icon" size="48" />
           </div>
         </div>
       </div>
@@ -43,9 +39,9 @@
       <ResultNoMore v-else-if="pageLoadedFinish" />
     </div>
     <MediaPreview
-      :file="curMedia?.file"
-      v-model:show="showPreview"
       v-if="curMedia"
+      v-model:show="showPreview"
+      :file="curMedia?.file"
     />
   </div>
 </template>

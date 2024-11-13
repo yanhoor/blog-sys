@@ -1,7 +1,7 @@
 import MediaImageItem from '@/components/media/media-image-item'
 import { PlayCircle, PauseCircle, Replay, Play, Pause } from '@react-vant/icons'
-import React, { useRef } from 'react'
-import { useState } from 'react'
+import React, { useRef, useState } from 'react'
+
 import { PlayState, timeUtils } from 'sys-types'
 
 interface Props {

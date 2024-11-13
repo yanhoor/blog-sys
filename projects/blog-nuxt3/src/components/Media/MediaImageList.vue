@@ -4,19 +4,19 @@
       <div class="relative h-full w-full pt-[24px]">
         <div class="toolbar-container">
           <div class="toolbar-item" @click="() => (isPreview = false)">
-            <Icon name="fluent:zoom-out-24-regular" size="20"></Icon>
+            <Icon name="fluent:zoom-out-24-regular" size="20" />
             <span>收起</span>
           </div>
           <div class="toolbar-item" @click="handleZoomIn()">
-            <Icon name="fluent:image-multiple-24-regular" size="20"></Icon>
+            <Icon name="fluent:image-multiple-24-regular" size="20" />
             <span>查看大图</span>
           </div>
         </div>
         <div
+          v-if="currentPreviewIndex > 0"
           class="preview-item-control left-pre left-0"
           @click="handleNextPreview(-1)"
-          v-if="currentPreviewIndex > 0"
-        ></div>
+        />
         <div class="relative h-0 w-full rounded-[5px] pt-[100%]">
           <MediaImgView
             class="radius-inherit absolute top-0 h-full w-full cursor-zoom-out object-cover"
@@ -26,32 +26,32 @@
           />
         </div>
         <div
+          v-if="currentPreviewIndex !== imageList.length - 1"
           class="preview-item-control right-pre right-0"
           @click="handleNextPreview(1)"
-          v-if="currentPreviewIndex !== imageList.length - 1"
-        ></div>
+        />
       </div>
     </template>
 
     <!--图片预览下面的小图-->
     <MediaNavigator
+      v-if="isPreview"
       v-model="currentPreviewItem"
       :page-size="12"
       :list="imageList"
-      @itemChange="handlePreviewItemChange"
-      v-if="isPreview"
+      @item-change="handlePreviewItemChange"
     />
 
     <!--图片列表-->
-    <div class="-ml-[6px] -mt-[6px] flex w-full flex-wrap" v-else>
+    <div v-else class="-ml-[6px] -mt-[6px] flex w-full flex-wrap">
       <template v-if="imageList.length < 11">
         <template v-if="imageList.length === 7">
           <div class="flex w-full flex-wrap">
             <div
-              class="relative w-1/4 pl-[6px] pt-[6px]"
               v-for="(media, index) of imageList.slice(0, 4)"
-              @click="handleZoomIn(index)"
               :key="media.id"
+              class="relative w-1/4 pl-[6px] pt-[6px]"
+              @click="handleZoomIn(index)"
             >
               <MediaImgRatioView
                 class="image-scale cursor-zoom-in pt-[calc(100%*9/16)]"
@@ -62,10 +62,10 @@
 
           <div class="flex w-full flex-wrap">
             <div
-              class="relative w-1/3 pl-[6px] pt-[6px]"
               v-for="(media, index) of imageList.slice(4, 7)"
-              @click="handleZoomIn(index + 4)"
               :key="media.id"
+              class="relative w-1/3 pl-[6px] pt-[6px]"
+              @click="handleZoomIn(index + 4)"
             >
               <MediaImgRatioView
                 class="image-scale cursor-zoom-in pt-[calc(100%*9/16)]"
@@ -78,12 +78,12 @@
         <div v-else class="flex w-full flex-wrap">
           <div
             v-for="(media, index) of imageList"
-            @click="handleZoomIn(index)"
             :key="media.id"
             :style="{
               width: `calc(100% / ${getItemWidthRatio(imageList.length)}) `
             }"
             class="pl-[6px] pt-[6px]"
+            @click="handleZoomIn(index)"
           >
             <MediaImgRatioView
               class="image-scale relative cursor-zoom-in"
@@ -99,24 +99,24 @@
       </template>
 
       <div
-        v-else
-        class="image-scale group relative w-1/5 cursor-zoom-in pl-[6px] pt-[6px]"
         v-for="(media, index) of imageList"
+        v-else
         :key="media.file.url"
+        class="image-scale group relative w-1/5 cursor-zoom-in pl-[6px] pt-[6px]"
         @click="handlePreview(media.file, index, true)"
       >
-        <div class="image-item-container pt-[100%]" v-if="showAll">
+        <div v-if="showAll" class="image-item-container pt-[100%]">
           <MediaImgView class="image-item" :url="media.file.url" ratio="10" />
         </div>
         <template v-else>
-          <div class="image-item-container pt-[100%]" v-if="index < 10">
+          <div v-if="index < 10" class="image-item-container pt-[100%]">
             <MediaImgView class="image-item" :url="media.file.url" ratio="10" />
             <div
               class="list-item-mask bg-gray-200 group-hover:inline-block"
               :class="[index === 9 ? 'num-mask' : 'hidden opacity-10']"
-            ></div>
+            />
           </div>
-          <span class="overflow-num text-white" v-if="index === 9"
+          <span v-if="index === 9" class="overflow-num text-white"
             >+{{ imageList.length - 10 }}</span
           >
         </template>

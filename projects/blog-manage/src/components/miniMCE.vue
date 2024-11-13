@@ -5,9 +5,9 @@
     <MiniMCE
       v-bind="$props"
       :disabled="disabled"
-      :modelValue="modelValue"
-      @update:modelValue="handleUpdate"
+      :model-value="modelValue"
       :options="editorOptions"
+      @update:model-value="handleUpdate"
     />
   </div>
 </template>

@@ -1,5 +1,5 @@
 export interface FollowGroup {
-  id?: string;
-  name: string;
-  system?: number;
+  id: string
+  name: string
+  system: number
 }

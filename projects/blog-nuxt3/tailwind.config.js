@@ -4,10 +4,7 @@ module.exports = {
     preflight: false // 禁止预设样式
   },
   darkMode: 'class',
-  plugins: [
-    require('@tailwindcss/typography'),
-    require('tailwind-scrollbar'),
-  ],
+  plugins: [require('@tailwindcss/typography'), require('tailwind-scrollbar')],
   theme: {
     extend: {
       colors: {

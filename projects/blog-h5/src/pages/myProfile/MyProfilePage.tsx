@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import type { PickerPopupActions } from 'react-vant'
 import {
   Form,
   hooks,
@@ -7,11 +8,10 @@ import {
   DatetimePicker,
   Field,
   Button,
-  Toast,
-  PickerPopupActions
+  Toast
 } from 'react-vant'
 import { useState } from 'react'
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 import PageWrapper from '@/components/page-wrapper'
 import CustomNavBar from '@/components/custom/custom-nav-bar'
 import UploadImg from '@/components/upload/uploadImg'
@@ -81,7 +81,7 @@ export default function MyProfilePage() {
             </Radio.Group>
           </Form.Item>
           <Form.Item
-            className="items-center !bg-card-light dark:!bg-card-dark"
+            className="!bg-card-light dark:!bg-card-dark items-center"
             name="birthday"
             initialValue={new Date(editForm.birthday as string)}
             label="生日"

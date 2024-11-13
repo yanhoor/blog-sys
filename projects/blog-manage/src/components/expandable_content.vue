@@ -2,10 +2,10 @@
   <div class="whitespace-pre-wrap break-words transition-all">
     {{ isExpanded ? content : getPostSummary(content) }}
     <el-button
+      v-if="showAction"
       text
       type="primary"
       @click.stop="handleExpand"
-      v-if="showAction"
       >{{ isExpanded ? '收起' : '展开' }}</el-button
     >
   </div>

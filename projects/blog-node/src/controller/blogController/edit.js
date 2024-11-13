@@ -15,7 +15,7 @@ module.exports = async function (ctx, next) {
   } = ctx.request.body
   latitude = Number(latitude)
   longitude = Number(longitude)
-  if(contentType) contentType = Number(contentType)
+  if (contentType) contentType = Number(contentType)
   let userId = await this.getAuthUserId(ctx, next)
   const newItem = {
     content,

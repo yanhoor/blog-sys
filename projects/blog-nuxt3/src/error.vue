@@ -5,25 +5,25 @@
   >
     <div>
       <el-result
+        v-if="error?.statusCode == 404"
         icon="error"
         title="404 页面不存在"
         sub-title="生活总归带点荒谬"
-        v-if="error?.statusCode == 404"
       >
         <template #footer>
-          <el-button @click="() => clearError({ redirect: '/' })" type="primary"
+          <el-button type="primary" @click="() => clearError({ redirect: '/' })"
             >返回首页</el-button
           >
         </template>
       </el-result>
       <el-result
+        v-else
         icon="error"
         title="500 服务器错误"
         sub-title="人生总难免会犯点错误"
-        v-else
       >
         <template #footer>
-          <el-button @click="() => clearError({ redirect: '/' })" type="primary"
+          <el-button type="primary" @click="() => clearError({ redirect: '/' })"
             >返回首页</el-button
           >
         </template>

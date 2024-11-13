@@ -5,4 +5,10 @@ const socketBase = 'wss://niubility.website/websocket'
 const supportedImageType = 'jpeg,jpg,png,avif,webp,bmp,gif,svg'
 const supportedVideoType = 'mp4,mov,avi,mkv'
 
-export { baseUrl, imageHost, socketBase, supportedImageType, supportedVideoType }
+export {
+  baseUrl,
+  imageHost,
+  socketBase,
+  supportedImageType,
+  supportedVideoType
+}

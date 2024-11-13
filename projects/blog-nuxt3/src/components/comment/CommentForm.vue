@@ -1,44 +1,39 @@
 <template>
-  <div class="flex items-start gap-[12px] pb-[20px]" v-if="userInfo">
-    <UserAvatar
-      class="mr-[12px]"
-      :user="userInfo"
-      :size="42"
-      disabled
-    ></UserAvatar>
+  <div v-if="userInfo" class="flex items-start gap-[12px] pb-[20px]">
+    <UserAvatar class="mr-[12px]" :user="userInfo" :size="42" disabled />
     <div class="flex flex-1 flex-col gap-[12px]">
       <el-input
+        v-model="commentContent"
         :placeholder="placeholder"
         type="textarea"
         size="small"
-        @keyup.shift.enter="commitComment"
-        v-model="commentContent"
         :autosize="{
           minRows: 3,
           maxRows: 5
         }"
+        @keyup.shift.enter="commitComment"
       />
       <div class="flex items-center justify-between">
         <MediaUploadImg
-          @complete="imageFile = $event"
           :model-value="imageFile?.url"
-          :showPreviewIcon="false"
-          :showBorder="false"
+          :show-preview-icon="false"
+          :show-border="false"
           width="42px"
           height="42px"
+          @complete="imageFile = $event"
         >
           <template #trigger>
             <Icon
               name="fluent:image-add-24-regular"
-              class="cursor-pointer text-primary"
+              class="text-primary cursor-pointer"
               size="36"
-            ></Icon>
+            />
           </template>
         </MediaUploadImg>
         <el-button
           type="primary"
-          @click="commitComment"
           :loading="commentCommitting"
+          @click="commitComment"
           >{{ btnText }}</el-button
         >
       </div>
@@ -62,7 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['success'])
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const commentContent = ref('')
 const commentCommitting = ref(false)
 const imageFile = ref<MediaFile>()

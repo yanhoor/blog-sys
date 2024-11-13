@@ -1,11 +1,11 @@
 <template>
-  <div class="whitespace-pre-wrap break-words text-[14px]" v-auto-animate>
+  <div v-auto-animate class="whitespace-pre-wrap break-words text-[14px]">
     <template v-for="(info, index) of displayContentList" :key="index">
       <component
         :is="info.content"
         v-bind="info.props"
         v-if="info.type === 'component'"
-      ></component>
+      />
       <UserCard v-else-if="info.type === 'userName'" :uname="info.content">
         <template #trigger>
           <a
@@ -15,21 +15,17 @@
           >
         </template>
       </UserCard>
-      <span v-html="info.content" v-else-if="info.type === 'html'"></span>
+      <span v-else-if="info.type === 'html'" v-html="info.content" />
       <span v-else>{{ info.content }}</span>
     </template>
 
-    <MediaImgInlineView
-      class="mx-[4px]"
-      v-if="imgUrl"
-      :url="imgUrl"
-    ></MediaImgInlineView>
+    <MediaImgInlineView v-if="imgUrl" class="mx-[4px]" :url="imgUrl" />
 
     <el-button
+      v-if="showAction"
       text
       type="primary"
       @click.stop="handleExpand"
-      v-if="showAction"
       >{{ isExpanded ? '收起' : '展开' }}</el-button
     >
   </div>
@@ -115,7 +111,7 @@ const displayContentList = computed(() => {
       // 超出长度
       const ls = props.content.split(new RegExp(`(${mediaRegTxt})`, 'g'))
       // console.log('======props.content=========', props.content, ls)
-      let contentLength = 0
+      const contentLength = 0
       // 因为计算长度时是去掉了 [mxxxx] 媒体文本长度，显示时需要恢复
       ls.forEach((txt) => {
         if (mediaReg.test(txt)) {

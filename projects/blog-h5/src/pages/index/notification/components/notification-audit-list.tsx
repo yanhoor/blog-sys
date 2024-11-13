@@ -1,6 +1,6 @@
 import NotificationWrapper from './notification-wrapper'
-import { Notification } from 'sys-types'
-import { ReactNode } from 'react'
+import type { Notification } from 'sys-types'
+import type { ReactNode } from 'react'
 import { Tag } from 'react-vant'
 import YCard from '@/components/y-card'
 import YTime from '@/components/y-time'

@@ -7,8 +7,9 @@ import $http, {
   blog_action_user_list
 } from '@/http'
 import { Popover, PullRefresh, Tabs, Toast } from 'react-vant'
-import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import { Blog, Comment, User } from 'sys-types'
+import type { ReactNode } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import type { Blog, Comment, User } from 'sys-types'
 import {
   GoodJob,
   GoodJobO,

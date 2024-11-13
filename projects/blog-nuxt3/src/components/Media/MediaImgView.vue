@@ -1,22 +1,22 @@
 <template>
-  <div class="flex items-center justify-center" v-if="loadError">
-    <Icon name="fluent:image-off-28-regular" size="64"></Icon>
+  <div v-if="loadError" class="flex items-center justify-center">
+    <Icon name="fluent:image-off-28-regular" size="64" />
   </div>
   <NuxtImg
-      class="nuxt-image"
-      :loading="lazyLoadFlag ? 'lazy' : undefined"
-      :class="{ 'cursor-zoom-in': enablePreview }"
-      :src="src"
-      v-bind="attrs"
-      @error="() => (loadError = true)"
-      @click="handlePreview"
-      v-else
+    v-else
+    class="nuxt-image"
+    :loading="lazyLoadFlag ? 'lazy' : undefined"
+    :class="{ 'cursor-zoom-in': enablePreview }"
+    :src="src"
+    v-bind="attrs"
+    @error="() => (loadError = true)"
+    @click="handlePreview"
   />
 </template>
 
 <script setup lang="ts">
 import defaultImg from '@/assets/images/img_error.jpeg'
-import {api as viewerApi} from 'v-viewer'
+import { api as viewerApi } from 'v-viewer'
 
 interface Props {
   url: string
@@ -41,7 +41,7 @@ const src = computed(() => {
 
 function handlePreview() {
   if (props.enablePreview) {
-    viewerApi({images: [config.public.imageBase + props.url]})
+    viewerApi({ images: [config.public.imageBase + props.url] })
   }
 }
 </script>

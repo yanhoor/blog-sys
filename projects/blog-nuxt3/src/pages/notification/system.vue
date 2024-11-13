@@ -1,5 +1,5 @@
 <template>
-  <NotificationList type-name="系统审核" :type="4" v-slot="{ notification }">
+  <NotificationList v-slot="{ notification }" type-name="系统审核" :type="4">
     <!--评论-->
     <div v-if="notification.commentId">
       <div>
@@ -34,19 +34,19 @@
     </div>
 
     <div
+      v-if="notification.blog"
       class="w-full cursor-pointer rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
       @click="navigateTo({ path: '/post/' + notification.blog.id })"
-      v-if="notification.blog"
     >
       <ExpandableContent
         :content="notification.blog.content"
-        :topicList="handleTopicList(notification)"
+        :topic-list="handleTopicList(notification)"
         :media-list="handleMediaList(notification)"
       />
     </div>
     <div
-      class="w-full rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
       v-else
+      class="w-full rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
     >
       <div class="text-red-500">博客已经被删除</div>
     </div>

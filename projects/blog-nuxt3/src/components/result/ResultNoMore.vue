@@ -1,12 +1,12 @@
 <template>
   <div class="flex items-center">
     <div
-      class="custom-border border-t flex-1 !border-gray-300 dark:!border-gray-700"
-    ></div>
-    <p class="text-center my-[12px] mx-[24px] regular-text-color">{{ tip }}</p>
+      class="custom-border flex-1 border-t !border-gray-300 dark:!border-gray-700"
+    />
+    <p class="regular-text-color mx-[24px] my-[12px] text-center">{{ tip }}</p>
     <div
-      class="custom-border border-t flex-1 !border-gray-300 dark:!border-gray-700"
-    ></div>
+      class="custom-border flex-1 border-t !border-gray-300 dark:!border-gray-700"
+    />
   </div>
 </template>
 

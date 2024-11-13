@@ -1,4 +1,4 @@
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 import { useNavigate } from 'react-router-dom'
 
 interface Props {
@@ -26,7 +26,7 @@ export default function UserName({
 
   return (
     <span
-      className={`user-name whitespace-pre-wrap break-words text-primary ${
+      className={`user-name text-primary whitespace-pre-wrap break-words ${
         className || ''
       }`}
       onClick={toUserPage}

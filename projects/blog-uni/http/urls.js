@@ -1,4 +1,3 @@
-
 // 首页
 export const blog_list = '/blog/list' // 博客列表
 export const login = '/user/login' // 登录

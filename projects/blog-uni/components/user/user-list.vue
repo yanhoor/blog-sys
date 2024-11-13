@@ -1,31 +1,30 @@
 <template>
   <view>
     <YAppendListWrapper
-      :pageUrl="pageUrl"
-      :url="url"
-      :searchParams="searchParams"
       v-model="userList"
+      :page-url="pageUrl"
+      :url="url"
+      :search-params="searchParams"
     >
       <template #skeleton>
-        <SkeletonUserList></SkeletonUserList>
+        <SkeletonUserList />
       </template>
       <view class="item-container">
-        <view class="user-item" v-for="user in userList" :key="user.id">
+        <view v-for="user in userList" :key="user.id" class="user-item">
           <view class="item-left">
-            <UserAvatar :user="user" :size="36"></UserAvatar>
+            <UserAvatar :user="user" :size="36" />
             <view class="name-container">
-              <UserName fontSize="16" :user="user"></UserName>
+              <UserName font-size="16" :user="user" />
               <YExpandanleContent
                 :content="user.introduce"
-                :maxLength="30"
-                :showBtn="false"
-              >
-              </YExpandanleContent>
+                :max-length="30"
+                :show-btn="false"
+              />
               <view class="fans-count"> 粉丝：{{ user.followerCount }} </view>
             </view>
           </view>
           <view class="item-right">
-            <UserBtn :user="user"></UserBtn>
+            <UserBtn :user="user" />
           </view>
         </view>
       </view>
@@ -34,31 +33,31 @@
 </template>
 
 <script>
-import YAppendListWrapper from "@/components/y-append-list-wrapper.vue";
-import UserBtn from "@/components/user/user-btn.vue";
-import YExpandanleContent from "@/components/y-expandable-content.vue";
-import SkeletonUserList from "@/components/skeleton/skeleton-user-list.vue";
+import YAppendListWrapper from '@/components/y-append-list-wrapper.vue'
+import UserBtn from '@/components/user/user-btn.vue'
+import YExpandanleContent from '@/components/y-expandable-content.vue'
+import SkeletonUserList from '@/components/skeleton/skeleton-user-list.vue'
 
 export default {
-  name: "user-list",
-  props: {
-    pageUrl: String,
-    url: String,
-    searchParams: Object,
-  },
+  name: 'UserList',
   components: {
     YAppendListWrapper,
     UserBtn,
     YExpandanleContent,
-    SkeletonUserList,
+    SkeletonUserList
+  },
+  props: {
+    pageUrl: String,
+    url: String,
+    searchParams: Object
   },
   data() {
     return {
-      userList: [],
-    };
+      userList: []
+    }
   },
-  methods: {},
-};
+  methods: {}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 import AppendListWrapper from '@/components/append-list-wrapper'
 import { notification_list } from '@/http/urls'
-import { ReactNode } from 'react'
-import { Notification } from 'sys-types'
+import type { ReactNode } from 'react'
+import type { Notification } from 'sys-types'
 
 interface Props {
   initParams: object

@@ -3,5 +3,5 @@ export enum PlayState {
   idle,
   playing,
   paused,
-  end,
+  end
 }

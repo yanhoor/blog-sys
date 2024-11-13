@@ -1,6 +1,7 @@
 import { Input, hooks, Toast, Button } from 'react-vant'
 import YCard from '@/components/y-card'
-import { UploadMulti, UploadFile } from '@/components/upload/upload-multi'
+import type { UploadFile } from '@/components/upload/upload-multi'
+import { UploadMulti } from '@/components/upload/upload-multi'
 import { useState } from 'react'
 import $http, { blog_edit } from '@/http'
 

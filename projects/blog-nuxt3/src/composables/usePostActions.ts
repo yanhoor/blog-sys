@@ -1,8 +1,8 @@
 import type { Blog } from 'sys-types'
 
 export const usePostActions = (blog?: Blog) => {
-  const {$HttpUtils} = useNuxtApp()
-  const currentPost = ref<Blog | undefined>(blog)
+  const { $HttpUtils } = useNuxtApp()
+  const currentPost = ref<Blog>(blog!)
   const likeLoading = ref(false)
   const collectLoading = ref(false)
   const deleteLoading = ref(false)

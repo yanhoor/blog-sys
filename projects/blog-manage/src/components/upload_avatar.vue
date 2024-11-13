@@ -1,9 +1,9 @@
 <template>
   <el-upload
+    ref="uploadRef"
     class="avatar-uploader"
     :http-request="handleUpload"
     :show-file-list="false"
-    ref="uploadRef"
   >
     <template v-if="type === 'image'">
       <img v-if="props.url" :src="IMG_HOST + props.url" class="avatar" />

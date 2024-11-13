@@ -1,63 +1,63 @@
 <template>
   <LayoutMain size="large">
     <div class="flex items-start gap-[12px]">
-      <el-card class="sticky top-[80px] w-[180px]" v-if="myInfo">
+      <el-card v-if="myInfo" class="sticky top-[80px] w-[180px]">
         <p
-            class="group-title"
-            :class="{ active: !currentGroupId }"
-            @click="handleChangeGroup()"
+          class="group-title"
+          :class="{ active: !currentGroupId }"
+          @click="handleChangeGroup()"
         >
           全部关注
         </p>
         <p
-            class="group-title"
-            :class="{ active: currentGroupId == group.id }"
-            v-for="group of systemGroupList"
-            :key="group.id"
-            @click="handleChangeGroup(group.id)"
+          v-for="group of systemGroupList"
+          :key="group.id"
+          class="group-title"
+          :class="{ active: currentGroupId == group.id }"
+          @click="handleChangeGroup(group.id)"
         >
           {{ group.name }}
         </p>
-        <div class="flex items-center" v-if="customGroupList.length">
+        <div v-if="customGroupList.length" class="flex items-center">
           <p class="my-[6px] flex-1 text-[16px] font-semibold">自定义分组</p>
           <el-button size="small" text @click="showManageGroup = true">
             <template #icon>
-              <Icon name="uil:edit-alt" size="18"></Icon>
+              <Icon name="uil:edit-alt" size="18" />
             </template>
           </el-button>
         </div>
         <div v-auto-animate>
           <p
-              class="group-title"
-              :class="{ active: currentGroupId == group.id }"
-              v-for="group of customGroupList"
-              :key="group.id"
-              @click="handleChangeGroup(group.id)"
+            v-for="group of customGroupList"
+            :key="group.id"
+            class="group-title"
+            :class="{ active: currentGroupId == group.id }"
+            @click="handleChangeGroup(group.id)"
           >
             {{ group.name }}
           </p>
         </div>
       </el-card>
       <PostList
-          ref="listRef"
-          class="flex-1"
-          :searchParams="{ gid: currentGroupId }"
+        ref="listRef"
+        class="flex-1"
+        :search-params="{ gid: currentGroupId }"
       />
-      <TopicHotList class="relative sticky top-[80px] w-[280px]"/>
+      <TopicHotList class="relative sticky top-[80px] w-[280px]" />
     </div>
 
     <client-only>
       <UserFollowGroupManage
-          v-model:show="showManageGroup"
-          @change="getAllGroup"
-          :groupList="customGroupList"
+        v-model:show="showManageGroup"
+        :group-list="customGroupList"
+        @change="getAllGroup"
       />
     </client-only>
   </LayoutMain>
 </template>
 
 <script setup lang="ts">
-import type {FollowGroup} from 'sys-types'
+import type { FollowGroup } from 'sys-types'
 
 useHead({
   title: '首页'
@@ -67,7 +67,7 @@ definePageMeta({
   key: (route) => route.fullPath
 })
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const route = useRoute()
 const customGroupList = ref<FollowGroup[]>([])
 const systemGroupList = ref<FollowGroup[]>([])
@@ -101,12 +101,13 @@ async function getAllGroup() {
     } else {
       ElMessage.error(msg as string)
     }
-  } catch (e) {
-  }
+  } catch (e) {}
 }
 
 async function handleChangeGroup(gid?: number) {
-  gid ? await navigateTo({path: '/', query: {gid}}, {replace: true}) : await navigateTo('/', {replace: true})
+  gid
+    ? await navigateTo({ path: '/', query: { gid } }, { replace: true })
+    : await navigateTo('/', { replace: true })
   window.scrollTo(0, 0)
 }
 </script>

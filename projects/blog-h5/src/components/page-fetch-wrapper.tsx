@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { PageState } from 'sys-types'
 import StatusLoading from '@/components/status/status-loading'
 import StatusError from '@/components/status/status-error'

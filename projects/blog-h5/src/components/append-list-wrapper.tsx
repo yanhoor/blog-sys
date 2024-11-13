@@ -1,11 +1,5 @@
-import {
-  forwardRef,
-  ReactNode,
-  Ref,
-  useImperativeHandle,
-  useRef,
-  useState
-} from 'react'
+import type { ReactNode, Ref } from 'react'
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import StatusLoading from '@/components/status/status-loading'
 import { List, PullRefresh } from 'react-vant'
 import { PageState } from 'sys-types'

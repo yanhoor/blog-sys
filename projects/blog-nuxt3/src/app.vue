@@ -9,7 +9,7 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
 const userInfo = useUserInfo()
-const {handleFetchNotificationCount} = useFetchNotificationCount()
+const { handleFetchNotificationCount } = useFetchNotificationCount()
 
 onMounted(() => {
   window

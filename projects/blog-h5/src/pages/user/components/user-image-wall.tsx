@@ -1,4 +1,4 @@
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 import $http, { user_media_list } from '@/http'
 import { useEffect, useRef, useState } from 'react'
 import MediaImageItem from '@/components/media/media-image-item'

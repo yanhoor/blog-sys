@@ -1,5 +1,5 @@
 import { Image } from 'react-vant'
-import { User } from 'sys-types'
+import type { User } from 'sys-types'
 import { UserO } from '@react-vant/icons'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 

@@ -1,25 +1,25 @@
 <template>
   <el-card class="form-container">
     <el-form
-        ref="formRef"
-        :model="postForm"
-        :rules="rules"
-        label-position="top"
+      ref="formRef"
+      :model="postForm"
+      :rules="rules"
+      label-position="top"
     >
       <el-form-item prop="mobile" label="手机号">
         <el-input
-            v-model="postForm.mobile"
-            @keydown.enter.prevent
-            maxlength="11"
-            show-count
-            clearable
+          v-model="postForm.mobile"
+          maxlength="11"
+          show-count
+          clearable
+          @keydown.enter.prevent
         />
       </el-form-item>
       <el-form-item prop="password" label="密码">
         <el-input
-            v-model="postForm.password"
-            type="password"
-            @keydown.enter.prevent
+          v-model="postForm.password"
+          type="password"
+          @keydown.enter.prevent
         />
       </el-form-item>
       <div class="mt-[20px] flex w-full flex-col gap-[20px]">
@@ -35,11 +35,11 @@
 </template>
 
 <script setup lang="ts">
-import type {FormInstance, FormRules} from 'element-plus'
-import {Encrypt} from 'sys-types'
+import type { FormInstance, FormRules } from 'element-plus'
+import { Encrypt } from 'sys-types'
 
 const token = useCookie('token')
-const {handleFetchNotificationCount} = useFetchNotificationCount()
+const { handleFetchNotificationCount } = useFetchNotificationCount()
 
 useHead({
   title: 'Login'
@@ -53,7 +53,7 @@ interface ModelType {
   password: string | null
 }
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const postForm = ref<ModelType>({
   mobile: '',
   password: ''
@@ -80,7 +80,7 @@ function handlePost(e: MouseEvent) {
     console.log('=========handlePost========', valid, fields, postForm.value)
     if (valid) {
       try {
-        const {result, success, msg} = await $HttpUtils.post('/user/login', {
+        const { result, success, msg } = await $HttpUtils.post('/user/login', {
           ...postForm.value,
           password: Encrypt(postForm.value.password)
         })
@@ -96,8 +96,7 @@ function handlePost(e: MouseEvent) {
         } else {
           ElMessage.error(msg as string)
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     } else {
       console.log(valid, fields)
       ElMessage.error('请将信息填写完整')
@@ -106,7 +105,7 @@ function handlePost(e: MouseEvent) {
 }
 
 async function toRegister() {
-  await navigateTo('/register', {replace: true})
+  await navigateTo('/register', { replace: true })
 }
 </script>
 

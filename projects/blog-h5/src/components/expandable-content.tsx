@@ -73,8 +73,8 @@ export default function ExpandableContent({
             handlePreviewImage(imageUrl)
           }}
         >
-          <PhotoO fontSize="18px" className="inline text-primary" />
-          <span className="ml-[2px] text-primary">查看图片</span>
+          <PhotoO fontSize="18px" className="text-primary inline" />
+          <span className="text-primary ml-[2px]">查看图片</span>
         </div>
       ) : null}
       {showAction && (

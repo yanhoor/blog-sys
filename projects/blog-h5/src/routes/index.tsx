@@ -1,5 +1,5 @@
+import type { RouteObject } from 'react-router-dom'
 import {
-  RouteObject,
   Navigate,
   createBrowserRouter,
   Route,
@@ -20,7 +20,8 @@ import IndexMyPage from '@/pages/index/my/IndexMy'
 import LoginPage from '@/pages/login/LoginPage'
 import PostPage from '@/pages/post/PostPage'
 import Layout from '@/pages/Layout'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import CommentDetailPage from '@/pages/commentDetail/commentDetailPage'
 import UserPage from '@/pages/user/UserPage'
 import FollowerListPage from '@/pages/followerList/FollowerListPage'

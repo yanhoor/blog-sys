@@ -2,41 +2,36 @@
   <div>
     <virtual-el-popover
       trigger="hover"
-      @show="handleShow"
       class="max-w-[280px]"
       :show-after="500"
       :teleported="false"
       :disabled="disabled"
+      @show="handleShow"
     >
       <template #trigger>
-        <slot name="trigger"></slot>
+        <slot name="trigger" />
       </template>
 
-      <div class="h-[64px] w-[64px]" v-loading v-if="loading"></div>
+      <div v-if="loading" v-loading class="h-[64px] w-[64px]" />
 
       <div
-        class="flex flex-col items-start gap-[12px] p-[12px] font-normal"
         v-else-if="currentUser"
+        class="flex flex-col items-start gap-[12px] p-[12px] font-normal"
       >
         <div
-          class="flex justify-center w-full cursor-pointer items-center gap-[6px]"
+          class="flex w-full cursor-pointer items-center justify-center gap-[6px]"
           @click="navigateTo({ path: '/user/id/' + currentUser.id })"
         >
           <UserAvatar :user="currentUser" :size="36" disabled />
-          <UserName
-            class="text-[16px]"
-            :user="currentUser"
-            disabled
-          ></UserName>
+          <UserName class="text-[16px]" :user="currentUser" disabled />
         </div>
         <UserFollowDropdown
           v-if="myInfo"
-          @updateFollow="getUserInfo()"
           class="w-full text-center"
-          :roundBtn="false"
+          :round-btn="false"
           :user="currentUser"
-        >
-        </UserFollowDropdown>
+          @update-follow="getUserInfo()"
+        />
         <div
           class="custom-border flex w-full items-start justify-around border-t pt-[6px]"
         >
@@ -65,7 +60,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   disabled: false
 })
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const myInfo = useUserInfo()
 const loading = ref(false)
 const currentUser = ref()
@@ -79,7 +74,7 @@ function handleShow(val: boolean) {
 async function getUserInfo() {
   loading.value = true
   try {
-    const {result, success, code, msg} = await $HttpUtils.post(
+    const { result, success, code, msg } = await $HttpUtils.post(
       '/user/userInfo',
       {
         uid: props.uid,

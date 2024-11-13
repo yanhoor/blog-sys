@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import { useContext, useRef, useState } from 'react'
 import $http, { comment_info, comment_reply_list } from '@/http'
 import PageFetchWrapper from '@/components/page-fetch-wrapper'

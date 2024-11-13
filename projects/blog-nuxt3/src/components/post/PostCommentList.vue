@@ -2,7 +2,7 @@
   <div v-loadMore="allowLoadMore ? handleLoadNextPage : null">
     <CommentForm
       class="flex-1"
-      :blogId="blog.id as number"
+      :blog-id="blog.id as number"
       @success="handleAddComment"
     />
     <div class="flex gap-[12px] text-[16px]">
@@ -25,11 +25,11 @@
         :key="comment.id"
         class="py-[12px]"
         :comment="comment"
-        @commentDelete="handleCommentDelete"
+        @comment-delete="handleCommentDelete"
       />
     </div>
     <ResultLoading v-if="pageLoading" />
-    <div class="text-center" v-else-if="!allowLoadMore && pageTotal > pageSize">
+    <div v-else-if="!allowLoadMore && pageTotal > pageSize" class="text-center">
       <el-divider />
       <el-button text @click="navigateTo(`/post/${blog.id}#comment`)"
         >查看全部 {{ pageTotal }} 条评论</el-button

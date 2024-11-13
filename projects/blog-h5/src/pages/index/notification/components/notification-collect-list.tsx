@@ -1,6 +1,6 @@
 import NotificationWrapper from './notification-wrapper'
-import { Notification } from 'sys-types'
-import { ReactNode } from 'react'
+import type { Notification } from 'sys-types'
+import type { ReactNode } from 'react'
 import UserAvatar from '@/components/user/user-avatar'
 import UserName from '@/components/user/user-name'
 import YCard from '@/components/y-card'

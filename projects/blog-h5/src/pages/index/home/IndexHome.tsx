@@ -5,7 +5,7 @@ import MyConfig from '@/config'
 import { useTabChange } from '@/hooks'
 import { useState } from 'react'
 import PageWrapper from '@/components/page-wrapper'
-import { FollowGroup } from 'sys-types'
+import type { FollowGroup } from 'sys-types'
 
 export default function IndexHomePage() {
   const group = localStorage.getItem(MyConfig.INDEX_GROUP)

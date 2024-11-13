@@ -2,8 +2,8 @@
   <div>
     <client-only>
       <UserFollowGroupSelect
-          v-model:show="followGroupSelectStore.showSelect"
-          :userId="followGroupSelectStore.userId"
+        v-model:show="followGroupSelectStore.showSelect"
+        :user-id="followGroupSelectStore.userId"
       />
     </client-only>
   </div>

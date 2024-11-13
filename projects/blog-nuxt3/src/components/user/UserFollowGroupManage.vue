@@ -11,24 +11,24 @@
           *点击修改分组名称，拖拽调整分组顺序
         </p>
         <div class="flex flex-wrap gap-[12px]">
-          <div class="flex flex-wrap gap-[12px]" id="groupSort" v-auto-animate>
+          <div id="groupSort" v-auto-animate class="flex flex-wrap gap-[12px]">
             <el-tag
-                class="cursor-pointer"
-                v-for="group of filterGroupList"
-                :key="group.id"
-                round
-                type="primary"
-                closable
-                @close="handleDeleteGroup(group.id)"
-                @click="handleEditGroup(group)"
+              v-for="group of filterGroupList"
+              :key="group.id"
+              class="cursor-pointer"
+              round
+              type="primary"
+              closable
+              @close="handleDeleteGroup(group.id)"
+              @click="handleEditGroup(group)"
             >
               {{ group.name }}
               <span v-if="group.memberCount">({{ group.memberCount }})</span>
             </el-tag>
           </div>
-          <el-button size="small" @click="editItem = { name: '' }" round>
+          <el-button size="small" round @click="editItem = { name: '' }">
             <template #icon>
-              <Icon name="fluent:add-20-regular"></Icon>
+              <Icon name="fluent:add-20-regular" />
             </template>
             新增分组
           </el-button>
@@ -37,22 +37,22 @@
           <span>{{ editItem.id ? '修改分组' : '新增分组' }}</span>
           <div class="flex items-center gap-[12px]">
             <el-input
-              placeholder="分组名称"
               v-model="editItem.name"
+              placeholder="分组名称"
               clearable
               show-count
               maxlength="8"
               size="small"
               @keyup.enter="handleSave"
-            ></el-input>
-            <el-button size="small" @click="handleSave" type="primary">
+            />
+            <el-button size="small" type="primary" @click="handleSave">
               <template #icon>
-                <Icon name="fluent:checkmark-20-regular"></Icon>
+                <Icon name="fluent:checkmark-20-regular" />
               </template>
             </el-button>
-            <el-button size="small" @click="editItem = undefined" class="!ml-0">
+            <el-button size="small" class="!ml-0" @click="editItem = undefined">
               <template #icon>
-                <Icon name="fluent:dismiss-20-regular"></Icon>
+                <Icon name="fluent:dismiss-20-regular" />
               </template>
             </el-button>
           </div>
@@ -73,7 +73,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update:show', 'change'])
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const sortableIns = ref()
 const saveLoading = ref(false)
 const showAdd = ref(false)

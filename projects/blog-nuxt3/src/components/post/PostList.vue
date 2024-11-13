@@ -1,14 +1,12 @@
 <template>
   <div class="post-list min-w-[720px]">
-    <SkeletonPostList
-      v-if="pageLoading && pageFetchParams.page === 1"
-    ></SkeletonPostList>
+    <SkeletonPostList v-if="pageLoading && pageFetchParams.page === 1" />
 
     <div v-else>
       <div
-        class="grid grid-cols-1 gap-[12px]"
         v-loadMore="handleLoadMore"
         v-auto-animate
+        class="grid grid-cols-1 gap-[12px]"
       >
         <template v-for="(blog, index) of pageList" :key="blog.id">
           <el-card>
@@ -76,7 +74,7 @@ await handleLoadNextPage(1)
   .then((r) => {
     if (r?.success) {
       emit('fetchComplete', fetchResult)
-    } else if(import.meta.client){
+    } else if (import.meta.client) {
       ElMessage.error(r?.msg || '请求出错')
     }
   })

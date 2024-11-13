@@ -1,7 +1,7 @@
 <template>
   <div class="user-avatar-container">
     <el-dropdown>
-      <el-avatar :src="IMG_HOST + userStore.user?.avatar"></el-avatar>
+      <el-avatar :src="IMG_HOST + userStore.user?.avatar" />
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item :icon="User" @click="router.push('/me')"

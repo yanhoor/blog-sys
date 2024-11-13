@@ -1,14 +1,14 @@
 <template>
   <el-container
-    class="default-layout min-h-full bg-page-light pb-[20px] dark:bg-page-dark"
+    class="default-layout bg-page-light dark:bg-page-dark min-h-full pb-[20px]"
   >
     <el-header
-      class="fixed left-0 right-0 top-0 z-50 flex h-[60px] w-[100vw] items-center justify-between gap-[12px] bg-block-light px-[20px] py-0 shadow dark:bg-block-dark"
+      class="bg-block-light dark:bg-block-dark fixed left-0 right-0 top-0 z-50 flex h-[60px] w-[100vw] items-center justify-between gap-[12px] px-[20px] py-0 shadow"
     >
       <div class="flex">
         <el-button circle type="primary" @click="navigateTo('/')">
           <template #icon>
-            <Icon name="fluent:home-20-regular" size="20"></Icon>
+            <Icon name="fluent:home-20-regular" size="20" />
           </template>
         </el-button>
       </div>
@@ -21,11 +21,11 @@
       </div>
     </el-header>
     <el-main
-      class="mx-auto mt-[80px] w-auto bg-page-light [overflow:initial_!important] dark:bg-page-dark"
+      class="bg-page-light dark:bg-page-dark mx-auto mt-[80px] w-auto [overflow:initial_!important]"
     >
       <div class="flex items-start">
         <div class="flex max-w-full flex-1 justify-center">
-          <slot></slot>
+          <slot />
         </div>
       </div>
     </el-main>

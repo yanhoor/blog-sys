@@ -1,60 +1,60 @@
 <template>
   <el-dialog
-      :model-value="show"
-      title="设置分组"
-      @close="emit('update:show', false)"
+    :model-value="show"
+    title="设置分组"
+    @close="emit('update:show', false)"
   >
-    <div class="flex flex-col gap-[6px]" v-loading="loading">
+    <div v-loading="loading" class="flex flex-col gap-[6px]">
       <el-checkbox-group
-          class="flex flex-wrap gap-[6px]"
-          v-model="selectIdList"
+        v-model="selectIdList"
+        class="flex flex-wrap gap-[6px]"
       >
         <div v-auto-animate>
           <el-checkbox
-              class="min-w-[100px]"
-              v-for="group of groupList"
-              :value="group.id"
-              :label="group.name"
-              :id="group.id"
+            v-for="group of groupList"
+            :id="group.id"
+            class="min-w-[100px]"
+            :value="group.id"
+            :label="group.name"
           />
         </div>
       </el-checkbox-group>
-      <div class="flex items-center" v-if="showAdd">
+      <div v-if="showAdd" class="flex items-center">
         <el-input
-            class="mr-[12px]"
-            placeholder="分组名称"
-            v-model="groupForm.name"
-            clearable
-            show-count
-            maxlength="8"
-            size="small"
-            @keyup.enter="handleCreateGroup"
-        ></el-input>
-        <el-button size="small" @click="handleCreateGroup" type="primary">
+          v-model="groupForm.name"
+          class="mr-[12px]"
+          placeholder="分组名称"
+          clearable
+          show-count
+          maxlength="8"
+          size="small"
+          @keyup.enter="handleCreateGroup"
+        />
+        <el-button size="small" type="primary" @click="handleCreateGroup">
           <template #icon>
-            <Icon name="fluent:checkmark-20-regular"></Icon>
+            <Icon name="fluent:checkmark-20-regular" />
           </template>
         </el-button>
         <el-button size="small" @click="showAdd = false">
           <template #icon>
-            <Icon name="fluent:dismiss-20-regular"></Icon>
+            <Icon name="fluent:dismiss-20-regular" />
           </template>
         </el-button>
       </div>
-      <el-button class="w-fit" size="small" @click="showAdd = true" v-else>
+      <el-button v-else class="w-fit" size="small" @click="showAdd = true">
         <template #icon>
-          <Icon name="fluent:add-20-regular"></Icon>
+          <Icon name="fluent:add-20-regular" />
         </template>
       </el-button>
     </div>
     <template #footer>
       <div class="text-right">
         <el-button
-            type="primary"
-            size="small"
-            @click="handleConfirm"
-            :loading="confirmLoading"
-        >确定</el-button
+          type="primary"
+          size="small"
+          :loading="confirmLoading"
+          @click="handleConfirm"
+          >确定</el-button
         >
       </div>
     </template>
@@ -71,7 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update:show'])
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const currentUser = useUserInfo()
 const loading = ref(false)
 const adding = ref(false)
@@ -167,7 +167,9 @@ async function getContainGroupList() {
       success,
       code,
       msg
-    } = await $HttpUtils.post<any[]>('/followGroup/containList', { userId: props.userId })
+    } = await $HttpUtils.post<any[]>('/followGroup/containList', {
+      userId: props.userId
+    })
     if (success) {
       selectIdList.value = result.map((g) => g.id)
     } else {

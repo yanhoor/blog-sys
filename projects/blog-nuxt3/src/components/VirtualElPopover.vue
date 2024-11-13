@@ -1,7 +1,7 @@
 <template>
   <div class="virtual-el-popover">
-    <div ref="triggerRef" @mouseenter="showPopover = true" :key="showPopover">
-      <slot name="trigger"></slot>
+    <div ref="triggerRef" :key="showPopover" @mouseenter="showPopover = true">
+      <slot name="trigger" />
     </div>
     <el-popover
       v-if="showPopover"
@@ -10,7 +10,7 @@
       virtual-triggering
       :virtual-ref="triggerRef"
     >
-      <slot></slot>
+      <slot />
     </el-popover>
   </div>
 </template>

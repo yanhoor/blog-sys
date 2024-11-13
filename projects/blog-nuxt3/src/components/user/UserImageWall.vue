@@ -1,10 +1,10 @@
 <template>
   <div class="user-image-wall">
     <div
-      class="flex h-full w-full flex-wrap"
       v-if="pageLoading && pageFetchParams.page === 1"
+      class="flex h-full w-full flex-wrap"
     >
-      <div class="img-wrapper" v-for="i of 30">
+      <div v-for="i of 30" class="img-wrapper">
         <div class="img-container">
           <el-skeleton class="absolute top-0 h-full w-full">
             <template #template>
@@ -16,11 +16,11 @@
     </div>
     <div v-else>
       <div
-        class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
         v-loadMore="handleLoadNextPage"
         v-auto-animate
+        class="-ml-[6px] -mt-[6px] flex w-full flex-wrap items-start"
       >
-        <div class="img-wrapper" v-for="image of pageList" :key="image.id">
+        <div v-for="image of pageList" :key="image.id" class="img-wrapper">
           <div class="img-container" @click="handlePreview(image)">
             <MediaImgView class="media-item" :url="image.file.url" ratio="10" />
           </div>
@@ -36,10 +36,10 @@
     </div>
     <el-backtop :right="50" />
     <MediaPreview
-      :file="curMedia?.file"
-      v-model:show="showPreview"
-      is-img
       v-if="curMedia"
+      v-model:show="showPreview"
+      :file="curMedia?.file"
+      is-img
     />
   </div>
 </template>

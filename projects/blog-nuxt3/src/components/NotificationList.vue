@@ -2,59 +2,59 @@
   <div class="notification-list">
     <SkeletonNotification v-if="pageLoading && pageFetchParams.page === 1" />
 
-    <div v-loadMore="handleLoadNextPage" v-else>
+    <div v-else v-loadMore="handleLoadNextPage">
       <div class="mb-[12px] flex items-center justify-between">
         <div class="flex items-center gap-[6px]">
           <template v-if="pageList.length > 0 && fetchResult.unreadTotal > 0">
             <div class="flex items-center gap-[6px]">
               <template v-if="showCheck">
                 <el-checkbox
-                  size="large"
-                  @change="handleCheckAll"
                   v-model="checkAll"
+                  size="large"
                   :indeterminate="isIndeterminate"
-                ></el-checkbox>
+                  @change="handleCheckAll"
+                />
                 <el-button size="small" @click="handleCancelCheck"
                   >取消</el-button
                 >
                 <el-button
                   size="small"
                   :type="checkedList.length > 0 ? 'primary' : 'default'"
-                  @click="handleMultiRemark(false)"
                   :disabled="batchProcessing"
+                  @click="handleMultiRemark(false)"
                   >标为已读</el-button
                 >
               </template>
-              <el-button size="small" @click="showCheck = true" v-else>
+              <el-button v-else size="small" @click="showCheck = true">
                 <template #icon>
-                  <Icon name="fluent:task-list-20-regular" size="24"></Icon>
+                  <Icon name="fluent:task-list-20-regular" size="24" />
                 </template>
               </el-button>
             </div>
             <el-button
               size="small"
-              @click="handleMultiRemark(true)"
               :disabled="batchProcessing"
+              @click="handleMultiRemark(true)"
               >全部标为已读</el-button
             >
           </template>
         </div>
         <el-radio-group
           v-model="pageFetchParams.isRead"
-          @change="handleLoadNextPage(1)"
           size="small"
+          @change="handleLoadNextPage(1)"
         >
-          <el-radio-button :value="0" label="未读"></el-radio-button>
+          <el-radio-button :value="0" label="未读" />
           <el-radio-button
             :value="3"
             :label="`全部(${fetchResult?.total || 0})`"
-          ></el-radio-button>
+          />
         </el-radio-group>
       </div>
       <template v-if="pageList.length">
         <el-checkbox-group
-          class="grid grid-cols-1 gap-[12px] overflow-hidden"
           v-model="checkedList"
+          class="grid grid-cols-1 gap-[12px] overflow-hidden"
           @change="handleCheckItem"
         >
           <div v-auto-animate class="[&_div+div]:mt-[24px]">
@@ -64,17 +64,17 @@
               class="flex items-start gap-[12px]"
             >
               <el-checkbox
+                v-if="showCheck"
                 size="large"
                 :value="notification.id"
                 :disabled="!!notification.isRead"
-                v-if="showCheck"
-              ></el-checkbox>
-              <el-card class="overflow-hidden w-full">
+              />
+              <el-card class="w-full overflow-hidden">
                 <div
-                  class="group flex flex-col items-start gap-[12px] divide-y divide-border-light dark:divide-border-dark"
+                  class="divide-border-light dark:divide-border-dark group flex flex-col items-start gap-[12px] divide-y"
                   :class="{ 'text-gray-400': notification.isRead }"
                 >
-                  <slot :notification="notification"></slot>
+                  <slot :notification="notification" />
 
                   <div
                     class="flex w-full items-center justify-between pt-[12px]"
@@ -84,14 +84,14 @@
                       class="text-gray-400"
                     />
                     <el-button
+                      v-if="!notification.isRead"
                       text
                       type="primary"
                       class="hidden group-hover:block"
-                      v-if="!notification.isRead"
                       @click="handleRemarkRead(notification.id)"
                       >标为已读</el-button
                     >
-                    <span class="hidden text-primary group-hover:block" v-else
+                    <span v-else class="text-primary hidden group-hover:block"
                       >已读</span
                     >
                   </div>
@@ -155,8 +155,8 @@ const {
   { type: fetchType, isRead: 0 },
   {}
 )
-const {handleFetchNotificationCount} = useFetchNotificationCount()
-const {$HttpUtils} = useNuxtApp()
+const { handleFetchNotificationCount } = useFetchNotificationCount()
+const { $HttpUtils } = useNuxtApp()
 const showCheck = ref(false)
 const checkAll = ref(false)
 const isIndeterminate = ref(false)
@@ -193,7 +193,10 @@ async function handleRemarkRead(id: string, isAll = false) {
     params = { id }
   }
   try {
-    const { result, success } = await $HttpUtils.post('/notification/read', params)
+    const { result, success } = await $HttpUtils.post(
+      '/notification/read',
+      params
+    )
     if (success) {
       handleFetchNotificationCount()
       handleLoadNextPage(1)

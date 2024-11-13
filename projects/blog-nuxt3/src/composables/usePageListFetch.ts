@@ -4,7 +4,7 @@ interface PageFetchParams {
   [x: string]: any
 }
 export const usePageListFetch = async <T>(url: string, params: any = {}) => {
-  const {$HttpUtils} = useNuxtApp()
+  const { $HttpUtils } = useNuxtApp()
   const pageTotal = ref(0)
   const pageList = ref<T[]>([])
   const pageLoading = ref(false)
@@ -19,7 +19,10 @@ export const usePageListFetch = async <T>(url: string, params: any = {}) => {
   async function fetchPage() {
     try {
       pageLoading.value = true
-      const { result, success } = await $HttpUtils.post<any>(url, pageFetchParams)
+      const { result, success } = await $HttpUtils.post<any>(
+        url,
+        pageFetchParams
+      )
       if (success) {
         fetchResult.value = result
         pageList.value = result.list

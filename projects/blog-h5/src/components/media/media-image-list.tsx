@@ -1,7 +1,7 @@
-import { Media } from 'sys-types'
+import type { Media } from 'sys-types'
 import { ImagePreview } from 'react-vant'
 import MediaImageRatioItem from '@/components/media/media-image-ratio-item'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface Props {
   imageList: Media[]

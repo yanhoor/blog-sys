@@ -7,25 +7,25 @@
         size="48"
         name="fluent:play-circle-16-regular"
         @click="handleStart"
-      ></Icon>
+      />
       <Icon
         v-if="recordState === 'recording'"
         class="cursor-pointer"
         size="48"
         name="fluent:pause-circle-20-regular"
         @click="handlePause"
-      ></Icon>
+      />
       <Icon
         v-if="recordState !== 'inactive'"
         class="cursor-pointer"
         size="42"
         name="fluent:record-stop-16-regular"
         @click="handleStop"
-      ></Icon>
+      />
     </div>
     <span v-if="recordState === 'inactive'">点击录制</span>
     <span v-else>录制时间：{{ formatDuration(recordDuration) }}</span>
-    <div class="flex items-center" v-if="audioSrc">
+    <div v-if="audioSrc" class="flex items-center">
       <span>点击播放：</span>
       <MediaAudioItem :url="audioSrc" is-absolute-url />
     </div>

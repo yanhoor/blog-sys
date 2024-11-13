@@ -1,30 +1,31 @@
 <template>
   <div class="flex w-full flex-col items-start gap-[12px]">
     <div class="flex items-center gap-[6px]">
-      <UserAvatar :user="currentPost.createBy" :size="36"></UserAvatar>
-      <UserName :user="currentPost.createBy"></UserName>
+      <UserAvatar :user="currentPost.createBy" :size="36" />
+      <UserName :user="currentPost.createBy" />
     </div>
     <PostArticle
-      class="line-clamp-3"
       v-if="currentPost!.contentType == 2"
+      class="line-clamp-3"
       :content="currentPost!.content"
     />
     <ExpandableContent
       v-else
       :content="currentPost.content"
-      :topicList="topicList"
-      :mediaList="referenceMediaList"
-    ></ExpandableContent>
+      :topic-list="topicList"
+      :media-list="referenceMediaList"
+    />
     <div class="group flex w-full items-center justify-between">
       <span
-        class="secondary-text-color text-[12px]"
         v-time="new Date(currentPost.createdAt)"
-      ></span>
+        class="secondary-text-color text-[12px]"
+      />
       <div class="flex items-center gap-[12px]">
         <span
           class="hidden cursor-pointer leading-[1] text-red-600 group-hover:inline-block"
         >
           <Icon
+            v-if="currentPost?.createById === userInfo?.id"
             name="fluent:delete-24-regular"
             size="18"
             @click="
@@ -33,14 +34,13 @@
                 emits('delete')
               }
             "
-            v-if="currentPost?.createById === userInfo?.id"
-          ></Icon>
+          />
         </span>
         <div
           class="action-item placeholder-text-color"
           @click="handleToPostDetail('retweet')"
         >
-          <Icon name="fluent:arrow-forward-20-regular" size="18"></Icon>
+          <Icon name="fluent:arrow-forward-20-regular" size="18" />
           <span>{{ currentPost.retweetCount || '转发' }}</span>
         </div>
         <div
@@ -48,26 +48,22 @@
           @click="handleToPostDetail('comment')"
         >
           <Icon
+            v-if="currentPost.commentsCount"
             name="fluent:comment-multiple-24-filled"
             class="text-primary"
             size="18"
-            v-if="currentPost.commentsCount"
-          ></Icon>
-          <Icon
-            name="fluent:comment-multiple-20-regular"
-            size="18"
-            v-else
-          ></Icon>
+          />
+          <Icon v-else name="fluent:comment-multiple-20-regular" size="18" />
           <span>{{ currentPost.commentsCount || '评论' }}</span>
         </div>
         <div class="action-item placeholder-text-color" @click="handlePostLike">
           <Icon
+            v-if="currentPost.isLike"
             name="fluent:thumb-like-20-filled"
             class="text-primary"
             size="18"
-            v-if="currentPost.isLike"
-          ></Icon>
-          <Icon name="fluent:thumb-like-20-regular" size="18" v-else></Icon>
+          />
+          <Icon v-else name="fluent:thumb-like-20-regular" size="18" />
           <span>{{ currentPost.likedByCount || '赞' }}</span>
         </div>
       </div>
@@ -102,6 +98,6 @@ async function handleToPostDetail(type: string) {
 
 <style lang="postcss" scoped>
 .action-item {
-  @apply flex cursor-pointer items-center justify-center gap-[6px] text-[12px] hover:text-primary;
+  @apply hover:text-primary flex cursor-pointer items-center justify-center gap-[6px] text-[12px];
 }
 </style>

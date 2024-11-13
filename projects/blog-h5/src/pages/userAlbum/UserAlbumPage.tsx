@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
-import { ReactNode, useRef, useState } from 'react'
-import { Media } from 'sys-types'
+import type { ReactNode } from 'react'
+import { useRef, useState } from 'react'
+import type { Media } from 'sys-types'
 import AppendListWrapper from '@/components/append-list-wrapper'
 import { user_media_list } from '@/http'
 import MediaImageItem from '@/components/media/media-image-item'
@@ -31,7 +32,7 @@ export default function UserAlbumPage() {
       <div className="grid grid-cols-3">
         {itemList.map((item, index) => (
           <div className="w-full" key={item.id}>
-            <div className="w-full h-0 pt-[100%] relative">
+            <div className="relative h-0 w-full pt-[100%]">
               <MediaImageItem
                 className="absolute top-0 h-full w-full overflow-clip object-cover"
                 url={item.file.url}

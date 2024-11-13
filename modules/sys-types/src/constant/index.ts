@@ -1,2 +1,2 @@
-export * from "./socketEventType";
-export * from "./BlogContentType";
+export * from './socketEventType'
+export * from './BlogContentType'

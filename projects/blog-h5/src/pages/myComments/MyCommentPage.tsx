@@ -1,6 +1,6 @@
 import PageWrapper from '@/components/page-wrapper'
 import CustomNavBar from '@/components/custom/custom-nav-bar'
-import { Comment } from 'sys-types'
+import type { Comment } from 'sys-types'
 import $http, { comment_delete, user_myCommentList } from '@/http'
 import AppendListWrapper from '@/components/append-list-wrapper'
 import UserName from '@/components/user/user-name'

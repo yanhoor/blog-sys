@@ -1,20 +1,20 @@
 <template>
   <div class="list-page-wrapper">
     <div class="filter-wrapper">
-      <slot name="filter"></slot>
+      <slot name="filter" />
     </div>
     <div class="filter-actions">
-      <slot name="actions"></slot>
+      <slot name="actions" />
     </div>
     <div class="list-table-container">
       <div class="vxe-table-container">
-        <slot name="table"></slot>
+        <slot name="table" />
       </div>
       <div class="mt-12 flex justify-end">
-        <slot name="tablePagination"></slot>
+        <slot name="tablePagination" />
       </div>
     </div>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

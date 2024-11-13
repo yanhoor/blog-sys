@@ -1,43 +1,38 @@
 <template>
-  <div class="flex items-start gap-[12px] pb-[20px]" v-if="userInfo">
-    <UserAvatar
-      class="mr-[12px]"
-      :user="userInfo"
-      :size="42"
-      disabled
-    ></UserAvatar>
+  <div v-if="userInfo" class="flex items-start gap-[12px] pb-[20px]">
+    <UserAvatar class="mr-[12px]" :user="userInfo" :size="42" disabled />
     <div class="flex flex-1 flex-col gap-[12px]">
       <TopicContentTextarea
         ref="contentRef"
         v-model="textContent"
-        :showCount="false"
+        :show-count="false"
         placeholder="说说分享心得"
         :autosize="{
           minRows: 1,
           maxRows: 3
         }"
-      ></TopicContentTextarea>
+      />
       <div class="flex items-center justify-between">
         <MediaUploadImg
-          @complete="imageFile = $event"
           :model-value="imageFile?.url"
-          :showPreviewIcon="false"
-          :showBorder="false"
+          :show-preview-icon="false"
+          :show-border="false"
           width="42px"
           height="42px"
+          @complete="imageFile = $event"
         >
           <template #trigger>
             <Icon
               name="fluent:image-add-24-regular"
               size="36"
-              class="cursor-pointer text-primary"
-            ></Icon>
+              class="text-primary cursor-pointer"
+            />
           </template>
         </MediaUploadImg>
         <el-button
           type="primary"
-          @click="commitTransfer"
           :loading="isCommitting"
+          @click="commitTransfer"
           >{{ btnText }}</el-button
         >
       </div>
@@ -61,7 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['success'])
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const textContent = ref(
   props.blog.retweetOriginBlogId
     ? `//@${props.blog.createBy.name}:${props.blog.content}`

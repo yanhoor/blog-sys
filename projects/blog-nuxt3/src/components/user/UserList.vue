@@ -1,30 +1,28 @@
 <template>
   <div class="user-list">
-    <SkeletonUserList
-      v-if="pageLoading && pageFetchParams.page === 1"
-    ></SkeletonUserList>
+    <SkeletonUserList v-if="pageLoading && pageFetchParams.page === 1" />
 
-    <div class="space-y-[12px]" v-loadMore="handleLoadNextPage" v-auto-animate>
+    <div v-loadMore="handleLoadNextPage" v-auto-animate class="space-y-[12px]">
       <div
-        class="flex items-center gap-[12px]"
         v-for="user of pageList"
         :key="user.id"
+        class="flex items-center gap-[12px]"
       >
-        <UserAvatar :user="user" :size="42"></UserAvatar>
+        <UserAvatar :user="user" :size="42" />
         <div class="flex flex-1 flex-col items-start gap-[3px] self-start">
-          <UserName :user="user"></UserName>
+          <UserName :user="user" />
           <span class="secondary-text-color text-[12px]">{{
             user.introduce || '暂无介绍'
           }}</span>
           <span
-            class="secondary-text-color text-[12px]"
             v-if="user.followerCount"
+            class="secondary-text-color text-[12px]"
             >粉丝：{{ user.followerCount }}</span
           >
         </div>
         <UserFollowDropdown
           :user="user"
-          @updateFollow="handleLoadNextPage(1)"
+          @update-follow="handleLoadNextPage(1)"
         />
       </div>
     </div>

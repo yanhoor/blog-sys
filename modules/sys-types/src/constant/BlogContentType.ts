@@ -9,5 +9,5 @@
 
 export enum BlogContentType {
   normal = 1, // 普通文本
-  richTxt = 2, // 富文本
+  richTxt = 2 // 富文本
 }

@@ -1,12 +1,11 @@
-import {FileUtil} from 'sys-types'
-import type {MediaFile} from 'sys-types'
+import type { FileUtil, MediaFile } from 'sys-types'
 
 export const useUploadFile = () => {
-  const {$HttpUtils} = useNuxtApp()
+  const { $HttpUtils } = useNuxtApp()
 
   async function handleUploadSingle(params: any) {
     try {
-      const {success, result, msg} = await $HttpUtils.post(
+      const { success, result, msg } = await $HttpUtils.post(
         '/file/upload',
         params,
         {
@@ -19,8 +18,7 @@ export const useUploadFile = () => {
       } else {
         ElMessage.error(msg || '上传失败')
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   async function handlePartUpload(
@@ -45,7 +43,7 @@ export const useUploadFile = () => {
     }
 
     try {
-      const {success, result, msg} = await $HttpUtils.post<MediaFile>(
+      const { success, result, msg } = await $HttpUtils.post<MediaFile>(
         '/file/mergeMultiPart',
         {
           fileName: fileUtil.fileHash,
@@ -68,9 +66,12 @@ export const useUploadFile = () => {
 
   async function handleCheckFile(fileUtil: FileUtil) {
     try {
-      const {success, result, msg} = await $HttpUtils.post<any>('/file/checkFile', {
-        md5: fileUtil.md5
-      })
+      const { success, result, msg } = await $HttpUtils.post<any>(
+        '/file/checkFile',
+        {
+          md5: fileUtil.md5
+        }
+      )
       if (success) {
         if (result.isChunk) {
           fileUtil.setUploadedChunkList(result.chunkList)
@@ -78,14 +79,13 @@ export const useUploadFile = () => {
           return result.file
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   async function handleUploadPart(params: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const {success, result, msg} = await $HttpUtils.post(
+        const { success, result, msg } = await $HttpUtils.post(
           '/file/upload',
           params,
           {

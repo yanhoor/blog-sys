@@ -9,21 +9,19 @@
       @select="handleMenuSelectChange"
     >
       <el-menu-item index="/my/following">
-        <el-icon><Icon name="fluent:people-20-regular"></Icon></el-icon>
+        <el-icon><Icon name="fluent:people-20-regular" /></el-icon>
         <span>我的关注</span>
       </el-menu-item>
       <el-menu-item index="/my/follower">
-        <el-icon
-          ><Icon name="fluent:people-checkmark-20-regular"></Icon
-        ></el-icon>
+        <el-icon><Icon name="fluent:people-checkmark-20-regular" /></el-icon>
         <span>我的粉丝</span>
       </el-menu-item>
       <el-menu-item index="/my/like">
-        <el-icon><Icon name="fluent:thumb-like-20-filled"></Icon></el-icon>
+        <el-icon><Icon name="fluent:thumb-like-20-filled" /></el-icon>
         <span>我的点赞</span>
       </el-menu-item>
       <el-menu-item index="/my/collection">
-        <el-icon><Icon name="fluent:star-20-filled"></Icon></el-icon>
+        <el-icon><Icon name="fluent:star-20-filled" /></el-icon>
         <span>我的收藏</span>
       </el-menu-item>
     </el-menu>

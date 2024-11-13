@@ -1,5 +1,5 @@
 <template>
-  <UserMainPage :uid="route.params.userId"></UserMainPage>
+  <UserMainPage :uid="route.params.userId" />
 </template>
 
 <script setup lang="ts">

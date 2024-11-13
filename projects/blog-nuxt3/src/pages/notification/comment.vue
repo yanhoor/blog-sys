@@ -5,7 +5,7 @@
         <UserAvatar :user="notification.createBy" :size="32" />
         <template v-if="notification.comment.replyComment">
           <span
-            class="cursor-pointer text-[18px] font-semibold text-primary"
+            class="text-primary cursor-pointer text-[18px] font-semibold"
             @click="navigateTo({ path: '/user/' + notification.createById })"
             >{{ notification.createBy.name }}</span
           >
@@ -23,7 +23,7 @@
         </template>
         <template v-else>
           <span
-            class="cursor-pointer text-[18px] font-semibold text-primary"
+            class="text-primary cursor-pointer text-[18px] font-semibold"
             @click="navigateTo({ path: '/user/' + notification.createById })"
             >{{ notification.createBy.name }}</span
           >
@@ -40,26 +40,26 @@
       />
 
       <MediaImgView
-        :url="notification.comment.image.url"
         v-if="notification.comment.image"
-        enablePreview
+        :url="notification.comment.image.url"
+        enable-preview
         class="max-h-[135px] max-w-[180px] object-contain"
       />
 
       <div
+        v-if="notification.blog"
         class="w-full cursor-pointer rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
         @click="navigateTo({ path: '/post/' + notification.blog.id })"
-        v-if="notification.blog"
       >
         <ExpandableContent
           :content="notification.blog.content"
-          :topicList="handleTopicList(notification)"
+          :topic-list="handleTopicList(notification)"
           :media-list="handleMediaList(notification)"
         />
       </div>
       <div
-        class="w-full rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
         v-else
+        class="w-full rounded-[5px] !border-0 bg-gray-100 p-[12px] dark:bg-gray-700"
       >
         <div class="text-red-500">博客已经被删除</div>
       </div>

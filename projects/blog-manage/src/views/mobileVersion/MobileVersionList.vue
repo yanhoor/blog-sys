@@ -1,9 +1,9 @@
 <template>
   <ListWrapper>
-    <template #filter> </template>
-    <template #actions> </template>
-    <template #table> </template>
-    <template #tablePagination> </template>
+    <template #filter />
+    <template #actions />
+    <template #table />
+    <template #tablePagination />
   </ListWrapper>
 </template>
 

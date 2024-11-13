@@ -1,5 +1,5 @@
 <template>
-  <UserMainPage :uname="route.params.userName"></UserMainPage>
+  <UserMainPage :uname="route.params.userName" />
 </template>
 
 <script setup lang="ts">

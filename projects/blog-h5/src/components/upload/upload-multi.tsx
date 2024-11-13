@@ -1,9 +1,11 @@
 import { PhotoO, MusicO, VideoO, DeleteO } from '@react-vant/icons'
 import { Button, Toast, Loading } from 'react-vant'
-import { ChangeEvent, memo, useEffect, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import $http, { upload } from '@/http'
 import MyConfig from '@/config'
-import { Media, MediaFile } from 'sys-types'
+import type { MediaFile } from 'sys-types'
+import { Media } from 'sys-types'
 import MediaImageRatioItem from '@/components/media/media-image-ratio-item'
 import MediaVideoItem from '@/components/media/media-video-item'
 import UploadImg from '@/components/upload/uploadImg'
@@ -207,7 +209,7 @@ export const UploadMulti = memo(function ({ onComplete }: Props) {
               <DeleteO
                 fontSize={14}
                 onClick={() => handleDeleteItem(index)}
-                className="absolute -right-[6px] -top-[3px] text-primary"
+                className="text-primary absolute -right-[6px] -top-[3px]"
               />
             </div>
           ))}

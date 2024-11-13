@@ -29,7 +29,7 @@
       </el-skeleton>
 
       <div class="mt-[20px]">
-        <div class="mt-[12px] flex items-start gap-[12px]" v-for="i of 20">
+        <div v-for="i of 20" class="mt-[12px] flex items-start gap-[12px]">
           <el-skeleton style="--el-skeleton-circle-size: 32px">
             <template #template>
               <el-skeleton-item variant="circle" />

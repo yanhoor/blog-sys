@@ -12,7 +12,7 @@
   <el-sub-menu v-else-if="menu.children" :index="menu.menuIndex + ''">
     <template #title>
       <el-icon v-if="menu.icon">
-        <component :is="menu.icon"></component>
+        <component :is="menu.icon" />
       </el-icon>
       <span>{{ menu.title }}</span>
     </template>
@@ -22,7 +22,7 @@
   </el-sub-menu>
   <el-menu-item v-else :index="menu.path">
     <el-icon v-if="menu.icon">
-      <component :is="menu.icon"></component>
+      <component :is="menu.icon" />
     </el-icon>
     <span>{{ menu.title }}</span>
   </el-menu-item>

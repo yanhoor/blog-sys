@@ -2,7 +2,7 @@
   <UserCard :uid="user.id" :uname="user.name" :disabled="disabled">
     <template #trigger>
       <span
-        class="cursor-pointer text-primary"
+        class="text-primary cursor-pointer"
         @click="navigateTo({ path: '/user/id/' + user.id })"
       >
         {{ (showAt ? '@' : '') + user.name }}

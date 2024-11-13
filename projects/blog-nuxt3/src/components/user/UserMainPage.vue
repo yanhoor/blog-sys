@@ -6,17 +6,17 @@
         <div>
           <div class="h-[180px] w-full">
             <img
+              v-if="userInfo.profileCardBg"
               :src="config.public.imageBase + userInfo.profileCardBg"
               class="h-full w-full object-cover object-center"
-              v-if="userInfo.profileCardBg"
             />
             <div
-              class="h-full w-full bg-gradient-to-r from-sky-500 to-indigo-500"
               v-else
-            ></div>
+              class="h-full w-full bg-gradient-to-r from-sky-500 to-indigo-500"
+            />
           </div>
           <div
-            class="flex flex-col gap-[12px] bg-card-light p-[12px] pt-0 dark:bg-card-dark"
+            class="bg-card-light dark:bg-card-dark flex flex-col gap-[12px] p-[12px] pt-0"
           >
             <div class="flex items-center gap-[12px]">
               <div class="flex flex-1 gap-[12px]">
@@ -24,47 +24,51 @@
                   <UserAvatar :size="120" :user="userInfo" disabled />
                 </div>
                 <div class="flex flex-col gap-[6px]">
-                  <div class="text-3xl font-bold regular-text-color">{{ userInfo?.name }}</div>
+                  <div class="regular-text-color text-3xl font-bold">
+                    {{ userInfo?.name }}
+                  </div>
                   <div class="flex gap-[6px]">
                     <div
                       class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(2)"
                     >
                       <span class="secondary-text-color">粉丝</span>
-                      <span class="text-[18px] font-semibold regular-text-color">{{
-                        userInfo.followerCount
-                      }}</span>
+                      <span
+                        class="regular-text-color text-[18px] font-semibold"
+                        >{{ userInfo.followerCount }}</span
+                      >
                     </div>
                     <div
                       class="flex cursor-pointer items-center gap-[6px]"
                       @click="handleViewFriends(1)"
                     >
                       <span class="secondary-text-color">关注</span>
-                      <span class="text-[18px] font-semibold regular-text-color">{{
-                        userInfo.followingCount
-                      }}</span>
+                      <span
+                        class="regular-text-color text-[18px] font-semibold"
+                        >{{ userInfo.followingCount }}</span
+                      >
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="flex items-end" v-if="myInfo">
+              <div v-if="myInfo" class="flex items-end">
                 <el-button
+                  v-if="myInfo?.id === userInfo.id"
                   type="primary"
                   @click="navigateTo({ name: 'user-profile' })"
-                  v-if="myInfo?.id === userInfo.id"
                   >编辑资料</el-button
                 >
                 <UserFollowDropdown
                   v-else
                   :user="userInfo"
-                  @updateFollow="getUserInfo"
+                  @update-follow="getUserInfo"
                 />
               </div>
             </div>
 
             <div class="flex justify-between">
               <div class="flex gap-[12px]">
-                <el-tag type="success" round v-if="userInfo.isMyFan">
+                <el-tag v-if="userInfo.isMyFan" type="success" round>
                   <div class="flex items-center gap-[6px]">
                     <span>您的粉丝</span>
                   </div>
@@ -94,14 +98,14 @@
               class="secondary-text-color flex max-w-full flex-col gap-[12px]"
             >
               <div
-                class="flex items-start gap-[6px]"
                 v-if="userInfo?.introduce"
+                class="flex items-start gap-[6px]"
               >
-                <Icon name="fluent:document-text-20-regular" size="20"></Icon>
+                <Icon name="fluent:document-text-20-regular" size="20" />
                 <span>{{ userInfo?.introduce }}</span>
               </div>
               <div class="flex items-start gap-[6px]">
-                <Icon name="fluent:calendar-ltr-20-regular" size="20"></Icon>
+                <Icon name="fluent:calendar-ltr-20-regular" size="20" />
                 <div>{{ formatTime(userInfo.createdAt) }}</div>
               </div>
             </div>
@@ -113,52 +117,55 @@
             <el-tab-pane name="1" label="精选" lazy>
               <PostList
                 :search-params="{ uid: searchParams.uid, sort: '3' }"
-                canEdit
+                can-edit
               />
             </el-tab-pane>
             <el-tab-pane name="2" label="博客" lazy>
               <div class="mb-[12px] flex items-center justify-between">
                 <div class="regular-text-color">全部博客({{ blogTotal }})</div>
                 <el-button
+                  v-if="showSearch"
                   quaternary
                   size="small"
                   type="primary"
-                  v-if="showSearch"
                   @click="showSearch = false"
                   >取消</el-button
                 >
                 <el-button
+                  v-else
                   size="small"
                   type="primary"
                   quaternary
                   circle
                   @click="showSearch = true"
-                  v-else
                 >
                   <template #icon>
-                    <Icon name="fluent:search-20-regular"></Icon>
+                    <Icon name="fluent:search-20-regular" />
                   </template>
                 </el-button>
               </div>
-              <Transition name="fade" >
-                <div class="mb-[12px] transition-all duration-300" v-if="showSearch">
+              <Transition name="fade">
+                <div
+                  v-if="showSearch"
+                  class="mb-[12px] transition-all duration-300"
+                >
                   <div class="flex items-center gap-[12px]">
                     <y-search
-                        v-model="searchParams.keyword"
-                        @confirm="handleSearchPost"
+                      v-model="searchParams.keyword"
+                      @confirm="handleSearchPost"
                     />
                     <el-date-picker
-                        v-model="selectDateRange"
-                        :shortcuts="rangeShortcuts"
-                        :disabled-date="(ts: Date) => ts.getTime() > Date.now()"
-                        type="daterange"
-                        clearable
+                      v-model="selectDateRange"
+                      :shortcuts="rangeShortcuts"
+                      :disabled-date="(ts: Date) => ts.getTime() > Date.now()"
+                      type="daterange"
+                      clearable
                     />
                     <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleSearchPost"
-                    >确定</el-button
+                      size="small"
+                      type="primary"
+                      @click="handleSearchPost"
+                      >确定</el-button
                     >
                   </div>
                 </div>
@@ -166,8 +173,8 @@
               <PostList
                 ref="blogListRef"
                 :search-params="searchParams"
-                @fetchComplete="handleBlogFetchComplete"
-                canEdit
+                can-edit
+                @fetch-complete="handleBlogFetchComplete"
               />
             </el-tab-pane>
             <el-tab-pane name="3" label="视频" lazy>
@@ -180,7 +187,7 @@
         </div>
       </div>
     </div>
-    <ResultError :msg="errorMsg" @refresh="handlePageInit" v-else></ResultError>
+    <ResultError v-else :msg="errorMsg" @refresh="handlePageInit" />
   </LayoutMain>
 </template>
 
@@ -194,7 +201,7 @@ interface Props {
   uname?: string
 }
 
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const props = defineProps<Props>()
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -292,9 +299,12 @@ async function getUserInfo() {
 
 async function getUserStatis() {
   try {
-    const { result, success, code, msg } = await $HttpUtils.post<any>('/statis/user', {
-      id: userInfo.value?.id
-    })
+    const { result, success, code, msg } = await $HttpUtils.post<any>(
+      '/statis/user',
+      {
+        id: userInfo.value?.id
+      }
+    )
     if (success) {
       statisInfo.value = result
     }

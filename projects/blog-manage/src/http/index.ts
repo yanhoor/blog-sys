@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import type { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 import router from '@/routes'
 import { ElMessage } from 'element-plus'
 

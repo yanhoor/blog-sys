@@ -1,6 +1,6 @@
 <template>
   <div
-    class="index-skeleton divide-y divide-border-light dark:divide-border-dark"
+    class="index-skeleton divide-border-light dark:divide-border-dark divide-y"
   >
     <el-card>
       <div class="flex gap-12">

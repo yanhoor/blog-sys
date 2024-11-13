@@ -1,10 +1,10 @@
 <template>
   <div class="media-upload-multi flex w-full flex-col items-center gap-[12px]">
     <input
+      ref="inputRef"
       class="hidden"
       type="file"
       :accept="acceptType"
-      ref="inputRef"
       :multiple="uploadMode === 2"
       @change="handleSelectFileChange"
     />
@@ -18,7 +18,7 @@
         @click="handleSelectUploadType(2)"
       >
         <template #icon>
-          <Icon name="fluent:image-add-20-regular"></Icon>
+          <Icon name="fluent:image-add-20-regular" />
         </template>
         图片
       </el-button>
@@ -30,7 +30,7 @@
         @click="handleSelectUploadType(3)"
       >
         <template #icon>
-          <Icon name="fluent:video-add-20-regular"></Icon>
+          <Icon name="fluent:video-add-20-regular" />
         </template>
         视频
       </el-button>
@@ -42,23 +42,23 @@
         @click="handleSelectUploadType(4)"
       >
         <template #icon>
-          <Icon name="fluent:sound-wave-circle-20-regular"></Icon>
+          <Icon name="fluent:sound-wave-circle-20-regular" />
         </template>
         录音
       </el-button>
     </div>
 
     <MediaAudioRecord
+      v-if="uploadMode === 4"
       ref="audioRecorderRef"
       @complete="handleAudioRecordComplete"
-      v-if="uploadMode === 4"
     />
 
-    <div v-loading v-if="uploading"></div>
+    <div v-if="uploading" v-loading />
 
     <div
-      class="my-[12px] w-full text-center"
       v-if="audioRecordFile && uploadMode === 4"
+      class="my-[12px] w-full text-center"
     >
       <el-button round type="primary" @click="handleUploadAudio"
         >上传录音</el-button
@@ -67,9 +67,9 @@
 
     <template v-if="modelValue.length">
       <div
-        class="flex max-h-full w-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
         v-if="uploadMode === 2"
         v-auto-animate
+        class="flex max-h-full w-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
       >
         <div
           v-for="(media, index) of modelValue"
@@ -87,28 +87,28 @@
             type="success"
             @click="handleDeleteItem(index)"
           >
-            <Icon #icon name="fluent:delete-16-regular"></Icon>
+            <Icon #icon name="fluent:delete-16-regular" />
           </el-button>
         </div>
       </div>
 
       <div
-        class="relative h-0 w-full pt-[56.25%]"
         v-if="[3, 4].includes(uploadMode)"
+        class="relative h-0 w-full pt-[56.25%]"
       >
         <MediaUploadImg
-          @complete="handleUploadCoverComplete"
           :model-value="coverFile?.url"
           class="absolute top-0 h-full w-full"
           width="100%"
           height="100%"
-          uploadTxt="点击上传封面"
+          upload-txt="点击上传封面"
+          @complete="handleUploadCoverComplete"
         />
       </div>
 
       <div
-        class="flex w-full flex-col items-center gap-[12px]"
         v-if="uploadMode === 3"
+        class="flex w-full flex-col items-center gap-[12px]"
       >
         <MediaVideoItem :url="modelValue[0].file.url" />
         <el-button round type="danger" @click="handleDeleteItem(0)"

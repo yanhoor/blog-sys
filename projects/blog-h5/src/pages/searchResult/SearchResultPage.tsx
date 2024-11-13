@@ -2,7 +2,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import PostList from '@/components/post/post-list'
 import { Search } from 'react-vant'
 import { Search as SearchIcon, ArrowLeft } from '@react-vant/icons'
-import { PostFilterParams, SearchFilter } from './components/search-filter'
+import type { PostFilterParams } from './components/search-filter'
+import { SearchFilter } from './components/search-filter'
 import { useCallback, useState } from 'react'
 
 export default function SearchResultPage() {

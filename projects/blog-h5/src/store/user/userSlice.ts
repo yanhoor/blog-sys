@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { getMyInfo, getNotificationCount, getAllGroup } from './asyncThunk'
-import { User, FollowGroup } from 'sys-types'
+import type { User, FollowGroup } from 'sys-types'
 import MyConfig from '@/config'
 
 type UserStateType = {

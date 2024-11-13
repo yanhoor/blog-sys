@@ -1,4 +1,4 @@
-import { Blog } from 'sys-types'
+import type { Blog } from 'sys-types'
 import UserAvatar from '@/components/user/user-avatar'
 import UserName from '@/components/user/user-name'
 import YTime from '@/components/y-time'

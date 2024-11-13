@@ -1,4 +1,4 @@
-import { Comment, MediaFile } from 'sys-types'
+import type { Comment, MediaFile } from 'sys-types'
 import { ActionSheet, Input, hooks, Toast } from 'react-vant'
 import { PhotoO } from '@react-vant/icons'
 import { useAppSelector } from '@/store/hooks'
@@ -67,7 +67,7 @@ export default function CommentReply({
 
   return myInfo ? (
     <ActionSheet visible={visible} onClickOverlay={onClickOverlay}>
-      <div className="block-bg-color flex items-start gap-4 px-[12px]  py-[24px]">
+      <div className="block-bg-color flex items-start gap-4 px-[12px] py-[24px]">
         <UserAvatar user={myInfo} />
         <div className="flex flex-1 flex-col gap-4">
           <Input.TextArea

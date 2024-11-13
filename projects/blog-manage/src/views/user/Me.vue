@@ -3,8 +3,8 @@
     <el-descriptions-item label="头像" :span="4">
       <UploadAvatar
         v-model:url="formInfo.avatar"
-        @change="changeAvatar"
         size="90px"
+        @change="changeAvatar"
       />
     </el-descriptions-item>
     <el-descriptions-item label="用户名">{{

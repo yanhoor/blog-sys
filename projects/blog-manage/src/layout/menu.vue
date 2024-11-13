@@ -7,7 +7,7 @@
   >
     <!--在 Vue 3.x 中，key 则应该被设置在 <template> 标签上。-->
     <template v-for="(firstMenu, index) of menuList" :key="firstMenu.title">
-      <MenuItem :menu="firstMenu" :menuIndex="index + 1" />
+      <MenuItem :menu="firstMenu" :menu-index="index + 1" />
     </template>
   </el-menu>
 </template>

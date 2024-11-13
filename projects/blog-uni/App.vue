@@ -1,37 +1,37 @@
 <script>
-	// import { useMyInfoStore } from '@/stores/userInfo.js'
-	
-	export default {
-		onLaunch: function() {
-			// console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
-			console.log('App Launch')
-			// const myInfo = useMyInfoStore()
-			// myInfo.getMyInfo()
-		},
-		onShow: function() {
-			console.log('App Show')
-		},
-		onHide: function() {
-			console.log('App Hide')
-		}
-	}
+// import { useMyInfoStore } from '@/stores/userInfo.js'
+
+export default {
+  onLaunch: function () {
+    // console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
+    console.log('App Launch')
+    // const myInfo = useMyInfoStore()
+    // myInfo.getMyInfo()
+  },
+  onShow: function () {
+    console.log('App Show')
+  },
+  onHide: function () {
+    console.log('App Hide')
+  }
+}
 </script>
 
 <style lang="scss">
-	/*每个页面公共css */
-	@import 'static/styles/iconfont.css';
-	@import '@/uni_modules/uni-scss/index.scss';
-	@import '@/static/styles/common.scss';
+/*每个页面公共css */
+@import 'static/styles/iconfont.css';
+@import '@/uni_modules/uni-scss/index.scss';
+@import '@/static/styles/common.scss';
 
-	/* #ifndef APP-NVUE */
-	@import '@/static/styles/customicons.css';
-	// 设置整个项目的背景色
-	page {
-		background-color: #f5f5f5;
-	}
+/* #ifndef APP-NVUE */
+@import '@/static/styles/customicons.css';
+// 设置整个项目的背景色
+page {
+  background-color: #f5f5f5;
+}
 
-	/* #endif */
-	uni-icons{
-		line-height: 1;
-	}
+/* #endif */
+uni-icons {
+  line-height: 1;
+}
 </style>

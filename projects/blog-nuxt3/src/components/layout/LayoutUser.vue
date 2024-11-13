@@ -1,9 +1,9 @@
 <template>
   <div class="layout-user">
-    <div class="flex cursor-pointer items-center gap-[6px]" v-if="userInfo">
-      <el-button type="primary" @click="showWritePost = true" size="small">
+    <div v-if="userInfo" class="flex cursor-pointer items-center gap-[6px]">
+      <el-button type="primary" size="small" @click="showWritePost = true">
         <template #icon>
-          <Icon name="fluent:compose-20-regular"></Icon>
+          <Icon name="fluent:compose-20-regular" />
         </template>
       </el-button>
       <el-dropdown @command="handleDropdownSelect">
@@ -26,14 +26,14 @@
         </template>
       </el-dropdown>
     </div>
-    <el-button type="primary" v-else @click="navigateTo('/login')"
+    <el-button v-else type="primary" @click="navigateTo('/login')"
       >登录</el-button
     >
 
     <LazyPostWrite
+      :key="writePostKey"
       :show="showWritePost"
       @update:show="handleWritePostShowUpdate"
-      :key="writePostKey"
     />
   </div>
 </template>
@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { Icon } from '#components'
 
-const { $webSocketClient} = useNuxtApp()
+const { $webSocketClient } = useNuxtApp()
 const renderIcon = (name: string) => {
   return () => {
     return h(Icon, { name, size: '18' })
@@ -49,7 +49,7 @@ const renderIcon = (name: string) => {
 }
 
 const config = useRuntimeConfig()
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const notificationUnreadCount = useNotificationUnreadCount()
 const userInfo = useUserInfo()
 const route = useRoute()

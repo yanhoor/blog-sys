@@ -1,10 +1,6 @@
 <template>
   <div class="result-empty flex w-full flex-col items-center gap-[12px]">
-    <Icon
-      name="fluent:error-circle-24-filled"
-      :size="size"
-      color="#36ad6a"
-    ></Icon>
+    <Icon name="fluent:error-circle-24-filled" :size="size" color="#36ad6a" />
     <p class="text-[16px] font-semibold">{{ msg }}</p>
     <el-button type="primary" @click="emits('refresh')">刷新</el-button>
   </div>

@@ -2,15 +2,15 @@
   <div class="relative w-full">
     <el-input
       id="textAreaInput"
-      :modelValue="modelValue"
-      @input="handleInput"
-      @blur="handleInputBlur"
+      :model-value="modelValue"
       type="textarea"
       :placeholder="placeholder"
       size="large"
       :show-count="showCount"
       clearable
       :autosize="autosize"
+      @input="handleInput"
+      @blur="handleInputBlur"
     />
     <div
       class="card-bg-color absolute left-0 top-0 z-10 w-[70%]"
@@ -18,14 +18,14 @@
     >
       <template v-if="showTopicList">
         <div
-          class="max-h-[400px] overflow-auto rounded border border-primary"
           v-auto-animate
+          class="border-primary max-h-[400px] overflow-auto rounded border"
         >
-          <p class="px-[12px] py-[5px] text-primary">想用什么话题</p>
+          <p class="text-primary px-[12px] py-[5px]">想用什么话题</p>
           <p
             v-for="topic of topicList"
             :key="topic.id"
-            class="cursor-pointer px-[12px] py-[5px] hover:bg-primary hover:text-white"
+            class="hover:bg-primary cursor-pointer px-[12px] py-[5px] hover:text-white"
             @click.capture="handleSelectTopic(topic.content)"
           >
             {{ topic.content }}
@@ -59,7 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
   })
 })
 const inputEl = ref<HTMLTextAreaElement>()
-const {$HttpUtils} = useNuxtApp()
+const { $HttpUtils } = useNuxtApp()
 const showTopicList = ref(false)
 const topicList = ref<Topic[]>([])
 const topicPosition = reactive({

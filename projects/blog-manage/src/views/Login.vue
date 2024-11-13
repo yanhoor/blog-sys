@@ -2,11 +2,11 @@
   <div class="login-container">
     <el-card style="width: 350px">
       <el-form
+        v-if="!isRegister"
         ref="formRef"
         :model="postForm"
         :rules="formRules"
         label-width="100px"
-        v-if="!isRegister"
       >
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="postForm.mobile" maxlength="11" />
@@ -16,11 +16,11 @@
         </el-form-item>
       </el-form>
       <el-form
+        v-else
         ref="formRef"
         :model="registerForm"
         :rules="formRules"
         label-width="100px"
-        v-else
       >
         <el-form-item label="名称" prop="name">
           <el-input v-model="registerForm.name" />
@@ -38,17 +38,17 @@
       </el-form>
       <el-row>
         <el-button
+          v-if="isRegister"
           type="primary"
           style="width: 100%"
           @click="handleRegister(formRef)"
-          v-if="isRegister"
           >注册</el-button
         >
         <el-button
+          v-else
           type="primary"
           style="width: 100%"
           @click="handleLogin(formRef)"
-          v-else
           >登录</el-button
         >
       </el-row>

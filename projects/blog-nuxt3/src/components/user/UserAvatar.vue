@@ -8,14 +8,14 @@
     <template #trigger>
       <div
         class="leading-[1]"
-        @click="handleUserHome"
         :class="{ 'cursor-pointer': !disabled }"
+        @click="handleUserHome"
       >
         <Icon
-          name="fluent:person-circle-20-regular"
           v-if="!user.avatar"
+          name="fluent:person-circle-20-regular"
           :size="size.toString()"
-        ></Icon>
+        />
         <el-avatar
           v-else
           class="flex shrink-0 items-center justify-center"
@@ -23,7 +23,7 @@
           :size="size"
           :src="config.public.imageBase + user.avatar"
           :render-fallback="renderErrorAvatar"
-        ></el-avatar>
+        />
       </div>
     </template>
   </UserCard>

@@ -1,4 +1,4 @@
-import { Media, MediaFile } from 'sys-types'
+import type { Media, MediaFile } from 'sys-types'
 import MediaImageList from '@/components/media/media-image-list'
 import MediaVideoItem from '@/components/media/media-video-item'
 import MediaAudioItem from '@/components/media/media-audio-item'

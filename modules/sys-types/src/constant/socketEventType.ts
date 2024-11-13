@@ -1,5 +1,5 @@
 const SOCKETEVENTTYPE = {
-  notification: "notification",
-};
+  notification: 'notification'
+}
 
-export { SOCKETEVENTTYPE };
+export { SOCKETEVENTTYPE }

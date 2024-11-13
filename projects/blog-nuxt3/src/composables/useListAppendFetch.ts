@@ -15,10 +15,10 @@ interface PageFetchParams {
 }
 export const useListAppendFetch = <T>(
   url: string,
-  params: Object = {},
+  params: object = {},
   initParams: InitParams<T>
 ) => {
-  const {$HttpUtils} = useNuxtApp()
+  const { $HttpUtils } = useNuxtApp()
   const pageTotal = ref(0)
   const pageList = ref<T[]>(
     initParams.initList ? [...initParams.initList] : []
@@ -81,7 +81,7 @@ export const useListAppendFetch = <T>(
     return fetchPage()
   }
 
-  function handleChangeFetchParams(params: Object = {}) {
+  function handleChangeFetchParams(params: object = {}) {
     pageFetchParams.value = {
       ...pageFetchParams.value,
       ...params
