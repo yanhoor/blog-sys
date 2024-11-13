@@ -103,9 +103,6 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../../modules/sys-types
     devDependencies:
-      '@eslint/js':
-        specifier: ^9.14.0
-        version: 9.14.0
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12
@@ -121,15 +118,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
-      eslint:
-        specifier: ^9.14.0
-        version: 9.14.0
-      eslint-plugin-react:
-        specifier: ^7.37.2
-        version: 7.37.2(eslint@9.14.0)
-      globals:
-        specifier: ^15.12.0
-        version: 15.12.0
       postcss:
         specifier: ^8.4.49
         version: 8.4.49
@@ -139,9 +127,6 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
-      typescript-eslint:
-        specifier: ^8.14.0
-        version: 8.14.0(eslint@9.14.0)(typescript@5.6.3)
       vite:
         specifier: ^5.4.11
         version: 5.4.11
@@ -291,6 +276,9 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.14.0
+        version: 9.14.0
       '@prisma/client':
         specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
@@ -306,6 +294,9 @@ importers:
       eslint-plugin-prettier:
         specifier: 5.2.1
         version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@9.14.0)(prettier@3.3.3)
+      globals:
+        specifier: ^15.12.0
+        version: 15.12.0
       nodemon:
         specifier: ^3.1.7
         version: 3.1.7
