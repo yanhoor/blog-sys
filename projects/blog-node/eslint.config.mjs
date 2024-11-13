@@ -24,6 +24,9 @@ export default [
       '**/*.md',
       '**/*.woff',
       '**/*.ttf'
-    ]
+    ],
+    rules: {
+      'no-unused-vars': 'warn'
+    }
   }
 ]

@@ -47,7 +47,8 @@ export default createConfigForNuxt({
       '**/*.ttf'
     ],
     rules: {
-      'vue/multi-word-component-names': 'off'
+      'vue/multi-word-component-names': 'off',
+      'no-unused-vars': 'warn'
     }
   }
 ])
