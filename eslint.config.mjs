@@ -28,6 +28,24 @@ export default createConfigForNuxt({
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
   {
+    ignores: [
+      '**/logs/',
+      '**/*.log',
+      '**/*.log*',
+      '**/node_modules/',
+      '**/.vscode/',
+      '**/.husky/',
+      '**/.nuxt/',
+      '**/.idea/',
+      '**/.output/',
+      '**/.local/',
+      '**/dist/',
+      '**/public/',
+      '**/*.sh',
+      '**/*.md',
+      '**/*.woff',
+      '**/*.ttf'
+    ],
     rules: {
       'vue/multi-word-component-names': 'off'
     }
