@@ -26,5 +26,10 @@ export default createConfigForNuxt({
     languageOptions: { parserOptions: { parser: tseslint.parser } }
   },
   eslintConfigPrettier,
-  eslintPluginPrettierRecommended
+  eslintPluginPrettierRecommended,
+  {
+    rules: {
+      'vue/multi-word-component-names': 'off'
+    }
+  }
 ])

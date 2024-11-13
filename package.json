@@ -12,7 +12,9 @@
     "build:nuxt": "pnpm run -C projects/blog-nuxt3 build",
     "dev:node": "pnpm run -C projects/blog-node dev",
     "dev:manage": "pnpm run -C projects/blog-manage dev",
-    "build:manage": "pnpm run -C projects/blog-manage build"
+    "build:manage": "pnpm run -C projects/blog-manage build",
+    "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --max-warnings 0",
+    "lint:fix": "eslint . --fix --ext .vue,.js,.ts,.jsx,.tsx --max-warnings 0"
   },
   "engines": {
     "node": ">= 16"
