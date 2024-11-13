@@ -4,9 +4,12 @@ import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+export default createConfigForNuxt({
+  // options here
+}).prepend([
   { files: ['**/*.{js,mjs,cjs,ts,vue}'] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
@@ -18,4 +21,4 @@ export default [
   },
   eslintConfigPrettier,
   eslintPluginPrettierRecommended
-]
+])
