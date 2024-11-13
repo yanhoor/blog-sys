@@ -169,8 +169,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/image',
     '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    // https://auto-animate.formkit.com/#usage-vue
+    '@pinia/nuxt', // https://auto-animate.formkit.com/#usage-vue
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/color-mode',
     '@element-plus/nuxt',
@@ -248,7 +247,7 @@ export default defineNuxtConfig({
         //   additionalData: '@use "@/assets/styles/var.scss" as *;'
         // }
       }
-    },
+    }
     // optimizeDeps: {
     //   include: ['sys-types']
     // }

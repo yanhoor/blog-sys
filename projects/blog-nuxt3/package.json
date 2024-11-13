@@ -11,7 +11,6 @@
     "dev_docker": "nuxi dev --dotenv .env.dev_docker",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
-    "lint": "eslint --ext .js,.jsx,.vue,.ts,.tsx --fix --quiet ./",
     "postinstall": "nuxi prepare"
   },
   "devDependencies": {
@@ -22,16 +21,8 @@
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/prismjs": "^1.26.5",
-    "@typescript-eslint/eslint-plugin": "^8.14.0",
-    "@typescript-eslint/parser": "^8.14.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.14.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-vue": "^9.31.0",
     "nuxt": "^3.14.159",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwind-scrollbar": "^3.1.0"
   },
   "dependencies": {
