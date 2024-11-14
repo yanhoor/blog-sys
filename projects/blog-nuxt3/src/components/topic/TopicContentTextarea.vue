@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-full">
     <el-input
-      id="textAreaInput"
+      ref="elInputRef"
       :model-value="modelValue"
       type="textarea"
       :placeholder="placeholder"
@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import type { Topic } from 'sys-types'
+import { ElInput } from 'element-plus'
 
 interface Props {
   placeholder?: string
@@ -58,7 +59,8 @@ const props = withDefaults(defineProps<Props>(), {
     maxRows: 15
   })
 })
-const inputEl = ref<HTMLTextAreaElement>()
+const elInputRef = ref<InstanceType<typeof ElInput>>()
+const inputEl = ref<HTMLTextAreaElement>(null!)
 const { $HttpUtils } = useNuxtApp()
 const showTopicList = ref(false)
 const topicList = ref<Topic[]>([])
@@ -87,7 +89,7 @@ defineExpose({ handleAddTopic })
 
 onMounted(() => {
   nextTick(() => {
-    inputEl.value = document.querySelector('#textAreaInput')
+    inputEl.value = elInputRef.value!.$el.querySelector('textarea')
     if (!inputEl.value) return
 
     // console.log('========topic mounted========', inputEl.value)
@@ -113,7 +115,7 @@ function handleInput(val: string = modelValue.value) {
   const idx = val.lastIndexOf('#', textarea.selectionEnd - 1)
   const range = val.slice(idx, textarea.selectionEnd) // 获取 # 与 光标之间的文本
   // 以#结尾或以#+非空格+任意字符结尾(即排除 #+空格+字符)
-  if (/^#[^@\[\]\s]*$/g.test(range)) {
+  if (/^#[^@[\]\s]*$/g.test(range)) {
     showTopicList.value = true
     searchTopicList(range.slice(1))
     handleGetPointerPosition(
@@ -128,7 +130,7 @@ function handleInput(val: string = modelValue.value) {
 function handleInputBlur() {
   setTimeout(() => {
     showTopicList.value = false
-  })
+  }, 300)
 }
 
 function handleSelectTopic(topic: string) {
@@ -200,12 +202,14 @@ function handleGetPointerPosition(startStr: string, endStr: string) {
 
 async function searchTopicList(keyword?: string) {
   try {
-    const { result, success, msg } = await $HttpUtils.post('/topic/list', {
+    const { result, success, msg } = await $HttpUtils.post<any>('/topic/list', {
       keyword
     })
     if (success) {
       topicList.value = result.list
     }
-  } catch (e) {}
+  } catch (e) {
+    /* empty */
+  }
 }
 </script>
