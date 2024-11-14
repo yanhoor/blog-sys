@@ -44,9 +44,14 @@ export async function commonMultipartUpload({
       // mime: "text/plain",
       ...otherOptions
     })
-    const url = (result.res as any).requestUrls[0]
-    console.log('===========commonMultipartUpload url==========', url.Location)
-    return url.slice(0, url.indexOf('?'))
+    let url = (result.res as any).requestUrls[0]
+    console.log('===========commonMultipartUpload url==========', result.res)
+    const idx = url.indexOf('?')
+    if (idx > -1) {
+      // 去掉分片上传成功的 url 带有 uploadId 参数
+      url = url.slice(0, url.indexOf('?'))
+    }
+    return url
   } catch (e: any) {
     console.log('===========commonMultipartUpload 失败==========', e)
     if (e?.checkpoint?.uploadId) {
