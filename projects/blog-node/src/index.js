@@ -110,6 +110,6 @@ app.use(staticRouter.routes())
 app.use(visitRouter.routes())
 app.use(manageRouter.routes())
 
-const server = app.listen(8000)
+const server = app.listen(8090)
 // server.keepAliveTimeout = 30 * 1000 // 用于指定长连接的超时时间。如果客户端在超时时间内没有发送任何数据，则服务器会关闭连接。这个选项可以防止服务器长时间占用不活跃的连接。
 mySocketIo.init(server)

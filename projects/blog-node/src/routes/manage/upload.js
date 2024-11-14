@@ -7,5 +7,6 @@ router.prefix('/file')
 router.post('/upload', controller.upload)
 router.post('/mergeMultiPart', controller.mergeMultiPart)
 router.post('/checkFile', controller.checkFile)
+router.post('/insertUrl', controller.insertUrl)
 
 module.exports = router

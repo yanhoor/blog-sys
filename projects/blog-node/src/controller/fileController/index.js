@@ -2,6 +2,7 @@ const BaseController = require('../baseController')
 const upload = require('./upload')
 const checkFile = require('./checkFile')
 const mergeMultiPart = require('./mergeMultiPart')
+const insertUrl = require('./insertUrl')
 const OSS = require('ali-oss')
 const { FileType } = require('@prisma/client')
 const path = require('path')
@@ -16,6 +17,7 @@ class FileController extends BaseController {
     this.upload = upload.bind(this)
     this.checkFile = checkFile.bind(this)
     this.mergeMultiPart = mergeMultiPart.bind(this)
+    this.insertUrl = insertUrl.bind(this)
   }
 
   getFileType = (url) => {
