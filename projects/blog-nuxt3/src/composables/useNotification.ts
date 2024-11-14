@@ -1,6 +1,6 @@
 import type { Notification } from 'sys-types'
 import { ElButton } from 'element-plus'
-import { h } from 'vue'
+import { h, resolveDirective } from 'vue'
 
 export const useNotification = () => {
   return useState<Notification[]>('notification', () => [])
@@ -75,11 +75,6 @@ export const useShowNotificationDetail = () => {
   const { handleFetchNotificationCount } = useFetchNotificationCount()
 
   function handleShowNotificationDetail(result: Notification) {
-    const datetime = h('div', {
-      type: 'datetime',
-      format: 'MM-dd HH:mm',
-      time: new Date(result.createdAt)
-    })
     const readBtn = h(
       ElButton,
       {
@@ -101,7 +96,6 @@ export const useShowNotificationDetail = () => {
         result.type === 'system_audit'
           ? h('div', null, [
               '你有新的系统审核动态，',
-              datetime,
               h(
                 ElButton,
                 {
@@ -120,8 +114,7 @@ export const useShowNotificationDetail = () => {
               readBtn
             ])
           : h('div', null, [
-              '你的博客有新评论，',
-              datetime,
+              '你的博客有新评论',
               h(
                 ElButton,
                 {
@@ -151,7 +144,9 @@ export const useShowNotificationDetail = () => {
       if (success) {
         handleFetchNotificationCount()
       }
-    } catch (e) {}
+    } catch (e) {
+      /* empty */
+    }
   }
 
   return {

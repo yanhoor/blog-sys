@@ -4,11 +4,10 @@
       <div class="flex max-w-full items-center gap-[6px] whitespace-nowrap">
         <UserAvatar :user="notification.createBy" :size="32" />
         <template v-if="notification.comment.replyComment">
-          <span
+          <UserName
             class="text-primary cursor-pointer text-[18px] font-semibold"
-            @click="navigateTo({ path: '/user/' + notification.createById })"
-            >{{ notification.createBy.name }}</span
-          >
+            :user="notification?.createBy"
+          />
           回复了您的评论
           <div
             class="custom-border flex max-w-full items-center gap-[4px] truncate rounded border bg-gray-200 px-[6px] text-gray-500 dark:bg-gray-600 dark:text-gray-300"
@@ -22,11 +21,10 @@
           ：
         </template>
         <template v-else>
-          <span
+          <UserName
             class="text-primary cursor-pointer text-[18px] font-semibold"
-            @click="navigateTo({ path: '/user/' + notification.createById })"
-            >{{ notification.createBy.name }}</span
-          >
+            :user="notification?.createBy"
+          />
           评论了您：
         </template>
       </div>

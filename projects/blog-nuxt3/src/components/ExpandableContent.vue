@@ -27,7 +27,7 @@
 
     <el-button
       v-if="showAction"
-      text
+      link
       type="primary"
       @click.stop="handleExpand"
       >{{ isExpanded ? '收起' : '展开' }}</el-button

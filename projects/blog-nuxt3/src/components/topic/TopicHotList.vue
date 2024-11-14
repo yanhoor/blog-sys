@@ -43,21 +43,18 @@
 import type { Topic } from 'sys-types'
 
 const runtimeConfig = useRuntimeConfig()
-const {
-  pageList,
-  pageLoading,
-  fetchResult,
-  pageFetchParams,
-  pageLoadedFinish,
-  handleLoadNextPage
-} = useListAppendFetch<Topic>('/topic/list', { pageSize: 10 }, {})
+const { pageList, pageLoading, handleLoadNextPage } = useListAppendFetch<Topic>(
+  '/topic/list',
+  { pageSize: 10 },
+  {}
+)
 
 await handleLoadNextPage(1)
 
 function handleClickTopic(topicId: string) {
   window.open(
     `${runtimeConfig.app.baseURL}/search?topicId=${topicId}`,
-    '_blank'
+    'search'
   )
 }
 </script>

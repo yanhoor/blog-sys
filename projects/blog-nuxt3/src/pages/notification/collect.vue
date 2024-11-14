@@ -4,11 +4,10 @@
       class="flex max-w-full items-center gap-[6px] whitespace-nowrap pb-[12px]"
     >
       <UserAvatar :user="notification.createBy" :size="32" />
-      <span
+      <UserName
         class="text-primary cursor-pointer text-[18px] font-semibold"
-        @click="navigateTo({ path: '/user/' + notification.createById })"
-        >{{ notification.createBy.name }}</span
-      >
+        :user="notification?.createBy"
+      />
       收藏了
     </div>
 

@@ -81,8 +81,6 @@ async function getUserInfo() {
     )
     if (success) {
       currentUser.value = result
-    } else {
-      ElMessage.error(msg as string)
     }
     loading.value = false
   } catch (e) {

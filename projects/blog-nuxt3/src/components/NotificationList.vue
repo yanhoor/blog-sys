@@ -54,10 +54,10 @@
       <template v-if="pageList.length">
         <el-checkbox-group
           v-model="checkedList"
-          class="grid grid-cols-1 gap-[12px] overflow-hidden"
+          class="-mx-[12px] grid grid-cols-1 gap-[12px] overflow-hidden px-[12px]"
           @change="handleCheckItem"
         >
-          <div v-auto-animate class="[&_div+div]:mt-[24px]">
+          <div v-auto-animate class="space-y-[24px]">
             <div
               v-for="notification of pageList"
               :key="notification.id"
@@ -211,8 +211,8 @@ async function handleRemarkRead(id: string, isAll = false) {
 
 async function handleMultiRemark(isAll: boolean) {
   if (isAll) {
-    ElMessageBox.warning(
-      `确定将所有未读${props.typeName}通知标为已读?`,
+    ElMessageBox.alert(
+      `确定将所选未读${props.typeName}通知标为已读?`,
       '全部标为已读',
       {
         confirmButtonText: '确定',
