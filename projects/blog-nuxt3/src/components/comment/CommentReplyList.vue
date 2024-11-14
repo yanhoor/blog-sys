@@ -1,64 +1,63 @@
 <template>
-  <div
-    id="replyModalContent"
-    v-loadMore="{
-      handler: handleLoadNextPage,
-      scrollElSelector: '#replyModalContent'
-    }"
-    class="bg-page-light dark:bg-page-dark h-full overflow-y-auto"
-  >
-    <div class="flex flex-col gap-[12px]">
-      <el-card v-if="topComment" :bordered="false">
-        <CommentItem
-          :show-children="false"
-          :comment="topComment"
-          @reply-success="handleInit"
-          @comment-delete="emits('commentDelete', topComment)"
-        />
-      </el-card>
+  <div class="flex h-full flex-col">
+    <el-card v-if="topComment" :bordered="false">
+      <CommentItem
+        :show-children="false"
+        :comment="topComment"
+        @reply-success="handleInit"
+        @comment-delete="emits('commentDelete', topComment)"
+      />
+    </el-card>
 
-      <div class="mx-[12px] flex gap-[12px] text-[16px]">
-        <span
-          class="cursor-pointer"
-          :class="{ 'text-primary': sortType === 1 }"
-          @click="handleChangeSortType(1)"
-          >按时间</span
-        >
-        <span
-          class="cursor-pointer"
-          :class="{ 'text-primary': sortType === 2 }"
-          @click="handleChangeSortType(2)"
-          >按热度</span
-        >
-      </div>
-
-      <el-card :bordered="false">
-        <div
-          v-auto-animate
-          class="divide-border-light dark:divide-border-dark flex flex-col divide-y"
-        >
-          <CommentItem
-            v-for="reply of pageList"
-            :key="reply.id"
-            class="py-[12px]"
-            :comment="reply"
-            @reply-success="handleInit"
-            @comment-delete="handleLoadNextPage(1)"
-          />
-        </div>
-
-        <ResultLoading v-if="pageLoading" />
-        <ResultError
-          v-else-if="!fetchResult"
-          @refresh="handleLoadNextPage(1)"
-        />
-        <ResultEmpty
-          v-else-if="pageList.length === 0"
-          @refresh="handleLoadNextPage(1)"
-        />
-        <ResultNoMore v-else-if="pageLoadedFinish" />
-      </el-card>
+    <div class="mx-[12px] my-[24px] flex gap-[12px] text-[16px]">
+      <span
+        class="cursor-pointer"
+        :class="{ 'text-primary': sortType === 1 }"
+        @click="handleChangeSortType(1)"
+        >按时间</span
+      >
+      <span
+        class="cursor-pointer"
+        :class="{ 'text-primary': sortType === 2 }"
+        @click="handleChangeSortType(2)"
+        >按热度</span
+      >
     </div>
+    <el-scrollbar class="reply-el-scrollbar min-h-0 flex-1">
+      <div
+        v-loadMore="{
+          handler: handleLoadNextPage,
+          scrollElSelector: '.reply-el-scrollbar .el-scrollbar__wrap'
+        }"
+      >
+        <div class="flex flex-col gap-[12px]">
+          <div
+            v-auto-animate
+            class="divide-border-light dark:divide-border-dark flex flex-col divide-y"
+          >
+            <CommentItem
+              v-for="reply of pageList"
+              :key="reply.id"
+              class="py-[12px]"
+              :comment="reply"
+              @reply-success="handleInit"
+              @comment-delete="handleLoadNextPage(1)"
+            />
+          </div>
+
+          <ResultLoading v-if="pageLoading" />
+          <ResultError
+            v-else-if="!fetchResult"
+            @refresh="handleLoadNextPage(1)"
+          />
+          <ResultEmpty
+            v-else-if="pageList.length === 0"
+            @refresh="handleLoadNextPage(1)"
+          />
+          <ResultNoMore v-else-if="pageLoadedFinish" />
+        </div>
+      </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -99,9 +98,12 @@ function handleInit() {
 
 async function getTopCommentDetail() {
   try {
-    const { result, success, msg } = await $HttpUtils.post('/comment/info', {
-      id: props.comment.id
-    })
+    const { result, success, msg } = await $HttpUtils.post<Comment>(
+      '/comment/info',
+      {
+        id: props.comment.id
+      }
+    )
     if (success) {
       topComment.value = result
     } else {

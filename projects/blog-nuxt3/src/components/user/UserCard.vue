@@ -1,7 +1,7 @@
 <template>
   <virtual-el-popover
     trigger="hover"
-    class="max-w-[280px]"
+    class="inline-block max-w-[280px]"
     :show-after="500"
     :teleported="false"
     :disabled="disabled"

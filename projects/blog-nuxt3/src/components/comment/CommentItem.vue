@@ -90,7 +90,7 @@
     </Transition>
 
     <div
-      v-if="currentComment.childComments!.length > 0 && showChildren"
+      v-if="currentComment.childComments?.length > 0 && showChildren"
       class="bg-content-light dark:bg-content-dark min-w-full rounded-[5px] px-[12px]"
     >
       <CommentItem
