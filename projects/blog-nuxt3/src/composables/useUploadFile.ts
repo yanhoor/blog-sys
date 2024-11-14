@@ -1,5 +1,8 @@
 import type { FileUtil, MediaFile } from 'sys-types'
 
+/**
+ * @description 上传到服务器本地
+ */
 export const useUploadFile = () => {
   const { $HttpUtils } = useNuxtApp()
 
@@ -18,7 +21,9 @@ export const useUploadFile = () => {
       } else {
         ElMessage.error(msg || '上传失败')
       }
-    } catch (e) {}
+    } catch (e) {
+      /* empty */
+    }
   }
 
   async function handlePartUpload(
@@ -79,28 +84,28 @@ export const useUploadFile = () => {
           return result.file
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      /* empty */
+    }
   }
 
   async function handleUploadPart(params: any) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { success, result, msg } = await $HttpUtils.post(
-          '/file/upload',
-          params,
-          {
-            isFormData: true
-          }
-        )
-        if (success) {
-          resolve(result)
-        } else {
-          reject(params)
+    try {
+      const { success, result, msg } = await $HttpUtils.post(
+        '/file/upload',
+        params,
+        {
+          isFormData: true
         }
-      } catch (e) {
-        reject(params)
+      )
+      if (success) {
+        return Promise.resolve(result)
+      } else {
+        return Promise.reject(params)
       }
-    })
+    } catch (e) {
+      return Promise.reject(params)
+    }
   }
 
   async function handleUploadMultipart(paramList: any[], retry = 0) {

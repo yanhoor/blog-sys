@@ -5,7 +5,7 @@
       class="hidden"
       type="file"
       :accept="acceptType"
-      :multiple="uploadMode === 2"
+      :multiple="currentFileType === FileType.image"
       @change="handleSelectFileChange"
     />
 
@@ -14,8 +14,8 @@
         round
         tertiary
         type="primary"
-        :disabled="lockUploadMode && uploadMode !== 2"
-        @click="handleSelectUploadType(2)"
+        :disabled="lockUploadMode && currentFileType !== FileType.image"
+        @click="handleSelectUploadType(FileType.image)"
       >
         <template #icon>
           <Icon name="fluent:image-add-20-regular" />
@@ -26,8 +26,8 @@
         round
         tertiary
         type="primary"
-        :disabled="lockUploadMode && uploadMode !== 3"
-        @click="handleSelectUploadType(3)"
+        :disabled="lockUploadMode && currentFileType !== FileType.video"
+        @click="handleSelectUploadType(FileType.video)"
       >
         <template #icon>
           <Icon name="fluent:video-add-20-regular" />
@@ -38,8 +38,8 @@
         round
         tertiary
         type="primary"
-        :disabled="lockUploadMode && uploadMode !== 4"
-        @click="handleSelectUploadType(4)"
+        :disabled="lockUploadMode && currentFileType !== FileType.audio"
+        @click="handleSelectUploadType(FileType.audio)"
       >
         <template #icon>
           <Icon name="fluent:sound-wave-circle-20-regular" />
@@ -49,7 +49,7 @@
     </div>
 
     <MediaAudioRecord
-      v-if="uploadMode === 4"
+      v-if="currentFileType === FileType.audio"
       ref="audioRecorderRef"
       @complete="handleAudioRecordComplete"
     />
@@ -57,7 +57,7 @@
     <div v-if="uploading" v-loading />
 
     <div
-      v-if="audioRecordFile && uploadMode === 4"
+      v-if="audioRecordFile && currentFileType === FileType.audio"
       class="my-[12px] w-full text-center"
     >
       <el-button round type="primary" @click="handleUploadAudio"
@@ -67,7 +67,7 @@
 
     <template v-if="modelValue.length">
       <div
-        v-if="uploadMode === 2"
+        v-if="currentFileType === FileType.image"
         v-auto-animate
         class="flex max-h-full w-full flex-wrap gap-[12px] overflow-y-auto pt-[12px]"
       >
@@ -93,7 +93,7 @@
       </div>
 
       <div
-        v-if="[3, 4].includes(uploadMode)"
+        v-if="[FileType.video, FileType.audio].includes(currentFileType)"
         class="relative h-0 w-full pt-[56.25%]"
       >
         <MediaUploadImg
@@ -107,7 +107,7 @@
       </div>
 
       <div
-        v-if="uploadMode === 3"
+        v-if="currentFileType === FileType.video"
         class="flex w-full flex-col items-center gap-[12px]"
       >
         <MediaVideoItem :url="modelValue[0].file.url" />
@@ -116,7 +116,7 @@
         >
       </div>
       <el-button
-        v-if="uploadMode === 4"
+        v-if="currentFileType === FileType.audio"
         round
         type="danger"
         @click="handleDeleteAudio()"
@@ -128,7 +128,7 @@
 
 <script setup lang="ts">
 import type { Media, MediaFile } from 'sys-types'
-import { FileUtil } from 'sys-types'
+import { FileUtil, FileType } from 'sys-types'
 
 interface Props {
   modelValue: Media[]
@@ -140,19 +140,23 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<{
   'update:modelValue': [list: Media[]]
 }>()
-const uploadMode = ref(1) // 上传的类型，1--未定，2--图片，3--视频, 4--音频
 const lockUploadMode = ref(false) // 不能选择其他上传类型
 const uploading = ref(false)
 const audioRecorderRef = ref()
 const audioRecordFile = shallowRef<File>()
 const inputRef = ref<HTMLInputElement>()
 const failedFileList = shallowRef<File[]>([])
+const currentFileType = ref<FileType>(FileType.idle)
 const config = useRuntimeConfig()
 const { handleUploadSingle, handlePartUpload, handleCheckFile } =
   useUploadFile()
+const { handleAliMultipartUpload } = useAliUpload()
 
 const coverFile = computed<MediaFile>(() => {
-  if ([3, 4].includes(uploadMode.value) && props.modelValue.length)
+  if (
+    [FileType.video, FileType.audio].includes(currentFileType.value) &&
+    props.modelValue.length
+  )
     return props.modelValue[0]?.cover
 })
 
@@ -160,28 +164,32 @@ const acceptType = computed(() => {
   const imageType = config.public.imageType
   const videoType = config.public.videoType
   const audioType = config.public.audioType
-  switch (uploadMode.value) {
-    case 1:
+  switch (currentFileType.value) {
+    case FileType.idle:
       return [imageType, videoType, audioType].join()
-    case 2:
+    case FileType.image:
       return imageType
-    case 3:
+    case FileType.video:
       return videoType
-    case 4:
+    case FileType.audio:
       return audioType
   }
 })
 
-function handleSelectUploadType(type: number) {
+function handleSelectUploadType(type: FileType) {
   // 已锁定就不能上传其他类型
-  if (lockUploadMode.value && uploadMode.value !== type) return
+  if (lockUploadMode.value && currentFileType.value !== type) return
 
   // 视频和音频只能上传一个
-  if ([3, 4].includes(uploadMode.value) && props.modelValue.length) return
+  if (
+    [FileType.video, FileType.audio].includes(currentFileType.value) &&
+    props.modelValue.length
+  )
+    return
 
-  uploadMode.value = type
+  currentFileType.value = type
 
-  if (type !== 4) {
+  if (type !== FileType.audio) {
     audioRecordFile.value = undefined
     nextTick(() => {
       inputRef.value?.click()
@@ -222,16 +230,16 @@ async function handleAudioRecordComplete(f: File | undefined) {
 async function handleUploadAudio() {
   failedFileList.value = []
   uploading.value = true
-  const success = await handleUploadFile(audioRecordFile.value, 'audio')
+  const success = await handleUploadFile(audioRecordFile.value!)
   uploading.value = false
   if (success) {
     audioRecordFile.value = undefined
   }
 }
 
-async function handleUploadFile(file: File, type?: string): Promise<boolean> {
+async function handleUploadFile(file: File): Promise<boolean> {
   if (!handleCheckUploadValid(file)) {
-    message.error('不支持的文件类型')
+    ElMessage.error('不支持的文件类型')
     return false
   }
   const fileUtil = new FileUtil(file)
@@ -242,11 +250,17 @@ async function handleUploadFile(file: File, type?: string): Promise<boolean> {
 
     if (oldFile) {
       mediaFile = oldFile
-    } else if (fileUtil.isSplit) {
-      mediaFile = await handlePartUpload(fileUtil, type)
     } else {
-      mediaFile = await handleUploadSingle({ file, type })
+      mediaFile = await handleAliMultipartUpload(
+        fileUtil,
+        currentFileType.value
+      )
     }
+    // else if (fileUtil.isSplit) {
+    //   mediaFile = await handlePartUpload(fileUtil, currentFileType.value)
+    // } else {
+    //   mediaFile = await handleUploadSingle({ file, currentFileType.value })
+    // }
     if (mediaFile) {
       lockUploadMode.value = true
       emits('update:modelValue', [

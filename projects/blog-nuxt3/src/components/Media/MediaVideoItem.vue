@@ -5,7 +5,7 @@
         ref="videoRef"
         class="video-item"
         controls
-        :src="config.public.imageBase + url + '?type=video'"
+        :src="config.public.imageBase + url"
         @play="handlePlaying"
       />
       <template v-if="coverUrl && playState === PlayState.idle">
@@ -62,16 +62,16 @@ onMounted(() => {
     }
   )
 
-  observer.observe(videoRef.value)
+  observer.observe(videoRef.value!)
 })
 
 function handlePlay() {
-  videoRef.value.play()
+  videoRef.value!.play()
 }
 
 function handlePlaying() {
   if (playStore.currentRef !== videoRef.value) playStore.currentRef?.pause()
-  playStore.currentRef = videoRef.value
+  playStore.currentRef = videoRef.value!
   playState.value = PlayState.playing
 }
 </script>

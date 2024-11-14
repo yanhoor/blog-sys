@@ -114,9 +114,9 @@ const audioSrc = computed(() => {
   } else {
     result = config.public.imageBase + props.url
   }
-  if (!result.startsWith('blob:')) {
-    result += '?type=audio'
-  }
+  // if (!result.startsWith('blob:')) {
+  //   result += '?type=audio'
+  // }
   return result
 })
 
@@ -126,7 +126,7 @@ onMounted(() => {
 
 function handlePlay() {
   playStore.currentRef?.pause()
-  playStore.currentRef = audioRef.value
+  playStore.currentRef = audioRef.value!
   if (playState.value === PlayState.playing) {
     audioRef.value?.pause()
     playState.value = PlayState.paused
@@ -152,7 +152,7 @@ function handleTimeUpdate() {
   duration.value = audioRef.value?.duration
   // 获取时长时设置了超长播放时间而触发 end 事件
   if (isInfinityDuration.value) {
-    audioRef.value.currentTime = 0
+    audioRef.value!.currentTime = 0
     isInfinityDuration.value = false
     playState.value = PlayState.idle
   }

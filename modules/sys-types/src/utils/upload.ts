@@ -1,26 +1,23 @@
-import type AliOSS from 'ali-oss'
+import AliOSS from 'ali-oss'
 import { FileUtil } from './fileUtil'
-
-const ossConfig = {
-  // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
-  region: 'oss-cn-shenzhen',
-  // 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。
-  accessKeyId: '',
-  accessKeySecret: '',
-  bucket: 'static-buck',
-  endpoint: 'oss-cn-shenzhen.aliyuncs.com'
-}
+import secret from '../secret'
 
 const projectName = 'blog-sys'
-
-// const ossClient = new AliOSS(ossConfig);
+const ossClient = new AliOSS(secret.aliOss)
 
 interface UploadOptions {
   file: File
   fileName?: string
 }
-type MultipartUploadOptions = UploadOptions & AliOSS.MultipartUploadOptions
+export type MultipartUploadOptions = UploadOptions &
+  AliOSS.MultipartUploadOptions
 
+/**
+ * @description 阿里云分片上传，成功则返回文件 url，失败就会取消上传
+ * @param file 浏览器选择的文件
+ * @param fileName 文件名
+ * @param otherOptions 阿里云分片上传参数
+ */
 export async function commonMultipartUpload({
   file,
   fileName,
@@ -30,19 +27,36 @@ export async function commonMultipartUpload({
   const ext = fileUtil.getFileExt(true)
   if (!fileName) fileName = fileUtil.getRandomFileName() + ext
 
-  // return ossClient.multipartUpload(`blog-sys/${fileName}`, file, {
-  //   // 获取分片上传进度、断点和返回值。
-  //   progress: (p, cpt, res) => {
-  //     console.log("===========commonMultipartUpload==========", p, cpt, res);
-  //   },
-  //   // 设置并发上传的分片数量。
-  //   parallel: 4,
-  //   // 设置分片大小。默认值为1 MB，最小值为100 KB。
-  //   partSize: 1024 * 1024,
-  //   // headers,
-  //   // 自定义元数据，通过HeadObject接口可以获取Object的元数据。
-  //   // meta: { year: 2020, people: "test" },
-  //   // mime: "text/plain",
-  //   ...otherOptions,
-  // });
+  const fileKey = `${projectName}/${fileName}`
+  try {
+    const result = await ossClient.multipartUpload(fileKey, file, {
+      // 获取分片上传进度、断点和返回值。
+      progress: (p, cpt, res) => {
+        console.log('===========commonMultipartUpload==========', p, cpt, res)
+      },
+      // 设置并发上传的分片数量。
+      parallel: 4,
+      // 设置分片大小。默认值为1 MB，最小值为100 KB。
+      partSize: 1024 * 1024,
+      // headers,
+      // 自定义元数据，通过HeadObject接口可以获取Object的元数据。
+      // meta: { year: 2020, people: "test" },
+      // mime: "text/plain",
+      ...otherOptions
+    })
+    const url = (result.res as any).requestUrls[0]
+    console.log('===========commonMultipartUpload url==========', url.Location)
+    return url.slice(0, url.indexOf('?'))
+  } catch (e: any) {
+    console.log('===========commonMultipartUpload 失败==========', e)
+    if (e?.checkpoint?.uploadId) {
+      try {
+        await ossClient.abortMultipartUpload(fileKey, e.checkpoint.uploadId)
+        console.log('========commonMultipartUpload 取消上传成功=====')
+      } catch (e) {
+        console.log('=======commonMultipartUpload 取消上传失败=====', e)
+      }
+    }
+    return Promise.reject(e)
+  }
 }

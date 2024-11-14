@@ -21,6 +21,8 @@ import { api as viewerApi } from 'v-viewer'
 interface Props {
   url: string
   ratio?: string
+  width?: string | number
+  height?: string | number
   enablePreview?: boolean
 }
 
@@ -32,11 +34,26 @@ const config = useRuntimeConfig()
 const loadError = ref(false)
 const lazyLoadFlag = useLazyLoadFlag()
 const src = computed(() => {
-  let res = config.public.imageBase + props.url
-  if (props.ratio) {
-    res += '?quality=' + props.ratio
+  if (props.url) {
+    let res = config.public.imageBase + props.url
+
+    // 构建OSS图片处理字符串
+    const ossProcessParams = []
+    if (props.width && props.height) {
+      ossProcessParams.push(`resize,w_${props.width},h_${props.height}`)
+    }
+    ossProcessParams.push(`format,webp`)
+    ossProcessParams.push(`quality,q_${props.ratio || 95}`)
+
+    // 检查URL是否已包含查询参数
+    const separator = res.includes('?') ? '&' : '?'
+
+    // 组合处理参数与原始URL
+    res = `${res}${separator}x-oss-process=image/${ossProcessParams.join('/')}`
+    return res
+  } else {
+    return defaultImg
   }
-  return props.url ? res : defaultImg
 })
 
 function handlePreview() {

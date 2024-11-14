@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { api as viewerApi } from 'v-viewer'
 import type { MediaFile } from 'sys-types'
-import { FileUtil } from 'sys-types'
+import { FileUtil, FileType } from 'sys-types'
 
 interface Props {
   modelValue?: string
@@ -85,6 +85,7 @@ const uploading = ref(false)
 const inputRef = ref<HTMLInputElement>()
 const { handleUploadSingle, handlePartUpload, handleCheckFile } =
   useUploadFile()
+const { handleAliMultipartUpload } = useAliUpload()
 
 function handleTriggerSelect() {
   if (uploading.value) return
@@ -122,11 +123,14 @@ async function handleUploadFile(file: File) {
 
     if (oldFile) {
       mediaFile = oldFile
-    } else if (fileUtil.isSplit) {
-      mediaFile = await handlePartUpload(fileUtil)
     } else {
-      mediaFile = await handleUploadSingle({ file })
+      mediaFile = await handleAliMultipartUpload(fileUtil, FileType.image)
     }
+    // else if (fileUtil.isSplit) {
+    //   mediaFile = await handlePartUpload(fileUtil)
+    // } else {
+    //   mediaFile = await handleUploadSingle({ file })
+    // }
     if (mediaFile) {
       emits('update:modelValue', mediaFile.url)
       emits('complete', mediaFile)

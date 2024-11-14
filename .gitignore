@@ -25,3 +25,4 @@ dist-ssr
 /node_modules/
 
 /projects/uploadFile/
+/modules/sys-types/src/secret/

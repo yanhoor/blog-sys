@@ -12,7 +12,7 @@ export class FileUtil {
   chunkCount: number = 0 // 实际分片数量
   chunkList: ChunkProps[] = []
   uploadedChunkList: string[] = []
-  file: File | null = null
+  file: File
   fileHash: string = ''
   ext: string = ''
   md5: string = ''
