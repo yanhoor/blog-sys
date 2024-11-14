@@ -10,16 +10,19 @@
     <div class="flex h-full w-full flex-col items-start gap-[12px]">
       <el-switch
         v-model="postForm.contentType"
-        active-value="2"
-        inactive-value="1"
+        :active-value="BlogContentType.richTxt"
+        :inactive-value="BlogContentType.normal"
         active-text="富文本"
         inactive-text="简单文本"
       />
       <LazyTextareaEditor
-        v-if="postForm.contentType == BlogContentType.richTxt"
+        v-show="postForm.contentType == BlogContentType.richTxt"
         v-model="postForm.content"
       />
-      <TopicContentTextarea v-else v-model="postForm.content" />
+      <TopicContentTextarea
+        v-show="postForm.contentType == BlogContentType.normal"
+        v-model="postForm.content"
+      />
       <MediaUploadMulti
         v-if="postForm.contentType == BlogContentType.normal"
         v-model="postForm.medias"
@@ -67,7 +70,7 @@ const postForm = ref<BlogForm>({
   isPost: 1,
   contentType: BlogContentType.normal,
   medias: [],
-  cateId: undefined // 空字符不会显示 placeholder
+  cateId: '' // 空字符不会显示 placeholder
 })
 const isProcessing = ref(false)
 

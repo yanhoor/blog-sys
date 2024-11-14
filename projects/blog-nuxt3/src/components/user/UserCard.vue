@@ -1,53 +1,51 @@
 <template>
-  <div>
-    <virtual-el-popover
-      trigger="hover"
-      class="max-w-[280px]"
-      :show-after="500"
-      :teleported="false"
-      :disabled="disabled"
-      @show="handleShow"
+  <virtual-el-popover
+    trigger="hover"
+    class="max-w-[280px]"
+    :show-after="500"
+    :teleported="false"
+    :disabled="disabled"
+    @show="handleShow"
+  >
+    <template #trigger>
+      <slot name="trigger" />
+    </template>
+
+    <div v-if="loading" v-loading class="h-[64px] w-[64px]" />
+
+    <div
+      v-else-if="currentUser"
+      class="flex flex-col items-start gap-[12px] p-[12px] font-normal"
     >
-      <template #trigger>
-        <slot name="trigger" />
-      </template>
-
-      <div v-if="loading" v-loading class="h-[64px] w-[64px]" />
-
       <div
-        v-else-if="currentUser"
-        class="flex flex-col items-start gap-[12px] p-[12px] font-normal"
+        class="flex w-full cursor-pointer items-center justify-center gap-[6px]"
+        @click="navigateTo({ path: '/user/id/' + currentUser.id })"
       >
-        <div
-          class="flex w-full cursor-pointer items-center justify-center gap-[6px]"
-          @click="navigateTo({ path: '/user/id/' + currentUser.id })"
-        >
-          <UserAvatar :user="currentUser" :size="36" disabled />
-          <UserName class="text-[16px]" :user="currentUser" disabled />
+        <UserAvatar :user="currentUser" :size="36" disabled />
+        <UserName class="text-[16px]" :user="currentUser" disabled />
+      </div>
+      <UserFollowDropdown
+        v-if="myInfo"
+        class="w-full text-center"
+        :round-btn="false"
+        :user="currentUser"
+        @update-follow="getUserInfo()"
+      />
+      <div
+        class="custom-border flex w-full items-start justify-around border-t pt-[6px]"
+      >
+        <div class="statis-item">
+          <div class="font-semibold">{{ currentUser.followingCount }}</div>
+          <div class="secondary-text-color">关注</div>
         </div>
-        <UserFollowDropdown
-          v-if="myInfo"
-          class="w-full text-center"
-          :round-btn="false"
-          :user="currentUser"
-          @update-follow="getUserInfo()"
-        />
-        <div
-          class="custom-border flex w-full items-start justify-around border-t pt-[6px]"
-        >
-          <div class="statis-item">
-            <div class="font-semibold">{{ currentUser.followingCount }}</div>
-            <div class="secondary-text-color">关注</div>
-          </div>
-          <div class="statis-item">
-            <div class="font-semibold">{{ currentUser.followerCount }}</div>
-            <div class="secondary-text-color">粉丝</div>
-          </div>
+        <div class="statis-item">
+          <div class="font-semibold">{{ currentUser.followerCount }}</div>
+          <div class="secondary-text-color">粉丝</div>
         </div>
       </div>
-      <p v-else>暂无信息</p>
-    </virtual-el-popover>
-  </div>
+    </div>
+    <p v-else>暂无信息</p>
+  </virtual-el-popover>
 </template>
 
 <script setup lang="ts">

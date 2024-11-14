@@ -6,7 +6,11 @@
         v-bind="info.props"
         v-if="info.type === 'component'"
       />
-      <UserCard v-else-if="info.type === 'userName'" :uname="info.content">
+      <UserCard
+        v-else-if="info.type === 'userName'"
+        class="inline-block"
+        :uname="info.content"
+      >
         <template #trigger>
           <a
             :href="`${runtimeConfig.app.baseURL}/user/name/${info.content}`"
