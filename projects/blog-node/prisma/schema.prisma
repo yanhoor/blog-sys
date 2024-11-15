@@ -68,7 +68,7 @@ model User {
   auditBlogs           Blog[]                    @relation("AuditBlog")
   replyComments        Comment[]                 @relation("ReplyComment")
   medias               Media[]                   @relation("Media")
-  mobileVersions       UpdateVersion[]           @relation("CreateVersion")
+  updateVersions       UpdateVersion[]           @relation("CreateVersion")
   customContents       CustomContent[]           @relation("CreateCustomContent")
   // 隐式多对多关系
   // 粉丝
@@ -352,7 +352,7 @@ model UpdateVersion {
   // 版本号
   version     String       @db.Text
   // 更新记录
-  changeLog   String?      @db.Text
+  changeLog   String?      @db.LongText
 }
 
 model CustomContent {
