@@ -2,7 +2,7 @@
  * @Author: yanhao yanhao@smallrig.com
  * @Date: 2024-11-13 17:14:58
  * @LastEditors: yanhao yanhao@smallrig.com
- * @LastEditTime: 2024-11-14 11:45:30
+ * @LastEditTime: 2024-11-15 16:05:59
  * @FilePath: projects/blog-nuxt3/src/composables/useAliUpload.ts
  * @Description: 上传到阿里云
  */
@@ -24,7 +24,7 @@ export const useAliUpload = () => {
 
       return file
     } catch (e) {
-      ElMessage.error(e as string)
+      ElMessage.error('上传失败')
       console.log('===================', e)
     }
   }

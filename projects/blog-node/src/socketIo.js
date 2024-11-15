@@ -12,7 +12,13 @@ class MySocketIo {
       /* options */
       // path: '/websocket/' // 默认 /socket.io/
       cors: {
-        origin: ['http://127.0.0.1:3000']
+        origin: function (origin, callback) {
+          if (origin.startsWith('http://127.0.0.1:')) {
+            callback(null, true)
+          } else {
+            callback(new Error('Not allowed by CORS'))
+          }
+        }
       }
     })
 
