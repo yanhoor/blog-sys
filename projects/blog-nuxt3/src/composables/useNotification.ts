@@ -78,7 +78,7 @@ export const useShowNotificationDetail = () => {
     const readBtn = h(
       ElButton,
       {
-        text: true,
+        link: true,
         type: 'primary',
         onClick: async () => {
           setRead(result.id as unknown as number)
@@ -86,7 +86,7 @@ export const useShowNotificationDetail = () => {
         }
       },
       {
-        default: () => '已读'
+        default: () => '标为已读'
       }
     )
 
@@ -99,7 +99,7 @@ export const useShowNotificationDetail = () => {
               h(
                 ElButton,
                 {
-                  text: true,
+                  link: true,
                   type: 'primary',
                   onClick: () => {
                     setRead(result.blogId)
@@ -111,14 +111,15 @@ export const useShowNotificationDetail = () => {
                   default: () => '去查看'
                 }
               ),
+              h('div'),
               readBtn
             ])
           : h('div', null, [
-              '你的博客有新评论',
+              '你的博客有新评论，',
               h(
                 ElButton,
                 {
-                  text: true,
+                  link: true,
                   type: 'primary',
                   onClick: () => {
                     setRead(result.blogId)
@@ -130,6 +131,7 @@ export const useShowNotificationDetail = () => {
                   default: () => '查看详情'
                 }
               ),
+              h('div'),
               readBtn
             ]),
       onClose: () => {}

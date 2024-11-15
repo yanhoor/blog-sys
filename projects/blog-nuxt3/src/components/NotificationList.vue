@@ -69,7 +69,7 @@
                 :value="notification.id"
                 :disabled="!!notification.isRead"
               />
-              <el-card class="w-full overflow-hidden">
+              <el-card class="w-full">
                 <div
                   class="divide-border-light dark:divide-border-dark group flex flex-col items-start gap-[12px] divide-y"
                   :class="{ 'text-gray-400': notification.isRead }"

@@ -1,7 +1,7 @@
 <template>
   <NotificationList type-name="评论" :type="1">
     <template #default="{ notification }">
-      <div class="flex max-w-full items-center gap-[6px] whitespace-nowrap">
+      <div class="flex max-w-full items-center gap-[6px]">
         <UserAvatar :user="notification.createBy" :size="32" />
         <template v-if="notification.comment.replyComment">
           <UserName

@@ -93,10 +93,10 @@ function handlePost(e: MouseEvent) {
             await navigateTo('/', { replace: true })
             handleFetchNotificationCount()
           }, 300)
-        } else {
-          ElMessage.error(msg as string)
         }
-      } catch (e) {}
+      } catch (e) {
+        /* empty */
+      }
     } else {
       console.log(valid, fields)
       ElMessage.error('请将信息填写完整')

@@ -1,8 +1,6 @@
 <template>
   <NotificationList v-slot="{ notification }" type-name="点赞" :type="2">
-    <div
-      class="flex max-w-full items-center gap-[6px] whitespace-nowrap pb-[12px]"
-    >
+    <div class="flex max-w-full items-center gap-[6px] pb-[12px]">
       <UserAvatar :user="notification.createBy" :size="32" />
       <UserName
         class="text-primary cursor-pointer text-[18px] font-semibold"
