@@ -1,0 +1,14 @@
+/*
+ * @Author: yanhao yanhao@smallrig.com
+ * @Date: 2024-11-18 12:24:41
+ * @LastEditors: yanhao yanhao@smallrig.com
+ * @LastEditTime: 2024-11-18 12:24:53
+ * @FilePath: projects/blog-nuxt3/src/assets/styles/element-ui-dark.scss
+ * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
+ */
+@forward 'element-plus/theme-chalk/src/dark/var.scss' with (
+  $bg-color: (
+    'page': #0a0a0a,
+    'overlay': #1d1e1f,
+  )
+);

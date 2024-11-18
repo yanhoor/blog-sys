@@ -185,6 +185,7 @@ export default defineNuxtConfig({
     // importStyle: false
     // imports: ['useLocale'],
     // injectionID: { prefix: 1024, current: 0 },
+    importStyle: 'scss',
     themes: ['dark'] // global.css 已经手动引入
   },
 
@@ -243,9 +244,9 @@ export default defineNuxtConfig({
     // },
     css: {
       preprocessorOptions: {
-        // scss: {
-        //   additionalData: '@use "@/assets/styles/var.scss" as *;'
-        // }
+        scss: {
+          additionalData: `@use "@/assets/styles/reset-element-plus.scss" as element;`
+        }
       }
     }
     // optimizeDeps: {

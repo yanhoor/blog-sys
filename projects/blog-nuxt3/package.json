@@ -23,6 +23,7 @@
     "@types/prismjs": "^1.26.5",
     "autoprefixer": "^10.4.20",
     "nuxt": "^3.14.159",
+    "sass": "^1.81.0",
     "tailwind-scrollbar": "^3.1.0"
   },
   "dependencies": {
@@ -34,7 +35,7 @@
     "@vueuse/components": "^11.2.0",
     "@vueuse/nuxt": "^11.2.0",
     "dayjs": "^1.11.13",
-    "element-plus": "^2.8.7",
+    "element-plus": "^2.8.8",
     "pinia": "^2.2.6",
     "prismjs": "^1.29.0",
     "socket.io-client": "^4.8.1",
