@@ -12,7 +12,7 @@ interface Props {
 }
 const emits = defineEmits(['refresh'])
 const props = withDefaults(defineProps<Props>(), {
-  size: '150px'
+  size: '80px'
 })
 </script>
 

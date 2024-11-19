@@ -2,16 +2,19 @@
   <virtual-el-popover
     trigger="hover"
     class="inline-block max-w-[280px]"
-    :show-after="500"
-    :teleported="false"
     :disabled="disabled"
     @show="handleShow"
+    @hide="loading = true"
   >
     <template #trigger>
       <slot name="trigger" />
     </template>
 
-    <div v-if="loading" v-loading class="h-[64px] w-[64px]" />
+    <div v-if="loading" class="flex items-center justify-center">
+      <el-icon class="is-loading" :size="24">
+        <Icon name="fluent:arrow-clockwise-dashes-16-regular" />
+      </el-icon>
+    </div>
 
     <div
       v-else-if="currentUser"
@@ -44,6 +47,7 @@
         </div>
       </div>
     </div>
+
     <p v-else>暂无信息</p>
   </virtual-el-popover>
 </template>
@@ -60,7 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const { $HttpUtils } = useNuxtApp()
 const myInfo = useUserInfo()
-const loading = ref(false)
+const loading = ref(true)
 const currentUser = ref()
 
 function handleShow(val: boolean) {

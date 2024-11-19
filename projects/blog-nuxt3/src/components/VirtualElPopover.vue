@@ -1,6 +1,10 @@
 <template>
   <div class="virtual-el-popover">
-    <div ref="triggerRef" :key="showPopover" @mouseenter="showPopover = true">
+    <div
+      ref="triggerRef"
+      :key="showPopover"
+      @mouseenter="handleChangeVisibility(true)"
+    >
       <slot name="trigger" />
     </div>
     <el-popover
@@ -9,6 +13,7 @@
       v-bind="$attrs"
       virtual-triggering
       :virtual-ref="triggerRef"
+      @hide="handleChangeVisibility(false)"
     >
       <slot />
     </el-popover>
@@ -19,4 +24,11 @@
 const showPopover = ref(false)
 const triggerRef = ref()
 const popoverRef = ref()
+const attrs = useAttrs()
+
+function handleChangeVisibility(visible: boolean) {
+  if (attrs.disabled) return
+
+  showPopover.value = visible
+}
 </script>

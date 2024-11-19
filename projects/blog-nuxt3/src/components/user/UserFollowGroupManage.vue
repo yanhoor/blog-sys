@@ -4,6 +4,7 @@
       :model-value="show"
       title="管理分组"
       append-to-body
+      :z-index="999"
       @close="emit('update:show', false)"
     >
       <div class="flex flex-col gap-[12px]">
@@ -122,7 +123,9 @@ async function handleSortGroup(list: FollowGroup[]) {
     } else {
       ElMessage.error(msg as string)
     }
-  } catch (e) {}
+  } catch (e) {
+    /* empty */
+  }
 }
 
 async function handleDeleteGroup(id: number) {
@@ -145,7 +148,9 @@ async function handleDeleteGroup(id: number) {
         } else {
           ElMessage.error(msg as string)
         }
-      } catch (e) {}
+      } catch (e) {
+        /* empty */
+      }
     })
     .catch(() => {})
 }

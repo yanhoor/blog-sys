@@ -112,7 +112,7 @@
       </div>
     </div>
 
-    <TransitionGroup name="fade">
+    <Transition name="fade" mode="out-in">
       <PostCommentList
         v-if="showType === ActionType.comment"
         class="w-full"
@@ -121,11 +121,11 @@
       />
 
       <PostRetweetList
-        v-if="showType === ActionType.retweet"
+        v-else-if="showType === ActionType.retweet"
         class="w-full"
         :blog="currentPost!"
       />
-    </TransitionGroup>
+    </Transition>
   </div>
 </template>
 
@@ -177,7 +177,9 @@ async function handleDelete() {
   try {
     await handleDeletePost()
     emit('delete')
-  } catch (e) {}
+  } catch (e) {
+    /* empty */
+  }
 }
 </script>
 
