@@ -27,11 +27,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ali-oss": "^6.21.0",
+    "ali-oss": "^6.22.0",
     "browser-md5-file": "^1.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
-    "unbuild": "^2.0.0"
+    "unbuild": "^3.2.0"
   },
   "devDependencies": {
     "@types/ali-oss": "^6.16.11",
