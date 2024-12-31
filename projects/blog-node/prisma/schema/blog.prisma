@@ -1,0 +1,79 @@
+model Blog {
+  id          String              @id @default(uuid())
+  createdAt   DateTime            @default(now())
+  createBy    User                @relation(name: "CreateBlog", fields: [createById], references: [id])
+  createById  String
+  likedBy     LikeBlogRelation[]
+  collectedBy UserCollectBlogs[]
+  readBy      ReadBlogsRelation[]
+  updatedAt   DateTime
+  auditBy     User?               @relation(name: "AuditBlog", fields: [auditById], references: [id])
+  auditById   String?
+  auditTip    String?             @db.VarChar(255)
+  auditStatus Int                 @default(0) // 1--审核通过，0--未审核，2--审核不通过
+  auditedAt   DateTime? // 审核时间
+  status      Int                 @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
+  contentType Int                 @default(1) // 1--普通文本，2--富文本
+  address     String?             @db.Text // 详细地址
+  addressName String?             @db.Text // 位置名称
+  latitude    Float?              @db.Double
+  longitude   Float?              @db.Double // 经度
+
+  // title   String @db.VarChar(255)
+  content String @db.LongText
+
+  deletedAt           DateTime?
+  comments            Comment[]
+  notifications       Notification[]
+  medias              Media[]             @relation("BlogCreateMedia")
+  topics              BlogTopicRelation[] @relation("TopicBlog")
+  retweetBlog         Blog[]              @relation("RetweetOrigin")
+  // 多层转发的第一条博客
+  retweetOriginBlogId String?
+  retweetOriginBlog   Blog?               @relation("RetweetOrigin", fields: [retweetOriginBlogId], references: [id])
+  // 隐式多对多转发关系
+  referrerBlogs       Blog[]              @relation(name: "BlogRefernce") // 被谁转发
+  referenceBlogs      Blog[]              @relation(name: "BlogRefernce") // 转发的博客列表。对于被转发的，自身就是 ReferrerBlog
+
+  @@index([createdAt])
+}
+
+// 点赞博客关系表
+model LikeBlogRelation {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     String
+  assignedAt DateTime @default(now())
+
+  @@id([userId, blogId])
+}
+
+// 收藏博客关系表
+model UserCollectBlogs {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     String
+  assignedAt DateTime @default(now())
+
+  // 这样应该使用
+  // {
+  //    userId_blogId: {
+  //      userId,
+  //      blogId: id
+  //    }
+  // }
+  @@id([userId, blogId])
+}
+
+// 阅读博客关系表
+model ReadBlogsRelation {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blog       Blog     @relation(fields: [blogId], references: [id])
+  blogId     String
+  assignedAt DateTime @default(now())
+
+  @@id([userId, blogId])
+}

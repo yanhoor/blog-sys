@@ -1,0 +1,61 @@
+// 模型，对应数据库的表
+model User {
+  // 字段名----字段类型（又分为标量类型，如 Int/String 等，或模型类型，如 Blog[]）----属性，如 @id
+  // 字段类型后面可以有类型修饰符 ? 和 []，如 String? 表示非必须，Blog[] 表示该字段值是列表。没有修饰符的是必填字段，不能为空
+  id            String    @id @default(uuid())
+  createdAt     DateTime  @default(now())
+  lastActiveAt  DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lock          Int       @default(2) // 1--锁定， 2--正常
+  name          String    @unique @db.VarChar(255)
+  avatar        String?   @db.VarChar(255)
+  profileCardBg String?   @db.VarChar(255)
+  introduce     String?   @db.VarChar(255)
+  mobile        String    @unique @db.VarChar(255) // @unique 唯一值
+  password      String    @db.VarChar(255)
+  type          Int       @default(2) // 1--超级管理员，2--普通用户
+  gender        Int       @default(0) // 1--男，2--女
+  birthday      DateTime?
+  openid        String?   @unique @db.VarChar(255)
+  deletedAt     DateTime?
+
+  blogs                Blog[]                    @relation("CreateBlog")
+  // 与博客likeBy显式多对多
+  likeBlogs            LikeBlogRelation[]
+  collectBlogs         UserCollectBlogs[]
+  readBlogs            ReadBlogsRelation[]
+  likeComments         UserLikeCommentRelation[]
+  createNotifications  Notification[]            @relation("CreateNotification")
+  receiveNotifications Notification[]            @relation("ReceiveNotifications")
+  createComments       Comment[]                 @relation("CreateComment")
+  auditComments        Comment[]                 @relation("AuditComment")
+  auditBlogs           Blog[]                    @relation("AuditBlog")
+  replyComments        Comment[]                 @relation("ReplyComment")
+  medias               Media[]                   @relation("Media")
+  updateVersions       UpdateVersion[]           @relation("CreateVersion")
+  customContents       CustomContent[]           @relation("CreateCustomContent")
+  // 隐式多对多关系
+  // 粉丝
+  followers            FollowRelation[]          @relation("FollowTarget")
+  // 关注
+  followings           FollowRelation[]          @relation("FollowBy")
+  // 创建的关注分组
+  followGroups         FollowGroup[]             @relation("CreateFollowGroup")
+  // 所在的关注分组
+  inFollowGroups       FollowGroup[]             @relation("InFollowGroup")
+  files                File[]
+  topics               Topic[]                   @relation("CreateTopic")
+
+  @@index([createdAt])
+}
+
+model FollowRelation {
+  user       User     @relation(name: "FollowTarget", fields: [userId], references: [id])
+  userId     String
+  // FollowBy 关注了 FollowTarget
+  followBy   User     @relation(name: "FollowBy", fields: [followById], references: [id])
+  followById String
+  assignedAt DateTime @default(now())
+
+  @@id([userId, followById])
+}

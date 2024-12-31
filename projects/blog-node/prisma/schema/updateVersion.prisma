@@ -1,0 +1,25 @@
+// 移动端平台类型
+enum PlatformType {
+  android
+  ios
+  miniProgram
+}
+
+model UpdateVersion {
+  id          String       @id @default(uuid())
+  createdAt   DateTime     @default(now())
+  createBy    User         @relation(name: "CreateVersion", fields: [createById], references: [id])
+  createById  String
+  // 平台类型
+  platform    PlatformType
+  // 是否发布
+  publish     Boolean      @default(false)
+  // 是否强制更新
+  forceUpdate Boolean      @default(false)
+  // 下载地址
+  url         String       @db.Text
+  // 版本号
+  version     String       @db.Text
+  // 更新记录
+  changeLog   String?      @db.LongText
+}

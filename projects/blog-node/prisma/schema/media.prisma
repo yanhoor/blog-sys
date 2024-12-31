@@ -1,0 +1,17 @@
+model Media {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(name: "Media", fields: [createById], references: [id])
+  createById String
+  title      String?  @db.Text
+  fileId     String
+  file       File     @relation(name: "MediaFile", fields: [fileId], references: [id])
+  coverId    String?
+  cover      File?    @relation(name: "CoverMedia", fields: [coverId], references: [id])
+  blogId     String?
+  blog       Blog?    @relation(name: "BlogCreateMedia", fields: [blogId], references: [id])
+
+  deletedAt DateTime?
+
+  @@index([createdAt])
+}

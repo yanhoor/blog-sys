@@ -1,0 +1,6 @@
+model CustomContent {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(name: "CreateCustomContent", fields: [createById], references: [id])
+  createById String
+}

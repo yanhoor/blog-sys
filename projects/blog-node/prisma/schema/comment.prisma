@@ -1,0 +1,50 @@
+// 博客评论及回复
+model Comment {
+  id             String    @id @default(uuid())
+  createdAt      DateTime  @default(now())
+  createBy       User      @relation(name: "CreateComment", fields: [createById], references: [id])
+  createById     String
+  auditBy        User?     @relation(name: "AuditComment", fields: [auditById], references: [id])
+  auditById      String?
+  auditTip       String?   @db.VarChar(255)
+  auditStatus    Int       @default(0) // 1--审核通过，0--未审核，2--审核不通过
+  auditedAt      DateTime? // 审核时间
+  status         Int       @default(1) // 1--未审核，2--审核通过，3--审核不通过，4--删除
+  replyTo        User?     @relation(name: "ReplyComment", fields: [replyToId], references: [id])
+  replyToId      String? // 回复的上级评论的作者
+  blog           Blog      @relation(fields: [blogId], references: [id])
+  blogId         String
+  // 作为评论回复时，所属的一级评论id
+  topCommentId   String?
+  topComment     Comment?  @relation(name: "ChildComment", fields: [topCommentId], references: [id])
+  // 作为一级评论时，下面的所有回复
+  childComments  Comment[] @relation("ChildComment")
+  // 作为评论回复时，回复哪个评论回复（不是一级）
+  replyCommentId String?
+  replyComment   Comment?  @relation(name: "Reply", fields: [replyCommentId], references: [id])
+  // 作为评论回复时，收到的所有的回复
+  replyItems     Comment[] @relation("Reply")
+
+  imageId String?
+  image   File?   @relation(name: "CommentImage", fields: [imageId], references: [id])
+
+  content       String?        @db.Text
+  notifications Notification[]
+
+  likedBy UserLikeCommentRelation[]
+
+  deletedAt DateTime?
+
+  @@index([createdAt])
+}
+
+// 点赞评论关系表
+model UserLikeCommentRelation {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  comment    Comment  @relation(fields: [commentId], references: [id])
+  commentId  String
+  assignedAt DateTime @default(now())
+
+  @@id([userId, commentId])
+}

@@ -1,0 +1,24 @@
+// 博客话题
+model Topic {
+  id         String              @id @default(uuid())
+  createdAt  DateTime            @default(now())
+  createBy   User                @relation(name: "CreateTopic", fields: [createById], references: [id])
+  createById String
+  content    String              @unique
+  deletedAt  DateTime?
+  blogs      BlogTopicRelation[] @relation("BlogTopic")
+
+  @@index([content(length: 20)], name: "content")
+}
+
+// 博客话题关系表
+model BlogTopicRelation {
+  blog       Blog     @relation(name: "TopicBlog", fields: [blogId], references: [id])
+  blogId     String
+  topic      Topic    @relation(name: "BlogTopic", fields: [topicId], references: [id])
+  topicId    String
+  // offset     Int // 在博客内容的开始位置
+  assignedAt DateTime @default(now())
+
+  @@id([blogId, topicId])
+}

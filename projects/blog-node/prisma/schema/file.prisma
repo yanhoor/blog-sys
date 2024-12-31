@@ -1,0 +1,23 @@
+// 文件类型
+enum FileType {
+  video
+  audio
+  image
+}
+
+model File {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  createBy   User     @relation(fields: [createById], references: [id])
+  createById String
+  md5        String   @db.Text
+  url        String   @db.Text
+  type       FileType
+
+  deletedAt  DateTime?
+  media      Media[]   @relation("MediaFile")
+  coverMedia Media[]   @relation("CoverMedia")
+  Comment    Comment[] @relation("CommentImage")
+
+  @@index([createdAt])
+}
